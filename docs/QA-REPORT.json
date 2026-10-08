@@ -1,0 +1,507 @@
+{
+  "generated_utc": "2026-10-06T23:12:58.535125+00:00",
+  "core_checks": {
+    "passed": 62,
+    "failed": 0,
+    "groups": [
+      "CapturedTargetKeepsBodyAndMuzzleTogether",
+      "EffectOriginsAndSources",
+      "InnRoomAndCollisionPersistence",
+      "ContactFramesAndCancellation",
+      "ProjectilesAndEnemyContact",
+      "DeathPresentationAndResume",
+      "PhysicalAttacksAndDodgeRespectWalls",
+      "CompanionPreparationAndSafeFollowing",
+      "DistanceDrivenThirtySecondWalking",
+      "UnifiedMobilityAndLockedDirections",
+      "ArenaBoundariesAndOpeningTransactions",
+      "SharedPauseAndEffectFinishingClock",
+      "AlliesAndEnemiesUseActualTravel",
+      "SoftMaterialFootContacts",
+      "PointBlankWallsAndCrossEquipmentActions",
+      "ClosedCacheRoutesAndCollision",
+      "AuthoredMuzzlesAndContinuousLaunchHeight",
+      "ClassesAndPause",
+      "Transactions",
+      "DailyLife",
+      "GatesAndGathering",
+      "SaveValidation",
+      "CompleteCampaign",
+      "SkillsRetainPreparedCombatValues",
+      "FrostRetainsCasterProfileAndSource",
+      "FrostPulseClockIsFrameRateIndependent",
+      "CompanionDamageDoesNotCompletePlayerLessons",
+      "RecoveryGuardsExpeditionTransitions",
+      "MigrationAndBuilds",
+      "DistantReachability",
+      "TechniquesAndTradeoffs",
+      "ClimateAndContracts",
+      "DistantCampaign",
+      "AbyssExpeditions",
+      "EveryEncounterSpawnHasValidFooting",
+      "TideTransitionPrecedesAllAttackContacts",
+      "RegionalHazardsKeepActualFootprint",
+      "LethalContactStopsRemainingSimulation",
+      "PracticeExitCancelsAllPendingPresentation",
+      "SharedPathWorkspaceKeepsOwnedRoutes",
+      "JournalRecordsRefreshOnlyOnStateChanges",
+      "TutorialAndPresentationMigration",
+      "QuestTrackingTransitions",
+      "NavigationRespectsWorldCollision",
+      "InteractivePracticeAndReplay",
+      "ExplorationPowersAndDiscoveries",
+      "CombatStylesAndEnemyCounters",
+      "WorldSnapshotsAndChoiceResponses",
+      "PredictableMenuFocus",
+      "SoundFeedbackAndRegionalScores",
+      "ReusedLoadsMatchFreshWorldState",
+      "ChangedActionProfilesCancelBeforeMovement",
+      "FlyingShotsRetainReleaseProfile",
+      "ProjectileLastPartialFrameStillCollides",
+      "ZeroDurationTicksPreserveLiveFlights",
+      "DeathCannotEnterPractice",
+      "MixedStateTransitionsMaintainWorldInvariants",
+      "StandingRecoveryAndCrossEquipmentDeath",
+      "StableEnemyFacingAndBackpedaling",
+      "RecoilRetainsInterruptedBodyDirection",
+      "MeleeWarningGeometryMatchesActualContact",
+      "CombatSnapshotsSurviveDeathsAndReinforcements"
+    ]
+  },
+  "offline_runtime": {
+    "compiled": true,
+    "dialogue_input_gating": "passed",
+    "menu_navigation_and_modal_focus": "passed",
+    "independent_audio_channels_mute_and_event_delivery": "passed (offline AudioSource)",
+    "save_files_checksum_backup_interrupted_write_slots_legacy_unicode": "passed (offline serializer; actual filesystem)",
+    "class_outfits_and_primary_equipment_changes": "passed for all three existing classes",
+    "directional_attack_rendering": "passed for four directions, all three classes",
+    "combat_motion_timelines": "50 x 0.04 second frames per class; actual Core + recorded GUI",
+    "boss_timelines": "8 real regional Boss AI wind-up, no premature damage, release, hit and retained death pose",
+    "review_save_isolation": "passed (automatic and manual files unchanged; original GameCore restored)",
+    "layout_states": 1356,
+    "potential_text_overflows": 0,
+    "preview_images": 117,
+    "preview_animations": 4,
+    "preview_kind": "offline production OnGUI record, not native Unity screenshots or recordings",
+    "languages": [
+      "zh",
+      "en"
+    ],
+    "supporting_text_sizes": [
+      "normal",
+      "larger"
+    ],
+    "input_prompts": [
+      "keyboard",
+      "controller"
+    ],
+    "companion_action_timelines": "3 x 40 x 0.04 second frames; actual preparation/contact, Mira heal, Ivo North arrows, Sen frost, pause and travel cancellation",
+    "vertical_enemy_archer": "North/South preparation and release resource, real projectile direction passed",
+    "physical_attack_and_dodge_collision": "same footprint, real walls block basic sword/slime lunge and fast dodge",
+    "review_footing": "hero and companion use original walkable footprint; invalid frozen placements rejected",
+    "render_transform_regressions": {
+      "kind": "offline real 2D affine math, not GPU or GUIClip emulation",
+      "viewport_sizes": [
+        [
+          1280,
+          800
+        ],
+        [
+          1920,
+          1080
+        ],
+        [
+          2560,
+          1440
+        ],
+        [
+          800,
+          600
+        ],
+        [
+          3840,
+          2160
+        ],
+        [
+          900,
+          1600
+        ],
+        [
+          3440,
+          1440
+        ]
+      ],
+      "directions_per_viewport": 8,
+      "passed_combinations": 56,
+      "anchor_tolerance_screen_pixels": 0.035,
+      "checks": [
+        "slash anchors and locked headings",
+        "projectile heads and trails",
+        "camera and shake",
+        "elevated boss projectile origin",
+        "impact/heal/death/discovery source anchors",
+        "mouse inverse transform and letterbox exclusion",
+        "zero-sized viewport",
+        "GUI state restoration including boot-error path"
+      ]
+    },
+    "hotbar_state_regressions": {
+      "kind": "offline native-button-background simulation; not real DPI testing",
+      "dpi_scales": [
+        1,
+        2
+      ],
+      "states": [
+        "ready",
+        "cooldown",
+        "low energy",
+        "attack wind-up",
+        "dodge",
+        "death",
+        "empty consumable",
+        "absent companion"
+      ],
+      "enabled_click": "one cast and one energy cost",
+      "disabled_click": "no cast or energy cost",
+      "native_skin_overlay": "reproduced with inherited high-DPI background; fixed production styles have no inherited backgrounds",
+      "space_label_overlap": "passed"
+    },
+    "effect_source_semantics": "passed: real AoE radius, calibrated archer/staff release, recipient healing, companion origin, corpse/loot once, single explosion impact and directional dodge",
+    "walking_thirty_seconds": "3 x 1800 simulation frames; actual displacement, four gait phases, blocked/stopped contacts",
+    "continuity_motion_timelines": "3 x 64 frames at 0.04 seconds; Walk/Attack/Recovery/North Q/Walk",
+    "input_aim": "four-direction Q/J/mouse per class; keyboard/controller takeover; stick-only takeover; world aim retained on HUD; clicked body mapped to ground hurtbox; extended Boss weapon/current-pose pixels use the same visible bounds as HUD",
+    "attack_mobility": "actual swept sword step, planted ranged preparation, moving recovery and planted power Q",
+    "shared_clock": "pause and hit stop freeze actions, effects, corpses and barriers",
+    "projectile_lifecycle": "swept volume, near-wall spawn, terminal partial contact, unique hits, shared immutable prepared damage/critical/stagger/mastery/ownership for direct/projectile/splash/frost",
+    "weapon_attachment": "manual overlay against actual side/north/south release cells; shared exact muzzle, launch height; raised staff settles smoothly in 0.25s",
+    "hud_overlap": "passed: fixed HUD plus arrival/practice/resume/enemy-tell world panels; pixel outlines and actual regional hazard footprint; read-only aim and real button protection",
+    "world_stability": "fixed plant roots, independent canopy phase, persistent ground detail, common pixel grid, shared gameplay/review camera damping",
+    "footsteps": "production gait contacts; 5 quiet material timbres; separate gain/pitch variations; stopped, blocked and paused silence",
+    "arena_boundaries": "6 protected NE arenas, quarter-tile eight-direction flood fill, fast dodge, timed opening and old illegal save recovery; southern harbor rescue route kept open",
+    "sealed_cache_boundaries": "6 SW caches; closed/open reachability and fast dodge checks",
+    "complete_forest_boss_fight": {
+      "simulation_frames": 523,
+      "timestep_seconds": 0.02,
+      "recorded_frames": 103,
+      "kind": "uninterrupted production Core/GUI bot fight, not human/native playtest",
+      "difficulty": "Story fixture; standard full campaigns covered by Core regressions",
+      "checks": [
+        "original AI",
+        "wind-up",
+        "contact damage",
+        "dodge",
+        "recovery",
+        "victory",
+        "retained body",
+        "death fade",
+        "hostile projectile retirement"
+      ]
+    }
+  },
+  "asset_checks": {
+    "runtime_and_editor_glyph_coverage": "passed",
+    "required_font_characters": 1209,
+    "png_decode": "passed",
+    "png_count": 121,
+    "atlas_cells_with_nonempty_content_and_unclipped_gutters": 404,
+    "unity_import_metadata_and_unique_guids": "passed",
+    "unique_unity_guids": 225,
+    "canonical_player_sprite_hash": "0d8b43d47fdc8a2f83909b41faccaf1fb87eaf83e553da42b7666a6b5e066976",
+    "original_9_maps_bosses_items_lore_baseline_comparison": "passed",
+    "source_asset_manifest": "VISUAL-ASSETS.json",
+    "additional_gait_atlases": 9,
+    "additional_gait_poses": 116,
+    "pixel_exact_actor_masks": "44/44 source alpha masks recomputed and compared byte for byte",
+    "baked_actor_visibility_bounds": "292 frames from all nonzero-alpha pixels; 22 hashes verified"
+  },
+  "editor_and_playmode_source_syntax": "passed using offline declarations; not native API verification",
+  "unity_editor_build": "not available",
+  "unity_native_json_test": "provided but not executed",
+  "unity_native_visual_playmode_tests": "provided but not executed",
+  "unity_player_playtest": "not performed in this environment",
+  "physical_controller_test": "not performed in this environment",
+  "audio_playback_and_performance": "not verified in Unity",
+  "manual_visual_review": {
+    "runtime_pose_counts": {
+      "player": 60,
+      "ordinary_monsters": 18,
+      "vertical_archer_atlas": 6,
+      "bosses": 32,
+      "npc": 16,
+      "companions": 36
+    },
+    "method": "manual inspection of accepted packed cells and offline production scenes, not automated anatomy scoring",
+    "weapon_grip_direction_and_neighbour_fragments": "documented repairs in POSE-QUALITY-REVIEW.md and POSE-REPAIRS.json",
+    "native_playthrough": "not performed",
+    "continuity_review": "12 contact sheets: all player directions, companion directions, ordinary monsters, eight Bosses, release muzzle overlays; offline production scene and four animation GIFs. Anatomy/weapon grip visually reviewed; no native GPU verification."
+  },
+  "unity_native_gui_regressions": "GuiPresentationTests provided but not executed",
+  "project_editor_version": {
+    "path": "ProjectSettings/ProjectVersion.txt",
+    "contents": "m_EditorVersion: 2022.3.53f1\n",
+    "only_one_line": true
+  },
+  "frame_continuity": {
+    "report": "FRAME-CONTINUITY-POLISH.md",
+    "player_combinations": 156,
+    "companion_combinations": 84,
+    "enemy_boss_combinations": 99,
+    "registered_actor_atlases": 22,
+    "registered_head_rects": 192,
+    "pixel_exact_prepared_masks": 44,
+    "reimport": "22 actor atlases, 44 masks, anatomy and visibility registries byte-identical through public import entry",
+    "first_hit_cpu_source_reads": 0,
+    "cached_mask_repetitions": 1000,
+    "direction_sweep_cases": 2160,
+    "original_canonical_sprite_sha256": "0d8b43d47fdc8a2f83909b41faccaf1fb87eaf83e553da42b7666a6b5e066976",
+    "native_unity_executed": false
+  },
+  "offline_frame_layout": {
+    "states": 1356,
+    "potential_text_overflows": 0,
+    "kind": "production draw calls / offline declarations"
+  },
+  "transition_continuity": {
+    "report": "TRANSITION-CONTINUITY-POLISH.md",
+    "new_core_groups": [
+      "StandingRecoveryAndCrossEquipmentDeath",
+      "StableEnemyFacingAndBackpedaling",
+      "RecoilRetainsInterruptedBodyDirection",
+      "MeleeWarningGeometryMatchesActualContact",
+      "CombatSnapshotsSurviveDeathsAndReinforcements"
+    ],
+    "moving_guard_upgrade_states": 48,
+    "enemy_boss_facing_bounds_death_states": 88,
+    "directional_bow_warning_checks": 4,
+    "equal_depth_scene_actors": 24,
+    "equal_depth_scene_passes": 8,
+    "baked_visibility_frames": 292,
+    "original_gameplay_and_save_schema_preserved": true,
+    "native_unity_executed": false,
+    "complete_forest_boss_fight": {
+      "simulation_frames": 523,
+      "logic_step_ms": 20,
+      "recorded_frames": 103
+    },
+    "known_hot_path_allocations_removed": [
+      "per-GUI world list and per-object captured Action",
+      "repeated HUD and pointer region lists",
+      "AI/projectile/splash/hazard snapshots",
+      "empty or reflected light-ray list and visited set"
+    ],
+    "real_frame_rate_verified": false
+  },
+  "full_requirements_audit": {
+    "report": "FULL-REQUIREMENTS-AUDIT.md",
+    "scope": "12 RPG domains, 26 visual requirements, 63 continuity requirements and six final tests",
+    "new_core_groups": [
+      "EveryEncounterSpawnHasValidFooting",
+      "TideTransitionPrecedesAllAttackContacts",
+      "RegionalHazardsKeepActualFootprint",
+      "LethalContactStopsRemainingSimulation",
+      "PracticeExitCancelsAllPendingPresentation",
+      "SharedPathWorkspaceKeepsOwnedRoutes",
+      "JournalRecordsRefreshOnlyOnStateChanges"
+    ],
+    "normal_region_spawn_restore_checks": {
+      "rooms": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "total_time_fixtures": [
+        0,
+        28
+      ],
+      "footprint": "production four-corner foot clearance"
+    },
+    "abyss_spawn_checks": {
+      "seeds": 6,
+      "floors_per_seed": 6,
+      "generation_cases": 36
+    },
+    "invalid_saved_coordinate_checks": [
+      "largest finite",
+      "smallest finite",
+      "NaN",
+      "positive infinity"
+    ],
+    "tide_order": "world collision resolves before body movement, action contacts, AI and projectiles; pending affected releases cancel; no synthetic footsteps",
+    "terminal_transactions": "lethal enemy, projectile, hazard and Boss contact; finale opens; actual practice skill exit and manual exit",
+    "regional_warning_cases": 18,
+    "world_overlay_occlusion_panels": 3,
+    "extended_boss_click_footprints": 4,
+    "path_workspace_repetitions": 500,
+    "idle_journal_repetitions": 300,
+    "primary_gameplay_data_and_save_schema_preserved": true,
+    "player_identity_sha256": "0d8b43d47fdc8a2f83909b41faccaf1fb87eaf83e553da42b7666a6b5e066976",
+    "boss_art_direction_limit": "two authored side-body facings; directional attack/projectile logic does not imply four independently authored Boss bodies",
+    "npc_motion_limit": "stationary inhabitants have no walking AI; no claim of NPC locomotion verification",
+    "native_unity_executed": false,
+    "native_audio_controller_gpu_fps_verified": false
+  },
+  "state_boundary_bug_hunt": {
+    "report": "STATE-BOUNDARY-BUGFIX.md",
+    "new_core_groups": [
+      "ReusedLoadsMatchFreshWorldState",
+      "ChangedActionProfilesCancelBeforeMovement",
+      "FlyingShotsRetainReleaseProfile",
+      "ProjectileLastPartialFrameStillCollides",
+      "ZeroDurationTicksPreserveLiveFlights",
+      "DeathCannotEnterPractice",
+      "MixedStateTransitionsMaintainWorldInvariants"
+    ],
+    "reproduced_existing_bug_categories": [
+      "previous gate timer contaminates selected-save collision",
+      "changed style/technique/forge profile survives into movement",
+      "flying projectiles borrow later equipment feedback and mastery",
+      "last valid partial flight is discarded before contact",
+      "practice entry cancels lethal recovery"
+    ],
+    "gate_load_rooms": [
+      1,
+      2,
+      3,
+      5,
+      6,
+      7
+    ],
+    "profile_change_paths": [
+      "style",
+      "technique",
+      "legacy direct equipment",
+      "forge existing weapon",
+      "forge crafted weapon"
+    ],
+    "release_profile_checks": [
+      "real bow flight and stagger",
+      "bow kill mastery after equipment change",
+      "real staff flight and primary/splash stagger",
+      "ordinary projectile cannot borrow heavy-combo shake"
+    ],
+    "terminal_flight_checks": [
+      "last partial contact",
+      "exact last point",
+      "age bounded to valid flight",
+      "single impact or fade"
+    ],
+    "invalid_frame_intervals": [
+      0,
+      -0.01,
+      "NaN",
+      "positive infinity"
+    ],
+    "death_practice_flow": "actual lethal projectile, help/practice rejection, retained recovery and healthy inn return",
+    "mixed_state_stress": {
+      "seeds": 6,
+      "frames_per_seed": 3000,
+      "total_frames": 18000,
+      "existing_professions": 3,
+      "map_indices": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9
+      ],
+      "invariants": [
+        "player foot clearance",
+        "bounded health/energy",
+        "unique living enemy identities",
+        "finite active projectiles",
+        "valid current action profile"
+      ]
+    },
+    "native_unity_executed": false,
+    "new_content_added": false,
+    "save_schema_preserved": true
+  },
+  "delayed_skill_and_recovery": {
+    "report": "DELAYED-SKILL-RECOVERY-BUGFIX.md",
+    "new_core_groups": [
+      "SkillsRetainPreparedCombatValues",
+      "FrostRetainsCasterProfileAndSource",
+      "FrostPulseClockIsFrameRateIndependent",
+      "CompanionDamageDoesNotCompletePlayerLessons",
+      "RecoveryGuardsExpeditionTransitions"
+    ],
+    "reproduced_on_base_commit": "62a8d5b9b9298e2c176fd42f03f4f05669bf2921",
+    "reproduced_categories": [
+      "Q rereads stats during preparation or earlier target rewards",
+      "persistent frost borrows later equipment and caster position",
+      "0.04 second frames create six frost contacts instead of five",
+      "companion hits complete player attack/Q teaching",
+      "expedition operations interrupt lethal recovery"
+    ],
+    "prepared_skill_cases": {
+      "professions": 3,
+      "Q_variants_per_profession": 2,
+      "menu_change": "actual attack talent learning during wind-up",
+      "same_release_reward_cases": [
+        "level gain",
+        "mastery rank gain"
+      ]
+    },
+    "immutable_impact_fields": [
+      "weapon",
+      "style",
+      "masteryWeapon",
+      "combo",
+      "criticalChance",
+      "playerOwned"
+    ],
+    "frost_clock": {
+      "duration_simulation_seconds": 4,
+      "radius": 4,
+      "pulse_times": [
+        0,
+        0.8,
+        1.6,
+        2.4,
+        3.2
+      ],
+      "tested_frame_steps": [
+        0.016666666666666666,
+        0.02,
+        0.04,
+        0.05
+      ],
+      "observed_contacts_each": 5,
+      "travel_teardown": "passed"
+    },
+    "frost_identity_checks": [
+      "damage",
+      "critical probability",
+      "stagger",
+      "retained center/recoil",
+      "kill mastery after equipment change"
+    ],
+    "companion_lesson_checks": [
+      "actual Ivo automatic projectile",
+      "actual Sen frost command",
+      "actual player sword contact still counts"
+    ],
+    "recovery_checks": [
+      "actual lethal projectile",
+      "start abyss",
+      "take boon",
+      "banking",
+      "stale real gate dialogue",
+      "discard unbanked loot",
+      "normal inn recovery"
+    ],
+    "native_unity_executed": false,
+    "save_schema_preserved": true,
+    "new_content_added": false
+  }
+}

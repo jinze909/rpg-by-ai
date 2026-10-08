@@ -1,0 +1,9 @@
+{
+  "name": "Starfall.Runtime",
+  "rootNamespace": "Starfall",
+  "references": [
+    "Starfall.Core"
+  ],
+  "autoReferenced": true,
+  "noEngineReferences": false
+}

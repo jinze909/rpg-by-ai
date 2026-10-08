@@ -1,0 +1,114 @@
+using System;
+using System.Collections.Generic;
+namespace Starfall.Tests
+{
+    public static partial class CoreChecks
+    {
+        public static void ReusedLoadsMatchFreshWorldState(Campaign data)
+        {
+            foreach(int room in new[]{1,2,3,5,6,7})
+            {
+                var previous=Unlocked(data);previous.save.flags.Add("scout_saved");previous.save.flags.Add("gate_2");previous.save.flags.Add("gate_3");previous.Enter(room);
+                Point inside=new Point();bool found=false;
+                for(int y=3;y<13&&!found;y++)for(int x=27;x<previous.Map.rows[0].Length-2;x++)
+                { Point p=new Point(x+.5f,y+.5f);if(previous.CanStand(p)){inside=p;found=true;break;} }
+                Check(found,"Every unlocked arena contains a valid selected-save position");
+                var selected=CloneSave(previous.save);selected.x=inside.x;selected.y=inside.y;previous.gateOpeningTime=.55f;
+                var fresh=new GameCore(data,CloneSave(selected));previous.Load(CloneSave(selected));
+                Check((previous.Position-fresh.Position).Length<.001f&&previous.CanStand(previous.Position),"A prior world's gate-opening timer cannot relocate a valid position in selected room "+room);
+                Check(previous.playerAction==null&&previous.companionAction==null&&previous.projectiles.Count==0&&previous.gateOpeningTime==0,"Load clears the old world's transient action and collision state");
+            }
+        }
+        public static void ChangedActionProfilesCancelBeforeMovement(Campaign data)
+        {
+            for(int change=0;change<5;change++)
+            {
+                var g=Quiet(data);g.save.flags.Add("core_1");g.save.flags.Add("weapon_1");g.save.flags.Add("technique_"+g.save.profession);
+                if(change>=3)g.Enter(0);
+                g.Attack(new Point(1,0));Point before=g.Position;g.mode="inventory";
+                if(change==0)g.SetStyle(1);else if(change==1)g.LearnTechnique();else if(change==2)g.save.weapon=1;
+                else if(change==3)Action(g,"forge","bow");
+                else {g.save.inventory[1]=4;g.save.inventory[4]=3;Action(g,"forge","staff");}
+                g.Close();g.Tick(.05f,new Point());
+                Check((g.Position-before).Length<.001f&&g.playerAction==null&&g.projectiles.Count==0,"Changing style, technique or a legacy equipment field cancels the stored action before its movement or contact");
+            }
+        }
+        public static void FlyingShotsRetainReleaseProfile(Campaign data)
+        {
+            var g=Quiet(data,1);g.save.flags.Add("core_1");g.save.reducedMotion=false;
+            var target=new Enemy(1900,0,18,14,999){stun=99};g.enemies.Add(target);g.Attack(new Point(1,0));
+            for(int i=0;i<20&&g.projectiles.Count==0;i++)g.Tick(.02f,new Point());
+            Check(g.projectiles.Count==1,"The real bow action must launch a single projectile");
+            g.Equip(0);g.SetStyle(2);g.combo=2;
+            for(int i=0;i<80&&target.hp==999;i++)g.Tick(.02f,new Point());float damage=999-target.hp;
+            Check(damage>0&&Math.Abs(target.stagger-damage*.45f)<.001f&&g.impactShake==0,"A flying arrow cannot borrow a later sword's stagger style or heavy-combo shake");
+            g=Quiet(data,1);target=new Enemy(1901,0,18,14,1){stun=99};g.enemies.Add(target);g.Attack(new Point(1,0));
+            for(int i=0;i<20&&g.projectiles.Count==0;i++)g.Tick(.02f,new Point());g.Equip(0);
+            for(int i=0;i<80&&g.enemies.Count>0;i++)g.Tick(.02f,new Point());
+            Check(g.enemies.Count==0&&g.save.mastery[1]==2&&g.save.mastery[0]==0,"Projectile kills credit the equipped weapon captured at launch, even after a menu equipment change");
+            g=Quiet(data,2);g.save.flags.Add("core_1");g.save.reducedMotion=false;
+            target=new Enemy(1903,0,18,14,999){stun=99};var neighbor=new Enemy(1904,0,18.6f,14,999){stun=99};g.enemies.Add(target);g.enemies.Add(neighbor);
+            g.Attack(new Point(1,0));for(int i=0;i<30&&g.projectiles.Count==0;i++)g.Tick(.02f,new Point());
+            Check(g.projectiles.Count==1&&g.projectiles[0].explosive,"The real staff action launches one explosive projectile");
+            g.Equip(0);g.SetStyle(2);g.combo=2;
+            for(int i=0;i<80&&neighbor.hp==999;i++)g.Tick(.02f,new Point());
+            Check(target.hp<999&&neighbor.hp<999&&Math.Abs(target.stagger-(999-target.hp)*.45f)<.001f&&Math.Abs(neighbor.stagger-(999-neighbor.hp)*.45f)<.001f&&g.impactShake==0,"Primary and splash contacts retain the same captured staff profile without borrowing the later sword's stagger or shake");
+        }
+        public static void ProjectileLastPartialFrameStillCollides(Campaign data)
+        {
+            var g=Quiet(data);var target=new Enemy(1902,0,15,14,999){stun=99};g.enemies.Add(target);
+            var shot=new Projectile{position=new Point(14.3f,14),velocity=new Point(10,0),life=.025f,damage=10,friendly=true,visual="arrow"};g.projectiles.Add(shot);
+            g.Tick(.05f,new Point());Check(target.hp<999&&g.effects.Exists(e=>e.kind=="projectileImpact"),"The valid final partial flight segment must resolve contact before lifetime retirement");
+            g=Quiet(data);Point start=new Point(13,14);shot=new Projectile{position=start,velocity=new Point(10,0),life=.015f,damage=10,friendly=true,visual="arrow"};g.projectiles.Add(shot);
+            g.Tick(.05f,new Point());Effect fade=g.effects.Find(e=>e.kind=="projectileFade");
+            Check(g.projectiles.Count==0&&fade!=null&&Math.Abs(fade.position.x-start.x-.15f)<.001f&&Math.Abs(shot.age-.015f)<.001f,"An expired projectile finishes at its precise last flight position without overshoot or an early disappearance");
+        }
+        public static void ZeroDurationTicksPreserveLiveFlights(Campaign data)
+        {
+            var g=Quiet(data);var shot=new Projectile{position=new Point(13,14),velocity=new Point(10,0),life=1,friendly=true,visual="arrow"};g.projectiles.Add(shot);
+            g.Tick(0,new Point());
+            Check(g.projectiles.Count==1&&shot.age==0&&shot.life==1&&shot.position.x==13&&g.effects.Count==0,"A zero-duration frame cannot retire, advance or fade a live projectile");
+            var target=new Enemy(1905,0,13.4f,14,999){stun=99};g.enemies.Add(target);shot.damage=10;float time=g.save.totalTime;
+            foreach(float invalidStep in new[]{0f,-.01f,float.NaN,float.PositiveInfinity})g.Tick(invalidStep,new Point(1,0));
+            Check(target.hp==999&&g.save.totalTime==time&&g.projectiles.Count==1&&shot.age==0,"Zero, negative or nonfinite frame intervals cannot resolve contact or contaminate simulation state");
+        }
+        public static void DeathCannotEnterPractice(Campaign data)
+        {
+            var g=Unlocked(data);g.Enter(0);g.invulnerable=0;g.save.health=1;g.save.reducedMotion=true;
+            g.projectiles.Add(new Projectile{position=g.Position-new Point(.2f,0),velocity=new Point(10,0),damage=999,source="shot"});g.Tick(.02f,new Point());
+            Check(g.Dying&&g.Has("recovery_pending"),"An actual lethal projectile begins the recovery transaction");
+            g.mode="help";g.StartPractice();
+            Check(g.Dying&&!g.practicing&&g.save.health==0,"The practice entry cannot cancel a fallen player's recovery or create a living zero-health actor");
+            g.Close();for(int i=0;i<25;i++)g.Tick(.05f,new Point());
+            Check(!g.Dying&&!g.Has("recovery_pending")&&g.save.health==g.save.maxHealth&&g.save.room==0,"Normal recovery remains completable after a rejected practice entry");
+        }
+        public static void MixedStateTransitionsMaintainWorldInvariants(Campaign data)
+        {
+            for(int seed=1;seed<=6;seed++)
+            {
+                var random=new Random(seed*733);var g=Unlocked(data);g.save.flags.Add("scout_saved");g.save.flags.Add("gate_2");g.save.flags.Add("gate_3");
+                g.save.flags.Add("core_1");g.save.flags.Add("weapon_1");g.save.flags.Add("weapon_2");g.save.flags.Add("technique_"+g.save.profession);g.save.reducedMotion=true;
+                g.save.profession=(seed-1)%3;g.save.weapon=g.save.profession;g.save.flags.Add("technique_"+g.save.profession);g.Load(CloneSave(g.save));g.Start();
+                for(int frame=0;frame<3000;frame++)
+                {
+                    Point direction=new Point(random.Next(-1,2),random.Next(-1,2));int action=random.Next(80);
+                    if(action==0){g.PrepareSave();g.Load(CloneSave(g.save));g.Start();}
+                    else if(action==1)g.Enter(random.Next(10));
+                    else if(action==2)g.Equip(random.Next(3));
+                    else if(action==3)g.SetStyle(random.Next(3));
+                    else if(action==4)g.LearnTechnique();
+                    else if(action==5){g.mode="inventory";g.Tick(.04f,direction);g.Close();}
+                    else if(action<16)g.Skill(direction);
+                    else if(action<29)g.Attack(direction);
+                    else if(action<34)g.Dash(direction);
+                    if(g.mode=="dialog")g.Close();g.Tick(.02f,direction);
+                    Check(g.CanStand(g.Position),"Mixed transitions keep the player on valid ground: seed "+seed+" frame "+frame);
+                    Check(!float.IsNaN(g.save.health)&&g.save.health>=0&&g.save.health<=g.save.maxHealth&&g.save.energy>=0&&g.save.energy<=100,"Health and resources stay bounded across mixed transitions");
+                    var ids=new HashSet<int>();foreach(Enemy enemy in g.enemies)Check(ids.Add(enemy.id)&&g.CanStand(enemy.Position)&&enemy.hp>0,"Live actors have distinct identities, positive health and full foot clearance");
+                    foreach(Projectile p in g.projectiles)Check(p.life>0&&!float.IsNaN(p.position.x)&&!float.IsNaN(p.position.y)&&!float.IsInfinity(p.velocity.Length),"Active projectile state stays finite and alive");
+                    if(g.playerAction!=null)Check(g.playerAction.contact>0&&g.playerAction.contact<=g.playerAction.duration&&g.playerAction.equippedWeapon==g.save.weapon&&g.playerAction.style==g.Style,"Only valid current-equipment actions survive a mixed transition");
+                }
+            }
+        }
+    }
+}

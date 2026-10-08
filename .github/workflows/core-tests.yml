@@ -1,0 +1,11 @@
+name: Starfall core checks
+on: [push, pull_request]
+jobs:
+  core:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install Mono
+        run: sudo apt-get update && sudo apt-get install -y mono-mcs
+      - name: Run actual C# gameplay checks
+        run: python3 tools/run_core_tests.py

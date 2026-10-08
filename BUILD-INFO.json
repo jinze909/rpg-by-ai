@@ -1,0 +1,31 @@
+{
+  "name": "Starfall Frontier",
+  "commit": "3e7e6ee58d5722695b35533ffb8522a516ec7e4b",
+  "packaged_utc": "2026-10-06T23:14:59.872119+00:00",
+  "unity_editor_version": "2022.3.53f1",
+  "core_check_groups_passed": 62,
+  "offline_runtime_layout_states": 1356,
+  "actor_state_combinations": 475,
+  "established_actor_state_combinations": 339,
+  "additional_actor_state_combinations": 136,
+  "registered_actor_atlases": 22,
+  "prepared_masks": 44,
+  "baked_visibility_frames": 292,
+  "text_overflows": 0,
+  "native_unity_playtest_performed": false,
+  "native_validation_notes": "No Unity Editor or Player available; native GPU, audio, controller and frame-rate checks remain unexecuted.",
+  "continuity_report": "docs/DELAYED-SKILL-RECOVERY-BUGFIX.md",
+  "qa_report": "docs/QA-REPORT.json",
+  "canonical_sprite_sha256": "0d8b43d47fdc8a2f83909b41faccaf1fb87eaf83e553da42b7666a6b5e066976",
+  "new_audit_core_groups": 5,
+  "regional_spawn_restore_time_fixtures": [
+    0,
+    28
+  ],
+  "abyss_spawn_generation_cases": 36,
+  "fixed_existing_bug_categories": 5,
+  "mixed_state_stress_frames": 18000,
+  "unique_unity_guids": 225,
+  "immutable_hit_context": true,
+  "frost_scheduled_contacts": 5
+}

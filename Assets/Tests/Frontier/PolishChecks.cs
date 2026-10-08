@@ -1,0 +1,90 @@
+using System;
+using System.Collections.Generic;
+namespace Starfall.Tests
+{
+    public static partial class CoreChecks
+    {
+        private static void PracticeRun(GameCore g)
+        {
+            g.Enter(0); g.Close(); g.StartPractice(); Check(g.practicing, "Practice starts in town");
+            g.save.x = 15; g.save.y = 13; g.Attack(new Point(1, 0)); for (int i = 0; i < 30 && g.practiceStage == 0; i++) g.Tick(.05f, new Point());
+            Check(g.practiceStage == 1, "Actual attack impact starts the telegraph exercise");
+            Enemy warning = g.enemies[0]; warning.state = 1; warning.target = g.Position; warning.timer = .25f; g.invulnerable = 0; g.dashCooldown = 0; g.save.energy = 100;
+            g.Dash(new Point(-1, 0)); for (int i = 0; i < 8; i++) g.Tick(.05f, new Point());
+            Check(g.practiceStage == 2, "Avoiding a real timed strike advances practice");
+            g.save.x = 15; g.save.y = 13; g.aim = new Point(1, 0); g.Skill(); for (int i = 0; i < 40 && g.practicing; i++) g.Tick(.05f, new Point());
+            Check(!g.practicing && g.save.practiceBits == 7, "Actual Q impact completes practice");
+        }
+        public static void InteractivePracticeAndReplay(Campaign data)
+        {
+            for (int profession = 0; profession < 3; profession++)
+            {
+                var g = Fresh(data, profession); float health = g.save.health; int coins = g.save.coins, points = g.save.skillPoints, kills = g.save.kills[0];
+                g.Attack(new Point(1, 0)); g.Skill(); Check((g.save.tutorialBits & (8 | 32)) == 0, "Empty attacks and skills cannot complete learning");
+                PracticeRun(g); Check(g.save.health == health && g.save.kills[0] == kills && g.save.coins == coins + 15 && g.save.skillPoints == points + 1, "Safe practice has no combat loot and awards once");
+                PracticeRun(g); Check(g.save.coins == coins + 15 && g.save.skillPoints == points + 1, "Replay cannot farm permanent rewards");
+                g.StartPractice(); int stew = g.save.inventory[6]; g.save.tea = 2; g.Eat(); g.DrinkTea(); Check(g.save.inventory[6] == stew && g.save.tea == 2, "Practice does not consume supplies even when their shortcuts are pressed");
+                g.StartPractice(); g.Enter(1); Check(!g.practicing && g.save.room == 1, "Travel cleanly ends practice");
+            }
+        }
+        public static void ExplorationPowersAndDiscoveries(Campaign data)
+        {
+            var g = Unlocked(data); g.save.flags.RemoveAll(f => f.StartsWith("core_") || f.StartsWith("seal_") || f.StartsWith("cache_"));
+            int[] rooms = { 1, 2, 3, 5, 6, 7 }, powers = { 1, 2, 3, 2, 1, 3 };
+            for (int i = 0; i < rooms.Length; i++)
+            {
+                g.Enter(rooms[i]); g.enemies.Clear(); g.save.x = 7.5f; g.save.y = 19.5f; string core = "core_" + powers[i]; g.save.flags.Remove(core);
+                Check(g.Blocked(6.5f, 19.5f) && g.NavigationPath(new Point(4.5f, 19.5f)).Count == 0, "Cache requires its exploration power");
+                g.UseExplorationAbility(); Check(!g.Has("seal_" + rooms[i]), "Locked powers cannot open a path");
+                g.save.flags.Add(core); g.UseExplorationAbility(); Check(!g.Blocked(6.5f, 19.5f), "Gained core opens new traversal");
+                var route = g.NavigationPath(new Point(4.5f, 19.5f)); Check(route.Count > 0, "Unlocked cache has a collision-safe route");
+                foreach (Point p in route) Check(!g.Blocked(p.x - .22f, p.y - .18f) && !g.Blocked(p.x + .22f, p.y + .18f), "Secret path respects hero footprint");
+                g.save.x = 4.5f; g.save.y = 19.5f; int coins = g.save.coins; g.Talk(Object(g, "cache" + powers[i])); Check(g.Has("cache_" + rooms[i]) && g.save.coins == coins + 30, "Discovery has a real reward");
+                g.Close(); g.Talk(Object(g, "cache" + powers[i])); Check(g.save.coins == coins + 30, "Caches cannot be looted twice"); g.Close();
+                var cache = Object(g, "cache" + powers[i]); Check(g.Has("history_" + cache.lore), "Each discovery unlocks its regional record"); g.OpenCodex(cache.lore); Check(g.conversation != null && g.conversation.text == data.lore[cache.lore].zh, "Discovered notes can be reread from the journal"); g.Close();
+            }
+            Check(g.GetQuest("secrets").complete, "Six discoveries complete their journal entry");
+            g.PrepareSave(); var restored = new GameCore(data, CloneSave(g.save)); Check(restored.GetQuest("secrets").complete && !restored.Blocked(6.5f, 19.5f), "Discovery and route survive a save");
+        }
+        public static void CombatStylesAndEnemyCounters(Campaign data)
+        {
+            var g = Fresh(data); g.SetStyle(1); Check(g.Style == 0, "Advanced style has an unlock gate"); g.save.flags.Add("core_1");
+            var balanced = g.Profile(0, 0); g.SetStyle(1); var focused = g.Profile(0, 1); Check(focused.damage > balanced.damage && focused.interval > balanced.interval && focused.energy > 0, "Power style trades speed and energy for damage");
+            g.save.energy = 3; g.Attack(new Point(1, 0)); Check(g.attackCooldown == 0 && g.save.energy == 3, "Unaffordable style cannot attack");
+            g.SetStyle(0); g.save.x = 18; g.save.y = 15; g.enemies.Clear(); var heavy = new Enemy(71, 2, 19, 15, 999) { facing = new Point(-1, 0) }; g.enemies.Add(heavy); g.save.seed = 1; g.Attack(new Point(1, 0)); Advance(g, .2f); float guarded = 999 - heavy.hp;
+            heavy.hp = 999; heavy.facing = new Point(1, 0); g.attackCooldown = 0; g.comboTimer = 0; g.save.seed = 1; g.playerAction = null; g.Attack(new Point(1, 0)); Advance(g, .2f); Check(999 - heavy.hp > guarded * 2, "Flanking bypasses frontal armor");
+            g.save.inventory[6] = 0; g.enemies.Clear(); var shooter = new Enemy(73, 1, 20, 15, 200); shooter.timer = 99; g.enemies.Add(shooter); g.Tick(.05f, new Point()); Check(shooter.x > 20, "Archers retreat when approached");
+            shooter.state = 1; shooter.target = new Point(18, 15); shooter.timer = .01f; g.save.x = 18; g.save.y = 16; g.Tick(.05f, new Point()); Check(g.projectiles.Count > 0 && Math.Abs(g.projectiles[0].velocity.y) < .1f, "Arrows honor the visible locked shot instead of tracking after the tell");
+            g.save.coins = 100; g.save.skillPoints = 2; g.Learn(1); g.Learn(2); g.ResetTalents(); Check(g.save.skillPoints == 2 && g.save.talents[1] == 0 && g.save.maxHealth == 120, "Respec refunds points and recomputes health");
+        }
+        public static void WorldSnapshotsAndChoiceResponses(Campaign data)
+        {
+            var g = Fresh(data); g.save.stage = 1; g.Enter(2); g.enemies.Clear(); g.enemies.Add(new Enemy(81, 0, 15, 15, 120)); g.enemies[0].hp = 43; g.runeProgress = 2; g.PrepareSave();
+            var saved = CloneSave(g.save); var restored = new GameCore(data, saved); Check(restored.enemies.Count == 1 && restored.enemies[0].hp == 43 && restored.runeProgress == 2, "Resume restores active encounter and unfinished rune order");
+            restored.enemies.Clear(); restored.PrepareSave(); restored.Load(CloneSave(restored.save)); Check(restored.enemies.Count == 0, "An empty encounter snapshot stays cleared");
+            restored.Enter(0); restored.save.flags.Add("scout_saved"); int soup = restored.save.inventory[6]; Action(restored, "returnscout", "scoutgift"); Action(restored, "returnscout", "scoutgift"); Check(restored.save.inventory[6] == soup + 1, "Rescued scout returns home and thanks you once");
+            restored.save.reputation[1] = 3; int money = restored.save.coins; Action(restored, "cook", "buywood"); Check(restored.save.coins == money - 8, "Faction support changes actual shop prices");
+            for (int i = 0; i < 12; i++) restored.RecordMoment("足迹" + i, "Moment " + i); Check(restored.save.moments.Count == 8 && restored.save.moments[0].en == "Moment 4", "Journal stores a bounded persistent history");
+            var next = Fresh(data); next.Tick(.05f, new Point()); next.save.stage = 1; next.Tick(.05f, new Point());
+            Check(next.save.moments.Count > 0 && next.save.moments[next.save.moments.Count - 1].zh != next.save.moments[next.save.moments.Count - 1].en, "Quest updates persist both languages");
+            int records = next.save.moments.Count; next.save.english = true; next.Tick(.05f, new Point()); Check(next.save.moments.Count == records, "Switching language does not invent another quest event");
+            next.Enter(1); next.enemies.Clear(); next.invulnerable = 0; next.save.health = 1; int coins = next.save.coins, herbs = next.save.inventory[2];
+            next.projectiles.Add(new Projectile { position = next.Position, damage = 999, source = "shot" }); next.Tick(.05f, new Point()); Check(next.Dying && next.PlayerPose == 11, "Lethal damage first shows the fallen pose"); Advance(next, 1);
+            Check(next.save.room == 0 && next.save.health == next.save.maxHealth && next.save.coins == Math.Max(0, coins - 10) && next.save.stage == 1 && next.save.inventory[2] == herbs && next.save.deaths == 1 && next.save.lastFailureEn.Contains("arrows"), "Death restores town control, retains progress and records the cause and response");
+            next.PrepareSave(); Check(new GameCore(data, CloneSave(next.save)).save.deaths == 1, "Recovery and its journal survive a restart");
+        }
+        public static void PredictableMenuFocus(Campaign data)
+        {
+            var n = new MenuNavigation(); n.Scope("inventory");
+            var controls = new[] { new FocusControl { id = "left", x = 0, y = 0, w = 100, h = 40, enabled = true }, new FocusControl { id = "disabled", x = 110, y = 0, w = 100, h = 40, enabled = false }, new FocusControl { id = "right", x = 220, y = 0, w = 100, h = 40, enabled = true }, new FocusControl { id = "down", x = 0, y = 60, w = 100, h = 40, enabled = true } };
+            n.SetControls(controls); n.Move(new Point(1, 0)); Check(n.focused == "right" && !n.CanActivate("disabled"), "Arrow navigation skips disabled controls"); n.Move(new Point(-1, 0)); n.Move(new Point(0, 1)); Check(n.focused == "down", "Focus follows visual geometry"); n.Cycle(1); Check(n.focused == "left", "Sequential navigation wraps predictably");
+            n.Select("right"); n.Scope("map"); n.SetControls(controls); n.Scope("inventory"); n.SetControls(controls); Check(n.focused == "right", "Returning to a menu restores its focus");
+        }
+        public static void SoundFeedbackAndRegionalScores(Campaign data)
+        {
+            float[] a = AudioSynthesis.Event("hit"), b = AudioSynthesis.Event("hurt"); double difference = 0; foreach (float v in a) Check(!float.IsNaN(v) && Math.Abs(v) <= 1, "Sound sample remains finite and unclipped"); for (int i = 0; i < Math.Min(a.Length, b.Length); i++) difference += Math.Abs(a[i] - b[i]); Check(difference > 50, "Hit and injury cues are distinguishable");
+            foreach (int room in new[] { 0, 1, 5, 6, 7, 8 }) { var music = AudioSynthesis.Music(AudioSynthesis.Theme(room, false)); Check(music.Length == AudioSynthesis.Rate * 16 && Math.Abs(music[0]) < .01f && Math.Abs(music[music.Length - 1]) < .01f, "Regional music fades cleanly at loop boundaries"); }
+            var g = Fresh(data); g.sounds.Clear(); g.sound = "hit"; g.sound = "quest"; Check(g.sounds.Count == 2 && g.sounds.Dequeue() == "hit", "Multiple events in one frame retain their audio cues");
+        }
+    }
+}

@@ -1,0 +1,938 @@
+{
+  "generated_utc": "2026-10-06T23:08:50.480105+00:00",
+  "png_decodes": 121,
+  "unique_unity_guids": 225,
+  "validated_atlas_cells": 404,
+  "required_font_characters": 1209,
+  "preservation": {
+    "baseline": "f32333dc9825119aa54d7268a69fe8544d316d74",
+    "canonical_sprite_sha256": "0d8b43d47fdc8a2f83909b41faccaf1fb87eaf83e553da42b7666a6b5e066976",
+    "baseline_comparison": "passed",
+    "unchanged_original_maps": 9,
+    "original_objects": "unchanged prefix; town inn portal appended",
+    "bosses_items_original_lore": "unchanged"
+  },
+  "files": [
+    {
+      "path": "Assets/Resources/Frontier/Art/Npcs.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "75a80752c4ac0420756c8059f302500716e37d9cc7c10fda518508e61b55dc39"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/FieldProps.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "c8e8205f34c685b5e4f598378593c5398cd0e73628d707f1ba640664c1fd5db2"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Details.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "acafa0cbf5fcae89f0dcc3b84b167b95eef25953d4eb2d555e61ebb4db5e23f3"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Effects.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "6b049b573548fef51fcc80d845f3704a8a0eeba2ecd5a14eb739fe0867e1a8c7"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Icons.png",
+      "dimensions": [
+        512,
+        512
+      ],
+      "sha256": "397aed96eb6e1850fbb86b4c6362eaa70d1d9ab46d613470cdc45765de900413"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Terrain.png",
+      "dimensions": [
+        384,
+        96
+      ],
+      "sha256": "a9e3c3b5928312d11ba0a3e1107c0521c40cc77bf12dc11e846de5da8062d4a1"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/TerrainVariants.png",
+      "dimensions": [
+        192,
+        192
+      ],
+      "sha256": "0c64a2b730581d27c4dbee8bf91ad17fd6c2937861869e831b1e334241685624"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerVanguard.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "1d664df8fca31f957690072fe030ade4d511c6de115cc04e4b4141f7f788f67c"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerRanger.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "f2bcf575d0ffd662005ce147d0d37c6335465f378c528ac4280e94b1ce48cee7"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerArcanist.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "b43ccb56b54971125c8af18b00155107d57c46a72e4b82df00ae39febc4f46f5"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerRear.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "fa4c5e4276d06671df80437563dcd214195f30696f510ab38c3ec31510600d88"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerSouth.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "7920c2f5053c243f400e4a943f72d231fdeceb7d833d6ff7342ca82c60db11de"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Monsters.png",
+      "dimensions": [
+        768,
+        384
+      ],
+      "sha256": "b2e45535bd044ced0f26bbe4fc67b428a0cd055565d1eaac92becce7fea2cbcb"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/EnemyArcherVertical.png",
+      "dimensions": [
+        576,
+        384
+      ],
+      "sha256": "83e95f10b7240cfb6ea661d6ab196042f95189710a4066229499d9c902f6d40d"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Bosses.png",
+      "dimensions": [
+        1280,
+        2560
+      ],
+      "sha256": "1fa7bb84acfdb92d4424ec565b6a5e1e117a44cb3e9b5d3590f9096ced3ab50d"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/CompanionMira.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "42ba579a8a20a8a9e63af72dde5e0238558699f44dd5f4debfbc7b46279b40c3"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/CompanionIvo.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "7a77501add618dbe5b6424fc90fb13a426df0119d1f1988eb91478798d0bea28"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/CompanionSen.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "539cfe441c326d26d280114d37e13c0d63dcdfc8a9115bfc0488c56d4a00dd77"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerReactionsRear.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "4c2b5a84c10794e3074debfc1685fb99825164a4b591013c5d8df4a1f59f52c7"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerReactionsSouth.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "a9ad580f752c29f1845e3defdb76f7b3cd906ba0c0ace1e3a113bd3af09edd2e"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkVanguard.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "9e6986f22a7a512c42435630a22fb6b5e447c92cff5bb04fd3daa9d708fd5342"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkRanger.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "4b4252364ab64bdfe88517afb55c4de6cad5cddd9945f95e0af6349ab1bc5562"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkArcanist.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "626847f124345a803b0dc400a5dea88cd2ee98669d027a13cfd1ae3f43c3b38f"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkMira.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "0b9305342a723313c7ac21d759ca7470b83df76d0dd39b82886854d9887ef9d9"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkIvo.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "cc3f25be8d48695e1591605c8d28e840e1cf7ab54d23fee058a32c12d2c1fdeb"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkSen.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "31750e0e163d3dca3a873b1264c131fd87c335535e03f1422ac51c28bc644dbc"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkMonsters.png",
+      "dimensions": [
+        768,
+        576
+      ],
+      "sha256": "959a177b1dc1f247f86cfb789433993222cf657fdff3ce16c5e2d752857cf4f7"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkBossA.png",
+      "dimensions": [
+        1536,
+        1536
+      ],
+      "sha256": "ce7755be99ad4ebbec30554b96aaadf2db28aec2eba973dff94504da2d28d760"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WalkBossB.png",
+      "dimensions": [
+        1536,
+        1536
+      ],
+      "sha256": "3538aad4acaf09d18b0a6f0edae25cd2f22727b7a7e250e1a4db5cd0d0df8bf1"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerVanguard.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "15341fe190de49bc81798d6e18913b8fed95d15bdfdd348a598aecb5586d6089"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerVanguard.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "92544297cb9b9f562d09fe011798dd2b8d2ffcfd6b4d8da5b2aab41aa98c65b4"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerRanger.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "3acdb747ad367b89e04e2afeee1fc9247a07578ae25a60d18cca710e2ef0ff24"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerRanger.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "f2b8850fdec7329dbc6036cfeb0556284f9e976776ec94ad4fa5c21929ffa30a"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerArcanist.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "05173594a5f27dedad7d017bc61d46d59c8ff58395c5b27bb14ed431366aa9ed"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerArcanist.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "7210692df42578003c70da0a7dc434cf4cf22c2dae11f192c6ac7d02f61b9477"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerRear.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "26d8aeb2288706fdf0e331314b8a5543f135225f54d9bdbe0781d323fd856aa1"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerRear.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "10e939fd2e1b58599ea4f312aa256a68779bcf68912e40da9c2c0d79f24ca4fc"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerSouth.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "8781ba56f2dff9318b062a206a518fae01cd88b7173518275abd2a9b35226cd9"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerSouth.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "1f5f7edf785f5aaec9e19864e735f5bd79bda083029f680533daa44cfafcd126"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_Monsters.png",
+      "dimensions": [
+        768,
+        384
+      ],
+      "sha256": "2d3d77221614fca14bd2eb187924e1197c52c637ab2fad50e4352ea3346c3b98"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_Monsters.png",
+      "dimensions": [
+        768,
+        384
+      ],
+      "sha256": "f9569a5287730a904e6887ec0a9a6bfaa6d17c69bf93b37b287e97b7472cce70"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_EnemyArcherVertical.png",
+      "dimensions": [
+        576,
+        384
+      ],
+      "sha256": "fb48d232e788ffaff2bea89aeec903b5d3a8ab34a31d26def26a37eb1522368c"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_EnemyArcherVertical.png",
+      "dimensions": [
+        576,
+        384
+      ],
+      "sha256": "b890b04138d82639cb967f89ed58a39b56094c24e234271995f63dace7952f4f"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_Bosses.png",
+      "dimensions": [
+        1280,
+        2560
+      ],
+      "sha256": "68452b454817a2d8bfa5ff9acc2594793705179c41731002ba5d43abc7e2c131"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_Bosses.png",
+      "dimensions": [
+        1280,
+        2560
+      ],
+      "sha256": "20a34978dcba5a2d554653773814272ee2c436099bbc74583a75d03e52bc07fe"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_CompanionMira.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "ba4127d157ee25a3ac743c5932be9a5f29bf11ac68f4101b353256218effbc28"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_CompanionMira.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "d054fc1b961aa70871c05a5e45e8efba4a04615907de15b3264b515c8a8aa75e"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_CompanionIvo.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "75c74b2279b08db28aae7c254ddd8a94458c4e0878457fc27abb259e6f65aa2e"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_CompanionIvo.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "16954dc377b23f436683d712dc1e00a7b465e8bba5794135984430a1d5078612"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_CompanionSen.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "abd1c92f20d9726e5c275a44bbc5750fa22624f751850a4f9a47f3285402dfe0"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_CompanionSen.png",
+      "dimensions": [
+        768,
+        1024
+      ],
+      "sha256": "55015b34be29fa7baa255802b17b4a5b83fe4fb41496b8f520c1154307cbc748"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerReactionsRear.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "f97ddb0e9c859f30d79d265e199d2d3f6913bfdfc9afaf5e33ea153edb6d5086"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerReactionsRear.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "c8dc294573ea9a0d739d67cdbf95b3b93d0c303347ac42e02e2f534bc8c7f722"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_PlayerReactionsSouth.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "adcec1708693b36c02db1c64e2f9c3da5019968e0d2ff72a377f975a1f931c5d"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_PlayerReactionsSouth.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "0d819b2e6452612dc1c322c6571993d45d107fa437b0b23d16529586928d3a9f"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkVanguard.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "f42d7fda496adfce331a3813315c32985712123dc747ab6cbb7f96bcc21c6b14"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkVanguard.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "5302af6fcaf83075427199c8c48086d1c3216de8191587ed07852409ac405956"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkRanger.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "e7c22ec15eedc7b8accc17e39022a907b4e6a9692350540682be7dd5ff444ff1"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkRanger.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "9bdc60b8d901ba35150fb8b3c14512c1767f6b0434951de40071b1aab26ead35"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkArcanist.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "3cec12e3d3ccf49e44aaf738d456bb377a5602bea240672678b9ce31eeb946c5"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkArcanist.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "215bf8f496fae45118d751558d26f68736ebc95358c7efb2762d97002844fe10"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkMira.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "e4e7d7f46534f11180c12e8742099bd52caaa4d23a29bb0cd2bf66a1b8645165"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkMira.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "1dac60fcc63c9fc8302e03b91754d25dd8a942bfa1d01560e00d45f1e78e23c5"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkIvo.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "0aa7badbdfd028632a8187f541a4f8d93ab715fc4228e6d3d052e81bb8f173d5"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkIvo.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "b98e53d332eeb63263b9e3ec475dc16fbb110831eb3b8578f5acb0b90ee590f1"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkSen.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "e2129fd8b34ef700fd811cd501b5adc8534297fcbea68fa6306d7f58dc830448"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkSen.png",
+      "dimensions": [
+        1024,
+        768
+      ],
+      "sha256": "e3c75037e63e0533371e3282c376bc5b6dbcf460103702e4ce70e5165b75845a"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkMonsters.png",
+      "dimensions": [
+        768,
+        576
+      ],
+      "sha256": "40512831805baf9104c0c1f48449adf92c1827a67eb9a9c858fe4967598fe517"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkMonsters.png",
+      "dimensions": [
+        768,
+        576
+      ],
+      "sha256": "4d4fe4c26c5344027fa7c79ac04cf17a006c878b78f774c156cff92607dd181a"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkBossA.png",
+      "dimensions": [
+        1536,
+        1536
+      ],
+      "sha256": "0cc17d7a065780f9e6a6d3c0941ff6a8599acdb329ae52d447847bd611856852"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkBossA.png",
+      "dimensions": [
+        1536,
+        1536
+      ],
+      "sha256": "b4c794fc2332a9fdc094a90785b495ccbf9f6bd28070c8e2f13345eeaa8f7621"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/flash_WalkBossB.png",
+      "dimensions": [
+        1536,
+        1536
+      ],
+      "sha256": "77352128b9dac0da4a4d2a4246e165881cbfeffa668002af36ab69bc996c205a"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/ActorMasks/outline_WalkBossB.png",
+      "dimensions": [
+        1536,
+        1536
+      ],
+      "sha256": "8fbc7f69fba5f0703a0b3fe2d09b8fa55f5339240f6124a7f2e68f9d88812482"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/PlayerPortraits.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "sha256": "d0f6b2c0c3874b0fe0687722f375edce4cd5dc36f96ebdc5872f1aae466c29c6"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/Portraits.png",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "sha256": "96d26a03ea767e2bc235a87773c8cdae804b371f1f75070297ca663c5e10af8c"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/TitleVista.png",
+      "dimensions": [
+        1586,
+        992
+      ],
+      "sha256": "dc69db2c0d91714e9b589823657ff1605ef83ccc2aa51d78427171c929ec56d0"
+    },
+    {
+      "path": "Assets/Resources/Frontier/Art/WorldProps.png",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "sha256": "f1d084fdc7fa8da1def32808edbc50dc9e166d9243552785e785eda1d3334236"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Bosses.png",
+      "dimensions": [
+        887,
+        1774
+      ],
+      "sha256": "42036cb2ccf91eb179cd5205d695d0c1ce4be0af4096e46d969f7543eab66ba8"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/CompanionIvo.png",
+      "dimensions": [
+        1127,
+        1395
+      ],
+      "sha256": "affa6f88e897ed0485360fe75e00de0b65aa4f5110080a70250deb7083bcf4ef"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/CompanionMira.png",
+      "dimensions": [
+        1324,
+        1188
+      ],
+      "sha256": "fb8ba029a9511f0f3031196d7be877a51c4206cb220aa6392435709e382d4094"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/CompanionSen.png",
+      "dimensions": [
+        1086,
+        1448
+      ],
+      "sha256": "2d8de844b6dd9c52192cfc29ed2db3cc7f1b9028e0bc7485cd85760ef39bc944"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Details.png",
+      "dimensions": [
+        1261,
+        1247
+      ],
+      "sha256": "e43bf3fe80b5c0084b7c4606bb4d16a85651e61ec9793e8bbffb7bf9bb9a469d"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Effects.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "ea4a04e58ac31e91ee6c12c760f06cac0710416ecc3f7596078502f442ecb129"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/EnemyArcherVertical.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "sha256": "97741a82d077eabf3aa2cbeeb4d49f332cf3505868741aeb9950ee8afce08494"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/FieldProps.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "cd60dde8fa78de191a1c116571d03050814d718486baab55d642e5674e2f13ae"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Icons.png",
+      "dimensions": [
+        1402,
+        1122
+      ],
+      "sha256": "0812b8b06c2d4bb20e93d827c738ef3474565906edd5c3ebba83ab5ff3e742bd"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Monsters.png",
+      "dimensions": [
+        1774,
+        887
+      ],
+      "sha256": "651f4646bfcca011bcf5bf6d918f2aa0609a647ef08a8570325de039de81bae4"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Npcs.png",
+      "dimensions": [
+        1261,
+        1247
+      ],
+      "sha256": "837584adcbc4ec4c64b36c03d7d358549c2edff68263ed4f8e66457ddd15315a"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerArcanist.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "f2df0b132cab0c61e9c237b00e534dfc051a1e7479932f913ae4a244a6282051"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerPortraits.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "sha256": "cd191e38785cd67d21ed44fe35ccf3bf76eaa068c6f660b55615d4428fa6737e"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerRanger.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "4bf65546e1847501cce70f514920ee8ee5ed254657c65043c0064755489c1abf"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerReactionsRear.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "0c78b748bd3ffd0b8bc2fd02fa58eaa233d687f7dae31a5e4b42a927e6c4d31e"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerReactionsSouth.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "bf5772def55d5a971424a7dbb1731578cf663375d26e1af55a1b70bf44a30b06"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerRear.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "401e7ecdab3def991e194d6c2c1d902afa6463b6aad85e8855183c1ad190ee3f"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerSouth.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "e37b2b0db91885db19933be6d883369e9249e316f6a66434a92bd46522fe6e1c"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/PlayerVanguard.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "03d4a33ae7818ed8c72b50c8e8a1c6470e5e86f077f4d9048cba1402a99c306d"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairArcherHit.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "77c326ee6496548194fb7583eb0cc02d8e42f72dec3cbfd9b73fb61c64d19ed6"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairBoats.png",
+      "dimensions": [
+        1983,
+        793
+      ],
+      "sha256": "9deeba6fe874af577ce0c46e9170d12e1aff3e6565a4e5ca5fead217b04be3d2"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairCompanionMira.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "sha256": "ea5f51d347293f7c5053624565a1fbbf238e83a5aa4c9033df982d0213387607"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairCompanionSen.png",
+      "dimensions": [
+        2079,
+        756
+      ],
+      "sha256": "a04c629ae7bb4cb654a66107b8ad8a0cc48bdb304774f186142d647b3caeab9b"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairMageBackIdle.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "9a99b281168ff45c734748013723c42858a4d14f8df4c8809a6716b23303ec14"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairMageRear.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "0d1f91a28017046558a7d1512e416316a9469a7bce62c07695ac32c8377c6cee"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairRangerSouth.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "sha256": "da7335198f8123c96538842a6a9052da81746b4432045040c46b7d10e86d9421"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/RepairVanguardWalk.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "6c320b50820fa257fb909ae201bfa63d7d10199e0329ad7e9de4f5d96366951c"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/Terrain.png",
+      "dimensions": [
+        2172,
+        724
+      ],
+      "sha256": "a94dd62caea8f05c8a75ce25c0dcc6bba7ae6d1749bdc388006bd17f95424323"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/TerrainVariants.png",
+      "dimensions": [
+        1254,
+        1254
+      ],
+      "sha256": "5a2548940c50c7335faa628a2c20954879436387e2e4e98cd78921ef93448e93"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkArcanist.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "e731f54d14d2d8ccceb48a267f5e5e2a91077d73b53264942f081b8530435341"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkBossA.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "559185fbe45570f251019a1de5b1b8513ae09bd675d457c32fcc470af3cea74d"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkBossB.png",
+      "dimensions": [
+        1302,
+        1208
+      ],
+      "sha256": "26908ed3cbaf654203dcfbfc1527bcef1d7a35b51d1ef53abc50b5140f7b0302"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkIvo.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "cd6ec4130a3eaf5dfa91131dcc709666893efd31164542bdb2690a147a0ad8b5"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkMira.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "sha256": "b5c63e08731d2969b4ce408a78a4fc42037de627fe1bbafdd51e24e7573ce4b8"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkMonsters.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "ce31e1d1d161f499b390069c811e1dff77ad159bd15bcba11dacf44591f0bde5"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkRanger.png",
+      "dimensions": [
+        1536,
+        1024
+      ],
+      "sha256": "555d25b80792a0b5e2d5d0cc84e4532e36afe2e94851f60c4c5e448e0219c171"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkSen.png",
+      "dimensions": [
+        1448,
+        1086
+      ],
+      "sha256": "af608c25a080d463275d1c1fb97dff5eaa5717179046cbcb3cd0680aee95142f"
+    },
+    {
+      "path": "Assets/ArtSource/Frontier/WalkVanguard.png",
+      "dimensions": [
+        1646,
+        956
+      ],
+      "sha256": "cac22bf68d061300e0d8e43c55c41da1d83926b636e11f48aff64e57aaeba2f6"
+    }
+  ],
+  "native_unity_import": "not executed in this environment"
+}

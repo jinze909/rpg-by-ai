@@ -1,0 +1,9397 @@
+[
+  {
+    "name": "Npcs",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 128,
+    "sourceSize": [
+      1261,
+      1247
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 68,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          115.5,
+          292
+        ],
+        "scale": 0.3219178082191781,
+        "sourceBounds": [
+          53,
+          13,
+          263,
+          305
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 69,
+        "height": 91,
+        "foot": 120,
+        "sourceFoot": [
+          112.0,
+          284
+        ],
+        "scale": 0.3219178082191781,
+        "sourceBounds": [
+          362,
+          22,
+          577,
+          306
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 95,
+        "height": 96,
+        "foot": 120,
+        "sourceFoot": [
+          128.0,
+          297
+        ],
+        "scale": 0.3219178082191781,
+        "sourceBounds": [
+          664,
+          9,
+          959,
+          306
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 75,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          115.5,
+          291
+        ],
+        "scale": 0.3219178082191781,
+        "sourceBounds": [
+          995,
+          14,
+          1229,
+          307
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 83,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          134.5,
+          300
+        ],
+        "scale": 0.3122923588039867,
+        "sourceBounds": [
+          30,
+          316,
+          297,
+          617
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 74,
+        "height": 92,
+        "foot": 120,
+        "sourceFoot": [
+          121.5,
+          293
+        ],
+        "scale": 0.3122923588039867,
+        "sourceBounds": [
+          357,
+          325,
+          593,
+          618
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 81,
+        "height": 92,
+        "foot": 120,
+        "sourceFoot": [
+          99.0,
+          294
+        ],
+        "scale": 0.3122923588039867,
+        "sourceBounds": [
+          697,
+          324,
+          957,
+          618
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 76,
+        "height": 92,
+        "foot": 120,
+        "sourceFoot": [
+          132.0,
+          292
+        ],
+        "scale": 0.3122923588039867,
+        "sourceBounds": [
+          995,
+          324,
+          1237,
+          617
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 104,
+        "height": 93,
+        "foot": 120,
+        "sourceFoot": [
+          142.5,
+          303
+        ],
+        "scale": 0.3069053708439898,
+        "sourceBounds": [
+          18,
+          628,
+          356,
+          931
+        ],
+        "repair": null
+      },
+      {
+        "cell": 9,
+        "width": 75,
+        "height": 93,
+        "foot": 120,
+        "sourceFoot": [
+          139.0,
+          302
+        ],
+        "scale": 0.3069053708439898,
+        "sourceBounds": [
+          347,
+          630,
+          591,
+          932
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 84,
+        "height": 98,
+        "foot": 120,
+        "sourceFoot": [
+          133.5,
+          320
+        ],
+        "scale": 0.3069053708439898,
+        "sourceBounds": [
+          654,
+          612,
+          927,
+          932
+        ],
+        "repair": null
+      },
+      {
+        "cell": 11,
+        "width": 87,
+        "height": 91,
+        "foot": 120,
+        "sourceFoot": [
+          145.4,
+          296
+        ],
+        "scale": 0.3069053708439898,
+        "sourceBounds": [
+          962,
+          636,
+          1247,
+          932
+        ],
+        "repair": null
+      },
+      {
+        "cell": 12,
+        "width": 73,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          100.0,
+          290
+        ],
+        "scale": 0.32413793103448274,
+        "sourceBounds": [
+          55,
+          945,
+          280,
+          1235
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 69,
+        "height": 95,
+        "foot": 120,
+        "sourceFoot": [
+          99.9,
+          294
+        ],
+        "scale": 0.32413793103448274,
+        "sourceBounds": [
+          374,
+          941,
+          586,
+          1235
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 85,
+        "height": 97,
+        "foot": 120,
+        "sourceFoot": [
+          130.0,
+          300
+        ],
+        "scale": 0.32413793103448274,
+        "sourceBounds": [
+          661,
+          935,
+          923,
+          1235
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 83,
+        "height": 96,
+        "foot": 120,
+        "sourceFoot": [
+          120.0,
+          295
+        ],
+        "scale": 0.32413793103448274,
+        "sourceBounds": [
+          986,
+          940,
+          1241,
+          1235
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "FieldProps",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 128,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": [
+      0,
+      362,
+      729,
+      1086,
+      1448
+    ],
+    "sourceRowCuts": [
+      0,
+      301,
+      545,
+      815,
+      1086
+    ],
+    "segmentation": "transparent grid gutters",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 111,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          138.5,
+          280
+        ],
+        "scale": 0.4,
+        "sourceBounds": [
+          45,
+          15,
+          322,
+          295
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 116,
+        "height": 105,
+        "foot": 120,
+        "sourceFoot": [
+          404.0,
+          728
+        ],
+        "scale": 0.14356435643564355,
+        "sourceBounds": [
+          401,
+          7,
+          701,
+          301
+        ],
+        "repair": {
+          "source": "RepairBoats",
+          "columns": 2,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            144,
+            35,
+            952,
+            763
+          ]
+        }
+      },
+      {
+        "cell": 2,
+        "width": 105,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          136.5,
+          292
+        ],
+        "scale": 0.3835616438356164,
+        "sourceBounds": [
+          773,
+          7,
+          1046,
+          299
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 96,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          125.5,
+          294
+        ],
+        "scale": 0.38095238095238093,
+        "sourceBounds": [
+          1155,
+          7,
+          1406,
+          301
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 116,
+        "height": 92,
+        "foot": 120,
+        "sourceFoot": [
+          147.0,
+          233
+        ],
+        "scale": 0.3945578231292517,
+        "sourceBounds": [
+          37,
+          305,
+          331,
+          538
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 107,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          115.5,
+          242
+        ],
+        "scale": 0.4628099173553719,
+        "sourceBounds": [
+          421,
+          301,
+          652,
+          543
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 116,
+        "height": 87,
+        "foot": 120,
+        "sourceFoot": [
+          157.5,
+          237
+        ],
+        "scale": 0.3682539682539683,
+        "sourceBounds": [
+          746,
+          308,
+          1061,
+          545
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 116,
+        "height": 68,
+        "foot": 120,
+        "sourceFoot": [
+          170.0,
+          200
+        ],
+        "scale": 0.3411764705882353,
+        "sourceBounds": [
+          1099,
+          339,
+          1439,
+          539
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 116,
+        "height": 101,
+        "foot": 120,
+        "sourceFoot": [
+          154.0,
+          269
+        ],
+        "scale": 0.37662337662337664,
+        "sourceBounds": [
+          28,
+          546,
+          336,
+          815
+        ],
+        "repair": null
+      },
+      {
+        "cell": 9,
+        "width": 116,
+        "height": 82,
+        "foot": 120,
+        "sourceFoot": [
+          182.5,
+          259
+        ],
+        "scale": 0.3178082191780822,
+        "sourceBounds": [
+          364,
+          552,
+          729,
+          811
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 116,
+        "height": 100,
+        "foot": 120,
+        "sourceFoot": [
+          415.0,
+          712
+        ],
+        "scale": 0.13975903614457832,
+        "sourceBounds": [
+          770,
+          550,
+          1069,
+          815
+        ],
+        "repair": {
+          "source": "RepairBoats",
+          "columns": 2,
+          "rows": 1,
+          "cell": 1,
+          "sourceBounds": [
+            1020,
+            41,
+            1850,
+            753
+          ]
+        }
+      },
+      {
+        "cell": 11,
+        "width": 116,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          163.5,
+          264
+        ],
+        "scale": 0.3547400611620795,
+        "sourceBounds": [
+          1104,
+          550,
+          1431,
+          814
+        ],
+        "repair": null
+      },
+      {
+        "cell": 12,
+        "width": 116,
+        "height": 86,
+        "foot": 120,
+        "sourceFoot": [
+          173.5,
+          258
+        ],
+        "scale": 0.33429394812680113,
+        "sourceBounds": [
+          15,
+          815,
+          362,
+          1073
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 116,
+        "height": 83,
+        "foot": 120,
+        "sourceFoot": [
+          169.5,
+          242
+        ],
+        "scale": 0.3421828908554572,
+        "sourceBounds": [
+          386,
+          826,
+          725,
+          1068
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 116,
+        "height": 110,
+        "foot": 120,
+        "sourceFoot": [
+          138.0,
+          261
+        ],
+        "scale": 0.42028985507246375,
+        "sourceBounds": [
+          778,
+          815,
+          1054,
+          1076
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 116,
+        "height": 81,
+        "foot": 120,
+        "sourceFoot": [
+          162.5,
+          227
+        ],
+        "scale": 0.3569230769230769,
+        "sourceBounds": [
+          1104,
+          833,
+          1429,
+          1060
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "Details",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 128,
+    "sourceSize": [
+      1261,
+      1247
+    ],
+    "sourceColumnCuts": [
+      0,
+      333,
+      641,
+      946,
+      1261
+    ],
+    "sourceRowCuts": [
+      0,
+      328,
+      624,
+      906,
+      1247
+    ],
+    "segmentation": "transparent grid gutters",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 116,
+        "height": 101,
+        "foot": 120,
+        "sourceFoot": [
+          132.5,
+          230
+        ],
+        "scale": 0.4377358490566038,
+        "sourceBounds": [
+          49,
+          98,
+          314,
+          328
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 116,
+        "height": 100,
+        "foot": 120,
+        "sourceFoot": [
+          113.0,
+          195
+        ],
+        "scale": 0.5132743362831859,
+        "sourceBounds": [
+          372,
+          129,
+          598,
+          324
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 116,
+        "height": 80,
+        "foot": 120,
+        "sourceFoot": [
+          136.0,
+          188
+        ],
+        "scale": 0.4264705882352941,
+        "sourceBounds": [
+          648,
+          130,
+          920,
+          318
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 116,
+        "height": 78,
+        "foot": 120,
+        "sourceFoot": [
+          126.5,
+          170
+        ],
+        "scale": 0.45849802371541504,
+        "sourceBounds": [
+          970,
+          145,
+          1223,
+          315
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 116,
+        "height": 76,
+        "foot": 120,
+        "sourceFoot": [
+          114.0,
+          149
+        ],
+        "scale": 0.5087719298245614,
+        "sourceBounds": [
+          63,
+          431,
+          291,
+          580
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 116,
+        "height": 84,
+        "foot": 120,
+        "sourceFoot": [
+          129.0,
+          186
+        ],
+        "scale": 0.4496124031007752,
+        "sourceBounds": [
+          360,
+          405,
+          618,
+          591
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 105,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          112.0,
+          239
+        ],
+        "scale": 0.4686192468619247,
+        "sourceBounds": [
+          682,
+          366,
+          906,
+          605
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 83,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          84.5,
+          229
+        ],
+        "scale": 0.4890829694323144,
+        "sourceBounds": [
+          1016,
+          373,
+          1185,
+          602
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 116,
+        "height": 102,
+        "foot": 120,
+        "sourceFoot": [
+          134.0,
+          235
+        ],
+        "scale": 0.43283582089552236,
+        "sourceBounds": [
+          44,
+          654,
+          312,
+          889
+        ],
+        "repair": null
+      },
+      {
+        "cell": 9,
+        "width": 116,
+        "height": 87,
+        "foot": 120,
+        "sourceFoot": [
+          138.0,
+          206
+        ],
+        "scale": 0.42028985507246375,
+        "sourceBounds": [
+          356,
+          686,
+          632,
+          892
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 116,
+        "height": 100,
+        "foot": 120,
+        "sourceFoot": [
+          126.5,
+          218
+        ],
+        "scale": 0.45849802371541504,
+        "sourceBounds": [
+          672,
+          673,
+          925,
+          891
+        ],
+        "repair": null
+      },
+      {
+        "cell": 11,
+        "width": 116,
+        "height": 86,
+        "foot": 120,
+        "sourceFoot": [
+          125.5,
+          187
+        ],
+        "scale": 0.46215139442231074,
+        "sourceBounds": [
+          975,
+          703,
+          1226,
+          890
+        ],
+        "repair": null
+      },
+      {
+        "cell": 12,
+        "width": 116,
+        "height": 87,
+        "foot": 120,
+        "sourceFoot": [
+          152.0,
+          227
+        ],
+        "scale": 0.3815789473684211,
+        "sourceBounds": [
+          29,
+          951,
+          333,
+          1178
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 116,
+        "height": 101,
+        "foot": 120,
+        "sourceFoot": [
+          140.0,
+          244
+        ],
+        "scale": 0.4142857142857143,
+        "sourceBounds": [
+          361,
+          938,
+          641,
+          1182
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 97,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          120.0,
+          276
+        ],
+        "scale": 0.4057971014492754,
+        "sourceBounds": [
+          670,
+          907,
+          910,
+          1183
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 116,
+        "height": 92,
+        "foot": 120,
+        "sourceFoot": [
+          141.0,
+          224
+        ],
+        "scale": 0.41134751773049644,
+        "sourceBounds": [
+          948,
+          958,
+          1230,
+          1182
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "Effects",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 128,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": [
+      0,
+      392,
+      730,
+      1086,
+      1448
+    ],
+    "sourceRowCuts": [
+      0,
+      300,
+      594,
+      810,
+      1086
+    ],
+    "segmentation": "transparent grid gutters",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 116,
+        "height": 70,
+        "foot": 120,
+        "sourceFoot": [
+          144.5,
+          175
+        ],
+        "scale": 0.4013840830449827,
+        "sourceBounds": [
+          43,
+          104,
+          332,
+          279
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 116,
+        "height": 95,
+        "foot": 120,
+        "sourceFoot": [
+          156.5,
+          256
+        ],
+        "scale": 0.3706070287539936,
+        "sourceBounds": [
+          414,
+          44,
+          727,
+          300
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 116,
+        "height": 88,
+        "foot": 120,
+        "sourceFoot": [
+          117.5,
+          178
+        ],
+        "scale": 0.49361702127659574,
+        "sourceBounds": [
+          795,
+          115,
+          1030,
+          293
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 116,
+        "height": 99,
+        "foot": 120,
+        "sourceFoot": [
+          120.0,
+          204
+        ],
+        "scale": 0.48333333333333334,
+        "sourceBounds": [
+          1135,
+          83,
+          1375,
+          287
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 116,
+        "height": 91,
+        "foot": 120,
+        "sourceFoot": [
+          134.0,
+          211
+        ],
+        "scale": 0.43283582089552236,
+        "sourceBounds": [
+          68,
+          383,
+          336,
+          594
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 116,
+        "height": 105,
+        "foot": 120,
+        "sourceFoot": [
+          137.0,
+          248
+        ],
+        "scale": 0.4233576642335766,
+        "sourceBounds": [
+          416,
+          344,
+          690,
+          592
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 116,
+        "height": 88,
+        "foot": 120,
+        "sourceFoot": [
+          122.0,
+          186
+        ],
+        "scale": 0.47540983606557374,
+        "sourceBounds": [
+          792,
+          392,
+          1036,
+          578
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 116,
+        "height": 74,
+        "foot": 120,
+        "sourceFoot": [
+          154.5,
+          196
+        ],
+        "scale": 0.37540453074433655,
+        "sourceBounds": [
+          1110,
+          392,
+          1419,
+          588
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 116,
+        "height": 26,
+        "foot": 120,
+        "sourceFoot": [
+          156.5,
+          69
+        ],
+        "scale": 0.3706070287539936,
+        "sourceBounds": [
+          41,
+          707,
+          354,
+          776
+        ],
+        "repair": null
+      },
+      {
+        "cell": 9,
+        "width": 116,
+        "height": 49,
+        "foot": 120,
+        "sourceFoot": [
+          162.5,
+          136
+        ],
+        "scale": 0.3569230769230769,
+        "sourceBounds": [
+          405,
+          665,
+          730,
+          801
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 116,
+        "height": 86,
+        "foot": 120,
+        "sourceFoot": [
+          114.0,
+          170
+        ],
+        "scale": 0.5087719298245614,
+        "sourceBounds": [
+          809,
+          640,
+          1037,
+          810
+        ],
+        "repair": null
+      },
+      {
+        "cell": 11,
+        "width": 116,
+        "height": 44,
+        "foot": 120,
+        "sourceFoot": [
+          158.0,
+          120
+        ],
+        "scale": 0.3670886075949367,
+        "sourceBounds": [
+          1104,
+          674,
+          1420,
+          794
+        ],
+        "repair": null
+      },
+      {
+        "cell": 12,
+        "width": 116,
+        "height": 45,
+        "foot": 120,
+        "sourceFoot": [
+          176.5,
+          136
+        ],
+        "scale": 0.3286118980169972,
+        "sourceBounds": [
+          39,
+          895,
+          392,
+          1031
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 111,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          96.5,
+          195
+        ],
+        "scale": 0.5743589743589743,
+        "sourceBounds": [
+          484,
+          852,
+          677,
+          1047
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 116,
+        "height": 105,
+        "foot": 120,
+        "sourceFoot": [
+          136.0,
+          246
+        ],
+        "scale": 0.4264705882352941,
+        "sourceBounds": [
+          784,
+          810,
+          1056,
+          1056
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 116,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          131.5,
+          214
+        ],
+        "scale": 0.44106463878326996,
+        "sourceBounds": [
+          1136,
+          833,
+          1399,
+          1047
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "Icons",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 128,
+    "sourceSize": [
+      1402,
+      1122
+    ],
+    "sourceColumnCuts": [
+      0,
+      361,
+      720,
+      1052,
+      1402
+    ],
+    "sourceRowCuts": [
+      0,
+      329,
+      593,
+      872,
+      1122
+    ],
+    "segmentation": "transparent grid gutters",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 109,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          131.0,
+          270
+        ],
+        "scale": 0.4148148148148148,
+        "sourceBounds": [
+          75,
+          59,
+          337,
+          329
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 116,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          153.0,
+          296
+        ],
+        "scale": 0.3783783783783784,
+        "sourceBounds": [
+          402,
+          18,
+          708,
+          314
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 84,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          117.0,
+          311
+        ],
+        "scale": 0.36012861736334406,
+        "sourceBounds": [
+          795,
+          18,
+          1029,
+          329
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 106,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          118.0,
+          249
+        ],
+        "scale": 0.4497991967871486,
+        "sourceBounds": [
+          1117,
+          68,
+          1353,
+          317
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 116,
+        "height": 84,
+        "foot": 120,
+        "sourceFoot": [
+          146.5,
+          212
+        ],
+        "scale": 0.39590443686006827,
+        "sourceBounds": [
+          42,
+          366,
+          335,
+          578
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 97,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          110.5,
+          254
+        ],
+        "scale": 0.4409448818897638,
+        "sourceBounds": [
+          435,
+          329,
+          656,
+          583
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 116,
+        "height": 96,
+        "foot": 120,
+        "sourceFoot": [
+          141.0,
+          234
+        ],
+        "scale": 0.41134751773049644,
+        "sourceBounds": [
+          748,
+          359,
+          1030,
+          593
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 116,
+        "height": 85,
+        "foot": 120,
+        "sourceFoot": [
+          144.0,
+          212
+        ],
+        "scale": 0.4027777777777778,
+        "sourceBounds": [
+          1090,
+          371,
+          1378,
+          583
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 114,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          133.0,
+          261
+        ],
+        "scale": 0.42911877394636017,
+        "sourceBounds": [
+          62,
+          602,
+          328,
+          863
+        ],
+        "repair": null
+      },
+      {
+        "cell": 9,
+        "width": 84,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          103.5,
+          276
+        ],
+        "scale": 0.4057971014492754,
+        "sourceBounds": [
+          437,
+          596,
+          644,
+          872
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 116,
+        "height": 85,
+        "foot": 120,
+        "sourceFoot": [
+          153.5,
+          224
+        ],
+        "scale": 0.3778501628664495,
+        "sourceBounds": [
+          738,
+          627,
+          1045,
+          851
+        ],
+        "repair": null
+      },
+      {
+        "cell": 11,
+        "width": 111,
+        "height": 112,
+        "foot": 120,
+        "sourceFoot": [
+          125.0,
+          253
+        ],
+        "scale": 0.4426877470355731,
+        "sourceBounds": [
+          1098,
+          612,
+          1348,
+          865
+        ],
+        "repair": null
+      },
+      {
+        "cell": 12,
+        "width": 116,
+        "height": 77,
+        "foot": 120,
+        "sourceFoot": [
+          173.5,
+          231
+        ],
+        "scale": 0.33429394812680113,
+        "sourceBounds": [
+          14,
+          876,
+          361,
+          1107
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 116,
+        "height": 78,
+        "foot": 120,
+        "sourceFoot": [
+          167.0,
+          224
+        ],
+        "scale": 0.3473053892215569,
+        "sourceBounds": [
+          386,
+          872,
+          720,
+          1096
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 116,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          151.5,
+          245
+        ],
+        "scale": 0.38283828382838286,
+        "sourceBounds": [
+          720,
+          874,
+          1023,
+          1119
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 116,
+        "height": 88,
+        "foot": 120,
+        "sourceFoot": [
+          133.0,
+          201
+        ],
+        "scale": 0.43609022556390975,
+        "sourceBounds": [
+          1102,
+          893,
+          1368,
+          1094
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "Terrain",
+    "columns": 8,
+    "rows": 2,
+    "cellSize": 48,
+    "sourceSize": [
+      2172,
+      724
+    ],
+    "trim": 0
+  },
+  {
+    "name": "TerrainVariants",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 48,
+    "sourceSize": [
+      1254,
+      1254
+    ],
+    "trim": 2
+  },
+  {
+    "name": "PlayerVanguard",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 71,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          145.0,
+          313
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          62,
+          48,
+          303,
+          361
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          105,
+          148,
+          45,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 65,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          96.20000000000005,
+          319
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          462,
+          42,
+          681,
+          361
+        ],
+        "repair": null,
+        "registrationScale": 0.9473684210526315,
+        "registrationOffset": [
+          37,
+          69
+        ],
+        "headRect": [
+          107,
+          148,
+          43,
+          47
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 68,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          143.0,
+          312
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          781,
+          52,
+          1010,
+          364
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          107,
+          145,
+          47,
+          48
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 65,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          423.0,
+          1066
+        ],
+        "scale": 0.0877025738798856,
+        "sourceBounds": [
+          1207,
+          48,
+          1381,
+          364
+        ],
+        "repair": {
+          "source": "RepairVanguardWalk",
+          "columns": 1,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            292,
+            161,
+            1032,
+            1240
+          ]
+        },
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          106,
+          145,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 72,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          112.5,
+          321
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          66,
+          394,
+          310,
+          715
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          118,
+          153,
+          47,
+          48
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 109,
+        "height": 77,
+        "foot": 240,
+        "sourceFoot": [
+          131.0,
+          260
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          400,
+          455,
+          771,
+          715
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          109,
+          154,
+          52,
+          49
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 69,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          118.5,
+          273
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          815,
+          445,
+          1049,
+          718
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          106,
+          166,
+          45,
+          48
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 87,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          134.5,
+          272
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          1137,
+          446,
+          1432,
+          718
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          123,
+          158,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 85,
+        "height": 69,
+        "foot": 240,
+        "sourceFoot": [
+          142.5,
+          233
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          49,
+          806,
+          338,
+          1040
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          124,
+          168,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 84,
+        "height": 78,
+        "foot": 240,
+        "sourceFoot": [
+          160.0,
+          265
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          384,
+          775,
+          668,
+          1041
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          105,
+          157,
+          47,
+          48
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 85,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          190.0,
+          269
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          738,
+          770,
+          1027,
+          1041
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          79,
+          153,
+          50,
+          49
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 96,
+        "height": 48,
+        "foot": 240,
+        "sourceFoot": [
+          162.0,
+          162
+        ],
+        "scale": 0.2948717948717949,
+        "sourceBounds": [
+          1108,
+          895,
+          1432,
+          1057
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          79,
+          192,
+          47,
+          44
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "PlayerRanger",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 65,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          105.5,
+          322
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          80,
+          43,
+          306,
+          365
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 61,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          99.5,
+          328
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          463,
+          37,
+          673,
+          365
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          105,
+          144,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 65,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          115.0,
+          322
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          798,
+          48,
+          1022,
+          370
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          105,
+          142,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 64,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          120.0,
+          322
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          1179,
+          47,
+          1402,
+          369
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          102,
+          142,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 87,
+        "height": 88,
+        "foot": 240,
+        "sourceFoot": [
+          121.5,
+          304
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          54,
+          412,
+          356,
+          716
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          102,
+          144,
+          51,
+          49
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 81,
+        "height": 87,
+        "foot": 240,
+        "sourceFoot": [
+          123.0,
+          302
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          436,
+          416,
+          716,
+          718
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          108,
+          149,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 98,
+        "height": 79,
+        "foot": 240,
+        "sourceFoot": [
+          128.0,
+          273
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          772,
+          445,
+          1113,
+          718
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          111,
+          157,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 81,
+        "height": 89,
+        "foot": 240,
+        "sourceFoot": [
+          142.0,
+          309
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          1140,
+          409,
+          1420,
+          719
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          97,
+          152,
+          56,
+          49
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 90,
+        "height": 66,
+        "foot": 240,
+        "sourceFoot": [
+          138.0,
+          228
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          25,
+          822,
+          337,
+          1050
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          127,
+          171,
+          50,
+          48
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 76,
+        "height": 86,
+        "foot": 240,
+        "sourceFoot": [
+          129.5,
+          299
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          436,
+          753,
+          698,
+          1052
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          99,
+          151,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 81,
+        "height": 86,
+        "foot": 240,
+        "sourceFoot": [
+          159.5,
+          297
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          776,
+          755,
+          1057,
+          1052
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          86,
+          155,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 92,
+        "height": 43,
+        "foot": 240,
+        "sourceFoot": [
+          160.0,
+          148
+        ],
+        "scale": 0.2884012539184953,
+        "sourceBounds": [
+          1107,
+          906,
+          1427,
+          1054
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          81,
+          195,
+          44,
+          46
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "PlayerArcanist",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 72,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          127.0,
+          313
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          74,
+          48,
+          318,
+          361
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          106,
+          145,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 68,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          486.0,
+          1103
+        ],
+        "scale": 0.08455882352941177,
+        "sourceBounds": [
+          461,
+          42,
+          690,
+          361
+        ],
+        "repair": {
+          "source": "RepairMageBackIdle",
+          "columns": 1,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            125,
+            136,
+            927,
+            1239
+          ]
+        },
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          108,
+          148,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 78,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          121.0,
+          313
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          792,
+          50,
+          1056,
+          363
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          104,
+          142,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 73,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          104.5,
+          317
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          1166,
+          42,
+          1416,
+          362
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          104,
+          144,
+          45,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 73,
+        "height": 99,
+        "foot": 240,
+        "sourceFoot": [
+          120.0,
+          338
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          49,
+          377,
+          296,
+          715
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          118,
+          150,
+          46,
+          49
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 115,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          135.0,
+          268
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          380,
+          444,
+          770,
+          716
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          112,
+          156,
+          47,
+          48
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 74,
+        "height": 76,
+        "foot": 240,
+        "sourceFoot": [
+          125.9,
+          255
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          791,
+          458,
+          1043,
+          716
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          107,
+          164,
+          45,
+          48
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 82,
+        "height": 108,
+        "foot": 240,
+        "sourceFoot": [
+          145.5,
+          366
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          1135,
+          357,
+          1413,
+          723
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          117,
+          149,
+          41,
+          49
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 95,
+        "height": 70,
+        "foot": 240,
+        "sourceFoot": [
+          159.0,
+          235
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          46,
+          802,
+          370,
+          1039
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          113,
+          168,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 70,
+        "height": 86,
+        "foot": 240,
+        "sourceFoot": [
+          104.0,
+          293
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          443,
+          747,
+          681,
+          1040
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          100,
+          154,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 81,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          171.0,
+          272
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          760,
+          770,
+          1034,
+          1042
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          77,
+          156,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 98,
+        "height": 50,
+        "foot": 240,
+        "sourceFoot": [
+          166.0,
+          169
+        ],
+        "scale": 0.2939297124600639,
+        "sourceBounds": [
+          1094,
+          892,
+          1426,
+          1061
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          77,
+          189,
+          47,
+          46
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "PlayerRear",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 78,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          83.55,
+          260
+        ],
+        "scale": 0.3552123552123552,
+        "sourceBounds": [
+          98,
+          82,
+          318,
+          342
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          50,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 72,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          74.0,
+          261
+        ],
+        "scale": 0.3552123552123552,
+        "sourceBounds": [
+          460,
+          81,
+          664,
+          342
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          108,
+          147,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 68,
+        "height": 100,
+        "foot": 240,
+        "sourceFoot": [
+          89.0,
+          281
+        ],
+        "scale": 0.3552123552123552,
+        "sourceBounds": [
+          819,
+          61,
+          1010,
+          342
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          100,
+          143,
+          48,
+          49
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 71,
+        "height": 118,
+        "foot": 240,
+        "sourceFoot": [
+          92.5,
+          332
+        ],
+        "scale": 0.3552123552123552,
+        "sourceBounds": [
+          1173,
+          10,
+          1374,
+          342
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          103,
+          146,
+          47,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 72,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          91.0,
+          256
+        ],
+        "scale": 0.3607843137254902,
+        "sourceBounds": [
+          104,
+          441,
+          303,
+          697
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          101,
+          142,
+          51,
+          48
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 73,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          90.0,
+          257
+        ],
+        "scale": 0.3607843137254902,
+        "sourceBounds": [
+          447,
+          439,
+          650,
+          696
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          103,
+          142,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 84,
+        "height": 113,
+        "foot": 240,
+        "sourceFoot": [
+          105.0,
+          312
+        ],
+        "scale": 0.3607843137254902,
+        "sourceBounds": [
+          812,
+          384,
+          1046,
+          696
+        ],
+        "repair": null,
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          107,
+          149,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 84,
+        "height": 111,
+        "foot": 240,
+        "sourceFoot": [
+          104.5,
+          307
+        ],
+        "scale": 0.3607843137254902,
+        "sourceBounds": [
+          1177,
+          389,
+          1409,
+          696
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          105,
+          141,
+          51,
+          49
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 80,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          121.0,
+          275
+        ],
+        "scale": 0.336996336996337,
+        "sourceBounds": [
+          67,
+          780,
+          304,
+          1055
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          106,
+          137,
+          49,
+          49
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 72,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          93.60000000000001,
+          273
+        ],
+        "scale": 0.336996336996337,
+        "sourceBounds": [
+          436,
+          781,
+          651,
+          1056
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          108,
+          138,
+          49,
+          49
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 79,
+        "height": 103,
+        "foot": 240,
+        "sourceFoot": [
+          115.0,
+          307
+        ],
+        "scale": 0.336996336996337,
+        "sourceBounds": [
+          802,
+          746,
+          1035,
+          1053
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          103,
+          145,
+          48,
+          49
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 95,
+        "height": 128,
+        "foot": 240,
+        "sourceFoot": [
+          444.5,
+          1168
+        ],
+        "scale": 0.10887573964497041,
+        "sourceBounds": [
+          1173,
+          717,
+          1391,
+          1053
+        ],
+        "repair": {
+          "source": "RepairMageRear",
+          "columns": 1,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            208,
+            24,
+            1083,
+            1201
+          ]
+        },
+        "registrationScale": 1.0285714285714285,
+        "registrationOffset": [
+          29,
+          55
+        ],
+        "headRect": [
+          96,
+          141,
+          59,
+          48
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "PlayerSouth",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 88,
+        "height": 117,
+        "foot": 240,
+        "sourceFoot": [
+          120.0,
+          332
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          60,
+          30,
+          309,
+          363
+        ],
+        "repair": null,
+        "registrationScale": 0.9473684210526315,
+        "registrationOffset": [
+          37,
+          69
+        ],
+        "headRect": [
+          110,
+          150,
+          45,
+          47
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 92,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          137.5,
+          261
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          404,
+          98,
+          665,
+          364
+        ],
+        "repair": null,
+        "registrationScale": 0.9,
+        "registrationOffset": [
+          42,
+          78
+        ],
+        "headRect": [
+          105,
+          155,
+          47,
+          47
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 92,
+        "height": 111,
+        "foot": 240,
+        "sourceFoot": [
+          127.5,
+          314
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          772,
+          48,
+          1032,
+          362
+        ],
+        "repair": null,
+        "registrationScale": 0.9230769230769231,
+        "registrationOffset": [
+          39,
+          74
+        ],
+        "headRect": [
+          106,
+          156,
+          47,
+          47
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 97,
+        "height": 90,
+        "foot": 240,
+        "sourceFoot": [
+          158.0,
+          245
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          1133,
+          103,
+          1407,
+          358
+        ],
+        "repair": null,
+        "registrationScale": 0.9,
+        "registrationOffset": [
+          42,
+          78
+        ],
+        "headRect": [
+          110,
+          161,
+          47,
+          47
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 98,
+        "height": 96,
+        "foot": 240,
+        "sourceFoot": [
+          244.5,
+          464
+        ],
+        "scale": 0.20309050772626933,
+        "sourceBounds": [
+          48,
+          431,
+          331,
+          696
+        ],
+        "repair": {
+          "source": "RepairRangerSouth",
+          "columns": 4,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            34,
+            151,
+            516,
+            624
+          ]
+        },
+        "registrationScale": 0.8780487804878049,
+        "registrationOffset": [
+          44,
+          82
+        ],
+        "headRect": [
+          104,
+          157,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 98,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          238.0,
+          464
+        ],
+        "scale": 0.20353982300884957,
+        "sourceBounds": [
+          402,
+          434,
+          694,
+          702
+        ],
+        "repair": {
+          "source": "RepairRangerSouth",
+          "columns": 4,
+          "rows": 1,
+          "cell": 1,
+          "sourceBounds": [
+            576,
+            151,
+            1058,
+            618
+          ]
+        },
+        "registrationScale": 0.8571428571428571,
+        "registrationOffset": [
+          46,
+          86
+        ],
+        "headRect": [
+          106,
+          159,
+          46,
+          46
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 107,
+        "height": 97,
+        "foot": 240,
+        "sourceFoot": [
+          245.5,
+          448
+        ],
+        "scale": 0.21100917431192662,
+        "sourceBounds": [
+          760,
+          433,
+          1058,
+          694
+        ],
+        "repair": {
+          "source": "RepairRangerSouth",
+          "columns": 4,
+          "rows": 1,
+          "cell": 2,
+          "sourceBounds": [
+            1098,
+            164,
+            1607,
+            626
+          ]
+        },
+        "registrationScale": 0.8181818181818182,
+        "registrationOffset": [
+          49,
+          93
+        ],
+        "headRect": [
+          106,
+          162,
+          48,
+          46
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 106,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          234.0,
+          449
+        ],
+        "scale": 0.2100456621004566,
+        "sourceBounds": [
+          1139,
+          433,
+          1422,
+          698
+        ],
+        "repair": {
+          "source": "RepairRangerSouth",
+          "columns": 4,
+          "rows": 1,
+          "cell": 3,
+          "sourceBounds": [
+            1652,
+            163,
+            2155,
+            616
+          ]
+        },
+        "registrationScale": 0.8372093023255814,
+        "registrationOffset": [
+          48,
+          89
+        ],
+        "headRect": [
+          107,
+          160,
+          49,
+          46
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 100,
+        "height": 99,
+        "foot": 240,
+        "sourceFoot": [
+          137.0,
+          281
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          56,
+          767,
+          341,
+          1048
+        ],
+        "repair": null,
+        "registrationScale": 0.9230769230769231,
+        "registrationOffset": [
+          39,
+          74
+        ],
+        "headRect": [
+          103,
+          152,
+          47,
+          47
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 99,
+        "height": 105,
+        "foot": 240,
+        "sourceFoot": [
+          134.5,
+          298
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          408,
+          749,
+          690,
+          1047
+        ],
+        "repair": null,
+        "registrationScale": 0.9473684210526315,
+        "registrationOffset": [
+          37,
+          69
+        ],
+        "headRect": [
+          103,
+          151,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 93,
+        "height": 120,
+        "foot": 240,
+        "sourceFoot": [
+          125.5,
+          341
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          770,
+          707,
+          1034,
+          1048
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          99,
+          148,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 98,
+        "height": 103,
+        "foot": 240,
+        "sourceFoot": [
+          136.0,
+          291
+        ],
+        "scale": 0.3524904214559387,
+        "sourceBounds": [
+          1138,
+          759,
+          1417,
+          1050
+        ],
+        "repair": null,
+        "registrationScale": 0.9230769230769231,
+        "registrationOffset": [
+          39,
+          74
+        ],
+        "headRect": [
+          103,
+          152,
+          46,
+          47
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "Monsters",
+    "columns": 6,
+    "rows": 3,
+    "cellSize": 128,
+    "sourceSize": [
+      1774,
+      887
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 86,
+        "height": 64,
+        "foot": 120,
+        "sourceFoot": [
+          122.0,
+          181
+        ],
+        "scale": 0.35359116022099446,
+        "sourceBounds": [
+          30,
+          105,
+          274,
+          286
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 98,
+        "height": 62,
+        "foot": 120,
+        "sourceFoot": [
+          138.0,
+          175
+        ],
+        "scale": 0.35359116022099446,
+        "sourceBounds": [
+          317,
+          109,
+          593,
+          284
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 98,
+        "height": 46,
+        "foot": 120,
+        "sourceFoot": [
+          138.0,
+          131
+        ],
+        "scale": 0.35359116022099446,
+        "sourceBounds": [
+          612,
+          156,
+          888,
+          287
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 112,
+        "height": 68,
+        "foot": 120,
+        "sourceFoot": [
+          159.0,
+          193
+        ],
+        "scale": 0.35359116022099446,
+        "sourceBounds": [
+          928,
+          93,
+          1246,
+          286
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 78,
+        "height": 78,
+        "foot": 120,
+        "sourceFoot": [
+          111.0,
+          220
+        ],
+        "scale": 0.35359116022099446,
+        "sourceBounds": [
+          1260,
+          71,
+          1482,
+          291
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 92,
+        "height": 40,
+        "foot": 120,
+        "sourceFoot": [
+          130.0,
+          114
+        ],
+        "scale": 0.35359116022099446,
+        "sourceBounds": [
+          1490,
+          193,
+          1750,
+          307
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 81,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          112.5,
+          260
+        ],
+        "scale": 0.36153846153846153,
+        "sourceBounds": [
+          32,
+          309,
+          257,
+          569
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 101,
+        "height": 91,
+        "foot": 120,
+        "sourceFoot": [
+          139.0,
+          252
+        ],
+        "scale": 0.36153846153846153,
+        "sourceBounds": [
+          296,
+          318,
+          574,
+          570
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 97,
+        "height": 98,
+        "foot": 120,
+        "sourceFoot": [
+          133.5,
+          272
+        ],
+        "scale": 0.36153846153846153,
+        "sourceBounds": [
+          608,
+          297,
+          875,
+          569
+        ],
+        "repair": null
+      },
+      {
+        "cell": 9,
+        "width": 97,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          134.5,
+          261
+        ],
+        "scale": 0.36153846153846153,
+        "sourceBounds": [
+          916,
+          308,
+          1185,
+          569
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 93,
+        "height": 94,
+        "foot": 120,
+        "sourceFoot": [
+          502.0,
+          1012
+        ],
+        "scale": 0.09288537549407115,
+        "sourceBounds": [
+          1255,
+          343,
+          1478,
+          571
+        ],
+        "repair": {
+          "source": "RepairArcherHit",
+          "columns": 1,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            162,
+            122,
+            1166,
+            1134
+          ]
+        }
+      },
+      {
+        "cell": 11,
+        "width": 119,
+        "height": 57,
+        "foot": 120,
+        "sourceFoot": [
+          220.0,
+          212
+        ],
+        "scale": 0.27011494252873564,
+        "sourceBounds": [
+          1488,
+          448,
+          1758,
+          585
+        ],
+        "repair": {
+          "source": "EnemyArcherVertical",
+          "columns": 3,
+          "rows": 2,
+          "cell": 5,
+          "reference_cell": 2,
+          "sourceBounds": [
+            1055,
+            753,
+            1495,
+            965
+          ]
+        }
+      },
+      {
+        "cell": 12,
+        "width": 96,
+        "height": 100,
+        "foot": 120,
+        "sourceFoot": [
+          127.5,
+          266
+        ],
+        "scale": 0.37735849056603776,
+        "sourceBounds": [
+          20,
+          597,
+          275,
+          863
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 114,
+        "height": 102,
+        "foot": 120,
+        "sourceFoot": [
+          150.5,
+          270
+        ],
+        "scale": 0.37735849056603776,
+        "sourceBounds": [
+          287,
+          593,
+          588,
+          863
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 100,
+        "height": 111,
+        "foot": 120,
+        "sourceFoot": [
+          132.5,
+          294
+        ],
+        "scale": 0.37735849056603776,
+        "sourceBounds": [
+          611,
+          566,
+          876,
+          860
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 120,
+        "height": 84,
+        "foot": 120,
+        "sourceFoot": [
+          159.0,
+          223
+        ],
+        "scale": 0.37735849056603776,
+        "sourceBounds": [
+          895,
+          640,
+          1213,
+          863
+        ],
+        "repair": null
+      },
+      {
+        "cell": 16,
+        "width": 85,
+        "height": 93,
+        "foot": 120,
+        "sourceFoot": [
+          113.0,
+          246
+        ],
+        "scale": 0.37735849056603776,
+        "sourceBounds": [
+          1226,
+          613,
+          1452,
+          859
+        ],
+        "repair": null
+      },
+      {
+        "cell": 17,
+        "width": 111,
+        "height": 52,
+        "foot": 120,
+        "sourceFoot": [
+          147.0,
+          137
+        ],
+        "scale": 0.37735849056603776,
+        "sourceBounds": [
+          1472,
+          728,
+          1766,
+          865
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "EnemyArcherVertical",
+    "columns": 3,
+    "rows": 2,
+    "cellSize": 192,
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 68,
+        "height": 95,
+        "foot": 180,
+        "sourceFoot": [
+          213.0,
+          499
+        ],
+        "scale": 0.1898989898989899,
+        "sourceBounds": [
+          119,
+          17,
+          479,
+          516
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 68,
+        "height": 95,
+        "foot": 180,
+        "sourceFoot": [
+          211.0,
+          500
+        ],
+        "scale": 0.1898989898989899,
+        "sourceBounds": [
+          592,
+          16,
+          948,
+          517
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 72,
+        "height": 67,
+        "foot": 180,
+        "sourceFoot": [
+          200.0,
+          351
+        ],
+        "scale": 0.1898989898989899,
+        "sourceBounds": [
+          1062,
+          165,
+          1443,
+          516
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 98,
+        "height": 95,
+        "foot": 180,
+        "sourceFoot": [
+          205.0,
+          378
+        ],
+        "scale": 0.25066666666666665,
+        "sourceBounds": [
+          86,
+          568,
+          477,
+          946
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 93,
+        "height": 94,
+        "foot": 180,
+        "sourceFoot": [
+          548.5,
+          1011
+        ],
+        "scale": 0.09288537549407115,
+        "sourceBounds": [
+          587,
+          566,
+          964,
+          947
+        ],
+        "repair": {
+          "source": "RepairArcherHit",
+          "columns": 1,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            162,
+            122,
+            1166,
+            1134
+          ]
+        }
+      },
+      {
+        "cell": 5,
+        "width": 110,
+        "height": 53,
+        "foot": 180,
+        "sourceFoot": [
+          236.5,
+          210
+        ],
+        "scale": 0.25066666666666665,
+        "sourceBounds": [
+          1056,
+          754,
+          1495,
+          964
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "Bosses",
+    "columns": 4,
+    "rows": 8,
+    "cellSize": 320,
+    "sourceSize": [
+      887,
+      1774
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 236,
+        "height": 218,
+        "foot": 300,
+        "sourceFoot": [
+          97,
+          193
+        ],
+        "scale": 1.1304347826086956,
+        "sourceBounds": [
+          12,
+          12,
+          221,
+          205
+        ],
+        "repair": null
+      },
+      {
+        "cell": 1,
+        "width": 237,
+        "height": 189,
+        "foot": 300,
+        "sourceFoot": [
+          99,
+          167
+        ],
+        "scale": 1.1304347826086956,
+        "sourceBounds": [
+          227,
+          39,
+          437,
+          206
+        ],
+        "repair": null
+      },
+      {
+        "cell": 2,
+        "width": 265,
+        "height": 203,
+        "foot": 300,
+        "sourceFoot": [
+          138,
+          180
+        ],
+        "scale": 1.1304347826086956,
+        "sourceBounds": [
+          450,
+          8,
+          684,
+          188
+        ],
+        "repair": null
+      },
+      {
+        "cell": 3,
+        "width": 253,
+        "height": 133,
+        "foot": 300,
+        "sourceFoot": [
+          121,
+          118
+        ],
+        "scale": 1.1304347826086956,
+        "sourceBounds": [
+          653,
+          85,
+          877,
+          203
+        ],
+        "repair": null
+      },
+      {
+        "cell": 4,
+        "width": 128,
+        "height": 158,
+        "foot": 300,
+        "sourceFoot": [
+          84,
+          222
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          12,
+          211,
+          192,
+          433
+        ],
+        "repair": null
+      },
+      {
+        "cell": 5,
+        "width": 150,
+        "height": 159,
+        "foot": 300,
+        "sourceFoot": [
+          84,
+          223
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          223,
+          210,
+          433,
+          433
+        ],
+        "repair": null
+      },
+      {
+        "cell": 6,
+        "width": 234,
+        "height": 130,
+        "foot": 300,
+        "sourceFoot": [
+          110,
+          182
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          410,
+          251,
+          739,
+          433
+        ],
+        "repair": null
+      },
+      {
+        "cell": 7,
+        "width": 176,
+        "height": 98,
+        "foot": 300,
+        "sourceFoot": [
+          154,
+          137
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          631,
+          305,
+          878,
+          442
+        ],
+        "repair": null
+      },
+      {
+        "cell": 8,
+        "width": 237,
+        "height": 254,
+        "foot": 300,
+        "sourceFoot": [
+          139.5,
+          299
+        ],
+        "scale": 0.8486956521739131,
+        "sourceBounds": [
+          9,
+          443,
+          218,
+          687
+        ],
+        "repair": {
+          "source": "WalkBossA",
+          "columns": 4,
+          "rows": 4,
+          "cell": 8,
+          "sourceBounds": [
+            53,
+            501,
+            332,
+            800
+          ]
+        }
+      },
+      {
+        "cell": 9,
+        "width": 182,
+        "height": 270,
+        "foot": 300,
+        "sourceFoot": [
+          108,
+          260
+        ],
+        "scale": 1.04,
+        "sourceBounds": [
+          228,
+          427,
+          403,
+          687
+        ],
+        "repair": null
+      },
+      {
+        "cell": 10,
+        "width": 253,
+        "height": 241,
+        "foot": 300,
+        "sourceFoot": [
+          93,
+          232
+        ],
+        "scale": 1.04,
+        "sourceBounds": [
+          404,
+          455,
+          647,
+          687
+        ],
+        "repair": null
+      },
+      {
+        "cell": 11,
+        "width": 236,
+        "height": 183,
+        "foot": 300,
+        "sourceFoot": [
+          84,
+          176
+        ],
+        "scale": 1.04,
+        "sourceBounds": [
+          652,
+          521,
+          879,
+          697
+        ],
+        "repair": null
+      },
+      {
+        "cell": 12,
+        "width": 208,
+        "height": 211,
+        "foot": 300,
+        "sourceFoot": [
+          95,
+          183
+        ],
+        "scale": 1.1555555555555554,
+        "sourceBounds": [
+          8,
+          713,
+          188,
+          896
+        ],
+        "repair": null
+      },
+      {
+        "cell": 13,
+        "width": 259,
+        "height": 243,
+        "foot": 300,
+        "sourceFoot": [
+          103,
+          210
+        ],
+        "scale": 1.1555555555555554,
+        "sourceBounds": [
+          202,
+          686,
+          426,
+          896
+        ],
+        "repair": null
+      },
+      {
+        "cell": 14,
+        "width": 282,
+        "height": 183,
+        "foot": 300,
+        "sourceFoot": [
+          109,
+          158
+        ],
+        "scale": 1.1555555555555554,
+        "sourceBounds": [
+          421,
+          738,
+          665,
+          896
+        ],
+        "repair": null
+      },
+      {
+        "cell": 15,
+        "width": 258,
+        "height": 138,
+        "foot": 300,
+        "sourceFoot": [
+          111,
+          119
+        ],
+        "scale": 1.1555555555555554,
+        "sourceBounds": [
+          656,
+          781,
+          879,
+          900
+        ],
+        "repair": null
+      },
+      {
+        "cell": 16,
+        "width": 237,
+        "height": 207,
+        "foot": 300,
+        "sourceFoot": [
+          111,
+          186
+        ],
+        "scale": 1.1142857142857143,
+        "sourceBounds": [
+          11,
+          907,
+          224,
+          1093
+        ],
+        "repair": null
+      },
+      {
+        "cell": 17,
+        "width": 216,
+        "height": 227,
+        "foot": 300,
+        "sourceFoot": [
+          98,
+          204
+        ],
+        "scale": 1.1142857142857143,
+        "sourceBounds": [
+          232,
+          890,
+          426,
+          1094
+        ],
+        "repair": null
+      },
+      {
+        "cell": 18,
+        "width": 282,
+        "height": 216,
+        "foot": 300,
+        "sourceFoot": [
+          113,
+          194
+        ],
+        "scale": 1.1142857142857143,
+        "sourceBounds": [
+          419,
+          910,
+          672,
+          1104
+        ],
+        "repair": null
+      },
+      {
+        "cell": 19,
+        "width": 235,
+        "height": 167,
+        "foot": 300,
+        "sourceFoot": [
+          117,
+          150
+        ],
+        "scale": 1.1142857142857143,
+        "sourceBounds": [
+          671,
+          951,
+          882,
+          1101
+        ],
+        "repair": null
+      },
+      {
+        "cell": 20,
+        "width": 108,
+        "height": 167,
+        "foot": 300,
+        "sourceFoot": [
+          78,
+          234
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          22,
+          1094,
+          174,
+          1328
+        ],
+        "repair": null
+      },
+      {
+        "cell": 21,
+        "width": 155,
+        "height": 207,
+        "foot": 300,
+        "sourceFoot": [
+          161,
+          290
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          206,
+          1097,
+          423,
+          1387
+        ],
+        "repair": null
+      },
+      {
+        "cell": 22,
+        "width": 173,
+        "height": 157,
+        "foot": 300,
+        "sourceFoot": [
+          219,
+          221
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          412,
+          1108,
+          655,
+          1329
+        ],
+        "repair": null
+      },
+      {
+        "cell": 23,
+        "width": 157,
+        "height": 68,
+        "foot": 300,
+        "sourceFoot": [
+          107,
+          96
+        ],
+        "scale": 0.7123287671232876,
+        "sourceBounds": [
+          661,
+          1239,
+          881,
+          1335
+        ],
+        "repair": null
+      },
+      {
+        "cell": 24,
+        "width": 193,
+        "height": 192,
+        "foot": 300,
+        "sourceFoot": [
+          74,
+          194
+        ],
+        "scale": 0.9873417721518988,
+        "sourceBounds": [
+          11,
+          1324,
+          206,
+          1518
+        ],
+        "repair": null
+      },
+      {
+        "cell": 25,
+        "width": 182,
+        "height": 188,
+        "foot": 300,
+        "sourceFoot": [
+          105,
+          190
+        ],
+        "scale": 0.9873417721518988,
+        "sourceBounds": [
+          219,
+          1326,
+          403,
+          1516
+        ],
+        "repair": null
+      },
+      {
+        "cell": 26,
+        "width": 213,
+        "height": 177,
+        "foot": 300,
+        "sourceFoot": [
+          71,
+          179
+        ],
+        "scale": 0.9873417721518988,
+        "sourceBounds": [
+          409,
+          1340,
+          625,
+          1519
+        ],
+        "repair": null
+      },
+      {
+        "cell": 27,
+        "width": 278,
+        "height": 96,
+        "foot": 300,
+        "sourceFoot": [
+          158,
+          97
+        ],
+        "scale": 0.9873417721518988,
+        "sourceBounds": [
+          602,
+          1446,
+          884,
+          1543
+        ],
+        "repair": null
+      },
+      {
+        "cell": 28,
+        "width": 188,
+        "height": 220,
+        "foot": 300,
+        "sourceFoot": [
+          102,
+          235
+        ],
+        "scale": 0.9341317365269461,
+        "sourceBounds": [
+          8,
+          1525,
+          209,
+          1760
+        ],
+        "repair": null
+      },
+      {
+        "cell": 29,
+        "width": 187,
+        "height": 232,
+        "foot": 300,
+        "sourceFoot": [
+          106,
+          248
+        ],
+        "scale": 0.9341317365269461,
+        "sourceBounds": [
+          215,
+          1510,
+          415,
+          1758
+        ],
+        "repair": null
+      },
+      {
+        "cell": 30,
+        "width": 233,
+        "height": 214,
+        "foot": 300,
+        "sourceFoot": [
+          82,
+          229
+        ],
+        "scale": 0.9341317365269461,
+        "sourceBounds": [
+          412,
+          1535,
+          661,
+          1764
+        ],
+        "repair": null
+      },
+      {
+        "cell": 31,
+        "width": 206,
+        "height": 139,
+        "foot": 300,
+        "sourceFoot": [
+          104,
+          149
+        ],
+        "scale": 0.9341317365269461,
+        "sourceBounds": [
+          660,
+          1618,
+          881,
+          1767
+        ],
+        "repair": null
+      }
+    ]
+  },
+  {
+    "name": "CompanionMira",
+    "columns": 3,
+    "rows": 4,
+    "cellSize": 256,
+    "sourceSize": [
+      1324,
+      1188
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 108,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          361.0,
+          558
+        ],
+        "scale": 0.16815742397137745,
+        "sourceBounds": [
+          75,
+          19,
+          425,
+          307
+        ],
+        "repair": {
+          "source": "RepairCompanionMira",
+          "columns": 3,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            17,
+            94,
+            657,
+            653
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          100,
+          143,
+          57,
+          44
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 86,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          147.0,
+          287
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          532,
+          19,
+          796,
+          306
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          93,
+          143,
+          62,
+          44
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 83,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          135.0,
+          284
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          973,
+          22,
+          1227,
+          306
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          98,
+          143,
+          64,
+          44
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 109,
+        "height": 89,
+        "foot": 240,
+        "sourceFoot": [
+          179.5,
+          273
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          29,
+          321,
+          362,
+          595
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          96,
+          147,
+          61,
+          44
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 156,
+        "height": 89,
+        "foot": 240,
+        "sourceFoot": [
+          202.0,
+          271
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          455,
+          323,
+          932,
+          595
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          96,
+          149,
+          63,
+          44
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 108,
+        "height": 89,
+        "foot": 240,
+        "sourceFoot": [
+          176.5,
+          272
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          918,
+          323,
+          1249,
+          595
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          96,
+          148,
+          57,
+          44
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 114,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          282.5,
+          529
+        ],
+        "scale": 0.17735849056603772,
+        "sourceBounds": [
+          42,
+          607,
+          365,
+          868
+        ],
+        "repair": {
+          "source": "RepairCompanionMira",
+          "columns": 3,
+          "rows": 1,
+          "cell": 1,
+          "sourceBounds": [
+            801,
+            124,
+            1445,
+            654
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          105,
+          143,
+          47,
+          44
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 111,
+        "height": 90,
+        "foot": 240,
+        "sourceFoot": [
+          177.0,
+          267
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          494,
+          602,
+          833,
+          878
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          107,
+          151,
+          41,
+          44
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 97,
+        "height": 86,
+        "foot": 240,
+        "sourceFoot": [
+          145.5,
+          261
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          989,
+          607,
+          1287,
+          869
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          98,
+          152,
+          44,
+          44
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 103,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          151.60000000000002,
+          283
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          89,
+          875,
+          406,
+          1158
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          78,
+          144,
+          73,
+          44
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 113,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          120.0,
+          283
+        ],
+        "scale": 0.3263888888888889,
+        "sourceBounds": [
+          513,
+          877,
+          860,
+          1160
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          94,
+          145,
+          68,
+          44
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 107,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          294.0,
+          550
+        ],
+        "scale": 0.17028985507246377,
+        "sourceBounds": [
+          961,
+          877,
+          1250,
+          1160
+        ],
+        "repair": {
+          "source": "RepairCompanionMira",
+          "columns": 3,
+          "rows": 1,
+          "cell": 2,
+          "sourceBounds": [
+            1527,
+            109,
+            2155,
+            661
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          97,
+          143,
+          43,
+          44
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "CompanionIvo",
+    "columns": 3,
+    "rows": 4,
+    "cellSize": 256,
+    "sourceSize": [
+      1127,
+      1395
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 73,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          129.5,
+          311
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          54,
+          4,
+          297,
+          315
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          111,
+          143,
+          42,
+          44
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 80,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          126.5,
+          307
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          411,
+          8,
+          676,
+          315
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          115,
+          144,
+          41,
+          44
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 79,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          136.20000000000027,
+          309
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          778,
+          6,
+          1041,
+          315
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          112,
+          143,
+          40,
+          44
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 105,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          148.5,
+          314
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          19,
+          324,
+          368,
+          638
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          106,
+          151,
+          41,
+          44
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 93,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          147.5,
+          313
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          400,
+          326,
+          708,
+          639
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          108,
+          150,
+          39,
+          44
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 92,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          147.5,
+          313
+        ],
+        "scale": 0.3003194888178914,
+        "sourceBounds": [
+          761,
+          345,
+          1101,
+          640
+        ],
+        "repair": {
+          "source": "CompanionIvo",
+          "columns": 3,
+          "rows": 4,
+          "cell": 4,
+          "sourceBounds": [
+            400,
+            326,
+            708,
+            639
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          108,
+          151,
+          39,
+          44
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 78,
+        "height": 115,
+        "foot": 240,
+        "sourceFoot": [
+          121.5,
+          380
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          47,
+          632,
+          304,
+          1012
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          108,
+          153,
+          54,
+          44
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 83,
+        "height": 110,
+        "foot": 240,
+        "sourceFoot": [
+          147.0,
+          364
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          424,
+          648,
+          700,
+          1012
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          107,
+          153,
+          39,
+          44
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 71,
+        "height": 97,
+        "foot": 240,
+        "sourceFoot": [
+          106.0,
+          321
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          833,
+          693,
+          1068,
+          1014
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          109,
+          139,
+          46,
+          44
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 80,
+        "height": 98,
+        "foot": 240,
+        "sourceFoot": [
+          132.5,
+          321
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          44,
+          1025,
+          310,
+          1350
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          98,
+          140,
+          50,
+          44
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 88,
+        "height": 97,
+        "foot": 240,
+        "sourceFoot": [
+          157.0,
+          320
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          422,
+          1031,
+          712,
+          1351
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          102,
+          139,
+          41,
+          44
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 70,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          115.5,
+          314
+        ],
+        "scale": 0.3022508038585209,
+        "sourceBounds": [
+          817,
+          1033,
+          1050,
+          1347
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          101,
+          156,
+          54,
+          44
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "CompanionSen",
+    "columns": 3,
+    "rows": 4,
+    "cellSize": 256,
+    "sourceSize": [
+      1086,
+      1448
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 84,
+        "height": 104,
+        "foot": 240,
+        "sourceFoot": [
+          134.5,
+          331
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          48,
+          13,
+          314,
+          344
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          111,
+          145,
+          42,
+          52
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 89,
+        "height": 103,
+        "foot": 240,
+        "sourceFoot": [
+          157.5,
+          328
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          424,
+          18,
+          706,
+          346
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          116,
+          146,
+          37,
+          52
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 89,
+        "height": 102,
+        "foot": 240,
+        "sourceFoot": [
+          163.5,
+          323
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          770,
+          22,
+          1054,
+          346
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          100,
+          148,
+          35,
+          52
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 102,
+        "height": 95,
+        "foot": 240,
+        "sourceFoot": [
+          167.0,
+          301
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          8,
+          377,
+          332,
+          680
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          115,
+          160,
+          38,
+          52
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 125,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          172.0,
+          294
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          363,
+          384,
+          760,
+          680
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          114,
+          164,
+          36,
+          52
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 101,
+        "height": 104,
+        "foot": 240,
+        "sourceFoot": [
+          154.5,
+          332
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          762,
+          362,
+          1083,
+          694
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          104,
+          153,
+          39,
+          52
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 90,
+        "height": 104,
+        "foot": 240,
+        "sourceFoot": [
+          301.5,
+          635
+        ],
+        "scale": 0.16352201257861634,
+        "sourceBounds": [
+          32,
+          732,
+          314,
+          1053
+        ],
+        "repair": {
+          "source": "RepairCompanionSen",
+          "columns": 3,
+          "rows": 1,
+          "cell": 0,
+          "sourceBounds": [
+            101,
+            66,
+            649,
+            702
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          98,
+          149,
+          51,
+          52
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 102,
+        "height": 104,
+        "foot": 240,
+        "sourceFoot": [
+          378.0500000000002,
+          654
+        ],
+        "scale": 0.15615615615615616,
+        "sourceBounds": [
+          423,
+          707,
+          711,
+          1056
+        ],
+        "repair": {
+          "source": "RepairCompanionSen",
+          "columns": 3,
+          "rows": 1,
+          "cell": 1,
+          "sourceBounds": [
+            683,
+            39,
+            1339,
+            705
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          97,
+          157,
+          54,
+          52
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 77,
+        "height": 104,
+        "foot": 240,
+        "sourceFoot": [
+          136.5,
+          331
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          784,
+          715,
+          1029,
+          1046
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          103,
+          147,
+          48,
+          52
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 96,
+        "height": 111,
+        "foot": 240,
+        "sourceFoot": [
+          135.5,
+          350
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          33,
+          1061,
+          339,
+          1413
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          109,
+          142,
+          52,
+          52
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 99,
+        "height": 98,
+        "foot": 240,
+        "sourceFoot": [
+          135.0,
+          313
+        ],
+        "scale": 0.31419939577039274,
+        "sourceBounds": [
+          396,
+          1076,
+          711,
+          1389
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          113,
+          150,
+          51,
+          52
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 87,
+        "height": 104,
+        "foot": 240,
+        "sourceFoot": [
+          285.0,
+          613
+        ],
+        "scale": 0.162754303599374,
+        "sourceBounds": [
+          800,
+          1082,
+          1060,
+          1410
+        ],
+        "repair": {
+          "source": "RepairCompanionSen",
+          "columns": 3,
+          "rows": 1,
+          "cell": 2,
+          "sourceBounds": [
+            1449,
+            66,
+            1983,
+            705
+          ]
+        },
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          95,
+          150,
+          55,
+          52
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "PlayerReactionsRear",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 97,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          80.5,
+          183
+        ],
+        "scale": 0.4380952380952381,
+        "sourceBounds": [
+          83,
+          164,
+          304,
+          347
+        ],
+        "repair": null,
+        "registrationScale": 1.0909090909090908,
+        "registrationOffset": [
+          23,
+          44
+        ],
+        "headRect": [
+          116,
+          150,
+          55,
+          49
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 86,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          83.5,
+          210
+        ],
+        "scale": 0.4380952380952381,
+        "sourceBounds": [
+          459,
+          128,
+          655,
+          338
+        ],
+        "repair": null,
+        "registrationScale": 0.9230769230769231,
+        "registrationOffset": [
+          39,
+          74
+        ],
+        "headRect": [
+          104,
+          152,
+          45,
+          47
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 101,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          99.0,
+          210
+        ],
+        "scale": 0.4380952380952381,
+        "sourceBounds": [
+          815,
+          128,
+          1046,
+          338
+        ],
+        "repair": null,
+        "registrationScale": 0.8571428571428571,
+        "registrationOffset": [
+          46,
+          86
+        ],
+        "headRect": [
+          93,
+          160,
+          45,
+          46
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 122,
+        "height": 59,
+        "foot": 240,
+        "sourceFoot": [
+          139.0,
+          134
+        ],
+        "scale": 0.4380952380952381,
+        "sourceBounds": [
+          1130,
+          231,
+          1408,
+          365
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          82,
+          178,
+          51,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 97,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          130.5,
+          186
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          68,
+          484,
+          293,
+          670
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          92,
+          152,
+          54,
+          49
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 86,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          104.5,
+          214
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          447,
+          454,
+          646,
+          668
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          106,
+          148,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 81,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          88.5,
+          216
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          816,
+          454,
+          1004,
+          670
+        ],
+        "repair": null,
+        "registrationScale": 0.9,
+        "registrationOffset": [
+          42,
+          78
+        ],
+        "headRect": [
+          120,
+          154,
+          47,
+          47
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 107,
+        "height": 55,
+        "foot": 240,
+        "sourceFoot": [
+          125.0,
+          129
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          1163,
+          583,
+          1413,
+          712
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          131,
+          182,
+          51,
+          47
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 95,
+        "height": 81,
+        "foot": 240,
+        "sourceFoot": [
+          131.0,
+          188
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          74,
+          830,
+          295,
+          1018
+        ],
+        "repair": null,
+        "registrationScale": 1.0588235294117647,
+        "registrationOffset": [
+          26,
+          49
+        ],
+        "headRect": [
+          92,
+          151,
+          53,
+          49
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 91,
+        "height": 93,
+        "foot": 240,
+        "sourceFoot": [
+          115.0,
+          215
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          448,
+          781,
+          659,
+          997
+        ],
+        "repair": null,
+        "registrationScale": 0.9473684210526315,
+        "registrationOffset": [
+          37,
+          69
+        ],
+        "headRect": [
+          106,
+          150,
+          49,
+          47
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 108,
+        "height": 91,
+        "foot": 240,
+        "sourceFoot": [
+          151.0,
+          211
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          815,
+          785,
+          1067,
+          996
+        ],
+        "repair": null,
+        "registrationScale": 0.8571428571428571,
+        "registrationOffset": [
+          46,
+          86
+        ],
+        "headRect": [
+          121,
+          161,
+          45,
+          46
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 117,
+        "height": 55,
+        "foot": 240,
+        "sourceFoot": [
+          135.5,
+          127
+        ],
+        "scale": 0.42990654205607476,
+        "sourceBounds": [
+          1163,
+          917,
+          1434,
+          1044
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          139,
+          182,
+          49,
+          47
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "PlayerReactionsSouth",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "sourceColumnCuts": null,
+    "sourceRowCuts": null,
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "width": 95,
+        "height": 78,
+        "foot": 240,
+        "sourceFoot": [
+          113.50000000000001,
+          182
+        ],
+        "scale": 0.42790697674418604,
+        "sourceBounds": [
+          44,
+          160,
+          266,
+          342
+        ],
+        "repair": null,
+        "registrationScale": 0.8780487804878049,
+        "registrationOffset": [
+          44,
+          82
+        ],
+        "headRect": [
+          112,
+          169,
+          49,
+          47
+        ]
+      },
+      {
+        "cell": 1,
+        "width": 95,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          125.5,
+          215
+        ],
+        "scale": 0.42790697674418604,
+        "sourceBounds": [
+          402,
+          125,
+          625,
+          341
+        ],
+        "repair": null,
+        "registrationScale": 0.8780487804878049,
+        "registrationOffset": [
+          44,
+          82
+        ],
+        "headRect": [
+          104,
+          157,
+          46,
+          47
+        ]
+      },
+      {
+        "cell": 2,
+        "width": 90,
+        "height": 94,
+        "foot": 240,
+        "sourceFoot": [
+          134.0,
+          219
+        ],
+        "scale": 0.42790697674418604,
+        "sourceBounds": [
+          792,
+          123,
+          1003,
+          342
+        ],
+        "repair": null,
+        "registrationScale": 0.8571428571428571,
+        "registrationOffset": [
+          46,
+          86
+        ],
+        "headRect": [
+          82,
+          157,
+          49,
+          46
+        ]
+      },
+      {
+        "cell": 3,
+        "width": 112,
+        "height": 53,
+        "foot": 240,
+        "sourceFoot": [
+          131.0,
+          124
+        ],
+        "scale": 0.42790697674418604,
+        "sourceBounds": [
+          1147,
+          223,
+          1409,
+          347
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          71,
+          184,
+          50,
+          54
+        ]
+      },
+      {
+        "cell": 4,
+        "width": 85,
+        "height": 80,
+        "foot": 240,
+        "sourceFoot": [
+          117.95000000000005,
+          206
+        ],
+        "scale": 0.3898305084745763,
+        "sourceBounds": [
+          45,
+          460,
+          263,
+          666
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          111,
+          159,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 5,
+        "width": 78,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          105.0,
+          236
+        ],
+        "scale": 0.3898305084745763,
+        "sourceBounds": [
+          424,
+          431,
+          625,
+          667
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          101,
+          148,
+          50,
+          48
+        ]
+      },
+      {
+        "cell": 6,
+        "width": 84,
+        "height": 89,
+        "foot": 240,
+        "sourceFoot": [
+          119.0,
+          229
+        ],
+        "scale": 0.3898305084745763,
+        "sourceBounds": [
+          805,
+          437,
+          1020,
+          666
+        ],
+        "repair": null,
+        "registrationScale": 0.9473684210526315,
+        "registrationOffset": [
+          37,
+          69
+        ],
+        "headRect": [
+          84,
+          152,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 7,
+        "width": 101,
+        "height": 43,
+        "foot": 240,
+        "sourceFoot": [
+          130.0,
+          111
+        ],
+        "scale": 0.3898305084745763,
+        "sourceBounds": [
+          1152,
+          560,
+          1412,
+          671
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          76,
+          195,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 8,
+        "width": 90,
+        "height": 82,
+        "foot": 240,
+        "sourceFoot": [
+          126.0,
+          215
+        ],
+        "scale": 0.38016528925619836,
+        "sourceBounds": [
+          56,
+          789,
+          294,
+          1004
+        ],
+        "repair": null,
+        "registrationScale": 1.0,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          103,
+          156,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 9,
+        "width": 86,
+        "height": 92,
+        "foot": 240,
+        "sourceFoot": [
+          103.5,
+          242
+        ],
+        "scale": 0.38016528925619836,
+        "sourceBounds": [
+          425,
+          758,
+          650,
+          1000
+        ],
+        "repair": null,
+        "registrationScale": 0.972972972972973,
+        "registrationOffset": [
+          35,
+          65
+        ],
+        "headRect": [
+          102,
+          148,
+          50,
+          48
+        ]
+      },
+      {
+        "cell": 10,
+        "width": 88,
+        "height": 90,
+        "foot": 240,
+        "sourceFoot": [
+          145.5,
+          237
+        ],
+        "scale": 0.38016528925619836,
+        "sourceBounds": [
+          791,
+          767,
+          1023,
+          1004
+        ],
+        "repair": null,
+        "registrationScale": 0.9,
+        "registrationOffset": [
+          42,
+          78
+        ],
+        "headRect": [
+          80,
+          156,
+          45,
+          47
+        ]
+      },
+      {
+        "cell": 11,
+        "width": 115,
+        "height": 54,
+        "foot": 240,
+        "sourceFoot": [
+          151.0,
+          142
+        ],
+        "scale": 0.38016528925619836,
+        "sourceBounds": [
+          1131,
+          888,
+          1433,
+          1030
+        ],
+        "repair": null,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          70,
+          184,
+          47,
+          51
+        ]
+      }
+    ],
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkVanguard",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1646,
+      956
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 240,
+        "scale": 0.3817427385892116,
+        "sourceFoot": [
+          111.0,
+          242
+        ],
+        "sourceBounds": [
+          140,
+          75,
+          329,
+          317
+        ],
+        "width": 72,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          103,
+          146,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "foot": 240,
+        "scale": 0.38333333333333336,
+        "sourceFoot": [
+          107.5,
+          242
+        ],
+        "sourceBounds": [
+          517,
+          75,
+          691,
+          317
+        ],
+        "width": 67,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          103,
+          145,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 2,
+        "foot": 240,
+        "scale": 0.38016528925619836,
+        "sourceFoot": [
+          102.4,
+          244
+        ],
+        "sourceBounds": [
+          917,
+          73,
+          1094,
+          317
+        ],
+        "width": 67,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 3,
+        "foot": 240,
+        "scale": 0.3786008230452675,
+        "sourceFoot": [
+          91.0,
+          244
+        ],
+        "sourceBounds": [
+          1328,
+          73,
+          1482,
+          317
+        ],
+        "width": 58,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          104,
+          146,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "foot": 240,
+        "scale": 0.39316239316239315,
+        "sourceFoot": [
+          74.0,
+          234
+        ],
+        "sourceBounds": [
+          164,
+          370,
+          363,
+          604
+        ],
+        "width": 78,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          47,
+          48
+        ]
+      },
+      {
+        "cell": 5,
+        "foot": 240,
+        "scale": 0.39316239316239315,
+        "sourceFoot": [
+          66.0,
+          235
+        ],
+        "sourceBounds": [
+          547,
+          369,
+          724,
+          605
+        ],
+        "width": 70,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          105,
+          146,
+          47,
+          49
+        ]
+      },
+      {
+        "cell": 6,
+        "foot": 240,
+        "scale": 0.39316239316239315,
+        "sourceFoot": [
+          67.0,
+          234
+        ],
+        "sourceBounds": [
+          939,
+          370,
+          1138,
+          604
+        ],
+        "width": 78,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          26,
+          60
+        ],
+        "headRect": [
+          103,
+          145,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 7,
+        "foot": 240,
+        "scale": 0.39316239316239315,
+        "sourceFoot": [
+          67.35000000000002,
+          234
+        ],
+        "sourceBounds": [
+          1339,
+          370,
+          1511,
+          604
+        ],
+        "width": 68,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          104,
+          146,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 8,
+        "foot": 240,
+        "scale": 0.3817427385892116,
+        "sourceFoot": [
+          128.0,
+          242
+        ],
+        "sourceBounds": [
+          128,
+          648,
+          345,
+          890
+        ],
+        "width": 83,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          36,
+          60
+        ],
+        "headRect": [
+          104,
+          146,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 9,
+        "foot": 240,
+        "scale": 0.368,
+        "sourceFoot": [
+          107.5,
+          251
+        ],
+        "sourceBounds": [
+          526,
+          639,
+          725,
+          890
+        ],
+        "width": 73,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          35,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          48
+        ]
+      },
+      {
+        "cell": 10,
+        "foot": 240,
+        "scale": 0.3786008230452675,
+        "sourceFoot": [
+          116.0,
+          245
+        ],
+        "sourceBounds": [
+          903,
+          645,
+          1115,
+          890
+        ],
+        "width": 80,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          33,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          49
+        ]
+      },
+      {
+        "cell": 11,
+        "foot": 240,
+        "scale": 0.37398373983739835,
+        "sourceFoot": [
+          102.5,
+          247
+        ],
+        "sourceBounds": [
+          1304,
+          642,
+          1509,
+          890
+        ],
+        "width": 77,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          103,
+          145,
+          50,
+          48
+        ]
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation",
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkRanger",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 240,
+        "scale": 0.38333333333333336,
+        "sourceFoot": [
+          92.5,
+          242
+        ],
+        "sourceBounds": [
+          115,
+          83,
+          294,
+          325
+        ],
+        "width": 69,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          49,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "foot": 240,
+        "scale": 0.37551020408163266,
+        "sourceFoot": [
+          78.0,
+          247
+        ],
+        "sourceBounds": [
+          507,
+          78,
+          659,
+          325
+        ],
+        "width": 57,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          31,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 2,
+        "foot": 240,
+        "scale": 0.38333333333333336,
+        "sourceFoot": [
+          103.0,
+          242
+        ],
+        "sourceBounds": [
+          870,
+          83,
+          1051,
+          325
+        ],
+        "width": 69,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          103,
+          145,
+          50,
+          48
+        ]
+      },
+      {
+        "cell": 3,
+        "foot": 240,
+        "scale": 0.3786008230452675,
+        "sourceFoot": [
+          66.05,
+          246
+        ],
+        "sourceBounds": [
+          1263,
+          79,
+          1420,
+          325
+        ],
+        "width": 59,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          26,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 4,
+        "foot": 240,
+        "scale": 0.3786008230452675,
+        "sourceFoot": [
+          90.5,
+          247
+        ],
+        "sourceBounds": [
+          114,
+          406,
+          305,
+          654
+        ],
+        "width": 72,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          47,
+          46
+        ]
+      },
+      {
+        "cell": 5,
+        "foot": 240,
+        "scale": 0.37551020408163266,
+        "sourceFoot": [
+          84.5,
+          247
+        ],
+        "sourceBounds": [
+          511,
+          406,
+          678,
+          653
+        ],
+        "width": 63,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          47,
+          46
+        ]
+      },
+      {
+        "cell": 6,
+        "foot": 240,
+        "scale": 0.3724696356275304,
+        "sourceFoot": [
+          87.5,
+          250
+        ],
+        "sourceBounds": [
+          878,
+          403,
+          1066,
+          653
+        ],
+        "width": 70,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 7,
+        "foot": 240,
+        "scale": 0.36947791164658633,
+        "sourceFoot": [
+          88.0,
+          252
+        ],
+        "sourceBounds": [
+          1268,
+          401,
+          1434,
+          653
+        ],
+        "width": 61,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          47,
+          47
+        ]
+      },
+      {
+        "cell": 8,
+        "foot": 240,
+        "scale": 0.34980988593155893,
+        "sourceFoot": [
+          102.5,
+          265
+        ],
+        "sourceBounds": [
+          102,
+          708,
+          294,
+          973
+        ],
+        "width": 67,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 9,
+        "foot": 240,
+        "scale": 0.3552123552123552,
+        "sourceFoot": [
+          89.5,
+          261
+        ],
+        "sourceBounds": [
+          500,
+          705,
+          677,
+          966
+        ],
+        "width": 63,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          49,
+          47
+        ]
+      },
+      {
+        "cell": 10,
+        "foot": 240,
+        "scale": 0.3524904214559387,
+        "sourceFoot": [
+          86.5,
+          264
+        ],
+        "sourceBounds": [
+          875,
+          706,
+          1060,
+          970
+        ],
+        "width": 65,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          47
+        ]
+      },
+      {
+        "cell": 11,
+        "foot": 240,
+        "scale": 0.34980988593155893,
+        "sourceFoot": [
+          77.5,
+          265
+        ],
+        "sourceBounds": [
+          1263,
+          708,
+          1443,
+          973
+        ],
+        "width": 63,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          47
+        ]
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation",
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkArcanist",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 240,
+        "scale": 0.3471698113207547,
+        "sourceFoot": [
+          98.0,
+          265
+        ],
+        "sourceBounds": [
+          73,
+          63,
+          294,
+          329
+        ],
+        "width": 77,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          106,
+          145,
+          45,
+          48
+        ]
+      },
+      {
+        "cell": 1,
+        "foot": 240,
+        "scale": 0.34328358208955223,
+        "sourceFoot": [
+          96.5,
+          269
+        ],
+        "sourceBounds": [
+          442,
+          63,
+          659,
+          332
+        ],
+        "width": 74,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          106,
+          145,
+          44,
+          48
+        ]
+      },
+      {
+        "cell": 2,
+        "foot": 240,
+        "scale": 0.3458646616541353,
+        "sourceFoot": [
+          96.0,
+          266
+        ],
+        "sourceBounds": [
+          803,
+          63,
+          1023,
+          329
+        ],
+        "width": 76,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          45,
+          49
+        ]
+      },
+      {
+        "cell": 3,
+        "foot": 240,
+        "scale": 0.3420074349442379,
+        "sourceFoot": [
+          88.5,
+          269
+        ],
+        "sourceBounds": [
+          1174,
+          63,
+          1388,
+          332
+        ],
+        "width": 73,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          31,
+          60
+        ],
+        "headRect": [
+          105,
+          145,
+          46,
+          48
+        ]
+      },
+      {
+        "cell": 4,
+        "foot": 240,
+        "scale": 0.3382352941176471,
+        "sourceFoot": [
+          115.5,
+          273
+        ],
+        "sourceBounds": [
+          75,
+          405,
+          282,
+          678
+        ],
+        "width": 70,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          106,
+          145,
+          43,
+          45
+        ]
+      },
+      {
+        "cell": 5,
+        "foot": 240,
+        "scale": 0.3382352941176471,
+        "sourceFoot": [
+          118.5,
+          273
+        ],
+        "sourceBounds": [
+          433,
+          405,
+          646,
+          678
+        ],
+        "width": 72,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          107,
+          145,
+          43,
+          45
+        ]
+      },
+      {
+        "cell": 6,
+        "foot": 240,
+        "scale": 0.3382352941176471,
+        "sourceFoot": [
+          110.5,
+          273
+        ],
+        "sourceBounds": [
+          801,
+          405,
+          1008,
+          678
+        ],
+        "width": 70,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          106,
+          145,
+          43,
+          45
+        ]
+      },
+      {
+        "cell": 7,
+        "foot": 240,
+        "scale": 0.3382352941176471,
+        "sourceFoot": [
+          116.5,
+          273
+        ],
+        "sourceBounds": [
+          1161,
+          405,
+          1367,
+          678
+        ],
+        "width": 70,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          107,
+          145,
+          43,
+          44
+        ]
+      },
+      {
+        "cell": 8,
+        "foot": 240,
+        "scale": 0.336996336996337,
+        "sourceFoot": [
+          98.0,
+          273
+        ],
+        "sourceBounds": [
+          81,
+          751,
+          307,
+          1024
+        ],
+        "width": 76,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          33,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          49
+        ]
+      },
+      {
+        "cell": 9,
+        "foot": 240,
+        "scale": 0.336996336996337,
+        "sourceFoot": [
+          116.0,
+          275
+        ],
+        "sourceBounds": [
+          443,
+          749,
+          669,
+          1025
+        ],
+        "width": 76,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          40,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          49
+        ]
+      },
+      {
+        "cell": 10,
+        "foot": 240,
+        "scale": 0.336996336996337,
+        "sourceFoot": [
+          106.5,
+          273
+        ],
+        "sourceBounds": [
+          801,
+          751,
+          1033,
+          1024
+        ],
+        "width": 78,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          48,
+          49
+        ]
+      },
+      {
+        "cell": 11,
+        "foot": 240,
+        "scale": 0.336996336996337,
+        "sourceFoot": [
+          99.10000000000002,
+          274
+        ],
+        "sourceBounds": [
+          1173,
+          750,
+          1397,
+          1024
+        ],
+        "width": 75,
+        "height": 92,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          104,
+          145,
+          49,
+          49
+        ]
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation",
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkMira",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1536,
+      1024
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 240,
+        "scale": 0.3700787401574803,
+        "sourceFoot": [
+          153.5,
+          253
+        ],
+        "sourceBounds": [
+          82,
+          70,
+          347,
+          323
+        ],
+        "width": 98,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          38,
+          60
+        ],
+        "headRect": [
+          97,
+          143,
+          62,
+          44
+        ]
+      },
+      {
+        "cell": 1,
+        "foot": 240,
+        "scale": 0.3700787401574803,
+        "sourceFoot": [
+          128.5,
+          255
+        ],
+        "sourceBounds": [
+          487,
+          69,
+          714,
+          325
+        ],
+        "width": 84,
+        "height": 95,
+        "registrationScale": 1,
+        "registrationOffset": [
+          36,
+          60
+        ],
+        "headRect": [
+          95,
+          143,
+          65,
+          44
+        ]
+      },
+      {
+        "cell": 2,
+        "foot": 240,
+        "scale": 0.3700787401574803,
+        "sourceFoot": [
+          143.7,
+          253
+        ],
+        "sourceBounds": [
+          852,
+          70,
+          1086,
+          323
+        ],
+        "width": 87,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          39,
+          60
+        ],
+        "headRect": [
+          95,
+          143,
+          66,
+          44
+        ]
+      },
+      {
+        "cell": 3,
+        "foot": 240,
+        "scale": 0.3700787401574803,
+        "sourceFoot": [
+          82.3,
+          255
+        ],
+        "sourceBounds": [
+          1251,
+          70,
+          1451,
+          325
+        ],
+        "width": 74,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          22,
+          60
+        ],
+        "headRect": [
+          96,
+          143,
+          63,
+          44
+        ]
+      },
+      {
+        "cell": 4,
+        "foot": 240,
+        "scale": 0.3664717348927875,
+        "sourceFoot": [
+          118.0,
+          256
+        ],
+        "sourceBounds": [
+          85,
+          393,
+          371,
+          650
+        ],
+        "width": 105,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          36,
+          60
+        ],
+        "headRect": [
+          107,
+          143,
+          42,
+          44
+        ]
+      },
+      {
+        "cell": 5,
+        "foot": 240,
+        "scale": 0.3664717348927875,
+        "sourceFoot": [
+          98.0,
+          258
+        ],
+        "sourceBounds": [
+          489,
+          391,
+          768,
+          649
+        ],
+        "width": 102,
+        "height": 95,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          106,
+          142,
+          44,
+          44
+        ]
+      },
+      {
+        "cell": 6,
+        "foot": 240,
+        "scale": 0.3664717348927875,
+        "sourceFoot": [
+          116.5,
+          255
+        ],
+        "sourceBounds": [
+          852,
+          394,
+          1126,
+          649
+        ],
+        "width": 100,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          107,
+          144,
+          42,
+          44
+        ]
+      },
+      {
+        "cell": 7,
+        "foot": 240,
+        "scale": 0.3664717348927875,
+        "sourceFoot": [
+          105.0,
+          256
+        ],
+        "sourceBounds": [
+          1241,
+          393,
+          1517,
+          649
+        ],
+        "width": 101,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          31,
+          60
+        ],
+        "headRect": [
+          106,
+          143,
+          44,
+          44
+        ]
+      },
+      {
+        "cell": 8,
+        "foot": 240,
+        "scale": 0.33935018050541516,
+        "sourceFoot": [
+          159.0,
+          275
+        ],
+        "sourceBounds": [
+          47,
+          696,
+          320,
+          971
+        ],
+        "width": 93,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          38,
+          60
+        ],
+        "headRect": [
+          99,
+          144,
+          58,
+          44
+        ]
+      },
+      {
+        "cell": 9,
+        "foot": 240,
+        "scale": 0.33935018050541516,
+        "sourceFoot": [
+          170.0,
+          276
+        ],
+        "sourceBounds": [
+          443,
+          696,
+          719,
+          972
+        ],
+        "width": 94,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          40,
+          60
+        ],
+        "headRect": [
+          104,
+          143,
+          49,
+          44
+        ]
+      },
+      {
+        "cell": 10,
+        "foot": 240,
+        "scale": 0.33935018050541516,
+        "sourceFoot": [
+          134.5,
+          278
+        ],
+        "sourceBounds": [
+          833,
+          696,
+          1092,
+          974
+        ],
+        "width": 88,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          35,
+          60
+        ],
+        "headRect": [
+          103,
+          143,
+          50,
+          44
+        ]
+      },
+      {
+        "cell": 11,
+        "foot": 240,
+        "scale": 0.33935018050541516,
+        "sourceFoot": [
+          155.5,
+          278
+        ],
+        "sourceBounds": [
+          1214,
+          696,
+          1482,
+          974
+        ],
+        "width": 91,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          36,
+          60
+        ],
+        "headRect": [
+          102,
+          142,
+          51,
+          44
+        ]
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation",
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkIvo",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 240,
+        "scale": 0.3540489642184557,
+        "sourceFoot": [
+          126.04999999999995,
+          265
+        ],
+        "sourceBounds": [
+          82,
+          90,
+          315,
+          355
+        ],
+        "width": 82,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          26,
+          60
+        ],
+        "headRect": [
+          108,
+          142,
+          40,
+          44
+        ]
+      },
+      {
+        "cell": 1,
+        "foot": 240,
+        "scale": 0.3540489642184557,
+        "sourceFoot": [
+          121.0,
+          266
+        ],
+        "sourceBounds": [
+          452,
+          88,
+          679,
+          355
+        ],
+        "width": 80,
+        "height": 95,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          109,
+          143,
+          39,
+          44
+        ]
+      },
+      {
+        "cell": 2,
+        "foot": 240,
+        "scale": 0.3540489642184557,
+        "sourceFoot": [
+          128.5,
+          265
+        ],
+        "sourceBounds": [
+          804,
+          89,
+          1042,
+          354
+        ],
+        "width": 84,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          46,
+          60
+        ],
+        "headRect": [
+          106,
+          152,
+          43,
+          44
+        ]
+      },
+      {
+        "cell": 3,
+        "foot": 240,
+        "scale": 0.3540489642184557,
+        "sourceFoot": [
+          114.5,
+          266
+        ],
+        "sourceBounds": [
+          1180,
+          89,
+          1399,
+          355
+        ],
+        "width": 78,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          107,
+          142,
+          42,
+          44
+        ]
+      },
+      {
+        "cell": 4,
+        "foot": 240,
+        "scale": 0.34814814814814815,
+        "sourceFoot": [
+          97.5,
+          270
+        ],
+        "sourceBounds": [
+          111,
+          453,
+          322,
+          723
+        ],
+        "width": 73,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          26,
+          60
+        ],
+        "headRect": [
+          102,
+          157,
+          52,
+          44
+        ]
+      },
+      {
+        "cell": 5,
+        "foot": 240,
+        "scale": 0.34814814814814815,
+        "sourceFoot": [
+          97.5,
+          253
+        ],
+        "sourceBounds": [
+          470,
+          452,
+          677,
+          705
+        ],
+        "width": 72,
+        "height": 88,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          110,
+          149,
+          36,
+          44
+        ]
+      },
+      {
+        "cell": 6,
+        "foot": 240,
+        "scale": 0.34814814814814815,
+        "sourceFoot": [
+          99.0,
+          270
+        ],
+        "sourceBounds": [
+          832,
+          453,
+          1043,
+          723
+        ],
+        "width": 73,
+        "height": 94,
+        "registrationScale": 1,
+        "registrationOffset": [
+          25,
+          60
+        ],
+        "headRect": [
+          102,
+          143,
+          52,
+          44
+        ]
+      },
+      {
+        "cell": 7,
+        "foot": 240,
+        "scale": 0.34814814814814815,
+        "sourceFoot": [
+          93.89999999999998,
+          273
+        ],
+        "sourceBounds": [
+          1189,
+          450,
+          1391,
+          723
+        ],
+        "width": 70,
+        "height": 95,
+        "registrationScale": 1,
+        "registrationOffset": [
+          25,
+          60
+        ],
+        "headRect": [
+          102,
+          142,
+          52,
+          44
+        ]
+      },
+      {
+        "cell": 8,
+        "foot": 240,
+        "scale": 0.34558823529411764,
+        "sourceFoot": [
+          109.5,
+          276
+        ],
+        "sourceBounds": [
+          91,
+          758,
+          303,
+          1034
+        ],
+        "width": 73,
+        "height": 95,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          109,
+          142,
+          38,
+          44
+        ]
+      },
+      {
+        "cell": 9,
+        "foot": 240,
+        "scale": 0.34558823529411764,
+        "sourceFoot": [
+          113.0,
+          268
+        ],
+        "sourceBounds": [
+          450,
+          759,
+          661,
+          1027
+        ],
+        "width": 73,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          31,
+          60
+        ],
+        "headRect": [
+          109,
+          143,
+          38,
+          44
+        ]
+      },
+      {
+        "cell": 10,
+        "foot": 240,
+        "scale": 0.34558823529411764,
+        "sourceFoot": [
+          108.0,
+          275
+        ],
+        "sourceBounds": [
+          814,
+          759,
+          1028,
+          1034
+        ],
+        "width": 74,
+        "height": 95,
+        "registrationScale": 1,
+        "registrationOffset": [
+          28,
+          60
+        ],
+        "headRect": [
+          108,
+          141,
+          39,
+          44
+        ]
+      },
+      {
+        "cell": 11,
+        "foot": 240,
+        "scale": 0.34558823529411764,
+        "sourceFoot": [
+          108.0,
+          269
+        ],
+        "sourceBounds": [
+          1177,
+          760,
+          1385,
+          1029
+        ],
+        "width": 72,
+        "height": 93,
+        "registrationScale": 1,
+        "registrationOffset": [
+          40,
+          60
+        ],
+        "headRect": [
+          101,
+          144,
+          55,
+          44
+        ]
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation",
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkSen",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 256,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 240,
+        "scale": 0.36048526863084923,
+        "sourceFoot": [
+          143.45000000000002,
+          284
+        ],
+        "sourceBounds": [
+          73,
+          72,
+          320,
+          358
+        ],
+        "width": 89,
+        "height": 103,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          110,
+          147,
+          37,
+          52
+        ]
+      },
+      {
+        "cell": 1,
+        "foot": 240,
+        "scale": 0.36048526863084923,
+        "sourceFoot": [
+          145.5,
+          288
+        ],
+        "sourceBounds": [
+          419,
+          68,
+          672,
+          357
+        ],
+        "width": 91,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          29,
+          60
+        ],
+        "headRect": [
+          110,
+          146,
+          36,
+          52
+        ]
+      },
+      {
+        "cell": 2,
+        "foot": 240,
+        "scale": 0.36048526863084923,
+        "sourceFoot": [
+          133.5,
+          287
+        ],
+        "sourceBounds": [
+          795,
+          72,
+          1038,
+          360
+        ],
+        "width": 88,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          109,
+          146,
+          38,
+          52
+        ]
+      },
+      {
+        "cell": 3,
+        "foot": 240,
+        "scale": 0.36048526863084923,
+        "sourceFoot": [
+          141.0,
+          288
+        ],
+        "sourceBounds": [
+          1146,
+          68,
+          1397,
+          358
+        ],
+        "width": 90,
+        "height": 105,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          110,
+          146,
+          36,
+          52
+        ]
+      },
+      {
+        "cell": 4,
+        "foot": 240,
+        "scale": 0.3531409168081494,
+        "sourceFoot": [
+          112.0,
+          287
+        ],
+        "sourceBounds": [
+          80,
+          411,
+          302,
+          705
+        ],
+        "width": 78,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          34,
+          60
+        ],
+        "headRect": [
+          103,
+          152,
+          50,
+          52
+        ]
+      },
+      {
+        "cell": 5,
+        "foot": 240,
+        "scale": 0.3531409168081494,
+        "sourceFoot": [
+          108.5,
+          287
+        ],
+        "sourceBounds": [
+          450,
+          411,
+          666,
+          706
+        ],
+        "width": 76,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          38,
+          60
+        ],
+        "headRect": [
+          107,
+          151,
+          41,
+          52
+        ]
+      },
+      {
+        "cell": 6,
+        "foot": 240,
+        "scale": 0.3531409168081494,
+        "sourceFoot": [
+          112.5,
+          299
+        ],
+        "sourceBounds": [
+          798,
+          408,
+          1023,
+          707
+        ],
+        "width": 79,
+        "height": 106,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          102,
+          148,
+          51,
+          52
+        ]
+      },
+      {
+        "cell": 7,
+        "foot": 240,
+        "scale": 0.3531409168081494,
+        "sourceFoot": [
+          113.0,
+          285
+        ],
+        "sourceBounds": [
+          1164,
+          410,
+          1388,
+          704
+        ],
+        "width": 79,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          35,
+          60
+        ],
+        "headRect": [
+          102,
+          152,
+          52,
+          52
+        ]
+      },
+      {
+        "cell": 8,
+        "foot": 240,
+        "scale": 0.3802559414990859,
+        "sourceFoot": [
+          130.5,
+          273
+        ],
+        "sourceBounds": [
+          71,
+          753,
+          300,
+          1027
+        ],
+        "width": 87,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          40,
+          60
+        ],
+        "headRect": [
+          110,
+          139,
+          36,
+          52
+        ]
+      },
+      {
+        "cell": 9,
+        "foot": 240,
+        "scale": 0.3802559414990859,
+        "sourceFoot": [
+          113.95,
+          268
+        ],
+        "sourceBounds": [
+          436,
+          747,
+          661,
+          1018
+        ],
+        "width": 86,
+        "height": 103,
+        "registrationScale": 1,
+        "registrationOffset": [
+          32,
+          60
+        ],
+        "headRect": [
+          108,
+          144,
+          41,
+          52
+        ]
+      },
+      {
+        "cell": 10,
+        "foot": 240,
+        "scale": 0.3802559414990859,
+        "sourceFoot": [
+          101.0,
+          275
+        ],
+        "sourceBounds": [
+          798,
+          753,
+          1034,
+          1030
+        ],
+        "width": 90,
+        "height": 105,
+        "registrationScale": 1,
+        "registrationOffset": [
+          24,
+          60
+        ],
+        "headRect": [
+          107,
+          138,
+          42,
+          52
+        ]
+      },
+      {
+        "cell": 11,
+        "foot": 240,
+        "scale": 0.3802559414990859,
+        "sourceFoot": [
+          121.5,
+          268
+        ],
+        "sourceBounds": [
+          1151,
+          744,
+          1389,
+          1017
+        ],
+        "width": 91,
+        "height": 104,
+        "registrationScale": 1,
+        "registrationOffset": [
+          30,
+          60
+        ],
+        "headRect": [
+          107,
+          145,
+          41,
+          52
+        ]
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation",
+    "registration": "fixed anatomy module, foot and torso axis; authored head layer"
+  },
+  {
+    "name": "WalkMonsters",
+    "columns": 4,
+    "rows": 3,
+    "cellSize": 192,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 180,
+        "scale": 0.3595505617977528,
+        "sourceFoot": [
+          129,
+          179
+        ],
+        "sourceBounds": [
+          51,
+          115,
+          309,
+          294
+        ],
+        "width": 93,
+        "height": 64
+      },
+      {
+        "cell": 1,
+        "foot": 180,
+        "scale": 0.3595505617977528,
+        "sourceFoot": [
+          141,
+          178
+        ],
+        "sourceBounds": [
+          403,
+          116,
+          688,
+          294
+        ],
+        "width": 102,
+        "height": 64
+      },
+      {
+        "cell": 2,
+        "foot": 180,
+        "scale": 0.3595505617977528,
+        "sourceFoot": [
+          135,
+          178
+        ],
+        "sourceBounds": [
+          773,
+          116,
+          1050,
+          294
+        ],
+        "width": 100,
+        "height": 64
+      },
+      {
+        "cell": 3,
+        "foot": 180,
+        "scale": 0.3595505617977528,
+        "sourceFoot": [
+          135,
+          176
+        ],
+        "sourceBounds": [
+          1135,
+          118,
+          1398,
+          294
+        ],
+        "width": 95,
+        "height": 63
+      },
+      {
+        "cell": 4,
+        "foot": 180,
+        "scale": 0.3230240549828179,
+        "sourceFoot": [
+          113,
+          290
+        ],
+        "sourceBounds": [
+          62,
+          355,
+          314,
+          645
+        ],
+        "width": 81,
+        "height": 94
+      },
+      {
+        "cell": 5,
+        "foot": 180,
+        "scale": 0.3230240549828179,
+        "sourceFoot": [
+          103,
+          291
+        ],
+        "sourceBounds": [
+          431,
+          355,
+          664,
+          646
+        ],
+        "width": 75,
+        "height": 94
+      },
+      {
+        "cell": 6,
+        "foot": 180,
+        "scale": 0.3230240549828179,
+        "sourceFoot": [
+          110,
+          293
+        ],
+        "sourceBounds": [
+          781,
+          354,
+          1036,
+          647
+        ],
+        "width": 82,
+        "height": 95
+      },
+      {
+        "cell": 7,
+        "foot": 180,
+        "scale": 0.3230240549828179,
+        "sourceFoot": [
+          99,
+          291
+        ],
+        "sourceBounds": [
+          1160,
+          355,
+          1391,
+          646
+        ],
+        "width": 75,
+        "height": 94
+      },
+      {
+        "cell": 8,
+        "foot": 180,
+        "scale": 0.3246753246753247,
+        "sourceFoot": [
+          162,
+          308
+        ],
+        "sourceBounds": [
+          36,
+          692,
+          338,
+          1000
+        ],
+        "width": 98,
+        "height": 100
+      },
+      {
+        "cell": 9,
+        "foot": 180,
+        "scale": 0.3246753246753247,
+        "sourceFoot": [
+          156,
+          308
+        ],
+        "sourceBounds": [
+          403,
+          692,
+          698,
+          1000
+        ],
+        "width": 96,
+        "height": 100
+      },
+      {
+        "cell": 10,
+        "foot": 180,
+        "scale": 0.3246753246753247,
+        "sourceFoot": [
+          173,
+          306
+        ],
+        "sourceBounds": [
+          756,
+          694,
+          1064,
+          1000
+        ],
+        "width": 100,
+        "height": 99
+      },
+      {
+        "cell": 11,
+        "foot": 180,
+        "scale": 0.3246753246753247,
+        "sourceFoot": [
+          158,
+          308
+        ],
+        "sourceBounds": [
+          1120,
+          692,
+          1412,
+          1000
+        ],
+        "width": 95,
+        "height": 100
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation"
+  },
+  {
+    "name": "WalkBossA",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 384,
+    "sourceSize": [
+      1448,
+      1086
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 360,
+        "scale": 0.8857142857142857,
+        "sourceFoot": [
+          165,
+          247
+        ],
+        "sourceBounds": [
+          43,
+          7,
+          355,
+          254
+        ],
+        "width": 276,
+        "height": 219
+      },
+      {
+        "cell": 1,
+        "foot": 360,
+        "scale": 0.8857142857142857,
+        "sourceFoot": [
+          153,
+          239
+        ],
+        "sourceBounds": [
+          408,
+          14,
+          714,
+          253
+        ],
+        "width": 271,
+        "height": 212
+      },
+      {
+        "cell": 2,
+        "foot": 360,
+        "scale": 0.8857142857142857,
+        "sourceFoot": [
+          126,
+          244
+        ],
+        "sourceBounds": [
+          756,
+          11,
+          1045,
+          255
+        ],
+        "width": 256,
+        "height": 216
+      },
+      {
+        "cell": 3,
+        "foot": 360,
+        "scale": 0.8857142857142857,
+        "sourceFoot": [
+          132,
+          246
+        ],
+        "sourceBounds": [
+          1125,
+          11,
+          1423,
+          257
+        ],
+        "width": 264,
+        "height": 218
+      },
+      {
+        "cell": 4,
+        "foot": 360,
+        "scale": 0.6960352422907489,
+        "sourceFoot": [
+          77,
+          227
+        ],
+        "sourceBounds": [
+          103,
+          260,
+          295,
+          487
+        ],
+        "width": 134,
+        "height": 158
+      },
+      {
+        "cell": 5,
+        "foot": 360,
+        "scale": 0.6960352422907489,
+        "sourceFoot": [
+          75,
+          227
+        ],
+        "sourceBounds": [
+          462,
+          260,
+          654,
+          487
+        ],
+        "width": 134,
+        "height": 158
+      },
+      {
+        "cell": 6,
+        "foot": 360,
+        "scale": 0.6960352422907489,
+        "sourceFoot": [
+          74,
+          227
+        ],
+        "sourceBounds": [
+          825,
+          260,
+          1013,
+          487
+        ],
+        "width": 131,
+        "height": 158
+      },
+      {
+        "cell": 7,
+        "foot": 360,
+        "scale": 0.6960352422907489,
+        "sourceFoot": [
+          82,
+          227
+        ],
+        "sourceBounds": [
+          1193,
+          260,
+          1375,
+          487
+        ],
+        "width": 127,
+        "height": 158
+      },
+      {
+        "cell": 8,
+        "foot": 360,
+        "scale": 0.8542372881355932,
+        "sourceFoot": [
+          142,
+          299
+        ],
+        "sourceBounds": [
+          53,
+          501,
+          332,
+          800
+        ],
+        "width": 238,
+        "height": 255
+      },
+      {
+        "cell": 9,
+        "foot": 360,
+        "scale": 0.8542372881355932,
+        "sourceFoot": [
+          146,
+          295
+        ],
+        "sourceBounds": [
+          435,
+          504,
+          710,
+          799
+        ],
+        "width": 235,
+        "height": 252
+      },
+      {
+        "cell": 10,
+        "foot": 360,
+        "scale": 0.8542372881355932,
+        "sourceFoot": [
+          142,
+          294
+        ],
+        "sourceBounds": [
+          794,
+          504,
+          1076,
+          798
+        ],
+        "width": 241,
+        "height": 251
+      },
+      {
+        "cell": 11,
+        "foot": 360,
+        "scale": 0.8542372881355932,
+        "sourceFoot": [
+          133,
+          295
+        ],
+        "sourceBounds": [
+          1159,
+          504,
+          1422,
+          799
+        ],
+        "width": 225,
+        "height": 252
+      },
+      {
+        "cell": 12,
+        "foot": 360,
+        "scale": 0.8406374501992032,
+        "sourceFoot": [
+          142,
+          251
+        ],
+        "sourceBounds": [
+          51,
+          814,
+          321,
+          1065
+        ],
+        "width": 227,
+        "height": 211
+      },
+      {
+        "cell": 13,
+        "foot": 360,
+        "scale": 0.8406374501992032,
+        "sourceFoot": [
+          147,
+          252
+        ],
+        "sourceBounds": [
+          412,
+          813,
+          681,
+          1065
+        ],
+        "width": 226,
+        "height": 212
+      },
+      {
+        "cell": 14,
+        "foot": 360,
+        "scale": 0.8406374501992032,
+        "sourceFoot": [
+          144,
+          251
+        ],
+        "sourceBounds": [
+          767,
+          814,
+          1038,
+          1065
+        ],
+        "width": 228,
+        "height": 211
+      },
+      {
+        "cell": 15,
+        "foot": 360,
+        "scale": 0.8406374501992032,
+        "sourceFoot": [
+          139,
+          251
+        ],
+        "sourceBounds": [
+          1136,
+          814,
+          1406,
+          1065
+        ],
+        "width": 227,
+        "height": 211
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation"
+  },
+  {
+    "name": "WalkBossB",
+    "columns": 4,
+    "rows": 4,
+    "cellSize": 384,
+    "sourceSize": [
+      1302,
+      1208
+    ],
+    "segmentation": "alpha watershed / connected body bounds",
+    "frames": [
+      {
+        "cell": 0,
+        "foot": 360,
+        "scale": 0.8661087866108786,
+        "sourceFoot": [
+          147,
+          239
+        ],
+        "sourceBounds": [
+          20,
+          32,
+          306,
+          271
+        ],
+        "width": 248,
+        "height": 207
+      },
+      {
+        "cell": 1,
+        "foot": 360,
+        "scale": 0.8661087866108786,
+        "sourceFoot": [
+          149,
+          240
+        ],
+        "sourceBounds": [
+          345,
+          32,
+          624,
+          272
+        ],
+        "width": 242,
+        "height": 208
+      },
+      {
+        "cell": 2,
+        "foot": 360,
+        "scale": 0.8661087866108786,
+        "sourceFoot": [
+          172,
+          239
+        ],
+        "sourceBounds": [
+          659,
+          33,
+          961,
+          272
+        ],
+        "width": 262,
+        "height": 207
+      },
+      {
+        "cell": 3,
+        "foot": 360,
+        "scale": 0.8661087866108786,
+        "sourceFoot": [
+          157,
+          235
+        ],
+        "sourceBounds": [
+          1003,
+          36,
+          1275,
+          271
+        ],
+        "width": 236,
+        "height": 204
+      },
+      {
+        "cell": 4,
+        "foot": 360,
+        "scale": 0.6498054474708171,
+        "sourceFoot": [
+          83,
+          257
+        ],
+        "sourceBounds": [
+          71,
+          293,
+          251,
+          550
+        ],
+        "width": 117,
+        "height": 167
+      },
+      {
+        "cell": 5,
+        "foot": 360,
+        "scale": 0.6498054474708171,
+        "sourceFoot": [
+          77,
+          258
+        ],
+        "sourceBounds": [
+          397,
+          293,
+          559,
+          551
+        ],
+        "width": 105,
+        "height": 168
+      },
+      {
+        "cell": 6,
+        "foot": 360,
+        "scale": 0.6498054474708171,
+        "sourceFoot": [
+          81,
+          257
+        ],
+        "sourceBounds": [
+          722,
+          293,
+          889,
+          550
+        ],
+        "width": 109,
+        "height": 167
+      },
+      {
+        "cell": 7,
+        "foot": 360,
+        "scale": 0.6498054474708171,
+        "sourceFoot": [
+          81,
+          257
+        ],
+        "sourceBounds": [
+          1063,
+          293,
+          1224,
+          550
+        ],
+        "width": 105,
+        "height": 167
+      },
+      {
+        "cell": 8,
+        "foot": 360,
+        "scale": 0.725897920604915,
+        "sourceFoot": [
+          113,
+          264
+        ],
+        "sourceBounds": [
+          42,
+          579,
+          298,
+          843
+        ],
+        "width": 186,
+        "height": 192
+      },
+      {
+        "cell": 9,
+        "foot": 360,
+        "scale": 0.725897920604915,
+        "sourceFoot": [
+          120,
+          264
+        ],
+        "sourceBounds": [
+          354,
+          579,
+          621,
+          843
+        ],
+        "width": 194,
+        "height": 192
+      },
+      {
+        "cell": 10,
+        "foot": 360,
+        "scale": 0.725897920604915,
+        "sourceFoot": [
+          116,
+          265
+        ],
+        "sourceBounds": [
+          684,
+          578,
+          953,
+          843
+        ],
+        "width": 195,
+        "height": 192
+      },
+      {
+        "cell": 11,
+        "foot": 360,
+        "scale": 0.725897920604915,
+        "sourceFoot": [
+          112,
+          266
+        ],
+        "sourceBounds": [
+          1019,
+          577,
+          1270,
+          843
+        ],
+        "width": 182,
+        "height": 193
+      },
+      {
+        "cell": 12,
+        "foot": 360,
+        "scale": 0.7236842105263158,
+        "sourceFoot": [
+          134,
+          303
+        ],
+        "sourceBounds": [
+          27,
+          859,
+          292,
+          1162
+        ],
+        "width": 192,
+        "height": 219
+      },
+      {
+        "cell": 13,
+        "foot": 360,
+        "scale": 0.7236842105263158,
+        "sourceFoot": [
+          114,
+          302
+        ],
+        "sourceBounds": [
+          376,
+          859,
+          615,
+          1161
+        ],
+        "width": 173,
+        "height": 219
+      },
+      {
+        "cell": 14,
+        "foot": 360,
+        "scale": 0.7236842105263158,
+        "sourceFoot": [
+          134,
+          309
+        ],
+        "sourceBounds": [
+          673,
+          857,
+          939,
+          1166
+        ],
+        "width": 192,
+        "height": 224
+      },
+      {
+        "cell": 15,
+        "foot": 360,
+        "scale": 0.7236842105263158,
+        "sourceFoot": [
+          124,
+          305
+        ],
+        "sourceBounds": [
+          1013,
+          857,
+          1262,
+          1162
+        ],
+        "width": 180,
+        "height": 221
+      }
+    ],
+    "usage": "distance-driven locomotion; no runtime scale animation"
+  }
+]

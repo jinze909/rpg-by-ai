@@ -1,0 +1,442 @@
+[
+  {
+    "source": "PlayerVanguard",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "1d664df8fca31f957690072fe030ade4d511c6de115cc04e4b4141f7f788f67c",
+    "sha256": "15341fe190de49bc81798d6e18913b8fed95d15bdfdd348a598aecb5586d6089"
+  },
+  {
+    "source": "PlayerVanguard",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "1d664df8fca31f957690072fe030ade4d511c6de115cc04e4b4141f7f788f67c",
+    "sha256": "92544297cb9b9f562d09fe011798dd2b8d2ffcfd6b4d8da5b2aab41aa98c65b4"
+  },
+  {
+    "source": "PlayerRanger",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "f2bcf575d0ffd662005ce147d0d37c6335465f378c528ac4280e94b1ce48cee7",
+    "sha256": "3acdb747ad367b89e04e2afeee1fc9247a07578ae25a60d18cca710e2ef0ff24"
+  },
+  {
+    "source": "PlayerRanger",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "f2bcf575d0ffd662005ce147d0d37c6335465f378c528ac4280e94b1ce48cee7",
+    "sha256": "f2b8850fdec7329dbc6036cfeb0556284f9e976776ec94ad4fa5c21929ffa30a"
+  },
+  {
+    "source": "PlayerArcanist",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "b43ccb56b54971125c8af18b00155107d57c46a72e4b82df00ae39febc4f46f5",
+    "sha256": "05173594a5f27dedad7d017bc61d46d59c8ff58395c5b27bb14ed431366aa9ed"
+  },
+  {
+    "source": "PlayerArcanist",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "b43ccb56b54971125c8af18b00155107d57c46a72e4b82df00ae39febc4f46f5",
+    "sha256": "7210692df42578003c70da0a7dc434cf4cf22c2dae11f192c6ac7d02f61b9477"
+  },
+  {
+    "source": "PlayerRear",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "fa4c5e4276d06671df80437563dcd214195f30696f510ab38c3ec31510600d88",
+    "sha256": "26d8aeb2288706fdf0e331314b8a5543f135225f54d9bdbe0781d323fd856aa1"
+  },
+  {
+    "source": "PlayerRear",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "fa4c5e4276d06671df80437563dcd214195f30696f510ab38c3ec31510600d88",
+    "sha256": "10e939fd2e1b58599ea4f312aa256a68779bcf68912e40da9c2c0d79f24ca4fc"
+  },
+  {
+    "source": "PlayerSouth",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "7920c2f5053c243f400e4a943f72d231fdeceb7d833d6ff7342ca82c60db11de",
+    "sha256": "8781ba56f2dff9318b062a206a518fae01cd88b7173518275abd2a9b35226cd9"
+  },
+  {
+    "source": "PlayerSouth",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "7920c2f5053c243f400e4a943f72d231fdeceb7d833d6ff7342ca82c60db11de",
+    "sha256": "1f5f7edf785f5aaec9e19864e735f5bd79bda083029f680533daa44cfafcd126"
+  },
+  {
+    "source": "Monsters",
+    "kind": "flash",
+    "dimensions": [
+      768,
+      384
+    ],
+    "source_sha256": "b2e45535bd044ced0f26bbe4fc67b428a0cd055565d1eaac92becce7fea2cbcb",
+    "sha256": "2d3d77221614fca14bd2eb187924e1197c52c637ab2fad50e4352ea3346c3b98"
+  },
+  {
+    "source": "Monsters",
+    "kind": "outline",
+    "dimensions": [
+      768,
+      384
+    ],
+    "source_sha256": "b2e45535bd044ced0f26bbe4fc67b428a0cd055565d1eaac92becce7fea2cbcb",
+    "sha256": "f9569a5287730a904e6887ec0a9a6bfaa6d17c69bf93b37b287e97b7472cce70"
+  },
+  {
+    "source": "EnemyArcherVertical",
+    "kind": "flash",
+    "dimensions": [
+      576,
+      384
+    ],
+    "source_sha256": "83e95f10b7240cfb6ea661d6ab196042f95189710a4066229499d9c902f6d40d",
+    "sha256": "fb48d232e788ffaff2bea89aeec903b5d3a8ab34a31d26def26a37eb1522368c"
+  },
+  {
+    "source": "EnemyArcherVertical",
+    "kind": "outline",
+    "dimensions": [
+      576,
+      384
+    ],
+    "source_sha256": "83e95f10b7240cfb6ea661d6ab196042f95189710a4066229499d9c902f6d40d",
+    "sha256": "b890b04138d82639cb967f89ed58a39b56094c24e234271995f63dace7952f4f"
+  },
+  {
+    "source": "Bosses",
+    "kind": "flash",
+    "dimensions": [
+      1280,
+      2560
+    ],
+    "source_sha256": "1fa7bb84acfdb92d4424ec565b6a5e1e117a44cb3e9b5d3590f9096ced3ab50d",
+    "sha256": "68452b454817a2d8bfa5ff9acc2594793705179c41731002ba5d43abc7e2c131"
+  },
+  {
+    "source": "Bosses",
+    "kind": "outline",
+    "dimensions": [
+      1280,
+      2560
+    ],
+    "source_sha256": "1fa7bb84acfdb92d4424ec565b6a5e1e117a44cb3e9b5d3590f9096ced3ab50d",
+    "sha256": "20a34978dcba5a2d554653773814272ee2c436099bbc74583a75d03e52bc07fe"
+  },
+  {
+    "source": "CompanionMira",
+    "kind": "flash",
+    "dimensions": [
+      768,
+      1024
+    ],
+    "source_sha256": "42ba579a8a20a8a9e63af72dde5e0238558699f44dd5f4debfbc7b46279b40c3",
+    "sha256": "ba4127d157ee25a3ac743c5932be9a5f29bf11ac68f4101b353256218effbc28"
+  },
+  {
+    "source": "CompanionMira",
+    "kind": "outline",
+    "dimensions": [
+      768,
+      1024
+    ],
+    "source_sha256": "42ba579a8a20a8a9e63af72dde5e0238558699f44dd5f4debfbc7b46279b40c3",
+    "sha256": "d054fc1b961aa70871c05a5e45e8efba4a04615907de15b3264b515c8a8aa75e"
+  },
+  {
+    "source": "CompanionIvo",
+    "kind": "flash",
+    "dimensions": [
+      768,
+      1024
+    ],
+    "source_sha256": "7a77501add618dbe5b6424fc90fb13a426df0119d1f1988eb91478798d0bea28",
+    "sha256": "75c74b2279b08db28aae7c254ddd8a94458c4e0878457fc27abb259e6f65aa2e"
+  },
+  {
+    "source": "CompanionIvo",
+    "kind": "outline",
+    "dimensions": [
+      768,
+      1024
+    ],
+    "source_sha256": "7a77501add618dbe5b6424fc90fb13a426df0119d1f1988eb91478798d0bea28",
+    "sha256": "16954dc377b23f436683d712dc1e00a7b465e8bba5794135984430a1d5078612"
+  },
+  {
+    "source": "CompanionSen",
+    "kind": "flash",
+    "dimensions": [
+      768,
+      1024
+    ],
+    "source_sha256": "539cfe441c326d26d280114d37e13c0d63dcdfc8a9115bfc0488c56d4a00dd77",
+    "sha256": "abd1c92f20d9726e5c275a44bbc5750fa22624f751850a4f9a47f3285402dfe0"
+  },
+  {
+    "source": "CompanionSen",
+    "kind": "outline",
+    "dimensions": [
+      768,
+      1024
+    ],
+    "source_sha256": "539cfe441c326d26d280114d37e13c0d63dcdfc8a9115bfc0488c56d4a00dd77",
+    "sha256": "55015b34be29fa7baa255802b17b4a5b83fe4fb41496b8f520c1154307cbc748"
+  },
+  {
+    "source": "PlayerReactionsRear",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "4c2b5a84c10794e3074debfc1685fb99825164a4b591013c5d8df4a1f59f52c7",
+    "sha256": "f97ddb0e9c859f30d79d265e199d2d3f6913bfdfc9afaf5e33ea153edb6d5086"
+  },
+  {
+    "source": "PlayerReactionsRear",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "4c2b5a84c10794e3074debfc1685fb99825164a4b591013c5d8df4a1f59f52c7",
+    "sha256": "c8dc294573ea9a0d739d67cdbf95b3b93d0c303347ac42e02e2f534bc8c7f722"
+  },
+  {
+    "source": "PlayerReactionsSouth",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "a9ad580f752c29f1845e3defdb76f7b3cd906ba0c0ace1e3a113bd3af09edd2e",
+    "sha256": "adcec1708693b36c02db1c64e2f9c3da5019968e0d2ff72a377f975a1f931c5d"
+  },
+  {
+    "source": "PlayerReactionsSouth",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "a9ad580f752c29f1845e3defdb76f7b3cd906ba0c0ace1e3a113bd3af09edd2e",
+    "sha256": "0d819b2e6452612dc1c322c6571993d45d107fa437b0b23d16529586928d3a9f"
+  },
+  {
+    "source": "WalkVanguard",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "9e6986f22a7a512c42435630a22fb6b5e447c92cff5bb04fd3daa9d708fd5342",
+    "sha256": "f42d7fda496adfce331a3813315c32985712123dc747ab6cbb7f96bcc21c6b14"
+  },
+  {
+    "source": "WalkVanguard",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "9e6986f22a7a512c42435630a22fb6b5e447c92cff5bb04fd3daa9d708fd5342",
+    "sha256": "5302af6fcaf83075427199c8c48086d1c3216de8191587ed07852409ac405956"
+  },
+  {
+    "source": "WalkRanger",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "4b4252364ab64bdfe88517afb55c4de6cad5cddd9945f95e0af6349ab1bc5562",
+    "sha256": "e7c22ec15eedc7b8accc17e39022a907b4e6a9692350540682be7dd5ff444ff1"
+  },
+  {
+    "source": "WalkRanger",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "4b4252364ab64bdfe88517afb55c4de6cad5cddd9945f95e0af6349ab1bc5562",
+    "sha256": "9bdc60b8d901ba35150fb8b3c14512c1767f6b0434951de40071b1aab26ead35"
+  },
+  {
+    "source": "WalkArcanist",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "626847f124345a803b0dc400a5dea88cd2ee98669d027a13cfd1ae3f43c3b38f",
+    "sha256": "3cec12e3d3ccf49e44aaf738d456bb377a5602bea240672678b9ce31eeb946c5"
+  },
+  {
+    "source": "WalkArcanist",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "626847f124345a803b0dc400a5dea88cd2ee98669d027a13cfd1ae3f43c3b38f",
+    "sha256": "215bf8f496fae45118d751558d26f68736ebc95358c7efb2762d97002844fe10"
+  },
+  {
+    "source": "WalkMira",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "0b9305342a723313c7ac21d759ca7470b83df76d0dd39b82886854d9887ef9d9",
+    "sha256": "e4e7d7f46534f11180c12e8742099bd52caaa4d23a29bb0cd2bf66a1b8645165"
+  },
+  {
+    "source": "WalkMira",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "0b9305342a723313c7ac21d759ca7470b83df76d0dd39b82886854d9887ef9d9",
+    "sha256": "1dac60fcc63c9fc8302e03b91754d25dd8a942bfa1d01560e00d45f1e78e23c5"
+  },
+  {
+    "source": "WalkIvo",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "cc3f25be8d48695e1591605c8d28e840e1cf7ab54d23fee058a32c12d2c1fdeb",
+    "sha256": "0aa7badbdfd028632a8187f541a4f8d93ab715fc4228e6d3d052e81bb8f173d5"
+  },
+  {
+    "source": "WalkIvo",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "cc3f25be8d48695e1591605c8d28e840e1cf7ab54d23fee058a32c12d2c1fdeb",
+    "sha256": "b98e53d332eeb63263b9e3ec475dc16fbb110831eb3b8578f5acb0b90ee590f1"
+  },
+  {
+    "source": "WalkSen",
+    "kind": "flash",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "31750e0e163d3dca3a873b1264c131fd87c335535e03f1422ac51c28bc644dbc",
+    "sha256": "e2129fd8b34ef700fd811cd501b5adc8534297fcbea68fa6306d7f58dc830448"
+  },
+  {
+    "source": "WalkSen",
+    "kind": "outline",
+    "dimensions": [
+      1024,
+      768
+    ],
+    "source_sha256": "31750e0e163d3dca3a873b1264c131fd87c335535e03f1422ac51c28bc644dbc",
+    "sha256": "e3c75037e63e0533371e3282c376bc5b6dbcf460103702e4ce70e5165b75845a"
+  },
+  {
+    "source": "WalkMonsters",
+    "kind": "flash",
+    "dimensions": [
+      768,
+      576
+    ],
+    "source_sha256": "959a177b1dc1f247f86cfb789433993222cf657fdff3ce16c5e2d752857cf4f7",
+    "sha256": "40512831805baf9104c0c1f48449adf92c1827a67eb9a9c858fe4967598fe517"
+  },
+  {
+    "source": "WalkMonsters",
+    "kind": "outline",
+    "dimensions": [
+      768,
+      576
+    ],
+    "source_sha256": "959a177b1dc1f247f86cfb789433993222cf657fdff3ce16c5e2d752857cf4f7",
+    "sha256": "4d4fe4c26c5344027fa7c79ac04cf17a006c878b78f774c156cff92607dd181a"
+  },
+  {
+    "source": "WalkBossA",
+    "kind": "flash",
+    "dimensions": [
+      1536,
+      1536
+    ],
+    "source_sha256": "ce7755be99ad4ebbec30554b96aaadf2db28aec2eba973dff94504da2d28d760",
+    "sha256": "0cc17d7a065780f9e6a6d3c0941ff6a8599acdb329ae52d447847bd611856852"
+  },
+  {
+    "source": "WalkBossA",
+    "kind": "outline",
+    "dimensions": [
+      1536,
+      1536
+    ],
+    "source_sha256": "ce7755be99ad4ebbec30554b96aaadf2db28aec2eba973dff94504da2d28d760",
+    "sha256": "b4c794fc2332a9fdc094a90785b495ccbf9f6bd28070c8e2f13345eeaa8f7621"
+  },
+  {
+    "source": "WalkBossB",
+    "kind": "flash",
+    "dimensions": [
+      1536,
+      1536
+    ],
+    "source_sha256": "3538aad4acaf09d18b0a6f0edae25cd2f22727b7a7e250e1a4db5cd0d0df8bf1",
+    "sha256": "77352128b9dac0da4a4d2a4246e165881cbfeffa668002af36ab69bc996c205a"
+  },
+  {
+    "source": "WalkBossB",
+    "kind": "outline",
+    "dimensions": [
+      1536,
+      1536
+    ],
+    "source_sha256": "3538aad4acaf09d18b0a6f0edae25cd2f22727b7a7e250e1a4db5cd0d0df8bf1",
+    "sha256": "8fbc7f69fba5f0703a0b3fe2d09b8fa55f5339240f6124a7f2e68f9d88812482"
+  }
+]

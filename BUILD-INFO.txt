@@ -1,0 +1,7 @@
+Starfall Frontier — Delayed skill values, frost pulse clock, hit ownership and recovery guards
+Exact commit: see BUILD-INFO.json in the packaged project.
+Unity: 2022.3.53f1; one-line ProjectVersion.txt, no C1.
+62 Core groups, including 18,000 mixed-state frames across all three classes. Exact layout counts: docs/QA-REPORT.json.
+22 registered actor atlases; 44 pixel-exact prepared masks; 292 pixel visibility bounds; reproducible public import.
+Native Unity playtesting, audio audition, physical controller and frame-rate validation were not performed.
+See docs/DELAYED-SKILL-RECOVERY-BUGFIX.md, docs/STATE-BOUNDARY-BUGFIX.md and docs/QA-REPORT.json.

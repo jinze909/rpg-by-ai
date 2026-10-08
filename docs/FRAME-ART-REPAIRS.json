@@ -1,0 +1,37 @@
+{
+  "accepted": {
+    "WalkMonsters": "三角色四帧像素行走循环.png",
+    "WalkBossA": "四角色四帧像素行走图.png",
+    "WalkBossB": "四角色像素行走循环图.png",
+    "PlayerReactionsRear": "金发英雄背向动作精灵表.png",
+    "PlayerReactionsSouth": "金发英雄三套装备动作精灵表.png"
+  },
+  "provenance": "Recovered authored frame repairs, individually reviewed against original idle/attack sprites; source images retained.",
+  "reaction_import": {
+    "PlayerReactionsRear": {
+      "sourceColumns": 4,
+      "keepColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mirror": false,
+      "mirrorRows": [
+        false,
+        true,
+        true
+      ]
+    },
+    "PlayerReactionsSouth": {
+      "sourceColumns": 4,
+      "keepColumns": [
+        0,
+        1,
+        2,
+        3
+      ],
+      "mirror": false
+    }
+  }
+}

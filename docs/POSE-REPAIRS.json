@@ -1,0 +1,145 @@
+{
+  "PlayerArcanist": {
+    "1": {
+      "source": "RepairMageBackIdle",
+      "columns": 1,
+      "rows": 1,
+      "cell": 0
+    }
+  },
+  "PlayerVanguard": {
+    "3": {
+      "source": "RepairVanguardWalk",
+      "columns": 1,
+      "rows": 1,
+      "cell": 0
+    }
+  },
+  "PlayerRear": {
+    "11": {
+      "source": "RepairMageRear",
+      "columns": 1,
+      "rows": 1,
+      "cell": 0
+    }
+  },
+  "PlayerSouth": {
+    "4": {
+      "source": "RepairRangerSouth",
+      "columns": 4,
+      "rows": 1,
+      "cell": 0
+    },
+    "5": {
+      "source": "RepairRangerSouth",
+      "columns": 4,
+      "rows": 1,
+      "cell": 1
+    },
+    "6": {
+      "source": "RepairRangerSouth",
+      "columns": 4,
+      "rows": 1,
+      "cell": 2
+    },
+    "7": {
+      "source": "RepairRangerSouth",
+      "columns": 4,
+      "rows": 1,
+      "cell": 3
+    }
+  },
+  "Monsters": {
+    "10": {
+      "source": "RepairArcherHit",
+      "columns": 1,
+      "rows": 1,
+      "cell": 0
+    },
+    "11": {
+      "source": "EnemyArcherVertical",
+      "columns": 3,
+      "rows": 2,
+      "cell": 5,
+      "reference_cell": 2
+    }
+  },
+  "EnemyArcherVertical": {
+    "4": {
+      "source": "RepairArcherHit",
+      "columns": 1,
+      "rows": 1,
+      "cell": 0
+    }
+  },
+  "FieldProps": {
+    "1": {
+      "source": "RepairBoats",
+      "columns": 2,
+      "rows": 1,
+      "cell": 0
+    },
+    "10": {
+      "source": "RepairBoats",
+      "columns": 2,
+      "rows": 1,
+      "cell": 1
+    }
+  },
+  "CompanionMira": {
+    "0": {
+      "source": "RepairCompanionMira",
+      "columns": 3,
+      "rows": 1,
+      "cell": 0
+    },
+    "6": {
+      "source": "RepairCompanionMira",
+      "columns": 3,
+      "rows": 1,
+      "cell": 1
+    },
+    "11": {
+      "source": "RepairCompanionMira",
+      "columns": 3,
+      "rows": 1,
+      "cell": 2
+    }
+  },
+  "CompanionSen": {
+    "6": {
+      "source": "RepairCompanionSen",
+      "columns": 3,
+      "rows": 1,
+      "cell": 0
+    },
+    "7": {
+      "source": "RepairCompanionSen",
+      "columns": 3,
+      "rows": 1,
+      "cell": 1
+    },
+    "11": {
+      "source": "RepairCompanionSen",
+      "columns": 3,
+      "rows": 1,
+      "cell": 2
+    }
+  },
+  "CompanionIvo": {
+    "5": {
+      "source": "CompanionIvo",
+      "columns": 3,
+      "rows": 4,
+      "cell": 4
+    }
+  },
+  "Bosses": {
+    "8": {
+      "source": "WalkBossA",
+      "columns": 4,
+      "rows": 4,
+      "cell": 8
+    }
+  }
+}
