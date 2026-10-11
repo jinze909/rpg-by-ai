@@ -1,6 +1,6 @@
 # Repository RPG skills
 
-Eight reviewed skill packages are committed here so a fresh Codex Cloud or GitHub Actions checkout can read them without depending on a previous host snapshot. Use the repository root as the working directory. Enumerate `*/SKILL.md`, read the complete relevant skill plus necessary references, and record actual application in SKILLS_USAGE.md each round.
+Eight reviewed skill packages are committed here so a fresh Codex Cloud or GitHub Actions checkout can read them without depending on a previous host snapshot. Use the repository root as the working directory. Enumerate `*/SKILL.md`; read the relevant skill and its references once when a task needs it, then only re-read what the current task directly requires. Do not re-read all skills or log SKILLS_USAGE every round.
 
 The user has authorized game development. Preserve accepted design and user edits, follow repository AGENTS.md, validate actual behavior, never force push, and separate unavailable or unrun checks from passes.
 
