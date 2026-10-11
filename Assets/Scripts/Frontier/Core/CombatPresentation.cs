@@ -23,6 +23,47 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
+        // A single short-lived intent bridges the end of a swing or dodge.
+        // It is never saved, and captures combat values only when the cast starts.
+        public const float SkillBufferWindow = .20f;
+        private sealed class SkillIntent
+        {
+            public float remaining;
+            public Point direction;
+            public Point? target;
+            public int weapon, profession, style, technique;
+        }
+        private SkillIntent bufferedSkill;
+        public bool ActionTransitionBlocked
+        {
+            get { return dashTime > 0 || hitStop > 0 || playerHitTime > 0 || playerAction != null && PlayerPhase != ActionPhase.Recovery; }
+        }
+        public void ClearBufferedSkill() { bufferedSkill = null; }
+        private float SkillReadyDelay()
+        {
+            float delay = Math.Max(dashTime, playerHitTime);
+            ActorAction action = playerAction;
+            if (action != null)
+            {
+                float actionDelay = Math.Max(0, action.contact + .1f - action.elapsed);
+                if (!action.released) actionDelay += playerHitTime;
+                delay = Math.Max(delay, actionDelay);
+            }
+            return delay;
+        }
+        private void TickBufferedSkill(float dt, float readyDelay)
+        {
+            SkillIntent intent = bufferedSkill;
+            if (intent == null) return;
+            // A contact reached during this tick may have started hit stop.
+            // Preserve that pose; dispatch before the next held basic attack.
+            float remaining = intent.remaining;
+            intent.remaining -= dt;
+            // Recovery may fall inside the final valid tick. Compare its actual
+            // boundary with the old lifetime, rather than losing Q at 30 fps.
+            if (!ActionTransitionBlocked && readyDelay <= remaining + .00001f) StartSkill(intent.direction, intent.target);
+            else if (intent.remaining <= .00001f) ClearBufferedSkill();
+        }
         public ActorAction playerAction;
         public ActorAction companionAction;
         public Point companionAim;
@@ -40,16 +81,19 @@ namespace Starfall
 
         private void ResetCombatPresentation()
         {
+            ClearBufferedSkill();
             playerAction = null; fallen.Clear(); playerHitTime = playerFlash = deathTime = hitStop = impactShake = finaleDelay = 0;
             playerRecoil = movementDirection = new Point();
             fallenPlayerWeapon=-1;fallenPlayerFacing=new Point();
             playerHitFacing=new Point();
         }
-        private void CancelAction() { playerAction = null; }
+        private void CancelAction() { playerAction = null; ClearBufferedSkill(); }
         private void ValidateActionProfile()
         {
             ActorAction a = playerAction;
             if (a != null && (a.equippedWeapon != save.weapon || a.profession != save.profession || a.style != Style || a.technique != save.technique)) CancelAction();
+            SkillIntent intent = bufferedSkill;
+            if (intent != null && (intent.weapon != save.weapon || intent.profession != save.profession || intent.style != Style || intent.technique != save.technique)) ClearBufferedSkill();
         }
         private void BeginAction(string kind, float damage, float duration, float contact)
         {

@@ -3,6 +3,142 @@ namespace Starfall.Tests
 {
     public static partial class CoreChecks
     {
+        public static void HeldAttacksPreserveSkillContactPoses(Campaign data)
+        {
+            foreach(float step in new[]{.01f,.02f,.05f}) for(int profession=0;profession<3;profession++)
+            {
+                var g=Quiet(data,profession);g.Skill(new Point(1,0));ActorAction skill=g.playerAction;
+                bool sawContact=false,sawFollowup=false;
+                for(int frame=0;frame<100;frame++)
+                {
+                    g.Tick(step,new Point());bool active=g.playerAction==skill&&g.PlayerPhase==ActionPhase.Active;
+                    g.Attack(new Point(0,-1)); // Production input samples held attack after Tick.
+                    if(active)
+                    {
+                        sawContact=true;
+                        Check(g.playerAction==skill&&g.PlayerPose==7,"Held attack cannot replace Q's visible contact for profession "+profession+" at timestep "+step);
+                    }
+                    if(g.playerAction!=skill)
+                    {
+                        Check(skill.released&&skill.elapsed+.00001f>=skill.contact+.1f,"A followup waits for the complete skill contact interval");
+                        sawFollowup=g.playerAction!=null&&g.playerAction.kind=="attack";break;
+                    }
+                }
+                Check(sawContact&&sawFollowup,"Q shows its release pose, then continuous attack resumes without another button press");
+            }
+            var sameFrame=Quiet(data);sameFrame.Skill(new Point(0,-1));sameFrame.Attack(new Point(1,0));
+            Check(sameFrame.playerAction.kind=="skill"&&sameFrame.save.energy==60,"Discrete Q has priority over the held attack sampled in the same frame");
+        }
+        public static void BufferedSkillsRetainIntentAndJoinRecovery(Campaign data)
+        {
+            foreach(float step in new[]{.01f,.02f,.05f}) for(int profession=0;profession<3;profession++) foreach(bool afterContact in new[]{false,true})
+            {
+                var g=Quiet(data,profession);g.Attack(new Point(1,0));ActorAction attack=g.playerAction;
+                Advance(g,attack.contact+(afterContact?.02f:-.04f));
+                Point target=new Point(21,12),direction=(target-g.Position).Normalized;
+                g.SetAimTarget(target);g.Skill(direction);
+                Check(g.playerAction==attack&&g.skillCooldown<=0&&g.save.energy==100,"Queuing Q during preparation or contact cannot cancel the visible attack or spend energy early");
+                g.SetAimTarget(new Point(5,18));g.SetAim(new Point(-1,0));g.save.talents[0]++;
+                ActorAction skill=null;
+                for(int frame=0;frame<100;frame++)
+                {
+                    g.Tick(step,new Point(),new Point(-1,0));g.Attack(new Point(-1,0));
+                    if(g.playerAction!=attack)
+                    {
+                        skill=g.playerAction;
+                        Check(attack.elapsed+.00001f>=attack.contact+.1f,"A buffered Q preserves the preceding attack's complete contact interval");break;
+                    }
+                }
+                Check(skill!=null&&skill.kind=="skill","One discrete Q near contact starts at recovery despite continuously held attack");
+                Check((skill.direction-direction).Length<.001f&&skill.target.HasValue&&(skill.target.Value-target).Length<.001f,"Buffered Q keeps the original direction and pointer target");
+                Check(Math.Abs(skill.damage-g.Damage)<.001f&&Math.Abs(skill.impact.criticalChance-.085f)<.001f,"Combat values are captured when Q actually starts, after the queued intent");
+                Check(Math.Abs(g.save.energy-60)<.001f&&Math.Abs(g.skillCooldown-3.5f)<.001f,"Buffered Q pays its original cost and starts cooldown exactly once");
+                if(profession==1)
+                {
+                    while(!skill.released)g.Tick(.01f,new Point(),new Point(-1,0));
+                    var volley=g.projectiles.FindAll(p=>p.technique);
+                    Point expected=(target-GameCore.WeaponOrigin(g.Position,1,direction)).Normalized;
+                    Check(volley.Count==5&&(volley[2].velocity.Normalized-expected).Length<.001f,"The actual queued volley uses the retained target and authored muzzle");
+                }
+            }
+            var latest=Quiet(data,1);latest.Dash(new Point(1,0));latest.Skill(new Point(0,-1));
+            Point lastTarget=new Point(20,16);latest.SetAimTarget(lastTarget);latest.Skill(new Point(0,1));
+            Advance(latest,.2f);
+            Check(latest.playerAction!=null&&latest.playerAction.kind=="skill"&&latest.playerAction.direction.y==1&&latest.playerAction.target.HasValue&&(latest.playerAction.target.Value-lastTarget).Length<.001f,"Repeated Q replaces one pending intent with the latest direction and target");
+            Advance(latest,4.5f);Check(latest.playerAction==null&&latest.skillCooldown<=0,"A consumed input cannot recast after cooldown");
+        }
+        public static void BufferedSkillsHaveBoundedLifetimeAndResourceChecks(Campaign data)
+        {
+            var early=Quiet(data,2);early.Attack(new Point(1,0));early.Skill(new Point(0,-1));Advance(early,1);
+            Check(early.skillCooldown<=0&&early.save.energy==100&&!early.effects.Exists(e=>e.kind=="burst"),"Q pressed at the start of long staff preparation expires instead of autocasting much later");
+            var frozen=Quiet(data,1);frozen.hitStop=.5f;frozen.Skill(new Point(0,-1));
+            for(int frame=0;frame<9;frame++)frozen.Tick(.05f,new Point());
+            Check(frozen.playerAction==null&&frozen.skillCooldown==0&&frozen.save.energy==100,"Hitstop freezes a ready Q intent without spending or advancing its short lifetime");
+            for(int frame=0;frame<5&&frozen.playerAction==null;frame++)frozen.Tick(.05f,new Point());
+            Check(frozen.playerAction!=null&&frozen.playerAction.kind=="skill"&&frozen.save.energy==60,"The retained Q starts once when hitstop ends");
+            foreach(float step in new[]{.01f,.02f,.05f})
+            {
+                var dodge=Quiet(data);dodge.Dash(new Point(1,0));dodge.Skill(new Point(0,-1));
+                for(int frame=0;frame<30&&dodge.playerAction==null;frame++)dodge.Tick(step,new Point());
+                Check(dodge.dashTime==0&&dodge.playerAction!=null&&dodge.playerAction.kind=="skill"&&Math.Abs(dodge.save.energy-42.8f)<1,"Same-frame Dash then Q waits for the dodge and spends once at timestep "+step);
+            }
+            var cancelled=Quiet(data);cancelled.Attack(new Point(1,0));Advance(cancelled,.12f);cancelled.Skill();cancelled.Dash(new Point(1,0));Advance(cancelled,.5f);
+            Check(cancelled.skillCooldown<=0&&cancelled.playerAction==null,"A new dodge clears the earlier queued Q");
+            foreach(bool cooldownFailure in new[]{false,true})
+            {
+                var rejected=Quiet(data);rejected.Attack(new Point(1,0));Advance(rejected,.12f);
+                rejected.skillCooldown=cooldownFailure?.01f:0;rejected.save.energy=cooldownFailure?100:39;rejected.toast="";float energy=rejected.save.energy;
+                rejected.Skill();Check(rejected.save.energy==energy&&rejected.toast.Length>0,"Unavailable Q gives feedback and does not spend while an attack blocks it");
+                Advance(rejected,.7f);
+                Check(rejected.skillCooldown<=0&&!rejected.effects.Exists(e=>e.kind=="burst"),"Cooldown expiry or later energy regeneration cannot revive a rejected Q");
+            }
+            var spent=Quiet(data);spent.Attack(new Point(1,0));Advance(spent,.12f);spent.Skill();spent.save.energy=0;Advance(spent,.5f);
+            Check(spent.skillCooldown<=0&&!spent.effects.Exists(e=>e.kind=="burst"),"Buffered Q rechecks affordability at dispatch after other spending");
+        }
+        public static void BufferedSkillsRespectVariableFrameDeadlines(Campaign data)
+        {
+            float[][] timesteps={new[]{.033f},new[]{.016f,.033f,.05f},new[]{.01f}};
+            for(int cadence=0;cadence<timesteps.Length;cadence++) foreach(bool withinWindow in new[]{true,false})
+            {
+                var g=Quiet(data,2);g.Attack(new Point(1,0));
+                // Staff recovery starts at .379 seconds. .18 leaves .199,
+                // while .17 leaves .209 and must outlive the .20 input window.
+                Advance(g,withinWindow?.18f:.17f);g.Skill(new Point(0,-1));bool cast=false;
+                for(int frame=0;frame<100;frame++)
+                {
+                    g.Tick(timesteps[cadence][frame%timesteps[cadence].Length],new Point());
+                    if(g.playerAction!=null&&g.playerAction.kind=="skill") {cast=true;break;}
+                }
+                Check(cast==withinWindow,"Buffered Q deadline follows the actual readiness time within a variable frame, cadence "+cadence+" eligible "+withinWindow);
+                if(cast)Check(g.save.energy==60&&g.skillCooldown==3.5f,"Crossing the deadline in a long frame still dispatches the eligible Q exactly once");
+                else Check(g.skillCooldown<=0&&g.save.energy==100,"A readiness time beyond the window cannot gain extra grace from a long frame");
+            }
+            var boundary=Quiet(data,2);boundary.Attack(new Point(1,0));Advance(boundary,.179f);boundary.Skill(new Point(0,-1));
+            for(int frame=0;frame<20;frame++)boundary.Tick(.01f,new Point());
+            Check(boundary.playerAction!=null&&boundary.playerAction.kind=="skill"&&boundary.save.energy==60,"An exact .20-second deadline tolerates accumulated .01-step float residue without dropping Q");
+        }
+        public static void BufferedSkillsClearAtWorldAndProfileBoundaries(Campaign data)
+        {
+            System.Action<GameCore>[] transitions={
+                g=>{g.mode="pause";g.Close();},
+                g=>{g.mode="dialog";g.Close();},
+                g=>g.Equip(0),
+                g=>{g.save.weaponStyles[1]=1;},
+                g=>{g.save.technique=1;},
+                g=>{g.save.profession=2;},
+                g=>g.Enter(0),
+                g=>{g.PrepareSave();g.Load(CloneSave(g.save));},
+                g=>{g.save.health=1;g.invulnerable=0;g.projectiles.Add(new Projectile{position=g.Position,damage=999,source="shot"});g.Tick(.01f,new Point());Check(g.Dying,"Boundary test takes an actual lethal contact");}
+            };
+            for(int boundary=0;boundary<transitions.Length;boundary++)
+            {
+                var g=Quiet(data,1);g.Attack(new Point(1,0));Advance(g,.2f);g.Skill(new Point(0,-1));
+                Check(g.skillCooldown<=0&&g.save.energy==100,"Boundary scenario first has an unspent short Q intent");
+                transitions[boundary](g);Advance(g,1.3f);
+                Check(g.skillCooldown<=0&&g.playerAction==null,"Menu, equipment, profile, travel, load or death cannot release a stale Q, boundary "+boundary);
+                Check(!g.projectiles.Exists(p=>p.technique),"No queued volley escapes into another profile or world, boundary "+boundary);
+            }
+        }
         public static void EffectOriginsAndSources(Campaign data)
         {
             for (int profession = 0; profession < 3; profession++)

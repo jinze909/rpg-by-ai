@@ -9,3 +9,5 @@ jobs:
         run: sudo apt-get update && sudo apt-get install -y mono-mcs
       - name: Run actual C# gameplay checks
         run: python3 tools/run_core_tests.py
+      - name: Check production combat input with offline Unity declarations
+        run: python3 tools/run_combat_input_checks.py

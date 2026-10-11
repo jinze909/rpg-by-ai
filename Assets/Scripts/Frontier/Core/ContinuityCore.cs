@@ -26,7 +26,7 @@ namespace Starfall
         { return Math.Abs(direction.y) > Math.Abs(direction.x) ? direction.y < 0 ? 1 : 2 : 0; }
         public ActionPhase PlayerPhase
         {
-            get { return playerAction == null ? ActionPhase.None : playerAction.elapsed < playerAction.contact ? ActionPhase.Windup : playerAction.elapsed < playerAction.contact + .1f ? ActionPhase.Active : ActionPhase.Recovery; }
+            get { return playerAction == null ? ActionPhase.None : playerAction.elapsed < playerAction.contact ? ActionPhase.Windup : playerAction.elapsed + .00001f < playerAction.contact + .1f ? ActionPhase.Active : ActionPhase.Recovery; }
         }
         public MobilityRule PlayerMobility
         {

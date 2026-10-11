@@ -76,11 +76,13 @@ namespace Starfall
             if (Game.mode == "world" && beganInWorld)
             {
                 Point mouse = MouseVirtual();
+                // Discrete actions take priority over continuously held attacks.
+                // A fresh Q after a dodge is queued; a dodge clears older intent.
+                if ((Input.GetKeyDown(KeyCode.Space) || PadDown(0))) Game.Dash(movement);
+                if ((Input.GetKeyDown(KeyCode.Q) || PadDown(3))) Game.Skill(InputAim(true));
                 if (Input.GetMouseButton(0) && !PointerOverInterface(mouse))
                     Game.Attack(InputAim() ?? Game.aim);
                 if ((Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2))) Game.Attack(InputAim() ?? Game.aim);
-                if ((Input.GetKeyDown(KeyCode.Space) || PadDown(0))) Game.Dash(movement);
-                if ((Input.GetKeyDown(KeyCode.Q) || PadDown(3))) Game.Skill(InputAim(true));
                 if ((Input.GetKeyDown(KeyCode.E) || PadDown(1))) Game.Interact();
                 if (Input.GetKeyDown(KeyCode.F)) Game.Eat();
                 if (Input.GetKeyDown(KeyCode.T)) Game.DrinkTea();
@@ -122,7 +124,7 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) Save(); }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) Game.ClearBufferedSkill(); Save(); } }
         private void OnApplicationFocus(bool focused)
         { if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; Save(); } }
         private void OnApplicationQuit() { Save(); }

@@ -16,7 +16,13 @@ namespace Starfall
         public float attackCooldown, dashTime, dashCooldown, invulnerable, skillCooldown, guardTime;
         public float fishTime, fishCursor, toastTime;
         public int fishHits, fishMisses;
-        public string mode = "title", toast = "";
+        private string currentMode = "title";
+        public string mode
+        {
+            get { return currentMode; }
+            set { currentMode = value; if (value != "world") ClearBufferedSkill(); }
+        }
+        public string toast = "";
         public Conversation conversation;
         private Point dashDirection;
         private int enemyId;
@@ -226,6 +232,7 @@ namespace Starfall
             if (mode == "fish") { fishTime += dt; fishCursor = .5f + .5f * (float)Math.Sin(fishTime * (2.5f + fishHits * .35f)); return; }
             if (mode != "world") return;
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
+            float skillReadyDelay = SkillReadyDelay();
             movementDirection = new Point();
             TickVisuals(dt); if (mode != "world") return; TickGate(dt);
             for (int i = effects.Count - 1; i >= 0; i--) { effects[i].life -= dt; if (effects[i].life <= 0) effects.RemoveAt(i); }
@@ -241,6 +248,7 @@ namespace Starfall
             TickMovement(dt, movement, explicitAim);
             TickAction(dt);
             if (mode != "world" || beganInPractice && !practicing) return;
+            TickBufferedSkill(dt, skillReadyDelay);
             UpdateEnemies(dt); if (Dying) return;
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
             TickExpansion(dt);
@@ -262,7 +270,7 @@ namespace Starfall
         }
         public void Attack(Point direction)
         {
-            if (mode != "world" || Dying || dashTime > 0 || attackCooldown > 0 || playerAction != null && !playerAction.released) return;
+            if (mode != "world" || Dying || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null) return;
             SetAim(direction);
             WeaponProfile profile = Profile(save.weapon, Style);
             if (save.energy < profile.energy) { ActionUnavailable(0, profile.energy); return; }
@@ -275,12 +283,28 @@ namespace Starfall
         public void Skill(Point? direction = null)
         {
             float cost = Relic(4) ? 50 : 40;
-            if (mode != "world" || Dying || dashTime > 0 || playerAction != null && !playerAction.released) return;
+            if (mode != "world" || Dying) return;
+            if (skillCooldown > 0 || save.energy < cost) { ClearBufferedSkill(); ActionUnavailable(skillCooldown, cost); return; }
+            Point facing = direction.HasValue && Finite(direction.Value.x) && Finite(direction.Value.y) && direction.Value.Length > .05f ? direction.Value.Normalized : aim;
+            if (ActionTransitionBlocked)
+            {
+                bufferedSkill = new SkillIntent { remaining = SkillBufferWindow, direction = facing, target = aimTarget,
+                    weapon = save.weapon, profession = save.profession, style = Style, technique = save.technique };
+                return;
+            }
+            StartSkill(facing, aimTarget);
+        }
+        private void StartSkill(Point direction, Point? target)
+        {
+            float cost = Relic(4) ? 50 : 40;
+            ClearBufferedSkill();
             if (skillCooldown > 0 || save.energy < cost) { ActionUnavailable(skillCooldown, cost); return; }
-            if (direction.HasValue) SetAim(direction.Value);
+            SetAim(direction);
             save.energy -= cost; skillCooldown = 3.5f;
             if (Relic(4)) save.health = Math.Min(save.maxHealth, save.health + 8);
-            BeginAction("skill", Damage, .62f, .28f);
+            Point? liveTarget = aimTarget;
+            try { aimTarget = target; BeginAction("skill", Damage, .62f, .28f); }
+            finally { aimTarget = liveTarget; }
         }
         private void ResolveSkill(ActorAction action)
         {
