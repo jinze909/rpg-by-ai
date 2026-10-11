@@ -26,8 +26,12 @@ namespace Starfall
         { return Math.Abs(direction.y) > Math.Abs(direction.x) ? direction.y < 0 ? 1 : 2 : 0; }
         public ActionPhase PlayerPhase
         {
-            get { return playerAction == null ? ActionPhase.None : playerAction.elapsed < playerAction.contact ? ActionPhase.Windup : playerAction.elapsed + .00001f < playerAction.contact + .1f ? ActionPhase.Active : ActionPhase.Recovery; }
+            // TickAction's release event is the shared truth for both damage and
+            // animation, including contacts reached through its float tolerance.
+            get { return playerAction == null ? ActionPhase.None : !playerAction.released ? ActionPhase.Windup : playerAction.elapsed + .00001f < playerAction.contact + .1f ? ActionPhase.Active : ActionPhase.Recovery; }
         }
+        public bool RecoveryWalking
+        { get { return playerAction != null && PlayerPhase == ActionPhase.Recovery && ActuallyMoving && !Dying && dashTime <= 0 && playerHitTime <= 0; } }
         public MobilityRule PlayerMobility
         {
             get
@@ -45,7 +49,7 @@ namespace Starfall
                 if(Dying&&fallenPlayerWeapon>=0)return fallenPlayerFacing;
                 if(playerHitTime>0&&playerHitFacing.Length>.05f)return playerHitFacing;
                 if(dashTime>0)return dashDirection;
-                if(playerAction!=null&&!(PlayerPhase==ActionPhase.Recovery&&ActuallyMoving))return playerAction.direction;
+                if(playerAction!=null&&!RecoveryWalking)return playerAction.direction;
                 return ActuallyMoving?locomotionFacing:aim;
             }
         }

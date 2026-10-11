@@ -377,7 +377,7 @@ namespace Starfall
             if (practicing) { Notify("观察红圈：在命中前闪避，或闪到圈外。练习不会受伤。", "Read the red circle: dodge before impact or leave its area. Practice cannot hurt you."); return; }
             float multiplier = save.difficulty == 0 ? .45f : save.difficulty == 2 ? 1.4f : 1;
             float armor = (guardTime > 0 ? .45f : 1) * (1 - save.talents[1] * .035f) * (InAbyss ? 1 - save.boons[2] * .12f : 1) * (Relic(5) ? 1.15f : 1);
-            playerHitFacing=VisualFacing;
+            playerHitFacing=VisualFacing; playerHitWeapon=AppearanceWeapon;
             Point reaction = incoming ?? VisualFacing * -1;
             if (reaction.Length < .001f) reaction = VisualFacing * -1;
             save.health -= damage * multiplier * armor; invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;

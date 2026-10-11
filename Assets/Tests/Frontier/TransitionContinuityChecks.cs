@@ -3,6 +3,80 @@ namespace Starfall.Tests
 {
     public static partial class CoreChecks
     {
+        public static void ReleasedContactsSelectVisibleActivePoses(Campaign data)
+        {
+            foreach(float step in new[]{.02f,.04f}) for(int profession=0;profession<3;profession++)
+            {
+                var g=Quiet(data,profession);g.Skill(new Point(1,0));ActorAction skill=g.playerAction;
+                int frames=step==.02f?14:7;
+                for(int frame=0;frame<frames-1;frame++)g.Tick(step,new Point());
+                Check(!skill.released&&g.PlayerPhase==ActionPhase.Windup&&g.PlayerPose==6,"Q retains its authored preparation before contact");
+                g.Tick(step,new Point());
+                Check(skill.released&&g.PlayerPhase==ActionPhase.Active&&g.PlayerPose==7,"Q's actual release selects Active and the contact pose despite float residue, profession "+profession+" step "+step);
+                Check(profession==1?g.projectiles.Count==5:g.effects.Exists(e=>e.kind=="burst"),"The visible Q contact corresponds to its actual volley or burst event");
+            }
+            for(int weapon=0;weapon<3;weapon++) for(int style=0;style<3;style++) foreach(int slices in new[]{11,17})
+            {
+                var g=Quiet(data,weapon);g.save.weaponStyles[weapon]=style;g.Attack(new Point(1,0));ActorAction attack=g.playerAction;
+                float step=attack.contact/slices;
+                for(int frame=0;frame<slices-1;frame++)g.Tick(step,new Point());
+                Check(!attack.released&&g.PlayerPhase==ActionPhase.Windup,"Variable weapon/style contact stays pending before its release boundary");
+                g.Tick(step,new Point());
+                int pose=weapon==0&&style==1?7:5;
+                Check(attack.released&&g.PlayerPhase==ActionPhase.Active&&g.PlayerPose==pose,"Actual contact governs the light/heavy release pose across variable weapon/style timestep, weapon "+weapon+" style "+style+" slices "+slices);
+            }
+        }
+        public static void WalkingSkillRecoveryRestoresEquippedAppearance(Campaign data)
+        {
+            foreach(int equipped in new[]{1,2}) foreach(Point direction in new[]{new Point(1,0),new Point(0,-1),new Point(0,1)})
+            {
+                var g=Quiet(data);g.save.flags.Add("weapon_"+equipped);g.Equip(equipped);g.Skill(direction);
+                ActorAction skill=g.playerAction;ImpactProfile impact=skill.impact;float damage=skill.damage;
+                Check(g.AppearanceWeapon==0&&g.PlayerPose==6,"Cross-equipped Vanguard Q prepares with its actual class outfit");
+                while(g.PlayerPhase!=ActionPhase.Recovery)g.Tick(.01f,new Point());
+                Check(g.AppearanceWeapon==0&&!g.ActuallyMoving&&g.PlayerPose==7,"Standing Q recovery retains its class release outfit");
+                Point motion=new Point(-direction.y,direction.x),before=g.Position;
+                g.Tick(.01f,motion,direction*-1);
+                Check((g.Position-before).Length>.001f&&g.ActuallyMoving&&g.PlayerPose>=2&&g.PlayerPose<=3,"Vanguard recovery restores collision-safe walking and its locomotion pose together");
+                Check(g.AppearanceWeapon==equipped&&(g.VisualFacing-motion).Length<.001f,"Walking recovery returns body equipment and facing to the actual equipped weapon");
+                Check(g.playerAction==skill&&skill.damage==damage&&(skill.direction-direction).Length<.001f&&object.ReferenceEquals(skill.impact,impact)&&skill.weapon==0&&skill.equippedWeapon==equipped,"Appearance handoff cannot mutate the prepared Q's damage, direction, impact or equipment identity");
+            }
+            foreach(int profession in new[]{1,2})
+            {
+                var g=Quiet(data,profession);g.Equip(0);g.Skill(new Point(0,-1));ActorAction skill=g.playerAction;
+                while(g.PlayerPhase!=ActionPhase.Recovery)g.Tick(.01f,new Point());
+                Point before=g.Position;g.Tick(.01f,new Point(1,0));
+                Check((g.Position-before).Length<.001f&&!g.ActuallyMoving&&g.PlayerPose==7&&g.AppearanceWeapon==profession,"Ranged Q keeps its established stationary recovery and class equipment");
+                while(g.playerAction==skill)g.Tick(.01f,new Point(1,0));
+                g.Tick(.01f,new Point(1,0));Check(g.ActuallyMoving&&g.AppearanceWeapon==0,"Completed ranged Q returns to walking in the saved equipment");
+            }
+        }
+        public static void RecoveryReactionsRetainDisplayedEquipment(Campaign data)
+        {
+            foreach(int equipped in new[]{1,2}) for(int state=0;state<3;state++)
+            {
+                var g=Quiet(data);g.save.flags.Add("weapon_"+equipped);g.Equip(equipped);g.Skill(new Point(1,0));
+                ActorAction skill=g.playerAction;ImpactProfile impact=skill.impact;float damage=skill.damage;
+                if(state>0)while(g.PlayerPhase!=ActionPhase.Recovery)g.Tick(.01f,new Point());
+                Point motion=state==2?new Point(0,-1):new Point(),facing=state==2?new Point(0,-1):new Point(1,0);
+                if(state==2)g.Tick(.01f,motion);int displayed=state==2?equipped:0;
+                g.invulnerable=0;g.projectiles.Add(new Projectile{position=g.Position,velocity=new Point(.01f,0),damage=1,source="shot"});g.Tick(.01f,motion,new Point(-1,0));
+                Check(g.playerHitTime>0&&g.PlayerPose==10&&g.AppearanceWeapon==displayed&&(g.VisualFacing-facing).Length<.001f,"Actual recoil keeps the outfit and direction visible at impact, equipment "+equipped+" action state "+state);
+                for(int frame=0;frame<3;frame++)
+                {
+                    g.Tick(.01f,new Point(0,1),new Point(-1,0));
+                    Check(g.AppearanceWeapon==displayed&&(g.VisualFacing-facing).Length<.001f,"Recoil movement and live aim cannot restore an interrupted skill outfit or turn the body");
+                }
+                Check(g.playerAction==skill&&skill.damage==damage&&object.ReferenceEquals(skill.impact,impact)&&skill.direction.x==1,"Reaction presentation cannot rewrite the retained action's combat values");
+                g.PrepareSave();SaveData saved=CloneSave(g.save);var loaded=new GameCore(data,CloneSave(saved));loaded.Start();
+                Check(loaded.playerHitTime==0&&loaded.playerAction==null&&loaded.AppearanceWeapon==equipped,"Loading clears the transient reaction outfit and restores saved equipment");
+                var travelled=new GameCore(data,CloneSave(saved));travelled.Start();travelled.Skill(new Point(1,0));travelled.invulnerable=0;
+                travelled.projectiles.Add(new Projectile{position=travelled.Position,damage=1,source="shot"});travelled.Tick(.01f,new Point());travelled.Enter(0);
+                Check(travelled.playerHitTime==0&&travelled.playerAction==null&&travelled.AppearanceWeapon==equipped,"Travel clears a new class-outfit recoil without changing saved equipment");
+                g.save.health=1;g.invulnerable=0;g.projectiles.Add(new Projectile{position=g.Position,damage=999,source="shot"});g.Tick(.01f,new Point());
+                Check(g.Dying&&g.PlayerPose==11&&g.AppearanceWeapon==displayed&&(g.VisualFacing-facing).Length<.001f,"An actual lethal followup captures the displayed recoil outfit and facing");
+            }
+        }
         public static void StandingRecoveryAndCrossEquipmentDeath(Campaign data)
         {
             Point[] directions={new Point(1,0),new Point(-1,0),new Point(0,-1),new Point(0,1)};

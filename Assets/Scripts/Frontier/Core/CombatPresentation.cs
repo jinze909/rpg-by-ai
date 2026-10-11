@@ -76,8 +76,17 @@ namespace Starfall
         private int fallenPlayerWeapon=-1;
         private Point fallenPlayerFacing;
         private Point playerHitFacing;
+        private int playerHitWeapon = -1;
         public bool Dying { get { return deathTime > 0; } }
-        public int AppearanceWeapon { get { return Dying&&fallenPlayerWeapon>=0?fallenPlayerWeapon:playerAction != null ? playerAction.weapon : save.weapon; } }
+        public int AppearanceWeapon
+        {
+            get
+            {
+                if (Dying && fallenPlayerWeapon >= 0) return fallenPlayerWeapon;
+                if (playerHitTime > 0 && playerHitWeapon >= 0) return playerHitWeapon;
+                return playerAction != null && !RecoveryWalking ? playerAction.weapon : save.weapon;
+            }
+        }
 
         private void ResetCombatPresentation()
         {
@@ -85,7 +94,7 @@ namespace Starfall
             playerAction = null; fallen.Clear(); playerHitTime = playerFlash = deathTime = hitStop = impactShake = finaleDelay = 0;
             playerRecoil = movementDirection = new Point();
             fallenPlayerWeapon=-1;fallenPlayerFacing=new Point();
-            playerHitFacing=new Point();
+            playerHitFacing=new Point(); playerHitWeapon = -1;
         }
         private void CancelAction() { playerAction = null; ClearBufferedSkill(); }
         private void ValidateActionProfile()
@@ -178,8 +187,8 @@ namespace Starfall
                 if (playerHitTime > 0) return 10;
                 if (playerAction != null)
                 {
-                    if (PlayerPhase == ActionPhase.Recovery && ActuallyMoving) return 2 + WalkFrame % 2;
-                    bool ready = playerAction.elapsed < playerAction.contact;
+                    if (RecoveryWalking) return 2 + WalkFrame % 2;
+                    bool ready = PlayerPhase == ActionPhase.Windup;
                     bool heavy = playerAction.weapon == 0 && (playerAction.combo == 2 || playerAction.style == 1);
                     return playerAction.kind == "skill" || heavy ? (ready ? 6 : 7) : (ready ? 4 : 5);
                 }

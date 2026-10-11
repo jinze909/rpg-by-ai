@@ -180,12 +180,129 @@ public static class RuntimeCombatInputChecks
         Console.WriteLine("PASS Runtime pause, inventory and OnApplicationPause discard pending technique intent");
     }
 
+    private static readonly Point[] ActorDirections = {
+        new Point(1, 0), new Point(-1, 0), new Point(0, -1), new Point(0, 1)
+    };
+
+    private static int DrawnFrame(GUI.TextureCall draw)
+    {
+        float left = Math.Min(draw.uv.x, draw.uv.x + draw.uv.width);
+        int column = (int)Math.Floor(left * draw.texture.width / 256 + .0001f);
+        int row = (int)Math.Floor((1 - draw.uv.y - draw.uv.height) * draw.texture.height / 256 + .0001f);
+        return row * 4 + column;
+    }
+
+    private static void CheckPlayerDrawing(FrontierRuntime app, string sheet, int frame, Point direction, bool head = true)
+    {
+        GUI.commands.Clear(); GUI.textureCalls.Clear(); GUI.buttonCalls.Clear();
+        Call(app, "DrawPlayerActor");
+        var body = GUI.textureCalls.Find(draw => draw.texture.name.StartsWith("resource:Frontier/Art/")
+            && !draw.texture.name.Contains("Effects"));
+        Check(body != null && body.texture.name == "resource:Frontier/Art/" + sheet && DrawnFrame(body) == frame,
+            "Actual player rendering must select " + sheet + " frame " + frame);
+        if (head)
+        {
+            var identity = GUI.textureCalls.Find(draw => draw.texture.name == "resource:Frontier/Art/WalkVanguard");
+            Check(identity != null && DrawnFrame(identity) == GameCore.DirectionRow(direction) * 4,
+                "Equipment and action transitions keep the canonical head and its facing source");
+        }
+        // These checks validate source selection, not anatomy or user art acceptance.
+    }
+
+    private static void BeginCrossEquippedQ(FrontierRuntime app, int equipped, Point direction)
+    {
+        Prepare(app, 0); app.Game.Equip(equipped);
+        Mouse(app, app.Game.Position + direction * 4); Input.keys.Add(KeyCode.Q); Update(app);
+        Check(app.Game.playerAction != null && app.Game.playerAction.kind == "skill" && app.Game.playerAction.weapon == 0,
+            "Cross-equipped Vanguard Q still starts its class skill");
+    }
+
+    private static void ReleasedTechniqueDrawsContactFrame(FrontierRuntime app)
+    {
+        for (int profession = 0; profession < 3; profession++)
+        foreach (Point direction in ActorDirections)
+        {
+            Prepare(app, profession); Mouse(app, app.Game.Position + direction * 4);
+            Input.keys.Add(KeyCode.Q); Update(app); Frames(app, 14);
+            ActorAction action = app.Game.playerAction;
+            Check(action != null && action.released, "Fourteen real 20ms ticks reach Q's contact event");
+            Check(app.Game.PlayerPhase == ActionPhase.Active && app.Game.PlayerPose == 7,
+                "The exact released contact tick must display Active/release rather than preparation");
+            int row = GameCore.DirectionRow(direction);
+            string sheet = row == 1 ? "PlayerRear" : row == 2 ? "PlayerSouth"
+                : "Player" + new[] { "Vanguard", "Ranger", "Arcanist" }[profession];
+            CheckPlayerDrawing(app, sheet, row == 0 ? 7 : profession * 4 + 3, direction);
+        }
+        Console.WriteLine("PASS Actual Q contact rendering at the 20ms float boundary for all class/direction selections");
+    }
+
+    private static void MoveDuringQRecovery(FrontierRuntime app, Point direction)
+    {
+        Input.axes["Horizontal"] = direction.x; Input.axes["Vertical"] = -direction.y;
+        Input.held.Add(Math.Abs(direction.x) > 0 ? direction.x > 0 ? KeyCode.D : KeyCode.A
+            : direction.y < 0 ? KeyCode.W : KeyCode.S);
+        Update(app);
+        Check(app.Game.playerAction != null && app.Game.PlayerPhase == ActionPhase.Recovery && app.Game.ActuallyMoving,
+            "The real Q recovery permits actual Vanguard locomotion");
+    }
+
+    private static void RecoveryWalkingRestoresEquippedDrawing(FrontierRuntime app)
+    {
+        foreach (int equipped in new[] { 1, 2 })
+        foreach (Point direction in ActorDirections)
+        {
+            BeginCrossEquippedQ(app, equipped, direction); Frames(app, 20);
+            Check(app.Game.PlayerPhase == ActionPhase.Recovery && !app.Game.ActuallyMoving && app.Game.AppearanceWeapon == 0,
+                "Standing Q recovery retains the skill's sword/shield appearance");
+            int row = GameCore.DirectionRow(direction);
+            CheckPlayerDrawing(app, row == 1 ? "PlayerRear" : row == 2 ? "PlayerSouth" : "PlayerVanguard",
+                row == 0 ? 7 : 3, direction);
+            MoveDuringQRecovery(app, direction);
+            Check(app.Game.AppearanceWeapon == equipped, "Moving recovery immediately restores the currently equipped appearance");
+            CheckPlayerDrawing(app, equipped == 1 ? "WalkRanger" : "WalkArcanist",
+                row * 4 + app.Game.WalkFrame, direction);
+        }
+        Console.WriteLine("PASS Actual standing Q and moving recovery use skill/equipped body sheets with the same canonical head");
+    }
+
+    private static void RecoveryHitAndDeathRetainVisibleEquipment(FrontierRuntime app)
+    {
+        foreach (int equipped in new[] { 1, 2 })
+        foreach (Point direction in ActorDirections)
+        foreach (bool lethal in new[] { false, true })
+        {
+            BeginCrossEquippedQ(app, equipped, direction); Frames(app, 20); MoveDuringQRecovery(app, direction);
+            var game = app.Game; game.invulnerable = 0;
+            if (lethal) game.save.health = 1;
+            game.projectiles.Add(new Projectile { position = game.Position, damage = lethal ? 999 : 1,
+                velocity = new Point(.01f, 0), visual = "enemyOrb", source = "shot" });
+            Update(app);
+            Check(lethal ? game.Dying : game.playerHitTime > 0 && !game.Dying,
+                "A real hostile projectile triggers the intended reaction/death boundary");
+            Check(game.AppearanceWeapon == equipped && (game.VisualFacing - direction).Length < .001f,
+                "Reaction/death captures the equipment and facing actually shown during recovery walking");
+            int row = GameCore.DirectionRow(direction);
+            string sheet = row == 1 ? "PlayerReactionsRear" : row == 2 ? "PlayerReactionsSouth"
+                : "Player" + (equipped == 1 ? "Ranger" : "Arcanist");
+            CheckPlayerDrawing(app, sheet, row == 0 ? lethal ? 11 : 10 : equipped * 4 + (lethal ? 3 : 2), direction, !lethal);
+            Input.Clear(); Mouse(app, game.Position - direction * 4);
+            if (lethal) game.Equip(0);
+            Frames(app, 2);
+            Check(game.AppearanceWeapon == equipped && (game.VisualFacing - direction).Length < .001f,
+                "Recoil motion, live cursor changes and later equipment changes cannot replace the captured reaction/death outfit");
+            CheckPlayerDrawing(app, sheet, row == 0 ? lethal ? 11 : 10 : equipped * 4 + (lethal ? 3 : 2), direction, !lethal);
+        }
+        Console.WriteLine("PASS Actual hostile projectile reactions and deaths preserve the visible recovery equipment/facing");
+    }
+
     public static int Main()
     {
         var app = new FrontierRuntime(); Call(app, "Awake");
         if (app.Game == null) { Console.WriteLine("FAIL Runtime Awake did not load the shipped campaign"); return 1; }
         Action<FrontierRuntime>[] cases = { FreshTechniqueWinsHeldAttack, QueuedTechniqueKeepsAimAndRunsOnce,
-            DashAndTechniqueShareAFrame, HudTechniqueCanQueue, MenuAndApplicationPauseDiscardIntent };
+            DashAndTechniqueShareAFrame, HudTechniqueCanQueue, MenuAndApplicationPauseDiscardIntent,
+            ReleasedTechniqueDrawsContactFrame, RecoveryWalkingRestoresEquippedDrawing,
+            RecoveryHitAndDeathRetainVisibleEquipment };
         int failures = 0;
         foreach (var test in cases)
         {
