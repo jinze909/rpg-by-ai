@@ -528,11 +528,21 @@ namespace Starfall
             }
             tickingProjectiles.Clear();
         }
+        // Story presence is shared by interaction, world drawing and map marks.
+        // Saved quest flags remain the authority; no extra persistent state.
+        public bool IsObjectPresent(WorldObject o)
+        {
+            if (o == null) return false;
+            if (o.kind == "returnscout") return Has("scout_saved");
+            if (o.kind == "scout") return !Has("scout_saved");
+            return true;
+        }
         public WorldObject Nearest()
         {
             WorldObject best = null; float distance = 1.75f;
             foreach (WorldObject o in Map.objects)
             {
+                if (!IsObjectPresent(o)) continue;
                 float d = (Position - new Point(o.x, o.y)).Length;
                 if (d < distance) { distance = d; best = o; }
             }
@@ -548,6 +558,7 @@ namespace Starfall
         }
         public void Talk(WorldObject o)
         {
+            if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
             if (TalkPolish(o)) return;
             if (TalkExpansion(o)) return;

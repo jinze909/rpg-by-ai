@@ -295,6 +295,7 @@ namespace Starfall
         }
         private void DrawObject(WorldObject o)
         {
+            if (!Game.IsObjectPresent(o)) return;
             Point p = ScreenPoint(new Point(o.x, o.y)); string kind = o.kind;
             if (DrawPolishObject(o) || DrawExpansionObject(o)) return;
             if (kind.StartsWith("portal"))
@@ -317,7 +318,6 @@ namespace Starfall
             { PropImage(kind, 0, p.x - 27, p.y - 55, 54, 63, Game.Has("node_" + o.id) ? new Color(.6f, .6f, .6f, .45f) : Color.white); return; }
             if (kind == "rest") { if (Game.save.room != 9) PropImage("table", 0, p.x - 27, p.y - 33, 54, 42); return; }
             if (kind == "routes") return; // The sign and well are already scenery.
-            if (kind == "scout" && Game.Has("scout_saved")) return;
             DrawNpc(kind, new Point(o.x, o.y));
             bool quest = kind == "guild" || (kind == "scout" && !Game.Has("scout_saved")) || (kind == "garden" && !Game.Has("ally_1")) || (kind == "fish" && !Game.Has("ally_2")) || (kind == "forge" && !Game.Has("ally_3"));
             if (quest) Text(p.x - 10, p.y - 77, 20, 26, "!", 22, gold, TextAnchor.MiddleCenter);

@@ -115,7 +115,7 @@ namespace Starfall
         private void MiniTerrain(float x0, float y0, float size)
         {
             for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++) { char t = Game.Map.rows[y][x]; Color c = t == '~' || t == '%' && !Game.LowTide ? PixelArt.C("#315c76") : t == '#' ? PixelArt.C("#566879") : t == '=' ? PixelArt.C("#a09877") : PixelArt.C(Game.Map.color); Box(x0 + x * size, y0 + y * size, size, size, Game.Explored(Game.save.room, x, y) ? c : Color.Lerp(c, ink, .68f)); }
-            foreach (var o in Game.Map.objects) if (o.kind.StartsWith("portal") || Game.Explored(Game.save.room, o.x, o.y)) Box(x0 + o.x * size - 1, y0 + o.y * size - 1, 3, 3, o.kind.StartsWith("portal") ? mint : gold);
+            foreach (var o in Game.Map.objects) if (Game.IsObjectPresent(o) && (o.kind.StartsWith("portal") || Game.Explored(Game.save.room, o.x, o.y))) Box(x0 + o.x * size - 1, y0 + o.y * size - 1, 3, 3, o.kind.StartsWith("portal") ? mint : gold);
             Point? goal = Game.NavigationTarget(); if (goal.HasValue && Game.save.showGuidance) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
         }
         private void DrawInventory()
