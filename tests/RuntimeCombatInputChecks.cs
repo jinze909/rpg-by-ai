@@ -149,11 +149,153 @@ public static class RuntimeCombatInputChecks
                 "Clicking the Q HUD during windup queues without cancelling contact or spending early");
             for (int frame = 0; frame < 12 && app.Game.playerAction == attack; frame++) Update(app);
             ActorAction cast = app.Game.playerAction;
-            Check(cast != null && cast.kind == "skill" && cast.target.HasValue && (cast.target.Value - target).Length < .001f,
-                "HUD Q queue starts with the last world aim instead of the HUD screen position");
+            Check(cast != null && cast.kind == "skill" && !cast.target.HasValue && cast.direction.y < -.999f,
+                "HUD Q queue keeps the last world direction without treating a stale world coordinate or HUD pixel as its target");
         }
         GUI.queuedClick = null; GUI.commands.Clear(); GUI.textureCalls.Clear(); GUI.buttonCalls.Clear();
         Console.WriteLine("PASS Both actual Q HUD layouts queue during ordinary attack and preserve world aim");
+    }
+
+    private static Rect TechniqueHudSlot(bool compact)
+    { return compact ? new Rect(430, 732, 78, 50) : new Rect(354, 699, 109, 75); }
+
+    private static void PointerOverHud(FrontierRuntime app, bool compact)
+    {
+        Set(app, "combatHudTime", compact ? 3f : 0f);
+        Input.mousePosition = new Vector3(500, Screen.height - 745, 0);
+    }
+
+    private static Point WalkPastOldHudTarget(FrontierRuntime app, int profession, bool compact)
+    {
+        Prepare(app, profession);
+        Point target = app.Game.Position + new Point(2, 0);
+        Mouse(app, target); Update(app);
+        Check(app.Game.aimTarget.HasValue && (app.Game.aimTarget.Value - target).Length < .001f,
+            "The HUD regression starts with a real world pointer target");
+        PointerOverHud(app, compact);
+        Input.axes["Horizontal"] = 1; Input.held.Add(KeyCode.D);
+        for (int frame = 0; frame < 80 && app.Game.Position.x < target.x + 1; frame++) Update(app);
+        Input.axes["Horizontal"] = 0; Input.held.Clear(); Update(app);
+        Check(app.Game.Position.x > target.x + .9f && app.Game.aim.x > .999f,
+            "Actual movement crosses the old world target while the HUD retains the rightward aim direction");
+        return target;
+    }
+
+    private static void HudFallbackKeepsRangedActionsFacingForward(FrontierRuntime app)
+    {
+        for (int profession = 1; profession <= 2; profession++)
+        foreach (bool compact in new[] { false, true })
+        foreach (string input in new[] { "J", "Q", "HUD Q" })
+        {
+            WalkPastOldHudTarget(app, profession, compact);
+            if (input == "J") { Input.held.Add(KeyCode.J); Update(app); Input.held.Clear(); }
+            else if (input == "Q") { Input.keys.Add(KeyCode.Q); Update(app); }
+            else
+            {
+                Rect slot = TechniqueHudSlot(compact);
+                Input.mousePosition = new Vector3(slot.x + 10, Screen.height - slot.y - 10, 0);
+                GUI.queuedClick = slot; Call(app, "OnGUI");
+                Check(GUI.queuedClick == null, "The actual Q HUD button consumes the click in both layouts");
+            }
+            ActorAction action = app.Game.playerAction;
+            Check(action != null && action.kind == (input == "J" ? "attack" : "skill")
+                && action.direction.x > .999f && app.Game.VisualFacing.x > .999f,
+                input + " over the HUD prepares in the displayed rightward direction");
+            CheckPlayerDrawing(app, "Player" + (profession == 1 ? "Ranger" : "Arcanist"),
+                input == "J" ? 4 : 6, action.direction);
+            // An accepted action switches the exploration HUD to the compact
+            // layout. Keep the cursor inside a region protected by both layouts.
+            Input.mousePosition = new Vector3(500, Screen.height - 745, 0);
+            for (int frame = 0; frame < 25 && !action.released; frame++) Update(app);
+            Check(action.released, "HUD fallback actions still reach their original contact boundary");
+            if (input == "J" || profession == 1)
+            {
+                Check(app.Game.projectiles.Count == (input == "J" ? 1 : 5),
+                    "The original basic shot or Ranger fan count is unchanged");
+                foreach (Projectile shot in app.Game.projectiles)
+                    Check(shot.friendly && shot.velocity.x > 0,
+                        "A new " + input + " must fire forward rather than reverse toward the old coordinate behind the player");
+            }
+            else Check(app.Game.effects.Exists(effect => effect.kind == "burst" && effect.radius == 4.5f),
+                "Arcanist Q retains its centered nova instead of gaining an invented directional projectile");
+            Check(!action.target.HasValue && !app.Game.aimTarget.HasValue,
+                "Direction-only HUD input cannot capture a stale world target in a new action");
+        }
+        GUI.queuedClick = null;
+        Console.WriteLine("PASS Actual walking past a former target keeps J, Q and both HUD Q layouts coherent for bow/staff without backward shots");
+    }
+
+    private static void HudClearPreservesCapturedActionAndQueuedAim(FrontierRuntime app)
+    {
+        Prepare(app);
+        Point target = app.Game.Position + new Point(0, -4);
+        Mouse(app, target); ActorAction attack = StartBowAttack(app);
+        PointerOverHud(app, false); Update(app);
+        Check(!app.Game.aimTarget.HasValue && attack.target.HasValue && (attack.target.Value - target).Length < .001f,
+            "Clearing HUD live aim leaves the in-progress attack's world target intact");
+        for (int frame = 0; frame < 20 && !attack.released; frame++) Update(app);
+        Projectile arrow = app.Game.projectiles.Find(shot => shot.friendly);
+        Point expected = (target - GameCore.WeaponOrigin(app.Game.Position, 1, attack.direction)).Normalized;
+        Check(arrow != null && (arrow.velocity.Normalized - expected).Length < .001f,
+            "An already-prepared arrow still releases toward its captured target after the pointer enters the HUD");
+
+        Prepare(app); attack = StartBowAttack(app); Frames(app, 9);
+        target = app.Game.Position + new Point(0, -4);
+        Mouse(app, target); Input.keys.Add(KeyCode.Q); Update(app);
+        Check(app.Game.playerAction == attack && app.Game.skillCooldown <= 0,
+            "Q pressed in the world queues before the pointer enters the HUD");
+        PointerOverHud(app, true);
+        for (int frame = 0; frame < 12 && app.Game.playerAction == attack; frame++) Update(app);
+        ActorAction cast = app.Game.playerAction;
+        Check(!app.Game.aimTarget.HasValue && cast != null && cast.kind == "skill"
+            && cast.target.HasValue && (cast.target.Value - target).Length < .001f && cast.direction.y < -.999f,
+            "The queued Q keeps its captured world aim while the HUD clears only the live target");
+        for (int frame = 0; frame < 20 && !cast.released; frame++) Update(app);
+        var volley = app.Game.projectiles.FindAll(shot => shot.friendly && shot.technique);
+        Check(volley.Count == 5, "The immutable buffered Ranger aim releases exactly one fan alongside the original attack arrow");
+        expected = (target - GameCore.WeaponOrigin(app.Game.Position, 1, cast.direction)).Normalized;
+        Check((volley[2].velocity.Normalized - expected).Length < .001f,
+            "The queued fan's center ray retains its original target rather than borrowing the HUD fallback");
+        Console.WriteLine("PASS HUD live-target clearing preserves in-progress action and pre-existing buffered Q target snapshots");
+    }
+
+    private static void WorldPointerAndControllerAimResumeAfterHud(FrontierRuntime app)
+    {
+        foreach (bool compact in new[] { false, true })
+        {
+            Prepare(app); Update(app);
+            Check(app.Game.aimTarget.HasValue, "Fresh HUD click begins with an existing world pointer target");
+            Rect slot = TechniqueHudSlot(compact);
+            Set(app, "combatHudTime", compact ? 3f : 0f);
+            Input.mousePosition = new Vector3(slot.x + 10, Screen.height - slot.y - 10, 0);
+            GUI.queuedClick = slot; Call(app, "OnGUI");
+            Check(GUI.queuedClick == null && app.Game.playerAction != null
+                && app.Game.playerAction.kind == "skill" && app.Game.playerAction.direction.x > .999f
+                && !app.Game.playerAction.target.HasValue && !app.Game.aimTarget.HasValue,
+                "A fresh HUD click clears live target even before the next Update, preserving the last world direction");
+        }
+        WalkPastOldHudTarget(app, 1, false);
+        Point target = app.Game.Position + new Point(0, -4);
+        Mouse(app, target);
+        target = (Point)Call(app, "WorldAtPointer", (Point)Call(app, "MouseVirtual"));
+        Update(app);
+        Input.held.Add(KeyCode.J); Update(app); Input.held.Clear();
+        ActorAction attack = app.Game.playerAction;
+        Check(attack != null && attack.target.HasValue && (attack.target.Value - target).Length < .001f
+            && attack.direction.y < -.999f,
+            "Returning the pointer to the world reacquires a fresh target for the next attack");
+
+        Prepare(app); Update(app); PointerOverHud(app, true);
+        Input.axes["Horizontal"] = -1;
+        Input.keys.Add(KeyCode.JoystickButton2); Input.held.Add(KeyCode.JoystickButton2); Update(app);
+        Input.held.Clear(); Input.axes["Horizontal"] = 0;
+        attack = app.Game.playerAction;
+        Check(attack != null && !attack.target.HasValue && !app.Game.aimTarget.HasValue && attack.direction.x < -.999f,
+            "Controller attack after mouse aiming still uses movement direction without a pointer target");
+        for (int frame = 0; frame < 20 && !attack.released; frame++) Update(app);
+        Check(app.Game.projectiles.Count == 1 && app.Game.projectiles[0].velocity.x < -11.99f,
+            "The controller bow ray still follows the displayed leftward action");
+        Console.WriteLine("PASS Fresh HUD clicks clear live aim before Update; returning world pointer and controller aim remain intact");
     }
 
     private static void MenuAndApplicationPauseDiscardIntent(FrontierRuntime app)
@@ -387,7 +529,8 @@ public static class RuntimeCombatInputChecks
             DashAndTechniqueShareAFrame, HudTechniqueCanQueue, MenuAndApplicationPauseDiscardIntent,
             ReleasedTechniqueDrawsContactFrame, RecoveryWalkingRestoresEquippedDrawing,
             RecoveryHitAndDeathRetainVisibleEquipment, FinalDodgeStepDrawsDodgeInsteadOfOldWalk,
-            FinalDodgeStepYieldsToAcceptedCombatInput };
+            FinalDodgeStepYieldsToAcceptedCombatInput, HudFallbackKeepsRangedActionsFacingForward,
+            HudClearPreservesCapturedActionAndQueuedAim, WorldPointerAndControllerAimResumeAfterHud };
         int failures = 0;
         foreach (var test in cases)
         {

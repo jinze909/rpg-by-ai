@@ -222,7 +222,16 @@ namespace Starfall
         }
         private Point? InputAim(bool technique=false)
         {
-            if(controllerUsed||Game.mode!="world"){Game.SetAimTarget(null);return null;}Point mouse=MouseVirtual();if(PointerOverInterface(mouse))return pointerAimActive?(Point?)Game.aim:null;pointerAimActive=true;
+            if(controllerUsed||Game.mode!="world"){Game.SetAimTarget(null);return null;}
+            Point mouse=MouseVirtual();
+            if(PointerOverInterface(mouse))
+            {
+                // The HUD retains direction, not a world target we can walk past.
+                // Already accepted actions and buffered Q own separate snapshots.
+                Game.SetAimTarget(null);
+                return pointerAimActive?(Point?)Game.aim:null;
+            }
+            pointerAimActive=true;
             Point target=AimTargetAtPointer(mouse),d=target-Game.Position;
             Game.SetAimTarget(target);
             return d.Length>.05f?d:Game.aim;
