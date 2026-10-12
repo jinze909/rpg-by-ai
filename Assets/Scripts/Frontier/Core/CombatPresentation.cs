@@ -90,13 +90,14 @@ namespace Starfall
 
         private void ResetCombatPresentation()
         {
+            dashMovementPresented = false;
             ClearBufferedSkill();
             playerAction = null; fallen.Clear(); playerHitTime = playerFlash = deathTime = hitStop = impactShake = finaleDelay = 0;
             playerRecoil = movementDirection = new Point();
             fallenPlayerWeapon=-1;fallenPlayerFacing=new Point();
             playerHitFacing=new Point(); playerHitWeapon = -1;
         }
-        private void CancelAction() { playerAction = null; ClearBufferedSkill(); }
+        private void CancelAction() { playerAction = null; ClearBufferedSkill(); dashMovementPresented = false; }
         private void ValidateActionProfile()
         {
             ActorAction a = playerAction;
@@ -106,6 +107,7 @@ namespace Starfall
         }
         private void BeginAction(string kind, float damage, float duration, float contact)
         {
+            dashMovementPresented = false;
             playerAction = new ActorAction { kind = kind, damage = damage, duration = duration, contact = contact,
                 direction = aim, target = aimTarget, weapon = kind == "skill" ? save.profession : save.weapon, equippedWeapon = save.weapon, profession = save.profession, style = Style, combo = combo, technique = save.technique,
                 impact = CaptureImpact(kind == "skill" ? save.profession : save.weapon,kind == "attack" ? combo : 0) };
@@ -183,7 +185,7 @@ namespace Starfall
             get
             {
                 if (Dying) return 11;
-                if (dashTime > 0) return 8;
+                if (PresentingDash) return 8;
                 if (playerHitTime > 0) return 10;
                 if (playerAction != null)
                 {

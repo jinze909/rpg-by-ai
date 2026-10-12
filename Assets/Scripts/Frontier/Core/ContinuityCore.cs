@@ -13,6 +13,11 @@ namespace Starfall
         public float walkDistance, gateOpeningTime, recoilSpeed;
         public int footContacts;
         public Point locomotionFacing = new Point(1, 0);
+        // The timer can expire before the last dash displacement is presented.
+        // Keep that moving sample's pose and facing together until the next step.
+        private bool dashMovementPresented;
+        private bool PresentingDash
+        { get { return dashTime > 0 || dashMovementPresented && ActuallyMoving && playerAction == null && playerHitTime <= 0 && !Dying; } }
         // Target, body direction and muzzle are captured together at action start.
         // Continuous flight aim must not select a second body row near 45 degrees.
         public Point? aimTarget;
@@ -48,7 +53,7 @@ namespace Starfall
             {
                 if(Dying&&fallenPlayerWeapon>=0)return fallenPlayerFacing;
                 if(playerHitTime>0&&playerHitFacing.Length>.05f)return playerHitFacing;
-                if(dashTime>0)return dashDirection;
+                if(PresentingDash)return dashDirection;
                 if(playerAction!=null&&!RecoveryWalking)return playerAction.direction;
                 return ActuallyMoving?locomotionFacing:aim;
             }
@@ -87,6 +92,7 @@ namespace Starfall
             }
             Point actual = Position - start;
             movementDirection = actual;
+            dashMovementPresented = wasDashing && actual.Length > .001f;
             bool walking = actual.Length > .001f && !wasDashing && playerHitTime <= 0 && (playerAction == null || PlayerPhase == ActionPhase.Recovery);
             if (walking)
             {

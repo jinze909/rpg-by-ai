@@ -6,6 +6,9 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void FinalMovingDodgePresentation(){CoreChecks.FinalMovingDodgeOwnsPoseAndFacing(Data());}
+        [Test] public void FinalDodgeSimulationBoundaries(){CoreChecks.FinalDodgeFreezesAndClearsAtBoundaries(Data());}
+        [Test] public void FinalDodgeActionAndReactionTakeover(){CoreChecks.FinalDodgeYieldsToActionsAndReactions(Data());}
         [Test] public void ReleaseEventGovernsContactPoses(){CoreChecks.ReleasedContactsSelectVisibleActivePoses(Data());}
         [Test] public void RecoveryWalkingRestoresEquipment(){CoreChecks.WalkingSkillRecoveryRestoresEquippedAppearance(Data());}
         [Test] public void RecoveryReactionEquipmentIdentity(){CoreChecks.RecoveryReactionsRetainDisplayedEquipment(Data());}

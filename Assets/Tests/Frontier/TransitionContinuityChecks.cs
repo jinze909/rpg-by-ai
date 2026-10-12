@@ -3,6 +3,84 @@ namespace Starfall.Tests
 {
     public static partial class CoreChecks
     {
+        public static void FinalMovingDodgeOwnsPoseAndFacing(Campaign data)
+        {
+            float[] steps={.01f,.02f,.033f,.05f};int[] expectedFrames={18,10,6,4};
+            for(int rate=0;rate<steps.Length;rate++)foreach(bool heldMovement in new[]{false,true})
+            {
+                var g=Quiet(data);g.Tick(.01f,new Point(-1,0));
+                Point start=g.Position;float gait=g.walkDistance;int contacts=g.footContacts;
+                g.save.energy=100;g.Dash(new Point(1,0));float step=steps[rate];int frames=0;
+                Check(g.dashTime==.18f&&g.dashCooldown==.75f&&g.invulnerable==.32f&&g.save.energy==80,"Dodge starts with its established timers and energy cost");
+                while(g.dashTime>0&&frames<30)
+                {
+                    float timer=g.dashTime;Point before=g.Position;
+                    g.Tick(step,heldMovement?new Point(1,0):new Point(),new Point(-1,0));frames++;
+                    Check(g.dashTime==Math.Max(0,timer-step)&&Math.Abs((g.Position-before).x-step*15)<.0001f,"Each existing dodge step retains its full displacement and timer decrement");
+                    Check(g.PlayerPose==8&&(g.VisualFacing-new Point(1,0)).Length<.001f,"Every moving dodge step keeps the dodge pose and direction, including timer expiry at "+step);
+                }
+                float elapsed=frames*step;
+                Check(frames==expectedFrames[rate]&&g.dashTime==0&&Math.Abs((g.Position-start).x-elapsed*15)<.0002f,"Presentation cannot add or shorten a dodge step, including the existing 20 ms float residue");
+                Check(Math.Abs(g.dashCooldown-(.75f-elapsed))<.00001f&&Math.Abs(g.invulnerable-(.32f-elapsed))<.00001f&&Math.Abs(g.save.energy-(80+14*elapsed))<.0001f,"Final-step presentation cannot extend cooldown, protection or change energy regeneration");
+                Check(g.walkDistance==gait&&g.footContacts==contacts&&g.locomotionFacing.x<-.99f,"Dodge displacement creates neither a gait step nor a replacement locomotion direction");
+                Check(!g.ActionTransitionBlocked&&g.playerAction==null,"An expired dodge remains immediately available for the established combat transition");
+                g.Tick(.01f,heldMovement?new Point(1,0):new Point(),new Point(-1,0));
+                Check(heldMovement?g.PlayerPose>=2&&g.PlayerPose<=3&&g.VisualFacing.x>.99f:g.PlayerPose==0&&!g.ActuallyMoving&&g.VisualFacing.x<-.99f,"The next real simulation step releases dodge presentation to actual walking or idle aim");
+            }
+        }
+        private static GameCore MovingDodgeExpiry(Campaign data)
+        {
+            var g=Quiet(data);g.Tick(.01f,new Point(-1,0));g.Dash(new Point(1,0));
+            for(int frame=0;frame<4;frame++)g.Tick(.05f,new Point(),new Point(-1,0));
+            Check(g.dashTime==0&&g.ActuallyMoving,"Boundary fixture reaches an actual moving final dodge step");return g;
+        }
+        public static void FinalDodgeFreezesAndClearsAtBoundaries(Campaign data)
+        {
+            foreach(string mode in new[]{"inventory","dialog","paused"})
+            {
+                var g=MovingDodgeExpiry(data);Point position=g.Position,movement=g.movementDirection;
+                g.mode=mode;g.Tick(.05f,new Point(0,1),new Point(0,-1));
+                g.mode="world";g.hitStop=.03f;g.Tick(.05f,new Point(0,1),new Point(0,-1));
+                g.Tick(0,new Point(0,1),new Point(0,-1));
+                Check((g.Position-position).Length<.001f&&(g.movementDirection-movement).Length<.001f&&g.PlayerPose==8&&g.VisualFacing.x>.99f,"Menus, hit stop and zero-duration ticks freeze the last sampled dodge body together");
+                g.Tick(.01f,new Point(),new Point(-1,0));
+                Check(g.PlayerPose==0&&!g.ActuallyMoving&&g.VisualFacing.x<-.99f,"The first resumed movement sample clears final-dodge presentation");
+            }
+            var blocked=Quiet(data);Point wall=WallStand(blocked);blocked.save.x=wall.x;blocked.save.y=wall.y;blocked.Dash(new Point(-1,0));
+            for(int frame=0;frame<4;frame++)blocked.Tick(.05f,new Point(),new Point(1,0));
+            Check(blocked.dashTime==0&&!blocked.ActuallyMoving&&blocked.PlayerPose==0&&blocked.VisualFacing.x>.99f,"A fully blocked final dodge step stays idle rather than inventing motion ownership");
+            var travelled=MovingDodgeExpiry(data);travelled.Enter(0);
+            Check(!travelled.ActuallyMoving&&travelled.PlayerPose!=8,"Travel clears the previous map's sampled dodge");
+            var loaded=MovingDodgeExpiry(data);loaded.PrepareSave();loaded.Load(CloneSave(loaded.save));
+            Check(!loaded.ActuallyMoving&&loaded.PlayerPose!=8,"Loading clears transient dodge presentation without adding save state");
+            var practice=Quiet(data);practice.Enter(0);practice.StartPractice();practice.enemies.Clear();practice.Dash(new Point(1,0));
+            for(int frame=0;frame<4;frame++)practice.Tick(.05f,new Point(),new Point(-1,0));
+            Check(practice.practicing&&practice.dashTime==0&&practice.ActuallyMoving&&practice.PlayerPose==8,"Practice reaches the same moving final-dodge presentation");practice.EndPractice();
+            Check(!practice.ActuallyMoving&&practice.PlayerPose!=8,"Leaving practice clears sampled dodge presentation immediately");
+        }
+        public static void FinalDodgeYieldsToActionsAndReactions(Campaign data)
+        {
+            var attack=MovingDodgeExpiry(data);attack.Attack(new Point(0,-1));
+            Check(attack.playerAction!=null&&attack.PlayerPose==4&&attack.VisualFacing.y<-.99f,"A fresh basic attack replaces expired dodge presentation in the same frame");
+            var skill=MovingDodgeExpiry(data);skill.Skill(new Point(0,-1));
+            Check(skill.playerAction!=null&&skill.PlayerPose==6&&skill.VisualFacing.y<-.99f,"A fresh Q replaces expired dodge presentation in the same frame");
+            var buffered=Quiet(data);buffered.Tick(.01f,new Point(-1,0));buffered.Dash(new Point(1,0));buffered.Skill(new Point(0,-1));
+            for(int frame=0;frame<4;frame++)buffered.Tick(.05f,new Point(),new Point(-1,0));
+            Check(buffered.dashTime==0&&buffered.playerAction!=null&&buffered.PlayerPose==6&&buffered.VisualFacing.y<-.99f,"Buffered Q takes ownership on the existing final-dodge boundary");
+            var nextDash=MovingDodgeExpiry(data);nextDash.dashCooldown=0;nextDash.save.energy=100;nextDash.Dash(new Point(0,-1));
+            Check(nextDash.dashTime==.18f&&nextDash.PlayerPose==8&&nextDash.VisualFacing.y<-.99f,"An accepted new dodge replaces the previous sampled direction");
+            foreach(bool lethal in new[]{false,true})
+            {
+                var g=Quiet(data);g.Tick(.01f,new Point(-1,0));g.Dash(new Point(1,0));
+                for(int frame=0;frame<3;frame++)g.Tick(.05f,new Point(),new Point(-1,0));
+                // Normal dash protection still exists here. Explicitly remove it
+                // only to exercise reaction/death presentation on this boundary.
+                g.invulnerable=0;if(lethal)g.save.health=1;
+                g.projectiles.Add(new Projectile{position=g.Position+new Point(.75f,0),damage=lethal?999:1,source="shot"});
+                g.Tick(.05f,new Point(),new Point(-1,0));
+                Check(g.dashTime==0&&g.PlayerPose==(lethal?11:10)&&g.VisualFacing.x>.99f,"An actual final-step hit owns recoil/death while capturing the displayed dodge direction");
+            }
+        }
         public static void ReleasedContactsSelectVisibleActivePoses(Campaign data)
         {
             foreach(float step in new[]{.02f,.04f}) for(int profession=0;profession<3;profession++)

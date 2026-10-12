@@ -295,6 +295,90 @@ public static class RuntimeCombatInputChecks
         Console.WriteLine("PASS Actual hostile projectile reactions and deaths preserve the visible recovery equipment/facing");
     }
 
+    private static void BeginDashWithOppositeWalkingFacing(FrontierRuntime app, int profession, Point direction)
+    {
+        Prepare(app, profession);
+        Input.axes["Horizontal"] = -direction.x; Input.axes["Vertical"] = direction.y;
+        Input.held.Add(Math.Abs(direction.x) > 0 ? direction.x > 0 ? KeyCode.A : KeyCode.D
+            : direction.y < 0 ? KeyCode.S : KeyCode.W);
+        Mouse(app, app.Game.Position - direction * 4); Update(app);
+        Check((app.Game.locomotionFacing + direction).Length < .001f,
+            "The setup must retain walking facing opposite to the upcoming dodge");
+        Input.Clear(); Mouse(app, app.Game.Position + direction * 4);
+        Input.keys.Add(KeyCode.Space); Update(app);
+        Check(app.Game.dashTime > 0 && app.Game.PlayerPose == 8
+            && (app.Game.VisualFacing - direction).Length < .001f,
+            "Actual stationary Space input starts a cursor-directed dodge without replacing old locomotion facing");
+        Mouse(app, app.Game.Position - direction * 4);
+    }
+
+    private static void FinalDodgeStepDrawsDodgeInsteadOfOldWalk(FrontierRuntime app)
+    {
+        for (int profession = 0; profession < 3; profession++)
+        foreach (Point direction in ActorDirections)
+        {
+            BeginDashWithOppositeWalkingFacing(app, profession, direction);
+            float gait = app.Game.walkDistance; int contacts = app.Game.footContacts;
+            int ticks = 0;
+            do { Update(app); ticks++; } while (app.Game.dashTime > 0 && ticks < 20);
+            Check(app.Game.dashTime <= 0 && app.Game.ActuallyMoving,
+                "The test reaches a moving final dodge step after its timer expires");
+            Check(app.Game.PlayerPose == 8 && (app.Game.VisualFacing - direction).Length < .001f,
+                "The final dodge displacement must draw a dodge facing its captured direction, not the previous walk");
+            Check(Math.Abs(app.Game.walkDistance - gait) < .001f && app.Game.footContacts == contacts,
+                "Final dodge presentation must not advance the walk gait or create a footstep");
+            int row = GameCore.DirectionRow(direction);
+            string sheet = row == 1 ? "PlayerReactionsRear" : row == 2 ? "PlayerReactionsSouth"
+                : "Player" + new[] { "Vanguard", "Ranger", "Arcanist" }[profession];
+            CheckPlayerDrawing(app, sheet, row == 0 ? 8 : profession * 4, direction);
+            var body = GUI.textureCalls.Find(draw => draw.texture.name == "resource:Frontier/Art/" + sheet);
+            Check((body.uv.width < 0) == (row == 0 && direction.x < 0),
+                "The final dodge body uses the captured horizontal mirror as well as the matching head row");
+            Update(app);
+            Check(!app.Game.ActuallyMoving && app.Game.PlayerPose != 8,
+                "The next ordinary stationary tick releases the final dodge presentation");
+        }
+        Console.WriteLine("PASS Actual final-dodge body/head sources and mirroring for all class/direction selections; no extra walk contact");
+    }
+
+    private static void FinalDodgeStepYieldsToAcceptedCombatInput(FrontierRuntime app)
+    {
+        for (int profession = 0; profession < 3; profession++)
+        foreach (string takeover in new[] { "held attack", "fresh Q", "queued Q" })
+        {
+            Point dashDirection = new Point(1, 0), actionDirection = new Point(0, -1);
+            Point queuedDirection = new Point();
+            BeginDashWithOppositeWalkingFacing(app, profession, dashDirection);
+            if (takeover == "queued Q")
+            {
+                Mouse(app, app.Game.Position + actionDirection * 4);
+                Input.keys.Add(KeyCode.Q); Input.held.Add(KeyCode.J); Update(app);
+                Check(app.Game.dashTime > 0 && app.Game.playerAction == null,
+                    "Q queues while the actual dodge still owns movement");
+                Check(app.Game.aimTarget.HasValue, "The queued runtime technique captures a world target");
+                queuedDirection = (app.Game.aimTarget.Value - app.Game.Position).Normalized;
+            }
+            while (app.Game.dashTime > Time.unscaledDeltaTime) Update(app);
+            Mouse(app, app.Game.Position + actionDirection * (takeover == "queued Q" ? -4 : 4));
+            Input.held.Add(KeyCode.J);
+            if (takeover == "fresh Q") Input.keys.Add(KeyCode.Q);
+            Update(app);
+            ActorAction action = app.Game.playerAction;
+            bool skill = takeover != "held attack";
+            Check(app.Game.dashTime <= 0 && action != null && action.kind == (skill ? "skill" : "attack"),
+                "Accepted " + takeover + " takes over in the same Update as the final dodge displacement");
+            Check(app.Game.PlayerPose == (skill ? 6 : 4)
+                && (app.Game.VisualFacing - action.direction).Length < .001f && action.direction.y < -.9f,
+                "New action preparation and captured facing immediately replace final-dodge presentation (class "
+                + profession + ", " + takeover + ", pose " + app.Game.PlayerPose + ", facing "
+                + app.Game.VisualFacing.x + "," + app.Game.VisualFacing.y + ")");
+            if (takeover == "queued Q") Check((action.direction - queuedDirection).Length < .001f,
+                "Final-dodge presentation does not replace the queued direction with the live cursor");
+            CheckPlayerDrawing(app, "PlayerRear", profession * 4 + 2, action.direction);
+        }
+        Console.WriteLine("PASS Actual final-dodge rendering immediately yields to held J, fresh Q and captured queued Q for all classes");
+    }
+
     public static int Main()
     {
         var app = new FrontierRuntime(); Call(app, "Awake");
@@ -302,7 +386,8 @@ public static class RuntimeCombatInputChecks
         Action<FrontierRuntime>[] cases = { FreshTechniqueWinsHeldAttack, QueuedTechniqueKeepsAimAndRunsOnce,
             DashAndTechniqueShareAFrame, HudTechniqueCanQueue, MenuAndApplicationPauseDiscardIntent,
             ReleasedTechniqueDrawsContactFrame, RecoveryWalkingRestoresEquippedDrawing,
-            RecoveryHitAndDeathRetainVisibleEquipment };
+            RecoveryHitAndDeathRetainVisibleEquipment, FinalDodgeStepDrawsDodgeInsteadOfOldWalk,
+            FinalDodgeStepYieldsToAcceptedCombatInput };
         int failures = 0;
         foreach (var test in cases)
         {
