@@ -3,6 +3,90 @@ namespace Starfall.Tests
 {
     public static partial class CoreChecks
     {
+        private static bool GuideTargetsObject(GameCore g, QuestGuide q, string kind)
+        { foreach (var o in g.data.maps[q.room].objects) if (o.kind == kind && (q.target - new Point(o.x, o.y)).Length < .001f) return true; return false; }
+        private static void GatherGuidedResource(GameCore g, string kind)
+        {
+            QuestGuide q = g.CurrentGuide; Check(GuideTargetsObject(g, q, kind), "A gather guide must select an actual " + kind + " node");
+            g.Enter(q.room); g.enemies.Clear(); g.save.x = q.target.x; g.save.y = q.target.y;
+            WorldObject node = null; foreach (var o in g.Map.objects) if (o.kind == kind && (q.target - new Point(o.x, o.y)).Length < .001f) node = o;
+            Check(node != null && !g.Has("node_" + node.id), "The selected resource must still be available"); g.Talk(node);
+            Check(g.Has("node_" + node.id), "The ordinary resource interaction consumes the selected node");
+        }
+        public static void GatheringRequestsGuideRestAndDelivery(Campaign data)
+        {
+            foreach (int resident in new[] { 1, 3 })
+            {
+                var g = Fresh(data); g.SkipTutorial(); int item = resident == 1 ? 2 : 4; string kind = resident == 1 ? "herb" : "ore";
+                g.save.inventory[item] = 0; g.TrackQuest("ally" + resident); GatherGuidedResource(g, kind);
+                Check(g.save.inventory[item] == 3 && !g.CurrentGuide.complete, "The first node retains its three supplies and cannot finish the request");
+                QuestGuide rest = g.CurrentGuide; Check(rest.room == 0 && GuideTargetsObject(g, rest, "rest"), "An exhausted accessible gathering area must point home to a real rest interaction");
+                Check(g.NavigationTarget().HasValue && (g.NavigationTarget().Value - new Point(Object(g, "portal0").x, Object(g, "portal0").y)).Length < .001f, "The field navigation leads home when rest is needed");
+                Check(rest.next.Contains("休息"), "The Chinese next step explains the required rest instead of repeating collection");
+                g.PrepareSave(); var resumed = new GameCore(data, CloneSave(g.save)); resumed.Start();
+                Check(resumed.save.trackedQuest == "ally" + resident && resumed.CurrentGuide.room == rest.room && (resumed.CurrentGuide.target - rest.target).Length < .001f, "Consumed-node rest guidance survives a real save resume");
+                resumed.save.english = true; Check(resumed.CurrentGuide.next.IndexOf("rest", StringComparison.OrdinalIgnoreCase) >= 0, "Rest guidance is actionable in English too");
+                g = resumed; g.Enter(0); float before = g.save.totalTime; Action(g, "rest", "rest");
+                Check(g.save.totalTime == before + 45 && g.CurrentGuide.room == 1 && GuideTargetsObject(g, g.CurrentGuide, kind), "The existing forty-five-second rest renews gathering and sends the player back");
+                GatherGuidedResource(g, kind); Check(g.save.inventory[item] == 6, "A second ordinary gathering event provides six total supplies");
+                QuestGuide delivery = g.CurrentGuide; string recipient = resident == 1 ? "garden" : "forge";
+                Check(delivery.room == 0 && GuideTargetsObject(g, delivery, recipient) && delivery.next.IndexOf("deliver", StringComparison.OrdinalIgnoreCase) >= 0, "Enough supplies switch navigation and text to the original recipient");
+                g.Enter(0); int coins = g.save.coins, points = g.save.skillPoints, stew = g.save.inventory[6]; Action(g, recipient, "ally" + resident);
+                Check(g.Has("ally_" + resident) && g.CurrentGuide.complete && g.NavigationTarget() == null, "The normal delivery completes and stops the tracked request");
+                Check(g.save.inventory[item] == (resident == 1 ? 0 : 1) && g.save.coins == coins + 40 && g.save.skillPoints == points + 1 && g.save.inventory[6] == stew + 1, "Delivery preserves the original costs and rewards");
+            }
+        }
+        public static void ResourceGuidesChooseFreshUnlockedNodes(Campaign data)
+        {
+            var g = Fresh(data); g.SkipTutorial(); g.save.stage = 1; g.Enter(2); g.enemies.Clear(); g.TrackQuest("ally3");
+            Check(g.CurrentGuide.room == 2 && GuideTargetsObject(g, g.CurrentGuide, "ore"), "An available current-area node wins over a distant default");
+            g.Talk(Object(g, "ore")); g.save.inventory[4] = 0;
+            Check(g.CurrentGuide.room == 1 && GuideTargetsObject(g, g.CurrentGuide, "ore"), "A consumed current node switches to a fresh preferred area");
+            g.Enter(1); g.enemies.Clear(); g.Talk(Object(g, "ore")); g.save.inventory[4] = 0;
+            Check(g.CurrentGuide.room == 0 && GuideTargetsObject(g, g.CurrentGuide, "rest"), "Fresh nodes behind locked routes cannot replace the rest destination");
+            g.save.stage = 2; Check(g.CurrentGuide.room == 3 && GuideTargetsObject(g, g.CurrentGuide, "ore"), "Opening a real route immediately makes its fresh resource useful");
+
+            MapData original = data.maps[1]; var objects = new WorldObject[original.objects.Length + 1]; Array.Copy(original.objects, objects, original.objects.Length);
+            objects[objects.Length - 1] = new WorldObject { id = "nearGuideHerb", kind = "herb", name = "测试药草", en = "Test herb", x = 7, y = 18 };
+            var maps = (MapData[])data.maps.Clone(); maps[1] = new MapData { id = original.id, name = original.name, en = original.en, subtitle = original.subtitle, suben = original.suben, color = original.color, spawnX = original.spawnX, spawnY = original.spawnY, rows = original.rows, objects = objects, decor = original.decor };
+            var local = new Campaign { title = data.title, titleEn = data.titleEn, version = data.version, maps = maps, items = data.items, bosses = data.bosses, lore = data.lore };
+            g = Fresh(local); g.SkipTutorial(); g.Enter(1); g.enemies.Clear(); g.save.inventory[2] = 0; g.save.x = 6; g.save.y = 18; g.TrackQuest("ally1");
+            Check((g.CurrentGuide.target - new Point(7, 18)).Length < .001f, "Multiple current-area nodes select the nearest available interaction");
+            g.Talk(objects[objects.Length - 1]); Check((g.CurrentGuide.target - new Point(8, 18)).Length < .001f, "Consuming the nearest node immediately selects the remaining fresh node");
+            g.Talk(Object(g, "herb")); g.save.inventory[2] = 0; g.Enter(9);
+            Check(g.CurrentGuide.room == 9 && GuideTargetsObject(g, g.CurrentGuide, "rest"), "A player already inside the inn is guided to its real hearth instead of another trip outside");
+            float before = g.save.totalTime; Action(g, "rest", "rest");
+            Check(g.save.totalTime == before + 45 && g.CurrentGuide.room == 1 && GuideTargetsObject(g, g.CurrentGuide, "herb"), "The interior hearth restores the existing resource cycle and gathering destination");
+        }
+        public static void OreContractsGuideGatherRestAndClaim(Campaign data)
+        {
+            var g = Fresh(data); g.SkipTutorial(); g.AcceptBounty(1); g.save.inventory[1] = g.save.inventory[4] = 0;
+            for (int eventCount = 1; eventCount <= 3; eventCount++)
+            {
+                GatherGuidedResource(g, "ore"); Check(g.save.bountyProgress == eventCount && g.save.inventory[1] == eventCount * 3 && g.save.inventory[4] == eventCount * 3, "The ore contract counts gathering events while retaining all crystal and part drops");
+                if (eventCount < 3)
+                {
+                    Check(!g.ClaimBounty() && g.CurrentGuide.room == 0 && GuideTargetsObject(g, g.CurrentGuide, "rest"), "An unfinished ore contract points to rest after the only accessible vein is exhausted");
+                    g.Enter(0); float before = g.save.totalTime; Action(g, "rest", "rest"); Check(g.save.totalTime == before + 45 && g.save.bountyProgress == eventCount, "Rest renews nodes without erasing accepted contract progress");
+                }
+            }
+            QuestGuide claim = g.CurrentGuide; Check(claim.room == 0 && GuideTargetsObject(g, claim, "contract") && claim.next.Contains("领取"), "Three gathered veins switch guidance from resources to the contract reward");
+            int coins = g.save.coins, shards = g.save.shards, xp = g.save.xp;
+            Check(g.ClaimBounty() && g.save.coins == coins + 35 && g.save.shards == shards + 3 && g.save.xp == xp + 30 && g.save.bounty == -1 && g.save.bountyCycle == 1, "The original contract payment and completion transaction remain intact");
+            Check(!g.ClaimBounty(), "A completed contract cannot pay twice");
+        }
+        public static void MinePartsGuidanceReturnsToElevator(Campaign data)
+        {
+            var g = Fresh(data); g.SkipTutorial(); g.save.stage = 2; g.TrackQuest("main");
+            foreach (int room in new[] { 1, 2, 3 }) { g.Enter(room); g.enemies.Clear(); g.Talk(Object(g, "ore")); }
+            g.save.inventory[4] = 0; Check(g.CurrentGuide.room == 0 && GuideTargetsObject(g, g.CurrentGuide, "rest"), "An unrepaired elevator with all reachable ore consumed requires an actual rest destination");
+            g.Enter(0); Action(g, "rest", "rest");
+            Check(g.CurrentGuide.room == 3 && GuideTargetsObject(g, g.CurrentGuide, "ore"), "The main quest prefers the renewed mine vein when outside a gathering region");
+            GatherGuidedResource(g, "ore"); Check(g.save.inventory[4] == 3 && g.CurrentGuide.room == 3 && GuideTargetsObject(g, g.CurrentGuide, "engine"), "Exactly three ordinary parts switch the main guide back to the elevator");
+            g.PrepareSave(); var resumed = new GameCore(data, CloneSave(g.save)); resumed.Start(); resumed.enemies.Clear();
+            Check(resumed.save.stage == 2 && resumed.save.inventory[4] == 3 && GuideTargetsObject(resumed, resumed.CurrentGuide, "engine"), "A saved mine expedition resumes at the original repair objective");
+            Action(resumed, "engine", "engine"); Check(resumed.Has("gate_3") && resumed.save.inventory[4] == 0 && resumed.CurrentGuide.room == 3 && (resumed.CurrentGuide.target - new Point(29, 8)).Length < .001f, "Repair spends the original three parts and hands guidance to the guardian altar");
+        }
         public static void ScoutPresenceMatchesInteractionAndSavedJourney(Campaign data)
         {
             var g=Fresh(data);WorldObject returned=Object(g,"returnscout");g.save.x=returned.x;g.save.y=returned.y;

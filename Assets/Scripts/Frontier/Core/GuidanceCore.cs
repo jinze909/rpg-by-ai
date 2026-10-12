@@ -44,12 +44,40 @@ namespace Starfall
         { if (Array.IndexOf(QuestIds, id) < 0 || GetQuest(id).locked) return; save.trackedQuest = id; save.frontierFocus = id == "shore"; TutorialAction(2); revision++; }
         private Point ObjectPoint(int room, string kind, Point fallback)
         { foreach (var o in data.maps[room].objects) if (o.kind == kind) return new Point(o.x, o.y); return fallback; }
-        private Point ResourcePoint(int room, string kind)
+        private bool TryResourcePoint(int room, string kind, out Point target)
         {
-            Point result = ObjectPoint(room, kind, new Point(18, 14)); float best = float.MaxValue;
+            target = new Point(); float best = float.MaxValue;
+            if (room == 8 || !CanEnter(room)) return false;
             foreach (var o in data.maps[room].objects) if (o.kind == kind && !Has("node_" + o.id))
-            { float d = room == save.room ? (Position - new Point(o.x, o.y)).Length : 0; if (d < best) { best = d; result = new Point(o.x, o.y); } }
-            return result;
+            { float d = room == save.room ? (Position - new Point(o.x, o.y)).Length : 0; if (d < best) { best = d; target = new Point(o.x, o.y); } }
+            return best < float.MaxValue;
+        }
+        private bool GuideToResource(QuestGuide q, string kind, int preferredRoom)
+        {
+            // Find a real remaining node; reading a guide never renews resources.
+            int room = save.room; Point target;
+            if (!TryResourcePoint(room, kind, out target))
+            {
+                room = preferredRoom;
+                if (!TryResourcePoint(room, kind, out target))
+                {
+                    room = -1;
+                    for (int candidate = 0; candidate < data.maps.Length; candidate++)
+                        if (TryResourcePoint(candidate, kind, out target)) { room = candidate; break; }
+                }
+            }
+            if (room >= 0)
+            {
+                q.room = room; q.target = target;
+                q.next = L(kind == "herb" ? "采集月光草" : "采集矿石，补充星晶与零件", kind == "herb" ? "Gather Moonherbs" : "Gather ore for crystals and parts");
+                return true;
+            }
+            // The inn interior has its own rest interaction; other maps return
+            // through the existing town routes. No new refresh or reward rule.
+            q.room = save.room == 9 ? 9 : 0;
+            q.target = ObjectPoint(q.room, "rest", new Point(data.maps[q.room].spawnX, data.maps[q.room].spawnY));
+            q.next = L("可采资源已耗尽；到旅店休息刷新", "Available nodes depleted; rest at the inn to renew them");
+            return false;
         }
         public QuestGuide CurrentGuide { get { return GetQuest(save.trackedQuest); } }
         public string GuidanceHint()
@@ -78,8 +106,9 @@ namespace Starfall
                 q.steps.Add(new QuestStep(L(GameItemsZh(item), GameItemsEn(item)) + " " + Math.Min(count, save.inventory[item]) + "/" + count, save.inventory[item] >= count || q.complete));
                 q.steps.Add(new QuestStep(L("返回余烬镇交付", "Deliver in Emberfall"), q.complete)); q.reward = L("镇民支持 · 硬币与经验", "Town support · coins and experience");
                 q.target = ObjectPoint(0, n == 1 ? "garden" : n == 2 ? "fish" : "forge", new Point(18, 14));
-                if (!q.complete && save.inventory[item] < count && n != 2) { q.room = save.room > 0 && save.room < 8 ? save.room : 1; q.target = ResourcePoint(q.room, n == 1 ? "herb" : "ore"); }
-                q.next = q.complete ? L("委托已完成", "Request complete") : save.inventory[item] >= count ? L("返回镇民处交付材料", "Deliver your supplies in town") : n == 2 ? L("到镇东湖边钓鱼", "Fish at the eastern lake") : L("采集材料；旅店休息可更新采集点", "Gather supplies; inn rest renews nodes"); return q;
+                q.next = q.complete ? L("委托已完成", "Request complete") : save.inventory[item] >= count ? L("返回镇民处交付材料", "Deliver your supplies in town") : n == 2 ? L("到镇东湖边钓鱼", "Fish at the eastern lake") : L("采集材料；旅店休息可更新采集点", "Gather supplies; inn rest renews nodes");
+                if (!q.complete && save.inventory[item] < count && n != 2) GuideToResource(q, n == 1 ? "herb" : "ore", 1);
+                return q;
             }
             if (id.StartsWith("personal"))
             {
@@ -100,7 +129,9 @@ namespace Starfall
                 bool done = !q.locked && save.bountyProgress >= BountyTargets[n]; q.steps.Add(new QuestStep(save.bountyProgress + "/" + BountyTargets[n], done));
                 q.room = done || n == 2 ? 0 : n == 5 ? 8 : save.room > 0 && save.room < 8 ? save.room : 1;
                 q.target = ObjectPoint(q.room, done ? "contract" : n == 2 ? "fish" : n == 1 ? "ore" : n == 5 ? "abyssExit" : "altar", new Point(21, 19));
-                q.next = done ? L("打开 N 委托簿领取报酬", "Open N Contracts to claim") : q.locked ? L("在 N 委托簿选择一项悬赏", "Accept a contract in N Contracts") : q.title; q.reward = L("35硬币 · 30经验 · 碎片", "35 coins · 30 XP · shards"); return q;
+                q.next = done ? L("打开 N 委托簿领取报酬", "Open N Contracts to claim") : q.locked ? L("在 N 委托簿选择一项悬赏", "Accept a contract in N Contracts") : q.title; q.reward = L("35硬币 · 30经验 · 碎片", "35 coins · 30 XP · shards");
+                if (!q.locked && !done && n == 1) GuideToResource(q, "ore", 1);
+                return q;
             }
             if (id == "shore")
             {
@@ -137,7 +168,8 @@ namespace Starfall
                 q.target = ObjectPoint(chapter, chapter == 1 ? "scout" : chapter == 2 ? !Has("lore_2") ? "lore" : "rune" + new[] { 0, 2, 1 }[Math.Min(2, runeProgress)] : "engine", q.target);
                 q.next = L(chapter == 1 ? "清理敌人，再解救侦察员" : chapter == 2 ? "调查记录，依线索触碰石碑" : "收集零件3，修复升降机", chapter == 1 ? "Clear enemies, then rescue the scout" : chapter == 2 ? "Read the record, then touch the tablets" : "Gather 3 parts and repair the elevator");
                 if (chapter == 1 && save.room == 1 && save.kills[1] < 4) { Enemy e = enemies.Find(a => !a.boss); if (e != null) q.target = e.Position; q.next += " " + save.kills[1] + "/4"; }
-                if (chapter == 3 && save.inventory[4] < 3) q.target = ResourcePoint(3, "ore");
+                if (chapter == 3 && save.inventory[4] < 3 && GuideToResource(q, "ore", 3))
+                    q.next = L("采集矿石，收集零件3修复升降机", "Gather ore for 3 parts to repair the elevator");
             }
             else if (Has("core_" + chapter) && chapter < 4) { q.room = 0; q.target = new Point(18, 17); q.next = L("把星核交给莉雅", "Deliver the starcore to Lyra"); }
             else q.next = Has("boss_" + chapter) ? L("与祭坛互动，完成本章", "Interact with the altar to finish this chapter") : L("前往祭坛，准备守护者挑战", "Approach the altar and prepare for the guardian");

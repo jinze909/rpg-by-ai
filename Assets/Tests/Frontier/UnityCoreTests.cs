@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void GatheringRequestsRestAndDelivery(){CoreChecks.GatheringRequestsGuideRestAndDelivery(Data());}
+        [Test] public void FreshUnlockedResourceDestinations(){CoreChecks.ResourceGuidesChooseFreshUnlockedNodes(Data());}
+        [Test] public void OreContractsGatherRestAndClaim(){CoreChecks.OreContractsGuideGatherRestAndClaim(Data());}
+        [Test] public void MinePartsReturnToElevator(){CoreChecks.MinePartsGuidanceReturnsToElevator(Data());}
         [Test] public void FinalMovingDodgePresentation(){CoreChecks.FinalMovingDodgeOwnsPoseAndFacing(Data());}
         [Test] public void FinalDodgeSimulationBoundaries(){CoreChecks.FinalDodgeFreezesAndClearsAtBoundaries(Data());}
         [Test] public void FinalDodgeActionAndReactionTakeover(){CoreChecks.FinalDodgeYieldsToActionsAndReactions(Data());}

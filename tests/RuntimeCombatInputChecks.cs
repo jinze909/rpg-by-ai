@@ -530,7 +530,8 @@ public static class RuntimeCombatInputChecks
             ReleasedTechniqueDrawsContactFrame, RecoveryWalkingRestoresEquippedDrawing,
             RecoveryHitAndDeathRetainVisibleEquipment, FinalDodgeStepDrawsDodgeInsteadOfOldWalk,
             FinalDodgeStepYieldsToAcceptedCombatInput, HudFallbackKeepsRangedActionsFacingForward,
-            HudClearPreservesCapturedActionAndQueuedAim, WorldPointerAndControllerAimResumeAfterHud };
+            HudClearPreservesCapturedActionAndQueuedAim, WorldPointerAndControllerAimResumeAfterHud,
+            RuntimeContinuityChecks.ResourceGuidanceRemainsActionableThroughRestAndDelivery };
         int failures = 0;
         foreach (var test in cases)
         {

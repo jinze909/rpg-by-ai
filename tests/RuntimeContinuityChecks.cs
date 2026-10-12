@@ -249,6 +249,115 @@ public static class RuntimeContinuityChecks
         Check(extendedClicks>0,"The test includes actual authored pixels outside the former fixed Boss rectangle");
         Console.WriteLine("PASS Full audit: 3 world overlays, practice input, regional HUD warnings, fallback direction/radius, nested GUI state and "+extendedClicks+" extended Boss click footprints (offline production GUI)");
     }
+    static void GuideMenuClick(FrontierRuntime app,Rect button)
+    {
+        GUI.queuedClick=button;ClearDraw();Call(app,"OnGUI");
+        Check(!GUI.queuedClick.HasValue,"The production menu accepts the requested visible button");
+    }
+    static void ResourceGuideViews(FrontierRuntime app)
+    {
+        var g=app.Game;Update(app);QuestGuide q=g.CurrentGuide;Point? goal=g.NavigationTarget();
+        Check(goal.HasValue && Get<Point?>(app,"routeGoal").HasValue &&
+            (Get<Point?>(app,"routeGoal").Value-goal.Value).Length<.001f,
+            "Actual Update refreshes the resource objective's navigation target");
+        var path=Get<List<Point>>(app,"route");
+        Check((g.Position-goal.Value).Length<=1.8f || path.Count>0,
+            "A resource objective has a usable route from the staged walkable position");
+        if(path.Count>0)Check((path[path.Count-1]-goal.Value).Length<=1.8f,
+            "The visible route ends within the actual interaction range");
+        ClearDraw();Call(app,"OnGUI");
+        Check(GUI.commands.Exists(c=>c.Contains("\"text\":"+GUI.S(g.GuidanceHint()))),
+            "The exploration HUD displays the same next step as the active resource guide");
+        Input.keys.Add(KeyCode.Tab);Update(app);Set(app,"selectedQuest",Array.IndexOf(GameCore.QuestIds,q.id));
+        ClearDraw();Call(app,"OnGUI");
+        Check(g.mode=="journal" && GUI.commands.Exists(c=>c.Contains("\"text\":"+GUI.S(g.L("下一步：","Next: ")+q.next))),
+            "The actual journal shows the resource objective's current next step");
+        GuideMenuClick(app,new Rect(927,647,263,31));
+        Check(g.mode=="map" && Get<int>(app,"selectedRegion")==q.room,
+            "Show destination opens the source region or resting region rather than the exhausted node's region");
+        ClearDraw();Call(app,"OnGUI");
+        Check(GUI.textureCalls.Exists(c=>Math.Abs(c.rect.x-(888+q.target.x*8.4f-3))<.01f &&
+            Math.Abs(c.rect.y-(264+q.target.y*8.4f-3))<.01f && c.rect.width==7 && c.rect.height==7),
+            "The destination map draws its gold marker at the actionable resource or rest target");
+        Input.keys.Add(KeyCode.Escape);Update(app);
+        Check(g.mode=="world","Closing the objective map returns to gameplay");
+    }
+    static void GuideFastTravel(FrontierRuntime app,int room)
+    {
+        Input.keys.Add(KeyCode.M);Update(app);Set(app,"selectedRegion",room);
+        GuideMenuClick(app,new Rect(888,616,306,47));
+        Check(app.Game.save.room==room && app.Game.mode=="world","Actual map fast travel reaches the resource guide's region");
+        app.Game.enemies.Clear();Set(app,"camera",app.Game.Position);
+    }
+    static void GuideInteract(FrontierRuntime app,WorldObject target)
+    {
+        Check(app.SetVisualReviewPosition(new Point(target.x,target.y-1)),"The interaction fixture uses a real walkable position");
+        Set(app,"camera",app.Game.Position);Input.keys.Add(KeyCode.E);Update(app);
+    }
+    static void GuideChoose(FrontierRuntime app,string action)
+    {
+        var c=app.Game.conversation;Check(c!=null,"Resource guide destination offers its normal dialogue");
+        int index=Array.FindIndex(c.choices,x=>x.action==action);Check(index>=0,"The intended destination choice is present");
+        ClearDraw();Call(app,"OnGUI");Input.keys.Add((KeyCode)((int)KeyCode.Alpha1+index));Update(app);
+        Check(app.Game.mode=="world","Actual numbered dialogue input returns to world after its transaction");
+    }
+    public static void ResourceGuidanceRemainsActionableThroughRestAndDelivery(FrontierRuntime app)
+    {
+        foreach(string quest in new[]{"ally1","ally3","bounty"})
+        {
+            Prepare(app);var g=app.Game;g.SkipTutorial();g.save.english=true;g.save.showGuidance=true;
+            g.save.inventory[2]=g.save.inventory[4]=0;
+            if(quest=="bounty")g.AcceptBounty(1);else g.TrackQuest(quest);
+            string kind=quest=="ally1"?"herb":"ore";
+            ResourceGuideViews(app);var first=g.CurrentGuide;
+            WorldObject node=Array.Find(g.data.maps[first.room].objects,o=>o.kind==kind &&
+                (new Point(o.x,o.y)-first.target).Length<.001f);
+            Check(node!=null && !g.Has("node_"+node.id),"The first objective is an available authored resource node, not an altar or invented location");
+            GuideInteract(app,node);
+            Check(g.Has("node_"+node.id),"Actual E gathers the guided node");
+            int progress=quest=="bounty"?g.save.bountyProgress:g.save.inventory[quest=="ally1"?2:4];
+            Check(progress==(quest=="bounty"?1:3),"Gathering retains the shipped item/progress yield");
+            foreach(var map in g.data.maps)foreach(var o in map.objects)
+                if(o.kind==kind && !g.Has("node_"+o.id))g.save.flags.Add("node_"+o.id);
+            Check(g.CurrentGuide.room==0 && g.CurrentGuide.next.IndexOf("rest",StringComparison.OrdinalIgnoreCase)>=0,
+                "After all accessible nodes are depleted, guidance points to a real rest action instead of a spent node");
+            ResourceGuideViews(app);GuideFastTravel(app,0);
+            QuestGuide rest=g.CurrentGuide;WorldObject bed=Array.Find(g.Map.objects,o=>o.kind=="rest" &&
+                (new Point(o.x,o.y)-rest.target).Length<.001f);
+            Check(bed!=null,"The resting destination is an actual authored rest interaction");
+            GuideInteract(app,bed);GuideChoose(app,"rest");
+            Check(!g.Has("node_"+node.id) && (quest=="bounty"?g.save.bountyProgress:g.save.inventory[quest=="ally1"?2:4])==progress,
+                "Rest refreshes depleted nodes without granting supplies or contract credit");
+            int gathers=quest=="bounty"?2:1;
+            for(int i=0;i<gathers;i++)
+            {
+                QuestGuide collect=g.CurrentGuide;Check(collect.room>0 && collect.room<8 && collect.next.Contains("Gather"),
+                    "Refreshed guidance returns to collecting in an accessible permanent region");
+                ResourceGuideViews(app);if(g.save.room!=collect.room)GuideFastTravel(app,collect.room);
+                node=Array.Find(g.Map.objects,o=>o.kind==kind && (new Point(o.x,o.y)-g.CurrentGuide.target).Length<.001f);
+                Check(node!=null && !g.Has("node_"+node.id),"Refresh and further collection never target a spent node");
+                GuideInteract(app,node);
+            }
+            QuestGuide delivery=g.CurrentGuide;Check(delivery.room==0 &&
+                delivery.next.Contains(quest=="bounty"?"claim":"Deliver"),"The original threshold switches guidance from gathering to delivery or reward claim");
+            ResourceGuideViews(app);
+            int coins=g.save.coins;
+            if(quest=="bounty")
+            {
+                Input.keys.Add(KeyCode.N);Update(app);GuideMenuClick(app,new Rect(310,458,271,46));
+                Check(g.save.bounty==-1 && g.save.coins==coins+35,"The original Contracts reward remains claimable through its actual UI");
+                Input.keys.Add(KeyCode.Escape);Update(app);
+            }
+            else
+            {
+                GuideFastTravel(app,0);WorldObject resident=Array.Find(g.Map.objects,o=>o.kind==(quest=="ally1"?"garden":"forge"));
+                GuideInteract(app,resident);GuideChoose(app,quest);
+                Check(g.Has(quest=="ally1"?"ally_1":"ally_3") && g.save.coins==coins+40,
+                    "The actual resident transaction preserves the request's original reward and completion flag");
+            }
+        }
+        Console.WriteLine("PASS Actual resource guide HUD/journal/map/route: gather, depletion, inn refresh, renewed gathering and original delivery/claim transactions; NATIVE_UNVERIFIED");
+    }
     public static void Run(FrontierRuntime app,string folder)
     {
         try{InputDirections(app,folder);WorldAndAudio(app);HudReadability(app,folder);DrawStateContinuity(app,folder);StableSceneOrdering(app);FullAuditPresentation(app,folder);TransitionTimeline(app,folder);CompleteBossFight(app,folder);}
