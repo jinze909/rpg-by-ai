@@ -74,6 +74,7 @@ namespace Starfall
                         Text(p.x - 104, p.y - 137, 208, 42, Game.WatchStatus, 12, paper, TextAnchor.MiddleCenter);
                     }
                 }
+                DrawSignalLamp(o,p);
                 return true;
             }
             if (kind.StartsWith("mirror"))

@@ -100,13 +100,14 @@ namespace Starfall
         private int EnemyPose(Enemy e)
         {
             if (e.hitTime > 0) return 4;
-            if (e.state == 1) return e.boss && Game.save.room == 1 && e.timer < .2f ? 3 : 2;
+            if (e.state == 1) return e.boss && Game.save.room == 1 && e.timer < .2f && (!GameCore.IsSignalWarden(e) || GameCore.SignalPattern(e) == 0) ? 3 : 2;
             if (e.releaseTime > 0) return 3;
             return e.moving ? 1 : 0;
         }
         private void DrawEnemyActor(Enemy e)
         {
-            Point p = ScreenPoint(e.Position); float size = e.boss ? BossCanvasSize(Game.save.room) : e.kind == 2 ? 106 : 96;
+            int bossRoom = BossArtRoom(e,Game.save.room);
+            Point p = ScreenPoint(e.Position); float size = e.boss ? BossCanvasSize(bossRoom) : e.kind == 2 ? 106 : 96;
             if(!drawingOutline)Box(p.x - size * .22f, p.y - 3, size * .44f, 7, new Color(.025f, .04f, .07f, .35f));
             if (Game.practicing)
             {
@@ -120,15 +121,16 @@ namespace Starfall
             Point offset = new Point();
             // Recoil is swept in Core rather than sliding the drawing through walls.
             Color tint = e.flash > 0 ? new Color(1.55f, 1.55f, 1.55f) : Color.white;
+            if (GameCore.IsSignalWarden(e) && e.flash <= 0) tint = new Color(.8f,1,.88f);
             if (e.boss && Math.Abs(e.x - Game.save.x) < 1.4f && Game.save.y < e.y - .01f && Game.save.y > e.y - 2.7f) tint.a = .55f;
             if (e.boss)
             {
-                int row = Math.Max(0, Game.save.room - 1), frame = pose == 2 ? 1 : pose == 3 ? 2 : 0;
+                int row = Math.Max(0, bossRoom - 1), frame = pose == 2 ? 1 : pose == 3 ? 2 : 0;
                 if (pose == 1 && bossWalkSheets[row / 4] != null)
                     Actor(bossWalkSheets[row / 4], 4, 4, row % 4 * 4 + GameCore.GaitFrame(e.moveTime, 2.8f), p, size * 384 / 320f, tint, e.VisualFlip);
                 else Actor(bossSheet, 4, 8, row * 4 + frame, p + offset, size, tint, e.VisualFlip);
                 if (!drawingOutline && e.flash > 0 && bossSheet != null) Actor(art.FlashMask(bossSheet), 4, 8, row * 4 + frame, p + offset, size, new Color(1, 1, 1, e.flash / .09f * .86f * tint.a), e.VisualFlip);
-                if (!drawingOutline && e.state == 1) Atlas(effectSheet,4,4,13,new Rect(p.x-19,p.y-GameCore.BossEmissionHeight(Game.save.room)-19,38,38),new Color(1,.79f,.49f,charge*.6f));
+                if (!drawingOutline && e.state == 1) Atlas(effectSheet,4,4,13,new Rect(p.x-19,p.y-GameCore.BossEmissionHeight(bossRoom)-19,38,38),new Color(1,.79f,.49f,charge*.6f));
             }
             else
             {
@@ -145,7 +147,9 @@ namespace Starfall
         {
             Point p = ScreenPoint(body.actor.Position); float progress = 1 - body.life / body.duration;
             Color tint = new Color(1, 1, 1, Math.Min(1, body.life / (body.duration * .45f)));
-            if (body.actor.boss) Actor(bossSheet, 4, 8, Math.Max(0, body.room - 1) * 4 + 3, p, BossCanvasSize(body.room), tint,body.actor.VisualFlip);
+            int bossRoom = BossArtRoom(body.actor,body.room);
+            if (GameCore.IsSignalWarden(body.actor)) { tint.r = .8f; tint.b = .88f; }
+            if (body.actor.boss) Actor(bossSheet, 4, 8, Math.Max(0, bossRoom - 1) * 4 + 3, p, BossCanvasSize(bossRoom), tint,body.actor.VisualFlip);
             else Actor(monsterSheet, 6, 3, Math.Min(2, body.actor.kind) * 6 + 5, p, body.actor.kind == 2 ? 106 : 96, tint,body.actor.VisualFlip);
             if (body.actor.boss && progress < .6f) Atlas(effectSheet, 4, 4, 15, new Rect(p.x - 52, p.y - 80 - progress * 40, 104, 104), new Color(.8f, .92f, .84f, .7f * (1 - progress)));
         }

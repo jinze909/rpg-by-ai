@@ -31,7 +31,7 @@ namespace Starfall
             if(Game.practicing){frame=12+pose;density=106/128f;}
             else if(enemy.boss)
             {
-                int row=Math.Max(0,Game.save.room-1);columns=4;density=BossCanvasSize(Game.save.room)/320f;
+                int bossRoom=BossArtRoom(enemy,Game.save.room),row=Math.Max(0,bossRoom-1);columns=4;density=BossCanvasSize(bossRoom)/320f;
                 if(pose==1&&bossWalkSheets[row/4]!=null){sheet=bossWalkSheets[row/4];frame=row%4*4+GameCore.GaitFrame(enemy.moveTime,2.8f);}
                 else{sheet=bossSheet;frame=row*4+(pose==2?1:pose==3?2:0);}
             }
@@ -77,6 +77,7 @@ namespace Starfall
         {foreach(Rect region in regions)if(Overlap(region,bounds))return true;return false;}
         private Rect EnemyWarningBounds(Enemy enemy)
         {
+            if(GameCore.IsSignalWarden(enemy))return SignalWarningBounds(enemy);
             if(!enemy.boss&&enemy.kind==1)
             {
                 Point lift=new Point(0,GameCore.WeaponHeight(1,enemy.facing)/Tile),from=ScreenPoint(GameCore.WeaponOrigin(enemy.Position,1,enemy.facing)-lift),to=ScreenPoint(enemy.target-lift);
@@ -121,6 +122,7 @@ namespace Starfall
             }
             foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && OverlapsRegions(regions,EnemyWarningBounds(enemy)))
             {
+                if(GameCore.IsSignalWarden(enemy)){DrawSignalWarning(enemy,true);continue;}
                 if(!enemy.boss&&enemy.kind!=2){DrawEnemyWarning(enemy);continue;}
                 Point p=ScreenPoint(enemy.target);float radius=GameCore.EnemyAreaRadius(enemy);
                 foreach(Rect rect in regions) if(Overlap(rect,new Rect(p.x-radius*Tile,p.y-radius*Tile,radius*Tile*2,radius*Tile*2)))

@@ -119,7 +119,7 @@ namespace Starfall
             if (!WatchReady || !NearWatchScout() || practicing || Dying) return;
             if (Has("watch_complete"))
             {
-                Dialog("归来的侦察员", "The returned scout", "你带来的旧信，终于成了一条能走回家的路。灯照着路边的人，也照着等他们回来的座位。巡路队的名字，会和这条路一起留下。", "The letter you carried has become a road people can walk home. Its lights serve the travelers and the seats still waiting for them. We will keep the patrol's names with their road.", C("记住这条路", "Remember the road", "close")); return;
+                Dialog("归来的侦察员", "The returned scout", "你带来的旧信，终于成了一条能走回家的路。灯照着路边的人，也照着等他们回来的座位。巡路队的名字，会和这条路一起留下。", "The letter you carried has become a road people can walk home. Its lights serve the travelers and the seats still waiting for them. We will keep the patrol's names with their road.", C("记住这条路", "Remember the road", "close"), C("旧路守望", "The Signal Warden", "signal_menu")); return;
             }
             if (WatchStage == 3 && WatchAccepted)
             {

@@ -6,6 +6,15 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void SignalWardenStoryReadiness(){CoreChecks.SignalWardenReadinessAndOriginalStory(Data());}
+        [Test] public void SignalWardenVictoryTransaction(){CoreChecks.SignalWardenVictoryRewardsAndStoryIsolation(Data());}
+        [Test] public void SignalWardenSavedAttempts(){CoreChecks.SignalWardenSnapshotsTravelAndLegacyCompatibility(Data());}
+        [Test] public void SignalWardenDeathRecovery(){CoreChecks.SignalWardenDeathAbandonsWithoutReward(Data());}
+        [Test] public void SignalWardenLockedPatterns(){CoreChecks.SignalWardenThreePatternsKeepLockedTelegraphs(Data());}
+        [Test] public void SignalWardenActualWarningContacts(){CoreChecks.SignalWardenWarningsMatchActualContacts(Data());}
+        [Test] public void SignalWardenHitReactionWarningContinuity(){CoreChecks.SignalWardenHitReactionsPreserveAnnouncedRush(Data());}
+        [Test] public void SignalWardenOffsetLaunchWalls(){CoreChecks.SignalWardenFanLaunchRespectsInterveningRoots(Data());}
+        [Test] public void SignalWardenThreeClassVictory(){CoreChecks.SignalWardenAllClassesCanWinWithPublicActions(Data());}
         [Test] public void LastWatchFullQuest(){CoreChecks.LastWatchFullQuestAndOriginalStory(Data());}
         [Test] public void LastWatchChannelBoundaries(){CoreChecks.LastWatchClockPressureAndStageBoundaries(Data());}
         [Test] public void LastWatchSnapshotRecovery(){CoreChecks.LastWatchSnapshotsTravelAndDefeatRecords(Data());}

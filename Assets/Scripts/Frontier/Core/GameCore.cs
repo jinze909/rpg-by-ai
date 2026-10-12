@@ -34,7 +34,7 @@ namespace Starfall
         }
         public Point Position { get { return new Point(save.x, save.y); } }
         public MapData Map { get { return save.room == 8 && abyssMap != null ? abyssMap : data.maps[save.room]; } }
-        public BossData CurrentBoss { get { return save.room == 8 ? new BossData { name = "地脉收割者", en = "The Root Reaper", hp = 680 + save.abyssRisk * 140 } : data.bosses[Math.Min(data.bosses.Length - 1, Math.Max(0, save.room - 1))]; } }
+        public BossData CurrentBoss { get { return SignalActive ? new BossData { name = "旧路守望", en = "The Signal Warden", hp = SignalWardenHealth } : save.room == 8 ? new BossData { name = "地脉收割者", en = "The Root Reaper", hp = 680 + save.abyssRisk * 140 } : data.bosses[Math.Min(data.bosses.Length - 1, Math.Max(0, save.room - 1))]; } }
         public string L(string zh, string en) { return save.english ? en : zh; }
         public static float Clamp(float x, float min, float max) { return Math.Max(min, Math.Min(max, x)); }
         private static bool Finite(float f) { return !float.IsNaN(f) && !float.IsInfinity(f); }
@@ -92,7 +92,7 @@ namespace Starfall
             save.foodUntil = Finite(save.foodUntil) ? Clamp(save.foodUntil, 0, save.totalTime + 120) : 0;
             if (save.weapon > 0 && !Has("weapon_" + save.weapon)) save.weapon = 0;
             if (!Finite(save.x) || !Finite(save.y) || !Fits(Position)) { save.x = Map.spawnX; save.y = Map.spawnY; }
-            ResetTransient(); SpawnRoom(); RestoreWorld(); RestoreWatchEncounter(); revision++;
+            ResetTransient(); SpawnRoom(); RestoreWorld(); RestoreWatchEncounter(); RestoreSignalEncounter(); revision++;
         }
         private void ResetTransient()
         {
@@ -352,7 +352,9 @@ namespace Starfall
             effects.Add(new Effect("number", e.Position, .7f, (crit ? "! " : "") + ((int)damage)));
             if (e.hp > 0) return;
             fallen.Add(new FallenActor { actor = e, room = save.room, life = e.boss ? 1.4f : .65f, duration = e.boss ? 1.4f : .65f });
-            enemies.Remove(e); OnWatchKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
+            enemies.Remove(e);
+            if (IsSignalWarden(e)) { OnSignalDefeated(e); revision++; return; }
+            OnWatchKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
             effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
             if (!InAbyss)
             {
@@ -401,8 +403,15 @@ namespace Starfall
                 if (Dying) break;
                 if (!enemies.Contains(e) || mode != "world") continue;
                 e.moving = e.backpedaling = false; e.flash -= dt; e.hitTime -= dt; e.releaseTime -= dt; e.stun -= dt; e.staggerRecovery -= dt;
-                if (e.hitTime > 0) { Point pushed = SweepActor(e.Position, e.recoil * dt * (e.boss ? .15f : .8f)); e.x = pushed.x; e.y = pushed.y; continue; }
+                if (e.hitTime > 0)
+                {
+                    // This echo announces a fixed lane. Hit reactions may pause
+                    // it, but cannot move its body off that captured attack path.
+                    if (IsSignalWarden(e) && e.state == 1) continue;
+                    Point pushed = SweepActor(e.Position, e.recoil * dt * (e.boss ? .15f : .8f)); e.x = pushed.x; e.y = pushed.y; continue;
+                }
                 if (e.stun > 0 || e.releaseTime > 0) continue;
+                if (IsSignalWarden(e)) { TickSignalEnemy(e, dt); continue; }
                 Point delta = Position - e.Position; float distance = delta.Length;
                 if (e.state == 1)
                 {
@@ -561,6 +570,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkSignal(o)) return;
             if (TalkWatch(o)) return;
             if (TalkPolish(o)) return;
             if (TalkExpansion(o)) return;
@@ -678,6 +688,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseSignal(action)) return;
             if (ChooseWatch(action)) return;
             if (ChoosePolish(action)) return;
             if (ChooseExpansion(action)) return;

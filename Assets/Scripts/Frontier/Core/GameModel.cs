@@ -103,6 +103,7 @@ namespace Starfall
     }
     public class Projectile
     {
+        public int ownerId;
         public Point position, velocity;
         public float life = 3, damage;
         public bool friendly, explosive, piercing;

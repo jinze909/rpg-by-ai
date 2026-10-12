@@ -16,7 +16,7 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
-        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch" };
+        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal" };
         private void SanitizeGuidance()
         {
             if (save.presentationVersion == 0)
@@ -86,6 +86,7 @@ namespace Starfall
         {
             if (Array.IndexOf(QuestIds, id) < 0) id = "main";
             if (id == "watch") return GetWatchQuest();
+            if (id == "signal") return GetSignalQuest();
             QuestGuide q = new QuestGuide { id = id, room = 0, target = new Point(18, 17), category = L("主线", "STORY"), reward = L("硬币、经验与新的路线", "Coins, experience and new routes") };
             if (id == "secrets")
             {
