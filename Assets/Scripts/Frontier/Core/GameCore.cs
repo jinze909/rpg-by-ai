@@ -92,7 +92,7 @@ namespace Starfall
             save.foodUntil = Finite(save.foodUntil) ? Clamp(save.foodUntil, 0, save.totalTime + 120) : 0;
             if (save.weapon > 0 && !Has("weapon_" + save.weapon)) save.weapon = 0;
             if (!Finite(save.x) || !Finite(save.y) || !Fits(Position)) { save.x = Map.spawnX; save.y = Map.spawnY; }
-            ResetTransient(); SpawnRoom(); RestoreWorld(); revision++;
+            ResetTransient(); SpawnRoom(); RestoreWorld(); RestoreWatchEncounter(); revision++;
         }
         private void ResetTransient()
         {
@@ -100,7 +100,7 @@ namespace Starfall
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0;
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
-            ResetContinuity();
+            ResetContinuity(); ResetWatchTransient();
         }
         public void NewGame(int profession)
         {
@@ -201,7 +201,7 @@ namespace Starfall
             if (InAbyss && room != 8) { AbyssExitConversation(); return; }
             save.room = room; save.x = Map.spawnX; save.y = Map.spawnY;
             save.snapshotRoom = -1; save.worldEnemies = null; save.savedRunes = 0;
-            ResetTransient(); SpawnRoom(); mode = "world"; revision++; sound = "travel";
+            ResetTransient(); SpawnRoom(); RestoreWatchEncounter(); mode = "world"; revision++; sound = "travel";
             Notify(Map.subtitle, Map.suben);
         }
         public void ReturnToTown()
@@ -253,6 +253,7 @@ namespace Starfall
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
             TickExpansion(dt);
             if (Dying) return;
+            TickWatch(dt);
             TickGuidance(beforeMove);
             TickPolish(dt);
         }
@@ -351,7 +352,7 @@ namespace Starfall
             effects.Add(new Effect("number", e.Position, .7f, (crit ? "! " : "") + ((int)damage)));
             if (e.hp > 0) return;
             fallen.Add(new FallenActor { actor = e, room = save.room, life = e.boss ? 1.4f : .65f, duration = e.boss ? 1.4f : .65f });
-            enemies.Remove(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
+            enemies.Remove(e); OnWatchKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
             effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
             if (!InAbyss)
             {
@@ -560,6 +561,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkWatch(o)) return;
             if (TalkPolish(o)) return;
             if (TalkExpansion(o)) return;
             string kind = o.kind;
@@ -676,6 +678,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseWatch(action)) return;
             if (ChoosePolish(action)) return;
             if (ChooseExpansion(action)) return;
             if (action == "close") return;

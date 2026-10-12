@@ -447,6 +447,30 @@
           "x": 4.5,
           "y": 19.5,
           "lore": 10
+        },
+        {
+          "id": "watch_signal0",
+          "kind": "watchSignal0",
+          "name": "巡路旧灯 1",
+          "en": "Warden lamp 1",
+          "x": 7,
+          "y": 12
+        },
+        {
+          "id": "watch_signal1",
+          "kind": "watchSignal1",
+          "name": "巡路旧灯 2",
+          "en": "Warden lamp 2",
+          "x": 18,
+          "y": 18
+        },
+        {
+          "id": "watch_signal2",
+          "kind": "watchSignal2",
+          "name": "巡路旧灯 3",
+          "en": "Warden lamp 3",
+          "x": 23,
+          "y": 9
         }
       ],
       "decor": [

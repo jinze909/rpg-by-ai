@@ -6,6 +6,11 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void LastWatchFullQuest(){CoreChecks.LastWatchFullQuestAndOriginalStory(Data());}
+        [Test] public void LastWatchChannelBoundaries(){CoreChecks.LastWatchClockPressureAndStageBoundaries(Data());}
+        [Test] public void LastWatchSnapshotRecovery(){CoreChecks.LastWatchSnapshotsTravelAndDefeatRecords(Data());}
+        [Test] public void LastWatchLegacySavesAndRoutes(){CoreChecks.LastWatchCompatibilityReadinessAndReachability(Data());}
+        [Test] public void LastWatchLethalContactPriority(){CoreChecks.LastWatchDeathCannotCompleteOrPay(Data());}
         [Test] public void GatheringRequestsRestAndDelivery(){CoreChecks.GatheringRequestsGuideRestAndDelivery(Data());}
         [Test] public void FreshUnlockedResourceDestinations(){CoreChecks.ResourceGuidesChooseFreshUnlockedNodes(Data());}
         [Test] public void OreContractsGatherRestAndClaim(){CoreChecks.OreContractsGuideGatherRestAndClaim(Data());}

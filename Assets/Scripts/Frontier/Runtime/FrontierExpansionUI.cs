@@ -56,6 +56,26 @@ namespace Starfall
         private bool DrawExpansionObject(WorldObject o)
         {
             string kind = o.kind; Point p = ScreenPoint(new Point(o.x, o.y));
+            if (kind.StartsWith("watchSignal"))
+            {
+                int id;
+                if (!int.TryParse(kind.Substring(11), out id) || id < 0 || id > 2) return false;
+                bool lit = Game.WatchLampLit(id), active = Game.WatchActive(id);
+                PropImage("lamp", 0, p.x - 24, p.y - 54, 48, 56, lit ? Color.white : active ? gold : muted);
+                Text(p.x - 32, p.y - 84, 64, 25, new[] { "I", "II", "III" }[id] + (lit ? " ✓" : ""), 17, lit ? mint : gold, TextAnchor.MiddleCenter);
+                if (lit) Ring(new Point(o.x, o.y), .4f, mint, 12);
+                if (active)
+                {
+                    Ring(new Point(o.x, o.y), 1.6f, gold, 48);
+                    Bar(p.x - 32, p.y - 58, 64, Game.WatchProgress, gold, 4);
+                    if ((new Point(o.x, o.y) - Game.Position).Length < 3.5f)
+                    {
+                        Panel(p.x - 116, p.y - 143, 232, 54, panel, gold);
+                        Text(p.x - 104, p.y - 137, 208, 42, Game.WatchStatus, 12, paper, TextAnchor.MiddleCenter);
+                    }
+                }
+                return true;
+            }
             if (kind.StartsWith("mirror"))
             {
                 int id = int.Parse(kind.Substring(6)); PropImage("mirror", id, p.x - 34, p.y - 68, 68, 79);

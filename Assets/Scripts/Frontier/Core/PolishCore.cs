@@ -132,7 +132,12 @@ namespace Starfall
         {
             if (o.kind == "mentor") { Dialog(o.name, o.en, "先练习命中，再观察预告并闪避，最后用职业技能完成挑战。训练无伤害，不消耗物资；首次完成获得技能点1、硬币15。", "Hit a dummy, read a telegraph and dodge, then land your class technique. Practice costs no health or supplies. First clear: 1 point and 15 coins.", C("开始练习", "Start practice", "practice"), C("稍后", "Later", "close")); return true; }
             if (o.kind == "returnscout")
-            { if (!Has("scout_saved")) return true; Dialog(o.name, o.en, "我回来了。你替我打开的是回家的路。公会的记录里现在有我的名字；也请记住，被星核伤害的土地上还住着人。", "I'm home. You opened my way back. My name is in the guild records now. Remember: people live on the land the cores are draining.", C(Has("scout_gift") ? "一路平安" : "收下谢礼：炖汤1", Has("scout_gift") ? "Stay safe" : "Accept thanks: 1 stew", "scoutgift")); return true; }
+            {
+                if (!Has("scout_saved")) return true;
+                var choices = new List<Choice> { C(Has("scout_gift") ? "一路平安" : "收下谢礼：炖汤1", Has("scout_gift") ? "Stay safe" : "Accept thanks: 1 stew", "scoutgift") };
+                if (WatchReady) choices.Add(C("最后一班巡路", "The Last Watch", "watch_commission"));
+                Dialog(o.name, o.en, "我回来了。你替我打开的是回家的路。公会的记录里现在有我的名字；也请记住，被星核伤害的土地上还住着人。", "I'm home. You opened my way back. My name is in the guild records now. Remember: people live on the land the cores are draining.", choices.ToArray()); return true;
+            }
             if (o.kind.StartsWith("seal")) { UseExplorationAbility(); return true; }
             if (o.kind.StartsWith("cache"))
             {
@@ -169,7 +174,10 @@ namespace Starfall
             {
                 if (r == null || r.id < 1 || r.id > 99999 || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0 || r.boss && Has("boss_" + save.room)) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
-                var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, Clamp(r.maxHp, 1, 5000), r.boss); e.hp = Clamp(r.hp, .1f, e.maxHp); enemies.Add(e); enemyId = Math.Max(enemyId, r.id);
+                var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, Clamp(r.maxHp, 1, 5000), r.boss); e.hp = Clamp(r.hp, .1f, e.maxHp); enemies.Add(e);
+                // Optional watch waves own a reserved ID range; main guardians
+                // and their reinforcements keep the ordinary allocator.
+                if (!IsWatchEnemyId(r.id)) enemyId = Math.Max(enemyId, r.id);
             }
         }
     }

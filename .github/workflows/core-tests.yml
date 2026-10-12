@@ -11,3 +11,5 @@ jobs:
         run: python3 tools/run_core_tests.py
       - name: Check production combat input with offline Unity declarations
         run: python3 tools/run_combat_input_checks.py
+      - name: Check optional patrol story with production runtime and saves
+        run: python3 tools/run_watch_quest_checks.py

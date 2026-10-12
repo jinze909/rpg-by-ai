@@ -16,7 +16,7 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
-        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets" };
+        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch" };
         private void SanitizeGuidance()
         {
             if (save.presentationVersion == 0)
@@ -76,7 +76,7 @@ namespace Starfall
             // through the existing town routes. No new refresh or reward rule.
             q.room = save.room == 9 ? 9 : 0;
             q.target = ObjectPoint(q.room, "rest", new Point(data.maps[q.room].spawnX, data.maps[q.room].spawnY));
-            q.next = L("可采资源已耗尽；到旅店休息刷新", "Available nodes depleted; rest at the inn to renew them");
+            q.next = L("可采资源已用完；到旅店休息更新", "Available nodes depleted; rest at the inn to renew them");
             return false;
         }
         public QuestGuide CurrentGuide { get { return GetQuest(save.trackedQuest); } }
@@ -85,6 +85,7 @@ namespace Starfall
         public QuestGuide GetQuest(string id)
         {
             if (Array.IndexOf(QuestIds, id) < 0) id = "main";
+            if (id == "watch") return GetWatchQuest();
             QuestGuide q = new QuestGuide { id = id, room = 0, target = new Point(18, 17), category = L("主线", "STORY"), reward = L("硬币、经验与新的路线", "Coins, experience and new routes") };
             if (id == "secrets")
             {
