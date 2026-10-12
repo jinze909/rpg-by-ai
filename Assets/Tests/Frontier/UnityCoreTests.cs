@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void RoadKitchenIngredientTransactions(){CoreChecks.RoadKitchenAtomicRecipesAndReplacement(Data());}
+        [Test] public void RoadKitchenRealAccessAndMatureRecipes(){CoreChecks.RoadKitchenAccessAndMatureCooking(Data());}
+        [Test] public void RoadMealWorldClockAndExistingSupplies(){CoreChecks.RoadMealsUseWorldClockAndStackWithExistingSupplies(Data());}
+        [Test] public void RoadMealActualCombatAndClimateContacts(){CoreChecks.RoadMealArmorChangesRealCombatAndLeavesEnvironment(Data());}
+        [Test] public void RoadMealWalkingDodgeSkillAndRace(){CoreChecks.RoadMealTravelMovementKeepsDashSkillAndRaceRules(Data());}
+        [Test] public void RoadMealSavedProgressAndLegacyRecovery(){CoreChecks.RoadMealSaveMigrationSanitizationAndRecovery(Data());}
         [Test] public void SignalWardenStoryReadiness(){CoreChecks.SignalWardenReadinessAndOriginalStory(Data());}
         [Test] public void SignalWardenVictoryTransaction(){CoreChecks.SignalWardenVictoryRewardsAndStoryIsolation(Data());}
         [Test] public void SignalWardenSavedAttempts(){CoreChecks.SignalWardenSnapshotsTravelAndLegacyCompatibility(Data());}

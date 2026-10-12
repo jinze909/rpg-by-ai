@@ -59,6 +59,8 @@ namespace Starfall
         public int savedRunes;
         public string savedAtUtc, lastFailureZh, lastFailureEn;
         public List<JournalMoment> moments = new List<JournalMoment>();
+        public int mealKind;
+        public float mealUntil;
     }
     [Serializable] public class JournalMoment { public string zh, en; public int day; }
     public sealed class WeaponProfile

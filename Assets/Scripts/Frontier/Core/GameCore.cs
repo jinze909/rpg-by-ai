@@ -48,7 +48,7 @@ namespace Starfall
         }
         public int Allies { get { int n = 0; for (int i = 1; i <= 3; i++) if (Has("ally_" + i)) n++; return n; } }
         public float Damage { get { return (19 + save.upgrades * 4 + (save.level - 1) * 2 + save.talents[0] * 3 + MasteryRank(save.weapon) * 2 + (save.relics[0] >= 0 || save.relics[1] >= 0 ? save.relicRank * 2 : 0) + (save.foodUntil > save.totalTime ? 7 : 0) + (Relic(1) && save.health >= save.maxHealth * .8f ? 6 : 0)) * (InAbyss ? 1 + save.boons[0] * .15f : 1); } }
-        public float Speed { get { return 4.5f + (save.profession == 1 ? .45f : 0) + save.talents[2] * .12f + (Relic(2) ? .4f : 0) + (racing ? .65f : 0) - (save.cold > 70 ? .55f : 0); } }
+        public float Speed { get { return 4.5f + (save.profession == 1 ? .45f : 0) + save.talents[2] * .12f + (Relic(2) ? .4f : 0) + (racing ? .65f : 0) - (save.cold > 70 ? .55f : 0) + RoadMealWalkBonus; } }
         public bool GateOpen
         {
             get { return save.room == 0 || save.room == 4 || save.room == 8 || save.room == 9 || (save.room == 1 && Has("scout_saved")) || Has("gate_" + save.room); }
@@ -88,6 +88,7 @@ namespace Starfall
             save.health = Finite(save.health) ? Clamp(save.health, 1, save.maxHealth) : save.maxHealth;
             save.energy = Finite(save.energy) ? Clamp(save.energy, 0, 100) : 100;
             save.totalTime = Finite(save.totalTime) ? Clamp(save.totalTime, 0, 10000000) : 0;
+            SanitizeRoadKitchen();
             save.plantedAt = Finite(save.plantedAt) ? Clamp(save.plantedAt, -1, save.totalTime) : -1;
             save.foodUntil = Finite(save.foodUntil) ? Clamp(save.foodUntil, 0, save.totalTime + 120) : 0;
             if (save.weapon > 0 && !Has("weapon_" + save.weapon)) save.weapon = 0;
@@ -242,7 +243,7 @@ namespace Starfall
             // Resolve changed world collision before any body, missile or contact advances.
             TickTideTransition(); Point beforeMove = Position;
             attackCooldown -= dt; dashCooldown -= dt; skillCooldown -= dt; invulnerable -= dt; guardTime -= dt;
-            save.energy = Clamp(save.energy + dt * ((save.profession == 2 ? 18 : 14) + (InAbyss ? save.boons[1] * 4 : 0) + (save.teaUntil > save.totalTime ? 6 : 0) + (racing ? 8 : 0) - (save.cold > 70 ? 4 : 0)), 0, 100);
+            save.energy = Clamp(save.energy + dt * ((save.profession == 2 ? 18 : 14) + (InAbyss ? save.boons[1] * 4 : 0) + (save.teaUntil > save.totalTime ? 6 : 0) + (racing ? 8 : 0) - (save.cold > 70 ? 4 : 0) + RoadMealEnergyBonus), 0, 100);
             if (movement.Length > 1) movement = movement.Normalized;
             ValidateActionProfile();
             TickMovement(dt, movement, explicitAim);
@@ -383,7 +384,7 @@ namespace Starfall
             playerHitFacing=VisualFacing; playerHitWeapon=AppearanceWeapon;
             Point reaction = incoming ?? VisualFacing * -1;
             if (reaction.Length < .001f) reaction = VisualFacing * -1;
-            save.health -= damage * multiplier * armor; invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;
+            save.health -= damage * multiplier * armor * RoadMealDamageMultiplier(source); invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;
             if (!save.reducedMotion) { hitStop = .045f; impactShake = source == "slam" ? .18f : 0; }
             effects.Add(new Effect("hurt", Position, .5f));
             if (save.health <= 0)
@@ -616,7 +617,7 @@ namespace Starfall
                 list.Add(C("再见", "Goodbye", "close"));
                 Dialog(o.name, o.en, "短剑快，猎弓远，法杖能让星火在敌人间爆开。强化装备提升生命与攻击。\n\n我还需要五个零件修好镇里的水泵。堡垒里有那么多机器，小镇却没有一口能用的井。", "Swords are quick, bows reach far, and staves burst starfire between enemies. Upgrades improve health and damage.\n\nI also need five parts to repair our water pump. So many machines in the citadel, and no working well in town.", list.ToArray()); return;
             }
-            if (kind == "cook") { Dialog(o.name, o.en, "暖潮炖汤：鱼1、药草2。回复55生命与耐力，增加攻击90秒。F喝汤。\n\n星薄荷凉茶：药草2、星晶1。T喝茶，抗暑抗寒并增加耐力回复180秒。", "Stew: 1 fish, 2 herbs. Heals 55, refills energy and boosts damage for 90 seconds. F drinks it.\n\nTea: 2 herbs, 1 crystal. T drinks it for climate protection and faster energy recovery, 180 seconds.", C("制作炖汤", "Cook stew", "cook"), C("买炖汤 · " + ShopStewCost + " 硬币", "Buy stew · " + ShopStewCost + " coins", "buymeal"), C("买木材 ×4 · " + ShopTimberCost + " 硬币", "Buy timber ×4 · " + ShopTimberCost + " coins", "buywood"), C("制作凉茶", "Brew tea", "tea"), C("再见", "Goodbye", "close")); return; }
+            if (kind == "cook") { Dialog(o.name, o.en, "暖潮炖汤：鱼1、药草2。回复55生命与耐力，增加攻击90秒。F喝汤。\n\n星薄荷凉茶：药草2、星晶1。T喝茶，抗暑抗寒并增加耐力回复180秒。", "Stew: 1 fish, 2 herbs. Heals 55, refills energy and boosts damage for 90 seconds. F drinks it.\n\nTea: 2 herbs, 1 crystal. T drinks it for climate protection and faster energy recovery, 180 seconds.", C("制作炖汤", "Cook stew", "cook"), C("买炖汤 · " + ShopStewCost + " 硬币", "Buy stew · " + ShopStewCost + " coins", "buymeal"), C("买木材 ×4 · " + ShopTimberCost + " 硬币", "Buy timber ×4 · " + ShopTimberCost + " coins", "buywood"), C("制作凉茶", "Brew tea", "tea"), C("再见", "Goodbye", "close"), C("远行厨房", "Road kitchen", "kitchen")); return; }
             if (kind == "scout")
             {
                 if (Has("scout_saved")) { Notify("侦察员已经安全离开。", "The scout reached safety."); return; }
@@ -688,6 +689,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseKitchen(action)) return;
             if (ChooseSignal(action)) return;
             if (ChooseWatch(action)) return;
             if (ChoosePolish(action)) return;

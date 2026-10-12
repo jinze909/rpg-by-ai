@@ -51,6 +51,7 @@ namespace Starfall
                 rects.Add(new Rect(20, 20, 260, 77)); rects.Add(new Rect(1030, 22, 230, 70));
                 rects.Add(new Rect(426, 730, 428, 54)); rects.Add(new Rect(1134, 746, 126, 36));
                 if (CombatClimate) rects.Add(new Rect(20,103,260,26));
+                if (Game.RoadMealActive) rects.Add(RoadMealHudBounds(true));
                 if (Game.toastTime > 0) rects.Add(new Rect(20,CombatToastY,260,62));
                 if (HasLiveBoss || HasFallenBoss) rects.Add(new Rect(380, 22, 520, 65));
             }
@@ -59,6 +60,7 @@ namespace Starfall
                 rects.Add(new Rect(24,24,298,104)); rects.Add(new Rect(1008,24,248,191)); rects.Add(new Rect(1008,233,248,248));
                 rects.Add(new Rect(342,696,596,80)); rects.Add(new Rect(972,718,284,52));
                 if (Game.save.room >= 5 || Game.save.teaUntil > Game.save.totalTime) rects.Add(new Rect(24,145,298,60));
+                if (Game.RoadMealActive) rects.Add(RoadMealHudBounds(false));
                 if (Game.save.showGuidance && Game.TutorialStep < 8 && !Game.practicing) rects.Add(new Rect(24,474,298,204));
             }
             rects.AddRange(worldOverlayRegions); return rects;
@@ -147,6 +149,7 @@ namespace Starfall
                 Panel(20,103,260,26,new Color(.045f,.08f,.13f,.45f),new Color(mint.r,mint.g,mint.b,.3f));
                 Text(30,107,240,20,Game.save.teaUntil>Game.save.totalTime?Game.L("凉茶保护 · ","Tea ward · ")+(int)(Game.save.teaUntil-Game.save.totalTime)+"s":Game.save.room==6?Game.L("炎热 ","Heat ")+(int)Game.save.heat+"%":Game.L("寒冷 ","Cold ")+(int)Game.save.cold+"%",12,Game.save.heat>75||Game.save.cold>75?gold:mint);
             }
+            DrawRoadMealHud(true);
             QuestGuide guide = Game.CurrentGuide;
             Panel(1030,22,230,70,new Color(.045f,.08f,.13f,.45f),new Color(gold.r,gold.g,gold.b,.4f));
             Text(1041,27,208,27,Game.practicing ? Game.L("实战教学","COMBAT PRACTICE") : guide.title,12,gold);

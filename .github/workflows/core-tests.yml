@@ -15,3 +15,5 @@ jobs:
         run: python3 tools/run_watch_quest_checks.py
       - name: Check optional Warden trial with production runtime and saves
         run: python3 tools/run_signal_warden_checks.py
+      - name: Check road kitchen with production input, menus and saves
+        run: python3 tools/run_kitchen_checks.py

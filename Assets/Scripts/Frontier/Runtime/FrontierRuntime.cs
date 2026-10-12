@@ -96,7 +96,7 @@ namespace Starfall
             else if (Game.mode == "dialog")
             {
                 int count = Game.conversation == null || !DialogueChoicesVisible() ? 0 : Game.conversation.choices.Length;
-                for (int i = 0; i < Math.Min(5, count); i++) if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1 + i))) ChooseDialogue(i);
+                for (int i = 0; i < Math.Min(9, count); i++) if (Input.GetKeyDown((KeyCode)((int)KeyCode.Alpha1 + i))) ChooseDialogue(i);
             }
             Toggle(KeyCode.I, "inventory"); Toggle(KeyCode.Tab, "journal"); Toggle(KeyCode.K, "talents"); Toggle(KeyCode.M, "map");
             Toggle(KeyCode.B, "camp"); Toggle(KeyCode.C, "companions"); Toggle(KeyCode.G, "loadout"); Toggle(KeyCode.N, "bounties"); Toggle(KeyCode.F1, "help");
