@@ -16,7 +16,7 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
-        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal" };
+        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive" };
         private void SanitizeGuidance()
         {
             if (save.presentationVersion == 0)
@@ -87,6 +87,7 @@ namespace Starfall
             if (Array.IndexOf(QuestIds, id) < 0) id = "main";
             if (id == "watch") return GetWatchQuest();
             if (id == "signal") return GetSignalQuest();
+            if (id == "archive") return GetArchiveQuest();
             QuestGuide q = new QuestGuide { id = id, room = 0, target = new Point(18, 17), category = L("主线", "STORY"), reward = L("硬币、经验与新的路线", "Coins, experience and new routes") };
             if (id == "secrets")
             {
@@ -187,6 +188,8 @@ namespace Starfall
             QuestGuide q = CurrentGuide; if (q.complete || q.locked) return null;
             if (q.room == save.room) return q.target;
             foreach (var o in Map.objects) if (o.kind == "portal" + q.room) return new Point(o.x, o.y);
+            if (save.room == ArchiveRoom) return ObjectPoint(ArchiveRoom, "portal2", new Point(3, 18));
+            if (save.room == 0 && q.room == ArchiveRoom) return ObjectPoint(0, "portal2", new Point(3, 14));
             foreach (var o in Map.objects) if (o.kind == "portal0") return new Point(o.x, o.y);
             if (save.room == 0 && q.room == 8) return ObjectPoint(0, "abyssEntry", new Point(31, 14));
             if (save.room == 0 && q.room >= 5) return new Point(26, 9); return null;

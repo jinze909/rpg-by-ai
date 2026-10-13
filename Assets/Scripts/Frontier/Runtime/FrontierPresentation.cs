@@ -91,22 +91,22 @@ namespace Starfall
             {
                 // A shaded vertical lip distinguishes solid raised terrain from
                 // walkable stone paths without changing the collision cells.
-                if (y + 1 < Game.Map.rows.Length && Game.Map.rows[y + 1][x] != '#')
+                if (y + 1 < Game.Map.rows.Length && Game.PresentationTile(x, y + 1) != '#')
                 {
                     Box(p.x, p.y + Tile * .73f, Tile, Tile * .27f, new Color(.05f, .095f, .14f, .57f));
                     Box(p.x, p.y + Tile * .73f, Tile, 1, new Color(.79f, .77f, .59f, .42f));
                     Box(p.x, p.y + Tile, Tile, 6, new Color(.04f, .08f, .13f, .22f));
                 }
-                if (x > 0 && Game.Map.rows[y][x - 1] != '#') Box(p.x, p.y, 2, Tile, new Color(.06f, .09f, .13f, .42f));
-                if (x + 1 < Game.Map.rows[y].Length && Game.Map.rows[y][x + 1] != '#') Box(p.x + Tile - 2, p.y, 2, Tile, new Color(.06f, .09f, .13f, .42f));
+                if (x > 0 && Game.PresentationTile(x - 1, y) != '#') Box(p.x, p.y, 2, Tile, new Color(.06f, .09f, .13f, .42f));
+                if (x + 1 < Game.Map.rows[y].Length && Game.PresentationTile(x + 1, y) != '#') Box(p.x + Tile - 2, p.y, 2, Tile, new Color(.06f, .09f, .13f, .42f));
                 return;
             }
             if (!WaterSurface(tile)) return;
             Color foam = new Color(.73f, .83f, .72f, .62f), edge = new Color(.12f, .28f, .36f, .6f);
-            if (y > 0 && !WaterSurface(Game.Map.rows[y - 1][x])) { Box(p.x, p.y, Tile, 4, edge); Box(p.x + 2, p.y + 4, Tile - 4, 1, foam); }
-            if (y + 1 < Game.Map.rows.Length && !WaterSurface(Game.Map.rows[y + 1][x])) { Box(p.x, p.y + Tile - 4, Tile, 4, edge); Box(p.x + 2, p.y + Tile - 5, Tile - 4, 1, foam); }
-            if (x > 0 && !WaterSurface(Game.Map.rows[y][x - 1])) { Box(p.x, p.y, 4, Tile, edge); Box(p.x + 4, p.y + 2, 1, Tile - 4, foam); }
-            if (x + 1 < Game.Map.rows[y].Length && !WaterSurface(Game.Map.rows[y][x + 1])) { Box(p.x + Tile - 4, p.y, 4, Tile, edge); Box(p.x + Tile - 5, p.y + 2, 1, Tile - 4, foam); }
+            if (y > 0 && !WaterSurface(Game.PresentationTile(x, y - 1))) { Box(p.x, p.y, Tile, 4, edge); Box(p.x + 2, p.y + 4, Tile - 4, 1, foam); }
+            if (y + 1 < Game.Map.rows.Length && !WaterSurface(Game.PresentationTile(x, y + 1))) { Box(p.x, p.y + Tile - 4, Tile, 4, edge); Box(p.x + 2, p.y + Tile - 5, Tile - 4, 1, foam); }
+            if (x > 0 && !WaterSurface(Game.PresentationTile(x - 1, y))) { Box(p.x, p.y, 4, Tile, edge); Box(p.x + 4, p.y + 2, 1, Tile - 4, foam); }
+            if (x + 1 < Game.Map.rows[y].Length && !WaterSurface(Game.PresentationTile(x + 1, y))) { Box(p.x + Tile - 4, p.y, 4, Tile, edge); Box(p.x + Tile - 5, p.y + 2, 1, Tile - 4, foam); }
         }
         private bool WaterSurface(char tile) { return tile == '~' || tile == '%' && Game.save.room == 5 && !Game.LowTide; }
         private void PropImage(string kind, int variant, float x, float y, float w, float h, Color? tint = null)

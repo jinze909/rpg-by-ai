@@ -7,9 +7,9 @@ namespace Starfall
         private static readonly int[] dryDetails = { 2, 4, 5, 8 }, snowDetails = { 2, 4, 9 }, ruinDetails = { 2, 3, 4, 8 }, greenDetails = { 0, 1, 3, 4, 10 };
         private int SurfaceId(char tile)
         {
-            int room = Game.save.room;
+            int room = Game.ArtRoom;
             if (tile == '~') return 8;
-            if (tile == '%') return Game.save.room == 5 && !Game.LowTide ? 8 : 13;
+            if (tile == '%') return room == 5 && !Game.LowTide ? 8 : 13;
             if (tile == '#') return room == 3 || room == 6 ? 10 : room == 7 ? 14 : 9;
             if (room == 9) return 11;
             if (tile == '=') return room == 5 ? 11 : room == 6 ? 2 : room == 3 ? 6 : room == 4 ? 12 : room == 8 ? 7 : room == 2 ? 15 : 3;
@@ -19,7 +19,7 @@ namespace Starfall
         { unchecked { int n = x * 73856093 ^ y * 19349663 ^ (room + 1) * 83492791; return n & 0x7fffffff; } }
         private void DrawSurface(int x, int y, char tile, Point p)
         {
-            if (terrainSheet == null) { Image(art.Tile(Game.save.room, tile, (x * 7 + y * 11) % 4, PixelArt.C(Game.Map.color)), p.x, p.y, Tile + .5f, Tile + .5f); return; }
+            if (terrainSheet == null) { Image(art.Tile(Game.ArtRoom, tile, (x * 7 + y * 11) % 4, PixelArt.C(Game.Map.color)), p.x, p.y, Tile + .5f, Tile + .5f); return; }
             int seed = TileSeed(x, y, Game.save.room), id = SurfaceId(tile);
             float value = .97f + seed % 5 * .014f;
             int row = id == 0 ? 0 : id == 1 ? 1 : id == 3 ? 2 : id == 8 ? 3 : -1;
@@ -28,10 +28,10 @@ namespace Starfall
             if (tile == '=' && Game.save.room < 2)
             {
                 // Dark, narrow soil edges make the road shape read above busy grass.
-                if (x > 0 && Game.Map.rows[y][x - 1] == '.') Box(p.x, p.y, 2, Tile, new Color(.17f, .22f, .15f, .28f));
-                if (x + 1 < Game.Map.rows[y].Length && Game.Map.rows[y][x + 1] == '.') Box(p.x + Tile - 2, p.y, 2, Tile, new Color(.17f, .22f, .15f, .28f));
-                if (y > 0 && Game.Map.rows[y - 1][x] == '.') Box(p.x, p.y, Tile, 2, new Color(.17f, .22f, .15f, .28f));
-                if (y + 1 < Game.Map.rows.Length && Game.Map.rows[y + 1][x] == '.') Box(p.x, p.y + Tile - 2, Tile, 2, new Color(.17f, .22f, .15f, .28f));
+                if (x > 0 && Game.PresentationTile(x - 1, y) == '.') Box(p.x, p.y, 2, Tile, new Color(.17f, .22f, .15f, .28f));
+                if (x + 1 < Game.Map.rows[y].Length && Game.PresentationTile(x + 1, y) == '.') Box(p.x + Tile - 2, p.y, 2, Tile, new Color(.17f, .22f, .15f, .28f));
+                if (y > 0 && Game.PresentationTile(x, y - 1) == '.') Box(p.x, p.y, Tile, 2, new Color(.17f, .22f, .15f, .28f));
+                if (y + 1 < Game.Map.rows.Length && Game.PresentationTile(x, y + 1) == '.') Box(p.x, p.y + Tile - 2, Tile, 2, new Color(.17f, .22f, .15f, .28f));
             }
         }
         private void DrawGroundDetail(int x, int y, char tile, Point p)
@@ -42,7 +42,7 @@ namespace Starfall
             Point world = new Point(x + .35f + seed % 5 * .07f, y + .65f);
             // Persistent world decoration: approaching actors cannot erase tiles.
             foreach (WorldObject item in Game.Map.objects) if ((world - new Point(item.x, item.y)).Length < 1.4f) return;
-            int room = Game.save.room;
+            int room = Game.ArtRoom;
             int[] options = room == 6 || room == 3 || room == 8 ? dryDetails : room == 7 ? snowDetails : room == 2 || room == 4 ? ruinDetails : greenDetails;
             int id = options[(seed / 17) % options.Length];
             if (id == 9) id = 4; // Large fallen trunks belong to fixed solid edge scenery.

@@ -758,6 +758,14 @@
           "x": 4.5,
           "y": 19.5,
           "lore": 11
+        },
+        {
+          "id": "archive_entry",
+          "name": "遗潮档案入口",
+          "en": "Tide Archive entrance",
+          "x": 10,
+          "y": 14,
+          "kind": "portal10"
         }
       ],
       "decor": [
@@ -2322,6 +2330,189 @@
           "y": 6.9
         }
       ]
+    },
+    {
+      "id": 10,
+      "name": "遗潮档案",
+      "en": "TIDE ARCHIVE",
+      "subtitle": "修好旧水路，让家人的名字重见天日。",
+      "suben": "Restore the old waterworks and recover the names kept inside.",
+      "color": "#385a79",
+      "spawnX": 4,
+      "spawnY": 18,
+      "rows": [
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~===~~~#..........~~",
+        "~~..........#~~~~......#..........~~",
+        "~~..........#~~~~......=..........~~",
+        "~~..........#~~~~......=..........~~",
+        "~~..........#~~~~===~~~#..........~~",
+        "~~..........#~...===~~~#..........~~",
+        "~~..........#~...===~~~#..........~~",
+        "~~..........#~~~~===...#..........~~",
+        "~~..........#~~~~===...#..........~~",
+        "~~.......====....===...#..........~~",
+        "~~.......====....===...#..........~~",
+        "~~..........#....===...#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~..........#~~~~~~~~~~#..........~~",
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~",
+        "~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~"
+      ],
+      "objects": [
+        {
+          "id": "archive_exit",
+          "name": "返回沉没遗迹",
+          "en": "Return to Drowned Ruins",
+          "x": 3,
+          "y": 18,
+          "kind": "portal2"
+        },
+        {
+          "id": "archive_plan",
+          "name": "档案水路图",
+          "en": "Waterworks plan",
+          "x": 4,
+          "y": 8,
+          "kind": "archivePlan"
+        },
+        {
+          "id": "archive_valve0",
+          "name": "转角水轮一",
+          "en": "Elbow valve I",
+          "x": 7,
+          "y": 6,
+          "kind": "archiveValve0"
+        },
+        {
+          "id": "archive_valve1",
+          "name": "转角水轮二",
+          "en": "Elbow valve II",
+          "x": 7,
+          "y": 10,
+          "kind": "archiveValve1"
+        },
+        {
+          "id": "archive_valve2",
+          "name": "转角水轮三",
+          "en": "Elbow valve III",
+          "x": 10,
+          "y": 10,
+          "kind": "archiveValve2"
+        },
+        {
+          "id": "archive_vent",
+          "name": "压力水轮",
+          "en": "Pressure wheel",
+          "x": 21,
+          "y": 6,
+          "kind": "archiveVent"
+        },
+        {
+          "id": "archive_record0",
+          "name": "水位账册",
+          "en": "Water-level ledger",
+          "x": 27,
+          "y": 5,
+          "kind": "archiveRecord0",
+          "lore": 17
+        },
+        {
+          "id": "archive_record1",
+          "name": "撤离路图",
+          "en": "Evacuation route",
+          "x": 31,
+          "y": 11,
+          "kind": "archiveRecord1",
+          "lore": 18
+        },
+        {
+          "id": "archive_record2",
+          "name": "照看孩子的名单",
+          "en": "Caretakers list",
+          "x": 27,
+          "y": 17,
+          "kind": "archiveRecord2",
+          "lore": 19
+        },
+        {
+          "id": "archive_keeper",
+          "name": "档案保存台",
+          "en": "Archive desk",
+          "x": 31,
+          "y": 19,
+          "kind": "archiveKeeper"
+        }
+      ],
+      "decor": [
+        {
+          "kind": "column",
+          "x": 3,
+          "y": 3,
+          "variant": 0
+        },
+        {
+          "kind": "column",
+          "x": 10,
+          "y": 3,
+          "variant": 1
+        },
+        {
+          "kind": "lamp",
+          "x": 5,
+          "y": 18,
+          "variant": 0
+        },
+        {
+          "kind": "column",
+          "x": 14,
+          "y": 14,
+          "variant": 2
+        },
+        {
+          "kind": "column",
+          "x": 22,
+          "y": 14,
+          "variant": 1
+        },
+        {
+          "kind": "column",
+          "x": 26,
+          "y": 3,
+          "variant": 0
+        },
+        {
+          "kind": "column",
+          "x": 32,
+          "y": 21,
+          "variant": 2
+        },
+        {
+          "kind": "ruin",
+          "x": 32,
+          "y": 4,
+          "variant": 2
+        },
+        {
+          "kind": "cache",
+          "x": 32,
+          "y": 19,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 25,
+          "y": 19,
+          "variant": 0
+        }
+      ]
     }
   ],
   "items": [
@@ -2505,6 +2696,24 @@
       "en": "The Inn Ledger",
       "zh": "巡路队失联之后，阿茴把他们家人的名字写进赊账簿，却没有写下要还的钱。\n\n最后一页夹着莉雅留的纸条：“回来的人，先给一碗汤。名单可以慢慢补。”\n\n这家旅店记住的，既是还没寄出的信，也是等人回来的座位。",
       "text": "After the patrol vanished, Ari wrote their families into the credit ledger, but left the debts blank.\n\nLyra tucked a note into its last page: “Give anyone who returns a bowl of stew first. We can finish the list later.”\n\nThe inn keeps a place for unsent letters, and for the people still expected home."
+    },
+    {
+      "title": "遗潮 · 水位账册",
+      "en": "Archive · the water-level ledger",
+      "zh": "账册里没有物资地点，只有逐日升高的水位和不断改写的撤离时间。\n\n最后一行写着：“先送孩子，再送药箱。文册和工具留在高处，回来的人还能用。”\n\n守水人没有在这页留下自己的名字。他把最后一块干布夹在纸上，希望下一位读到它的人，仍能看清每一笔。",
+      "text": "The ledger marks no treasure, only rising water and evacuation times rewritten each day.\n\nThe final line reads: “Children first, then the medicine chest. Leave books and tools above the water for whoever returns.”\n\nThe water keeper left no name on this page. He pressed his last dry cloth between the sheets, hoping the next reader could still make out every stroke."
+    },
+    {
+      "title": "遗潮 · 撤离路图",
+      "en": "Archive · the evacuation route",
+      "zh": "路图没有通往主城的箭形记号。它把所有小路连到一处高地，又画出通往每个村庄的回路。\n\n旁边的说明只有一句：“走得快的人照顾走得慢的人。到高地后，先清点名字，再分水。”\n\n有人在回路旁补了一句：“修好的路，要让等人回来的人也能走。”这些记号记录的是撤离，不是任何失踪者已经归来的证明。",
+      "text": "No arrow on the map leads to the capital. Every footpath meets on high ground, then branches back toward the villages.\n\nThe instruction is brief: “Those who can walk quickly support those who cannot. Count names before sharing water.”\n\nBeside a return path, someone added: “A repaired road must also serve the people waiting for someone to come home.” This is a record of evacuation, not proof that any missing person returned."
+    },
+    {
+      "title": "遗潮 · 照看孩子的名单",
+      "en": "Archive · the caretakers list",
+      "zh": "这页写着孩子的名字、住过的村庄，和愿意照看他们的家人。没有人被写成一个数字。\n\n一位家人在空白处写道：“如果我们走散，先给孩子一碗热汤。等他能说话了，再问家在哪里。”\n\n纸角留下后来补上的记号：有人回到了家，也有人仍在等。把名单交给公会或亲手带给家人，都不能替他们写下尚未发生的重逢。",
+      "text": "This page pairs each child with a village and a family willing to care for them. No one is recorded as a number.\n\nA mother wrote in the margin: “If we are separated, give the child a bowl of warm soup first. Ask where home is when they can speak.”\n\nLater marks show that some reached home and others were still waiting. Whether these names are entrusted to the guild or carried to the families, no one can write a reunion that has not happened."
     }
   ]
 }

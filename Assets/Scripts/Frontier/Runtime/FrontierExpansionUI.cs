@@ -35,13 +35,14 @@ namespace Starfall
         {
             foreach (Hazard h in Game.hazards)
             {
+                if (h.kind == "archiveTide") { DrawArchivePressureWarning(h); continue; }
                 Color warning = HazardWarningColor(h);
                 Ring(h.position, h.radius, warning); Point p = ScreenPoint(h.position);
                 Text(p.x - 25, p.y - 25, 50, 24, h.timer.ToString("0.0"), 13, warning, TextAnchor.MiddleCenter);
             }
         }
         private Color HazardWarningColor(Hazard hazard)
-        { return hazard.kind == "glass" ? gold : hazard.kind == "rift" ? PixelArt.C("#b9a1d1") : PixelArt.C("#d59583"); }
+        { return hazard.kind == "archiveTide" ? PixelArt.C("#fff1a6") : hazard.kind == "glass" ? gold : hazard.kind == "rift" ? PixelArt.C("#b9a1d1") : PixelArt.C("#d59583"); }
         private void DrawExpansionWorld()
         {
             if (Game.racing)
@@ -55,6 +56,7 @@ namespace Starfall
         }
         private bool DrawExpansionObject(WorldObject o)
         {
+            if (DrawArchiveObject(o)) return true;
             string kind = o.kind; Point p = ScreenPoint(new Point(o.x, o.y));
             if (kind.StartsWith("watchSignal"))
             {

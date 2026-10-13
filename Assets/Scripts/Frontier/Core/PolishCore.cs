@@ -174,14 +174,16 @@ namespace Starfall
             foreach (var r in save.worldEnemies)
             {
                 if (r == null || r.id < 1 || r.id > 99999 || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if (save.room == ArchiveRoom && !IsArchiveEnemyId(r.id)) continue;
+                if (IsArchiveEnemyId(r.id) && (!ArchiveDefenceActive || r.boss || r.kind != r.id - ArchiveEnemyBase || Has("archive_defeated_" + r.id))) continue;
                 bool signal = r.id == SignalWardenId && r.boss && r.kind == 3;
                 if (r.id == SignalWardenId && (!signal || save.room != 1 || !SignalReady || SignalComplete)) continue;
                 if (r.boss && !signal && Has("boss_" + save.room)) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
                 var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, Clamp(r.maxHp, 1, 5000), r.boss); e.hp = Clamp(r.hp, .1f, e.maxHp); enemies.Add(e);
-                // Optional watch waves own a reserved ID range; main guardians
-                // and their reinforcements keep the ordinary allocator.
-                if (!IsWatchEnemyId(r.id) && !signal) enemyId = Math.Max(enemyId, r.id);
+                // Optional encounters own reserved IDs. Chapter guardians and
+                // their reinforcements keep the ordinary allocator.
+                if (!IsWatchEnemyId(r.id) && !IsArchiveEnemyId(r.id) && !signal) enemyId = Math.Max(enemyId, r.id);
             }
         }
     }

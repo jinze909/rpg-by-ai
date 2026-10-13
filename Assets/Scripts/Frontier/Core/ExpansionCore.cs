@@ -38,6 +38,7 @@ namespace Starfall
         public bool CanEnter(int room)
         {
             if (room < 0 || room >= data.maps.Length) return false;
+            if (room == ArchiveRoom) return ArchiveReady;
             if (room == 9) return true;
             if (room <= 4) return room <= save.stage + 1;
             if (room == 5) return save.stage >= 1 && Has("exp_intro");
@@ -47,6 +48,7 @@ namespace Starfall
         }
         public string RouteHint(int room, bool en)
         {
+            if (room == ArchiveRoom) return en ? "Recover the second starcore, then visit the Tide Archive entrance in Drowned Ruins." : "先找回第二枚星核，再到沉水遗迹调查遗潮档案入口。";
             if (room <= 4) return en ? "Deliver the previous core to Lyra." : "先把上一片区域的星核交回莉雅。";
             if (room == 5) return en ? "Deliver the first core, then meet Lune in Emberfall (26,9)." : "交回第一枚星核后，找余烬镇的露恩（26,9）接取远岸来信。";
             if (room == 6) return en ? "Resolve the lighthouse crisis and report to Mira." : "解决灯塔危机，向米拉提交港口调查。";
@@ -148,7 +150,7 @@ namespace Starfall
             var ids = new HashSet<int>();
             foreach (EnemyRecord r in save.abyssEnemies)
             {
-                if (r == null || r.id < 1 || r.id > 99999 || r.id == SignalWardenId || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || IsArchiveEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
                 float maximum = Clamp(r.maxHp, 1, 5000);
                 var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, maximum, r.boss && save.abyssFloor == 6);
@@ -351,7 +353,7 @@ namespace Starfall
         private void AddHazard(Point p, float radius, float delay, float damage, string kind)
         { hazards.Add(new Hazard { position = p, radius = radius, timer = delay, damage = damage, kind = kind }); }
         public static int HazardTheme(Hazard hazard)
-        { return hazard.kind == "tide" ? 5 : hazard.kind == "glass" ? 6 : 8; }
+        { return (hazard.kind == "tide" || hazard.kind == "archiveTide") ? 5 : hazard.kind == "glass" ? 6 : 8; }
         private void BossExpansionAttack(Enemy e)
         {
             if (save.room == 5)
@@ -688,6 +690,7 @@ namespace Starfall
         }
         private string ExpansionObjective()
         {
+            if (save.room == ArchiveRoom) return GetArchiveQuest().next;
             if (save.room == 9) return L("休息、备好热汤，或从南门返回余烬镇。", "Rest, prepare stew, or return to Emberfall through the south door.");
             if (InAbyss) return enemies.Count > 0 ? L("清理本层敌人 · 小心地脉落印，东门可结算", "Clear this floor · avoid rift marks; bank at the east gate") : L("到东侧地脉门，选择祝福或安全撤离。", "Choose a blessing or extract at the east gate.");
             if (save.room >= 5 && save.room <= 7)

@@ -4,7 +4,7 @@ namespace Starfall
 {
     public sealed partial class FrontierRuntime
     {
-        private int selectedItem, selectedQuest, selectedRegion = -1, helpTopic, dialoguePage, recordsPage;
+        private int selectedItem, selectedQuest, selectedRegion = -1, helpTopic, dialoguePage, recordsPage, mapPage, lastMapRegion = -1;
         private Conversation lastConversation;
         private readonly string[] menuModes = { "inventory", "loadout", "talents", "companions", "journal", "map", "camp", "bounties", "help" };
         private readonly string[] menuZh = { "冒险背包", "遗物配装", "职业成长", "同行伙伴", "任务手帐", "世界地图", "城镇建设", "公会悬赏", "冒险指南" };
@@ -115,7 +115,7 @@ namespace Starfall
         private void DrawMinimap() { Panel(1008, 24, 248, 191, new Color(.045f, .08f, .13f, .94f), PixelArt.C("#486073")); MiniTerrain(1024, 42, 6); Text(1024, 191, 166, 21, Game.Night ? Game.L("夜晚", "NIGHT") : Game.L("白昼", "DAY"), 11, gold); if (Button(1190, 184, 48, 25, "M")) OpenMenu("map"); }
         private void MiniTerrain(float x0, float y0, float size)
         {
-            for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++) { char t = Game.Map.rows[y][x]; Color c = t == '~' || t == '%' && !Game.LowTide ? PixelArt.C("#315c76") : t == '#' ? PixelArt.C("#566879") : t == '=' ? PixelArt.C("#a09877") : PixelArt.C(Game.Map.color); Box(x0 + x * size, y0 + y * size, size, size, Game.Explored(Game.save.room, x, y) ? c : Color.Lerp(c, ink, .68f)); }
+            for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++) { char t = Game.PresentationTile(x,y); Color c = t == '~' || t == '%' && !Game.LowTide ? PixelArt.C("#315c76") : t == '#' ? PixelArt.C("#566879") : t == '=' ? PixelArt.C("#a09877") : PixelArt.C(Game.Map.color); Box(x0 + x * size, y0 + y * size, size, size, Game.Explored(Game.save.room, x, y) ? c : Color.Lerp(c, ink, .68f)); }
             foreach (var o in Game.Map.objects) if (Game.IsObjectPresent(o) && (o.kind.StartsWith("portal") || Game.Explored(Game.save.room, o.x, o.y))) Box(x0 + o.x * size - 1, y0 + o.y * size - 1, 3, 3, o.kind.StartsWith("portal") ? mint : gold);
             Point? goal = Game.NavigationTarget(); if (goal.HasValue && Game.save.showGuidance) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
         }
@@ -219,14 +219,46 @@ namespace Starfall
         }
         private void DrawMap()
         {
-            Window(Game.L("边境与远岸", "Frontier & distant shores"), Game.L("世界路线与本地地图 · 金色为任务目标，白色为你的位置", "World routes and local terrain · gold: objective · ivory: you")); if (selectedRegion < 0 || selectedRegion >= Game.data.maps.Length) selectedRegion = Game.save.room;
-            for (int i = 0; i < Math.Min(9, Game.data.maps.Length); i++) { float x = 279 + i % 3 * 189, y = 178 + i / 3 * 154; bool open = Game.CanEnter(i); Card(x, y, 176, 140, selectedRegion == i); Box(x + 1, y + 1, 174, 35, Color.Lerp(PixelArt.C(Game.data.maps[i].color), panel, .35f)); Text(x + 11, y + 8, 152, 27, "0" + (i + 1) + "  " + (i == Game.save.room ? Game.L("当前位置", "HERE") : open ? Game.L("已开放", "OPEN") : Game.L("未开放", "LOCKED")), 10, open ? gold : muted); if (Button(x + 10, y + 46, 156, 80, Game.L(Game.data.maps[i].name, Game.data.maps[i].en), selectedRegion == i)) selectedRegion = i; }
-            if (Game.save.room == 9 && Button(279, 657, 555, 31, Game.L("查看当前位置：炉火旅店", "Current room: Hearth Inn"), selectedRegion == 9)) selectedRegion = 9;
-            Card(866, 178, 351, 510); MapData m = Game.data.maps[selectedRegion]; Text(888, 197, 306, 46, Game.L(m.name, m.en), 25, gold);
-            if (selectedRegion == Game.save.room) MiniTerrain(888, 264, 8.4f); else { for (int y = 0; y < m.rows.Length; y++) for (int x = 0; x < m.rows[y].Length; x++) { char t = m.rows[y][x]; Box(888 + x * 8.4f, 264 + y * 8.4f, 8.4f, 8.4f, t == '~' ? PixelArt.C("#365f78") : t == '#' ? PixelArt.C("#586d79") : t == '=' ? PixelArt.C("#aaa17e") : PixelArt.C(m.color)); } QuestGuide q = Game.CurrentGuide; if (q.room == selectedRegion && !q.complete) Box(888 + q.target.x * 8.4f - 3, 264 + q.target.y * 8.4f - 3, 7, 7, gold); }
-            Text(888, 492, 306, 101, Game.CanEnter(selectedRegion) ? Game.L(m.subtitle, m.suben) : Game.RouteHint(selectedRegion, Game.save.english), 16, muted);
-            if (Button(888, 616, 306, 47, selectedRegion == Game.save.room ? Game.L("返回本地区", "Return to region") : Game.L("快速旅行", "Fast travel"), true, selectedRegion == Game.save.room || Game.CanEnter(selectedRegion) && Game.SafeTravel)) { if (selectedRegion == Game.save.room) Game.Close(); else { Game.Enter(selectedRegion); camera = CameraTarget(); } }
-            Text(282, 657, 554, 45, Game.SafeTravel ? Game.L("选择地区查看路线与目标。", "Select a region to inspect its route and target.") : Game.L("附近有敌人，快速旅行暂不可用。", "Enemies nearby; fast travel unavailable."), 14, muted);
+            Window(Game.L("边境与远岸", "Frontier & distant shores"), Game.L("世界路线与本地地图 · 金色为任务目标，白色为你的位置", "World routes and local terrain · gold: objective · ivory: you"));
+            if (selectedRegion < 0 || selectedRegion >= Game.data.maps.Length) selectedRegion = Game.save.room;
+            if (selectedRegion != lastMapRegion) { mapPage = selectedRegion / 9; lastMapRegion = selectedRegion; }
+            int pages = Math.Max(1,(Game.data.maps.Length+8)/9); mapPage = (int)GameCore.Clamp(mapPage,0,pages-1);
+            // The first nine cards retain their original geometry. Additional
+            // regions use a real second page rather than silently disappearing.
+            for (int cell = 0; cell < 9 && mapPage*9+cell < Game.data.maps.Length; cell++)
+            {
+                int i = mapPage*9+cell; float x = 279+cell%3*189, y = 178+cell/3*154; bool open = Game.CanEnter(i);
+                Card(x,y,176,140,selectedRegion == i); Box(x+1,y+1,174,35,Color.Lerp(PixelArt.C(Game.data.maps[i].color),panel,.35f));
+                Text(x+11,y+8,152,27,(i+1).ToString("00")+"  "+(i == Game.save.room ? Game.L("当前位置", "HERE") : open ? Game.L("已开放", "OPEN") : Game.L("未开放", "LOCKED")),10,open ? gold : muted);
+                if (Button(x+10,y+46,156,80,Game.L(Game.data.maps[i].name,Game.data.maps[i].en),selectedRegion == i)) { selectedRegion = i; lastMapRegion = i; }
+            }
+            if (pages > 1)
+            {
+                if (Button(279,633,148,24,Game.L("上一页", "Previous page"),false,mapPage > 0)) mapPage--;
+                Text(442,633,228,25,(mapPage+1)+" / "+pages,13,muted,TextAnchor.MiddleCenter);
+                if (Button(685,633,149,24,Game.L("下一页", "Next page"),false,mapPage < pages-1)) mapPage++;
+            }
+            if (Game.save.room == 9 && Button(279,657,555,31,Game.L("查看当前位置：炉火旅店", "Current room: Hearth Inn"),selectedRegion == 9)) selectedRegion = 9;
+            Card(866,178,351,510); MapData m = Game.data.maps[selectedRegion]; Text(888,197,306,46,Game.L(m.name,m.en),25,gold);
+            if (selectedRegion == Game.save.room) MiniTerrain(888,264,8.4f);
+            else
+            {
+                for (int y = 0; y < m.rows.Length; y++) for (int x = 0; x < m.rows[y].Length; x++)
+                {
+                    char t = m.rows[y][x];
+                    if (selectedRegion == GameCore.ArchiveRoom)
+                    {
+                        if (x >= 9 && x <= 12 && y >= 13 && y <= 14) t = Game.ArchiveDrained ? '=' : '~';
+                        if (x == 23 && y >= 6 && y <= 7) t = Game.ArchiveVented ? '=' : '#';
+                    }
+                    Box(888+x*8.4f,264+y*8.4f,8.4f,8.4f,t == '~' ? PixelArt.C("#365f78") : t == '#' ? PixelArt.C("#586d79") : t == '=' ? PixelArt.C("#aaa17e") : PixelArt.C(m.color));
+                }
+                QuestGuide q = Game.CurrentGuide; if (q.room == selectedRegion && !q.complete) Box(888+q.target.x*8.4f-3,264+q.target.y*8.4f-3,7,7,gold);
+            }
+            Text(888,492,306,101,Game.CanEnter(selectedRegion) ? (selectedRegion == GameCore.ArchiveRoom ? Game.GetQuest("archive").next : Game.L(m.subtitle,m.suben)) : Game.RouteHint(selectedRegion,Game.save.english),16,muted);
+            if (Button(888,616,306,47,selectedRegion == Game.save.room ? Game.L("返回本地区", "Return to region") : Game.L("快速旅行", "Fast travel"),true,selectedRegion == Game.save.room || Game.CanEnter(selectedRegion) && Game.SafeTravel))
+            { if (selectedRegion == Game.save.room) Game.Close(); else { Game.Enter(selectedRegion); camera = CameraTarget(); } }
+            Text(282,690,554,28,Game.SafeTravel ? Game.L("选择地区查看路线与目标。", "Select a region to inspect its route and target.") : Game.L("附近有敌人，快速旅行暂不可用。", "Enemies nearby; fast travel unavailable."),14,muted);
         }
         private void DrawDialogue()
         {

@@ -185,7 +185,8 @@ namespace Starfall.Tests
         public static void InnRoomAndCollisionPersistence(Campaign data)
         {
             var g = Fresh(data); int stage = g.save.stage;
-            Check(data.maps.Length == 10 && data.maps[9].id == 9, "Inn is appended without renumbering existing regions");
+            Check(data.maps.Length >= 11 && data.maps[9].id == 9 && data.maps[10].id == 10, "The archive is appended after the inn without replacing an existing region");
+            for (int room = 0; room < 10; room++) Check(data.maps[room].id == room, "The original ten map identities retain their exact indices");
             WorldObject door = Object(g, "portal9"); g.save.x = door.x; g.save.y = door.y; g.Interact();
             Check(g.save.room == 9 && g.enemies.Count == 0 && !g.Blocked(g.save.x, g.save.y), "The actual town door enters a safe, navigable interior");
             Check(g.Blocked(15.5f, 8.5f) && !g.Blocked(15.5f, 10.5f), "Inn furniture blocks its footprint while the aisle remains open");

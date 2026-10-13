@@ -17,3 +17,5 @@ jobs:
         run: python3 tools/run_signal_warden_checks.py
       - name: Check road kitchen with production input, menus and saves
         run: python3 tools/run_kitchen_checks.py
+      - name: Check Tide Archive with production interactions, maps and saves
+        run: python3 tools/run_archive_checks.py

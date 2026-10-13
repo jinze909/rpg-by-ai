@@ -266,12 +266,13 @@ namespace Starfall
             {
                 Point p = ScreenPoint(new Point(x, y));
                 if (p.x < -Tile || p.y < -Tile || p.x > Width || p.y > Height) continue;
-                char tile = Game.Map.rows[y][x]; if (tile == '%' && !Game.LowTide) tile = '~';
+                char tile = Game.PresentationTile(x, y); if (tile == '%' && !Game.LowTide) tile = '~';
                 if ((tile == 'v' || tile == 'w' || tile == 'b') && Game.Has("seal_" + Game.save.room)) tile = '=';
                 DrawSurface(x, y, tile, p); DrawGroundDetail(x, y, tile, p); DrawTerrainEdge(x, y, tile, p);
                 if (tile == '~' && !Game.save.reducedMotion && Game.save.effectsQuality > 0) Box(p.x + 3 + (x * 5 + clock * 4) % 17, p.y + 12 + y % 5, 8, 1, new Color(.65f, .8f, .85f, .13f));
             }
             DrawArenaBoundary();
+            DrawArchiveWorld();
             // Sort scenery and actors by their ground position, for proper overlap.
             DrawHazardWarnings();
             foreach (Effect floorEffect in Game.effects) if (IsGroundEffect(floorEffect)) DrawCombatEffect(floorEffect);

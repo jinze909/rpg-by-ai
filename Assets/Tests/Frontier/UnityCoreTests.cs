@@ -6,6 +6,17 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void ArchiveEntryAndOriginalRuins(){CoreChecks.ArchiveEntryRequiresEarnedPowerAndPreservesRuins(Data());}
+        [Test] public void ArchiveValveTransactionAndSave(){CoreChecks.ArchiveValvePuzzleIsLocalCostFreeAndPersistent(Data());}
+        [Test] public void ArchiveAllChamberRoutes(){CoreChecks.ArchiveAllStagesHaveFootprintSafeRoutesAndAlcoves(Data());}
+        [Test] public void ArchiveSealsRejectCombatMobilityBypass(){CoreChecks.ArchiveChamberSealsRejectDodgeAttackAndPowerBypass(Data());}
+        [Test] public void ArchiveAllClassesAndStoryChoice(){CoreChecks.ArchiveGuardsAndStoryCompleteWithEveryStarterClass(Data());}
+        [Test] public void ArchiveSavedDefenceCannotFarm(){CoreChecks.ArchiveGuardSnapshotsRetainHealthAndCannotFarm(Data());}
+        [Test] public void ArchivePressureWarningsAndSafeAlcoves(){CoreChecks.ArchivePressureWarningsMatchDamageAndSafeAlcoves(Data());}
+        [Test] public void ArchiveGuidanceTracksRealProgress(){CoreChecks.ArchiveGuidanceFollowsActualPuzzleAndDefenceProgress(Data());}
+        [Test] public void ArchiveLocalActionsAndDeathRecovery(){CoreChecks.ArchiveLocalChoicesAndDeathRecoveryPreserveProgress(Data());}
+        [Test] public void ArchiveMalformedActorOwnership(){CoreChecks.ArchiveReservedActorSnapshotsRespectOwnership(Data());}
+        [Test] public void ArchiveLegacyMapCounterPrefixes(){CoreChecks.ArchiveLegacySavesGrowMapCountersWithoutInventingStory(Data());}
         [Test] public void RoadKitchenIngredientTransactions(){CoreChecks.RoadKitchenAtomicRecipesAndReplacement(Data());}
         [Test] public void RoadKitchenRealAccessAndMatureRecipes(){CoreChecks.RoadKitchenAccessAndMatureCooking(Data());}
         [Test] public void RoadMealWorldClockAndExistingSupplies(){CoreChecks.RoadMealsUseWorldClockAndStackWithExistingSupplies(Data());}
