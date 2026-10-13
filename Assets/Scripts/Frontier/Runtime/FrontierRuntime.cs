@@ -52,7 +52,7 @@ namespace Starfall
                 font = Resources.Load<Font>("Frontier/Fonts/NotoSansSC-Regular");
                 if (font == null) font = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Arial" }, 18);
                 audioSystem = new FrontierAudio(gameObject); selectedClass = Game.save.profession;
-                camera = CameraTarget();
+                camera = CameraTarget(); ResetControllerAim(false);
             }
             catch (Exception ex) { bootError = ex.ToString(); Debug.LogError(bootError); }
         }
@@ -71,7 +71,11 @@ namespace Starfall
             foreach(KeyCode key in keyboardControls)keyboardAction|=Input.GetKeyDown(key);
             if (pointerMoved || Input.GetMouseButton(0)||keyboardMove||keyboardAction) controllerUsed = false;
             lastPointer = pointer; pointerSeen = true;
-            for (int i = 0; i < 8; i++) if (PadDown(i)) controllerUsed = true;
+            bool padInput = false;
+            for (int i = 0; i < 8; i++) if (PadDown(i)) { controllerUsed = true; padInput = true; }
+            // Preserve the existing fresh-pad priority when the pointer also
+            // changes position during a device handoff (including HUD entry).
+            UpdateControllerAim(!padInput && (pointerMoved || Input.GetMouseButton(0) || keyboardMove || keyboardAction));
             Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {
@@ -100,6 +104,7 @@ namespace Starfall
             }
             Toggle(KeyCode.I, "inventory"); Toggle(KeyCode.Tab, "journal"); Toggle(KeyCode.K, "talents"); Toggle(KeyCode.M, "map");
             Toggle(KeyCode.B, "camp"); Toggle(KeyCode.C, "companions"); Toggle(KeyCode.G, "loadout"); Toggle(KeyCode.N, "bounties"); Toggle(KeyCode.F1, "help");
+            ValidateControllerAimBoundary();
             FollowCamera(Time.unscaledDeltaTime);
             audioSystem.Update(Game, moving, Time.unscaledDeltaTime); Game.sound = "";
             saveTimer += Time.unscaledDeltaTime;
@@ -108,7 +113,7 @@ namespace Starfall
         private void Toggle(KeyCode key, string mode)
         {
             if (replacePrompt || saveConfirmation != null || key == KeyCode.Tab && Game.mode != "world") return;
-            if (settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves")) return;
+            if (settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves" || Game.mode == "controls")) return;
             if (!Input.GetKeyDown(key) || Game.mode == "dialog" || Game.mode == "fish" || Game.mode == "title") return;
             if (Game.mode == mode) Game.Close(); else OpenMenu(mode);
         }
@@ -124,9 +129,9 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) Game.ClearBufferedSkill(); Save(); } }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) { Game.ClearBufferedSkill(); ResetControllerAim(); } Save(); } }
         private void OnApplicationFocus(bool focused)
-        { if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; Save(); } }
+        { if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }
         private void OnDestroy() { if (art != null) art.Dispose(); if (audioSystem != null) audioSystem.Dispose(); }
 
@@ -166,6 +171,7 @@ namespace Starfall
                 if (Game.mode == "journal") DrawJournal();
                 if (Game.mode == "map") DrawMap();
                 if (Game.mode == "pause") DrawPause();
+                if (Game.mode == "controls") DrawControllerSettings();
                 if (Game.mode == "saves") DrawSaves();
                 if (Game.mode == "camp") DrawCamp();
                 if (Game.mode == "companions") DrawCompanions();
@@ -174,6 +180,7 @@ namespace Starfall
                 if (Game.mode == "help") DrawHelp();
             }
             if (Game.toastTime > 0 && Game.mode != "title") DrawToast();
+            DrawControllerAimReticle();
             DrawHudThreatWitness();
             EndControls();
             GUI.matrix = Matrix4x4.identity; GUI.color = Color.white;
@@ -222,7 +229,8 @@ namespace Starfall
         }
         private Point? InputAim(bool technique=false)
         {
-            if(controllerUsed||Game.mode!="world"){Game.SetAimTarget(null);return null;}
+            if(controllerUsed||Game.mode!="world")
+            { Game.SetAimTarget(null); return ControllerAimActive ? (Point?)controllerAimDirection : null; }
             Point mouse=MouseVirtual();
             if(PointerOverInterface(mouse))
             {

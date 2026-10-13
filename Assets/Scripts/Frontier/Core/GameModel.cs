@@ -35,6 +35,9 @@ namespace Starfall
         public int presentationVersion, tutorialBits, effectsQuality = 2;
         public float tutorialDistance;
         public bool showGuidance = true, largeText;
+        // Zero keeps old saves on the standard right-stick axis profile.
+        public int controllerAimProfile;
+        public bool controllerAimInvertY;
         public string trackedQuest = "main";
         public int[] explored = new int[9];
         public float x = 18, y = 15, health = 100, energy = 100, maxHealth = 100, totalTime, plantedAt = -1, foodUntil;

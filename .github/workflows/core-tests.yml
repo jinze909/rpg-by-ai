@@ -19,3 +19,5 @@ jobs:
         run: python3 tools/run_kitchen_checks.py
       - name: Check Tide Archive with production interactions, maps and saves
         run: python3 tools/run_archive_checks.py
+      - name: Check twin-stick aiming with production input, controls and saves
+        run: python3 tools/run_controller_aim_checks.py

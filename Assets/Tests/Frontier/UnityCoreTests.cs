@@ -6,6 +6,24 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void ControllerAimRadialDeadzoneAndFiniteValues(){CoreChecks.ControllerAimUsesFiniteRadialDirections(Data());}
+        [Test] public void ControllerAimSafeSettingsTransactions(){CoreChecks.ControllerAimSettingsRequireSafeSettingsModes(Data());}
+        [Test] public void ControllerAimLegacyAndSavedPreferences(){CoreChecks.ControllerAimLegacyAndSavedPreferencesStayCompatible(Data());}
+        [Test] public void ControllerAimJourneyAndRecoveryPreferences(){CoreChecks.ControllerAimPreferencesSurviveJourneyAndRecovery(Data());}
+        [Test] public void ControllerAimRetreatFireAndDodge(){CoreChecks.ControllerAimRetreatFireAndDodgeUseSimulationDirections(Data());}
+        [Test] public void ControllerAimBufferedSkillIntent(){CoreChecks.ControllerAimBufferedSkillsKeepCapturedStickIntent(Data());}
+        [Test] public void ControllerAimNativeJsonDefaultsAndRoundTrip()
+        {
+            foreach(int version in new[]{1,2})
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"coins\":87}");
+                var loaded = new GameCore(Data(),old);
+                Assert.AreEqual(0,loaded.save.controllerAimProfile); Assert.IsFalse(loaded.save.controllerAimInvertY); Assert.AreEqual(87,loaded.save.coins);
+            }
+            var game = new GameCore(Data()); game.mode="pause"; game.ConfigureControllerAim(1,true); game.PrepareSave();
+            var resumed = new GameCore(Data(),JsonUtility.FromJson<SaveData>(JsonUtility.ToJson(game.save)));
+            Assert.AreEqual(1,resumed.save.controllerAimProfile); Assert.IsTrue(resumed.save.controllerAimInvertY);
+        }
         [Test] public void ArchiveEntryAndOriginalRuins(){CoreChecks.ArchiveEntryRequiresEarnedPowerAndPreservesRuins(Data());}
         [Test] public void ArchiveValveTransactionAndSave(){CoreChecks.ArchiveValvePuzzleIsLocalCostFreeAndPersistent(Data());}
         [Test] public void ArchiveAllChamberRoutes(){CoreChecks.ArchiveAllStagesHaveFootprintSafeRoutesAndAlcoves(Data());}

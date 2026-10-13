@@ -8,6 +8,9 @@ namespace Starfall
     {
         public readonly Campaign data;
         public SaveData save;
+        // Input adapters can identify a reset even when room and save identity
+        // stay the same. This session counter is never part of SaveData.
+        public int WorldGeneration { get; private set; }
         public readonly List<Enemy> enemies = new List<Enemy>();
         public readonly List<Projectile> projectiles = new List<Projectile>();
         public readonly List<Effect> effects = new List<Effect>();
@@ -72,6 +75,7 @@ namespace Starfall
             SanitizeExpansion();
             SanitizeGuidance();
             SanitizePolish();
+            SanitizeControllerAim();
             if (Has("recovery_pending"))
             {
                 if (save.abyssFloor > 0) EndAbyss(false);
@@ -97,6 +101,7 @@ namespace Starfall
         }
         private void ResetTransient()
         {
+            WorldGeneration++;
             projectiles.Clear(); effects.Clear();
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0;
             invulnerable = 1; conversation = null; runeProgress = 0;
@@ -106,7 +111,7 @@ namespace Starfall
         public void NewGame(int profession)
         {
             profession = (int)Clamp(profession, 0, 2);
-            SaveData fresh = new SaveData { english = save.english, music = save.music, difficulty = save.difficulty, reducedMotion = save.reducedMotion, profession = profession, weapon = profession, presentationVersion = 1, showGuidance = save.showGuidance, largeText = save.largeText, effectsQuality = save.effectsQuality, polishVersion = 1, musicVolume = save.musicVolume, effectsVolume = save.effectsVolume, ambienceVolume = save.ambienceVolume };
+            SaveData fresh = new SaveData { english = save.english, music = save.music, difficulty = save.difficulty, reducedMotion = save.reducedMotion, profession = profession, weapon = profession, presentationVersion = 1, showGuidance = save.showGuidance, largeText = save.largeText, effectsQuality = save.effectsQuality, polishVersion = 1, musicVolume = save.musicVolume, effectsVolume = save.effectsVolume, ambienceVolume = save.ambienceVolume, controllerAimProfile = save.controllerAimProfile, controllerAimInvertY = save.controllerAimInvertY };
             if (profession > 0) fresh.flags.Add("weapon_" + profession);
             fresh.health = 120; Load(fresh); mode = "world"; Intro();
         }

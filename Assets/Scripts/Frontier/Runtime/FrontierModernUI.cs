@@ -45,7 +45,7 @@ namespace Starfall
             Text(48, 50, 190, 32, "STARFALL", 22, gold); Text(49, 87, 170, 27, Game.L("远岸来信", "DISTANT SHORES"), 12, muted);
             Box(246, 46, 1, 671, PixelArt.C("#34475a")); Text(276, 48, 735, 52, title, 31, paper); Text(278, 106, 738, 43, subtitle, 14, muted); Box(275, 150, 946, 1, PixelArt.C("#374c60"));
             if (Game.mode == "inventory" || Game.mode == "loadout") DrawPlayerPreview(Game.mode == "inventory" ? inspectedWeapon : Game.save.weapon, 1086, 137, 104);
-            bool titleSettings = settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves");
+            bool titleSettings = settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves" || Game.mode == "controls");
             for (int i = 0; i < menuModes.Length; i++) if (Button(44, 160 + i * 53, 180, 42, Game.L(menuZh[i], menuEn[i]) + "  " + menuKeys[i], Game.mode == menuModes[i], !titleSettings)) OpenMenu(menuModes[i]);
             Text(48, 649, 166, 43, "LV " + Game.save.level + "  /  " + Game.save.coins + Game.L(" 硬币", " coins") + "\n" + Game.L("记忆碎片 ", "Shards ") + Game.save.shards, 13, muted);
             if (Button(44, 696, 180, 25, Game.L("存档管理", "Save manager"))) OpenMenu("saves");
@@ -291,7 +291,8 @@ namespace Starfall
             if (Button(279, 540, 300, 43, Game.L("重看操作教学", "Replay onboarding"), false, Game.Has("intro"))) { Game.RestartTutorial(); Game.Close(); Save(); }
             if (Button(594, 540, 303, 43, Game.L("进入实战练习", "Combat practice"), false, Game.Has("intro") && Game.save.room == 0)) Game.StartPractice();
             if (Button(912, 540, 305, 43, Game.L("查看指南 F1", "Field guide F1"))) OpenMenu("help");
-            Text(282, 597, 930, 31, Game.L("实战练习在余烬镇教官处重复进行，物资与生命不会损失。", "Repeat safe combat practice with Emberfall's mentor; supplies and health are protected."), 14, muted);
+            if (Button(279, 590, 300, 34, Game.L("摇杆瞄准设置", "Controller aiming"))) OpenControllerSettings();
+            Text(594, 589, 623, 43, Game.L("实战练习在余烬镇教官处重复进行，物资与生命不会损失。", "Repeat safe combat practice with Emberfall's mentor; supplies and health are protected."), 14, muted);
             if (Button(279, 642, 460, 45, Game.L("继续 / 返回", "Resume / back"), true)) Back();
             if (Button(756, 642, 461, 45, Game.L("保存并返回标题", "Save & return to title"))) { if (!Game.Has("intro") || Save()) Game.mode = "title"; }
         }

@@ -56,7 +56,7 @@ namespace Starfall
             if (replacePrompt) { replacePrompt = false; return; }
             if (Game.mode == "title") return;
             if (Game.mode == "world") { OpenMenu("pause"); Save(); return; }
-            if (Game.mode == "saves") { Game.mode = "pause"; return; }
+            if (Game.mode == "saves" || Game.mode == "controls") { Game.mode = "pause"; ResetControllerAim(); return; }
             if (Game.mode == "pause" && settingsParent == "title") { Game.mode = "title"; settingsParent = "world"; return; }
             if (Game.mode == "dialog" && dialogParent != null) { string parent = dialogParent; dialogParent = null; Game.Close(); OpenMenu(parent); return; }
             Game.Close(); Save();
