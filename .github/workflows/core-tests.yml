@@ -31,3 +31,5 @@ jobs:
         run: python3 tools/run_reach_checks.py
       - name: Check viewport terrain, scenery continuity and fitted maps offline
         run: python3 tools/run_map_visibility_checks.py
+      - name: Check mature boss attack commitment with production input, warnings and saves
+        run: python3 tools/run_boss_commitment_checks.py

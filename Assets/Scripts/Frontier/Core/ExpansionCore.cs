@@ -363,7 +363,7 @@ namespace Starfall
             if (save.room == 6)
             { for (int i = -1; i <= 1; i++) AddHazard(e.target + new Point(0, i * 2), 1.1f, .9f, 18, "glass"); }
             if (save.room == 7 || save.room == 8)
-            { AddHazard(Position, 2, 1.5f, 20 + e.BossPhase * 2, "rift"); }
+            { AddHazard(Position, 2, 1.5f, 20 + e.AttackPhase * 2, "rift"); }
         }
         public string Conditions()
         {

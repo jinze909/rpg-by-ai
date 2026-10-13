@@ -61,7 +61,7 @@ namespace Starfall
         public const float EnemyMeleeRadius=1.5f;
         public const float EnemyMeleeCosine=-.1f;
         public static float EnemyAreaRadius(Enemy enemy)
-        { return enemy.boss?2.2f+enemy.BossPhase*.2f:EnemyMeleeRadius; }
+        { return enemy.boss?2.2f+enemy.AttackPhase*.2f:EnemyMeleeRadius; }
         public static bool InEnemyMeleeArc(Enemy enemy,Point target)
         { Point delta=target-enemy.Position;return delta.Length<EnemyMeleeRadius&&delta.Normalized.x*enemy.facing.x+delta.Normalized.y*enemy.facing.y>EnemyMeleeCosine; }
         public void SetAim(Point direction)

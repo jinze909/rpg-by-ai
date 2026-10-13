@@ -84,7 +84,7 @@ namespace Starfall
     }
     public class Enemy
     {
-        public int id, kind, state, cycle;
+        public int id, kind, state, cycle, attackPhase;
         public bool boss, moving;
         public float x, y, hp, maxHp, timer, stun, flash, stagger, staggerRecovery;
         public Point target, attackOrigin, attackDestination;
@@ -100,6 +100,9 @@ namespace Starfall
         { this.id = id; this.kind = kind; this.x = x; this.y = y; this.hp = maxHp = hp; this.boss = boss; timer = 1.3f + id * .13f; }
         public Point Position { get { return new Point(x, y); } }
         public int BossPhase { get { return hp > maxHp * .66f ? 1 : hp > maxHp * .33f ? 2 : 3; } }
+        // A hit can change HP phase during a warning, but the announced attack
+        // keeps its preparation phase. Fresh/restored or staged actors use HP.
+        public int AttackPhase { get { return boss && state == 1 && attackPhase >= 1 && attackPhase <= 3 ? attackPhase : BossPhase; } }
     }
     [Serializable] public class SparringReturnRecord
     {

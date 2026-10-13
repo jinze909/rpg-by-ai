@@ -6,6 +6,11 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void BossWarningCommitmentAcrossActualHits(){CoreChecks.BossWarningsKeepPreparedPhaseAcrossRealHits(Data());}
+        [Test] public void BossReleaseCommitmentAcrossHealthThresholds(){CoreChecks.BossReleaseKeepsPreparedPhaseAcrossThresholds(Data());}
+        [Test] public void BossMatureThreePhaseOutputsRemain(){CoreChecks.BossUnchangedPhasesKeepMatureAttackOutputs(Data());}
+        [Test] public void BossNewWarningsAfterReleaseAndBreak(){CoreChecks.BossNextAttackAndBreakAdoptCurrentPhase(Data());}
+        [Test] public void BossPausedAndRestoredWarnings(){CoreChecks.BossPreparedAttacksPauseAndLoadAsFreshWarnings(Data());}
         [Test] public void ReachEarnedEntryAndMatureMapIdentity(){CoreChecks.ReachAppendedRegionRequiresEarnedPowerAndKeepsMatureRoutes(Data());}
         [Test] public void ReachLargeMapFullFootprintsAndTerrainRoutes(){CoreChecks.ReachLargeMapFootprintsAndPermanentRoutesMatchPresentation(Data());}
         [Test] public void ReachScaledExplorationAndLocalNavigation(){CoreChecks.ReachScaledExplorationKeepsLegacyBitsAndOwnedNavigation(Data());}

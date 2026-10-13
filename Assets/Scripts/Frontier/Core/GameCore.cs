@@ -446,7 +446,7 @@ namespace Starfall
                         {
                             float radius = EnemyAreaRadius(e);
                             effects.Add(new Effect("danger", e.target, .45f) { variant = e.boss ? save.room : 0, radius = radius });
-                            if ((Position - e.target).Length < radius && ClearAttackPath(e.Position, Position)) Hurt(e.boss ? 22 + e.BossPhase * 3 : 14, "slam", (Position - e.Position).Normalized);
+                            if ((Position - e.target).Length < radius && ClearAttackPath(e.Position, Position)) Hurt(e.boss ? 22 + e.AttackPhase * 3 : 14, "slam", (Position - e.Position).Normalized);
                             else if (perfectDodgeArmed && dashCooldown > 0) { TutorialAction(4); PracticeDodge(); }
                             if (Dying) break;
                             if (e.boss)
@@ -459,10 +459,10 @@ namespace Starfall
                                     for (int shot = -1; shot <= 1; shot++) Fire(e, new Point((float)Math.Cos(heading + shot * .18), (float)Math.Sin(heading + shot * .18)), 6);
                                 }
                                 BossExpansionAttack(e);
-                                int spokes = 4 + Math.Min(5, save.room) * 2 + e.BossPhase * 2;
-                                if (save.room >= 2 || e.BossPhase >= 2)
-                                    for (int k = 0; k < spokes; k++) Fire(e, new Point((float)Math.Cos(k * Math.PI * 2 / spokes + e.cycle * .2), (float)Math.Sin(k * Math.PI * 2 / spokes + e.cycle * .2)), 3.5f + e.BossPhase * .4f);
-                                if ((e.BossPhase == 3 || (save.room == 4 && e.BossPhase >= 2)) && e.cycle % 3 == 0 && enemies.Count < 9)
+                                int spokes = 4 + Math.Min(5, save.room) * 2 + e.AttackPhase * 2;
+                                if (save.room >= 2 || e.AttackPhase >= 2)
+                                    for (int k = 0; k < spokes; k++) Fire(e, new Point((float)Math.Cos(k * Math.PI * 2 / spokes + e.cycle * .2), (float)Math.Sin(k * Math.PI * 2 / spokes + e.cycle * .2)), 3.5f + e.AttackPhase * .4f);
+                                if ((e.AttackPhase == 3 || (save.room == 4 && e.AttackPhase >= 2)) && e.cycle % 3 == 0 && enemies.Count < 9)
                                     enemies.Add(CreatePlacedEnemy(++enemyId, save.room == 4 ? 1 : 0, new Point(e.x - 2, e.y + 1), 38 + save.room * 3));
                             }
                         }
@@ -488,7 +488,8 @@ namespace Starfall
                 delta = Position - e.Position; distance = delta.Length;
                 if (e.timer <= 0 && distance < (e.boss ? 12 : e.kind == 1 ? 7 : 2.5f) && ClearAttackPath(e.Position, Position))
                 {
-                    e.state = 1; e.timer = e.boss ? 1.1f - e.BossPhase * .08f : .65f; e.windupDuration = e.timer; e.target = Position; e.Face(delta);
+                    e.attackPhase = e.boss ? e.BossPhase : 0;
+                    e.state = 1; e.timer = e.boss ? 1.1f - e.AttackPhase * .08f : .65f; e.windupDuration = e.timer; e.target = Position; e.Face(delta);
                     if (e.boss || distance < 6) sound = "windup";
                     e.attackOrigin = e.attackDestination = e.Position;
                     if (e.boss && save.room == 1)
