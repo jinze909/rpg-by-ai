@@ -5,6 +5,7 @@ import hashlib, json, re, subprocess
 from datetime import datetime, timezone
 from PIL import Image
 from fontTools.ttLib import TTFont
+from check_unity_metadata import validate_assets
 
 ROOT = Path(__file__).resolve().parents[1]
 BASELINE = 'f32333dc9825119aa54d7268a69fe8544d316d74'
@@ -18,6 +19,8 @@ def check(value, message):
 
 def main():
     assets = ROOT/'Assets'
+    metadata_errors = validate_assets(assets)
+    check(not metadata_errors, '\n'.join(metadata_errors))
     art = assets/'Resources/Frontier/Art'
     canonical = assets/'Resources/Frontier/ViolaMoves.png'
     check(hashlib.sha256(canonical.read_bytes()).hexdigest() == CANONICAL_SHA, 'Original playable identity source changed')

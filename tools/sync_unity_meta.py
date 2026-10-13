@@ -2,6 +2,7 @@
 """Add stable import metadata only for new project assets; preserve existing GUIDs."""
 from pathlib import Path
 import re, uuid
+from check_unity_metadata import validate_assets
 ROOT=Path(__file__).resolve().parents[1]
 NAMESPACE=uuid.UUID('bd41a38c-5c2c-4b20-91fd-24a6cac2db2b')
 def main():
@@ -26,5 +27,7 @@ def main():
         if match:
             if match[1] in ids: raise ValueError(f'Duplicate GUID: {path}, {ids[match[1]]}')
             ids[match[1]]=path
+    errors=validate_assets(ROOT/'Assets')
+    if errors: raise ValueError('\n'.join(errors))
     print(f'{len(new)} new import files; {len(ids)} unique GUIDs; existing metadata retained.')
 if __name__=='__main__': main()

@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void GuildChapterBriefingsAndMatureChoices(){CoreChecks.GuildChapterBriefingsFollowEarnedRoutesAndOriginalChoices(Data());}
+        [Test] public void GuildDeliveryTransactionsAndCampaignGates(){CoreChecks.GuildCoreDeliveriesKeepTransactionsAndCampaignGates(Data());}
+        [Test] public void GuildActualEvidenceAndMissingRecords(){CoreChecks.GuildEvidenceUsesRealDiscoveryAndTruthfulGaps(Data());}
+        [Test] public void GuildEvidenceOnceOnlyAndLegacyRecovery(){CoreChecks.GuildEvidenceReviewIsOptionalOnceAndPersistent(Data());}
+        [Test] public void GuildStoryLocalAndDefeatBoundaries(){CoreChecks.GuildStoryAccessRevalidatesLocationModesAndDefeat(Data());}
+        [Test] public void GuildLetterMemoriesAndMatureEndings(){CoreChecks.GuildLetterReactsToEarnedStoriesAndProtectsEndings(Data());}
         [Test] public void SparringMentorEntryAndMatureChoices(){CoreChecks.SparringEntryRequiresMentorAndPreservesBasicChoices(Data());}
         [Test] public void SparringLiveContactFeedbackAndTactics(){CoreChecks.SparringRealHitsCountersFlanksAndBreaksKeepCombatFeedback(Data());}
         [Test] public void SparringStarterClassesAndOnceOnlyReward(){CoreChecks.SparringEveryStarterClassClearsMixedWavesAndRewardsOnce(Data());}

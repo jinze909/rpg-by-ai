@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Check Unity metadata without rewriting assets
+        run: python3 tools/check_unity_metadata.py && python3 -m unittest discover -s tests -p 'test_unity_metadata.py'
       - name: Install Mono
         run: sudo apt-get update && sudo apt-get install -y mono-mcs
       - name: Run actual C# gameplay checks
@@ -23,3 +25,5 @@ jobs:
         run: python3 tools/run_controller_aim_checks.py
       - name: Check mentor sparring with production input, results and saves
         run: python3 tools/run_sparring_checks.py
+      - name: Check guild story with production dialogue, chapters and saves
+        run: python3 tools/run_guild_story_checks.py

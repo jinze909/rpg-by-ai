@@ -603,11 +603,7 @@ namespace Starfall
             }
             if (kind == "guild")
             {
-                if (save.ending > 0) { Dialog(o.name, o.en, "灾变过去了，冒险还没有结束。旅店有热汤，密林里仍有星晶，大家都在等你。", "The crisis is over. The adventure is not. There is warm stew at the inn, starcrystal in the woods, and friends waiting here.", C("开始新的远征", "Another expedition", "routes"), C("回顾结局", "Revisit the ending", "epilogue"), C("再见", "Goodbye", "close")); return; }
-                int next = save.stage + 1;
-                if (save.stage < 3 && Has("core_" + next))
-                    Dialog(o.name, o.en, "你真的做到了。统领说这些星核会重新稳住边境……可最近镇里的作物越来越难生长。\n\n也许，下一片遗迹会告诉我们原因。", "You did it. The warden says these cores will secure the frontier. Yet our crops keep withering.\n\nPerhaps the next ruins will tell us why.", C("交回星核 · 开启下一章", "Deliver the starcore · next chapter", "deliver"), C("稍后再来", "Later", "close"));
-                else Dialog(o.name, o.en, save.stage == 3 ? "三枚星核汇聚后，堡垒的屏障越来越强，边境却越来越虚弱。去见厄洛，问问他究竟在保护什么。\n\n如果你帮助过药师、渔夫和铁匠，他们也许会带来另一种办法。" : "先去北方的荆棘密林，救出侦察员，挑战巨兽。收取星核后交回公会。按 Tab 查看主线和支线。", save.stage == 3 ? "The shield grows stronger as the frontier weakens. Ask Orrin what he is protecting.\n\nIf you helped An, Old Tide and Noll, they may bring another solution." : "Go north to Thornwood. Rescue the scout, defeat the beast, and return its core. Tab tracks the main quest and your side commissions.", C("查看冒险路线", "Choose a route", "routes"), C("我出发了", "On my way", "close"));
+                TalkGuildStory(o);
                 return;
             }
             if (kind == "rest") { Dialog(o.name, o.en, "旅店的炉火永远为冒险者留着。休息推进 45 秒，回复生命与耐力，田里的作物也会继续长大。", "The inn keeps a fire for travelers. Rest for 45 seconds to restore health and energy; crops keep growing.", C("休息", "Rest", "rest"), C("继续冒险", "Keep adventuring", "close")); return; }
@@ -705,6 +701,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseGuildStory(action)) return;
             if (ChooseSparring(action)) return;
             if (ChooseArchive(action)) return;
             if (ChooseKitchen(action)) return;
@@ -752,7 +749,7 @@ namespace Starfall
             if (action == "buywood" && Spend(0, 0, 0, 0, 0, ShopTimberCost)) { save.inventory[0] += 4; Notify("木材 ×4", "Timber ×4"); }
             if (action == "fish") { fishTime = fishCursor = 0; fishHits = fishMisses = 0; mode = "fish"; }
             if (action == "deliver" && save.stage < 3 && Has("core_" + (save.stage + 1)))
-            { save.stage++; save.coins += 40; save.inventory[6]++; save.inventory[0] += 3; save.inventory[1] += 2; revision++; sound = "reward"; Notify("新章节开启！获得硬币、材料与一份炖汤。", "New chapter! Coins, materials and a warm stew received."); }
+            { save.stage++; save.coins += 40; save.inventory[6]++; save.inventory[0] += 3; save.inventory[1] += 2; revision++; sound = "reward"; OnGuildDelivery(save.stage); }
             if (action.StartsWith("ally"))
             {
                 int id = int.Parse(action.Substring(4));
