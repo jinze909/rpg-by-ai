@@ -26,7 +26,7 @@ namespace Starfall
         public bool ArchiveGuardsCleared
         { get { return Has("archive_wave") && Has("archive_defeated_74000") && Has("archive_defeated_74001") && Has("archive_defeated_74002"); } }
         // Select accepted Ruins textures only; gameplay continues to own room 10.
-        public int ArtRoom { get { return save.room == ArchiveRoom ? 2 : save.room; } }
+        public int ArtRoom { get { return save.room == ArchiveRoom ? 2 : save.room == ReachRoom ? 1 : save.room; } }
         private bool ArchiveClosedCell(int x, int y)
         {
             return save.room == ArchiveRoom &&
@@ -34,10 +34,15 @@ namespace Starfall
                  (!ArchiveVented && x == 23 && y >= 6 && y <= 7));
         }
         public char PresentationTile(int x, int y)
+        { return MapPresentationTile(save.room,x,y); }
+        public char MapPresentationTile(int room,int x,int y)
         {
-            if (y < 0 || y >= Map.rows.Length || x < 0 || x >= Map.rows[y].Length) return '#';
-            if (ArchiveClosedCell(x, y)) return x == 23 ? '#' : '~';
-            return Map.rows[y][x];
+            if(room<0||room>=data.maps.Length) return '#';
+            MapData map=room==save.room?Map:data.maps[room];
+            if (y < 0 || y >= map.rows.Length || x < 0 || x >= map.rows[y].Length) return '#';
+            if(room==ArchiveRoom){if(x>=9&&x<=12&&y>=13&&y<=14&&!ArchiveDrained)return '~';if(x==23&&y>=6&&y<=7&&!ArchiveVented)return '#';}
+            if(room==ReachRoom){if(ReachBridgeCell(x,y))return ReachBridgeOpen?'=':'~';if(ReachRootCell(x,y))return ReachRootsOpen?'=':'v';}
+            return map.rows[y][x];
         }
         public int ArchiveValve(int index)
         {

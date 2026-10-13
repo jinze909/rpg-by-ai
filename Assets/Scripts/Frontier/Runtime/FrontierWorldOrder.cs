@@ -32,7 +32,7 @@ namespace Starfall
             // used to allocate on every IMGUI pass; equal-depth ties also flickered.
             worldDrawEntries.Clear();
             foreach(LightRay ray in Game.LightRays())DrawRay(ray.from,ray.to,gold);
-            foreach(Decoration d in Game.Map.decor)AddWorldEntry(new WorldDrawEntry{depth=d.y,kind=WorldDrawKind.Decoration,decoration=d});
+            foreach(Decoration d in Game.Map.decor)if(WorldSceneryVisible(d))AddWorldEntry(new WorldDrawEntry{depth=d.y,kind=WorldDrawKind.Decoration,decoration=d});
             foreach(WorldObject o in Game.Map.objects)AddWorldEntry(new WorldDrawEntry{depth=o.y+.01f,kind=WorldDrawKind.Object,obj=o});
             foreach(Enemy e in Game.enemies)
             {DrawEnemyWarning(e);AddWorldEntry(new WorldDrawEntry{depth=e.y,kind=WorldDrawKind.Enemy,enemy=e});}
@@ -58,17 +58,63 @@ namespace Starfall
         private void DrawWorldDecoration(Decoration prop)
         {
             Point p=ScreenPoint(new Point(prop.x,prop.y));
-            float w=prop.kind=="house"?170:prop.kind=="tree"?100:prop.kind=="ruin"?150:prop.kind=="bed"||prop.kind=="bookshelf"?90:prop.kind=="table"||prop.kind=="counter"?80:76;
+            float w=WorldDecorationWidth(prop.kind);
             int variant=prop.variant;
             if(prop.kind=="garden")variant=Game.save.plantedAt<0?0:Game.save.totalTime-Game.save.plantedAt>=60?2:1;
             float h=w*112/96;
             bool canopy=prop.kind=="tree"||prop.kind=="palm"||prop.kind=="snowpine",cover=canopy||prop.kind=="ruin";
-            bool occludes=cover&&Math.Abs(Game.save.x-prop.x)<1.4f&&Game.save.y<prop.y&&Game.save.y>prop.y-2.7f;
-            if(cover)foreach(Enemy actor in Game.enemies)occludes|=Math.Abs(actor.x-prop.x)<1.6f&&actor.y<prop.y&&actor.y>prop.y-2.9f;
-            Color tint=occludes?new Color(1,1,1,.4f):Color.white;
+            float opacity=1;
+            if(cover&&Game.save.room==GameCore.ReachRoom)opacity=ReachSceneryOpacity(prop);
+            else if(cover)
+            {
+                bool occludes=Math.Abs(Game.save.x-prop.x)<1.4f&&Game.save.y<prop.y&&Game.save.y>prop.y-2.7f;
+                foreach(Enemy actor in Game.enemies)occludes|=Math.Abs(actor.x-prop.x)<1.6f&&actor.y<prop.y&&actor.y>prop.y-2.9f;
+                opacity=occludes?.4f:1;
+            }
+            Color tint=new Color(1,1,1,opacity);
             Rect rect=new Rect(p.x-w/2,p.y-h+8,w,h);
             if(canopy)DrawRootedPlant(prop,rect,tint);else PropImage(prop.kind,variant,rect.x,rect.y,rect.width,rect.height,tint);
             if(prop.kind=="well"&&Game.Has("ally_3"))Box(p.x-5,p.y-16,10,5,mint);
+        }
+        private float ReachSceneryOpacity(Decoration prop)
+        {
+            // Feather actor-cover edges spatially on the new exploration map.
+            // No reveal timers or frame history: reduced motion and minimal FX
+            // retain exactly the same readability during a slow approach.
+            float cover=SceneryCoverWeight(Game.Position,prop,1.4f,2.7f);
+            foreach(Enemy actor in Game.enemies)cover=Math.Max(cover,SceneryCoverWeight(actor.Position,prop,1.6f,2.9f));
+            return 1-.6f*cover;
+        }
+        private static float SceneryCoverWeight(Point actor,Decoration prop,float halfWidth,float height)
+        {
+            float dx=Math.Max(0,Math.Abs(actor.x-prop.x)-halfWidth);
+            float dy=Math.Max(0,Math.Max(actor.y-prop.y,prop.y-height-actor.y));
+            float t=GameCore.Clamp(1-(float)Math.Sqrt(dx*dx+dy*dy)/.8f,0,1);
+            return t*t*(3-2*t);
+        }
+        private static float WorldDecorationWidth(string kind)
+        {return kind=="house"?170:kind=="tree"?100:kind=="ruin"?150:kind=="bed"||kind=="bookshelf"?90:kind=="table"||kind=="counter"?80:76;}
+        private Rect WorldDecorationBounds(Decoration prop)
+        {
+            Point p=ScreenPoint(new Point(prop.x,prop.y));
+            float w=WorldDecorationWidth(prop.kind),h=w*112/96;
+            // Union the authored fallback with the square field-prop Actor.
+            // Counters have two wings and rooted plants retain their full wind
+            // excursion. A ground anchor outside view must not hide its crown.
+            float side=Math.Max(w,h),wing=prop.kind=="counter"?45:0;
+            float wind=prop.kind=="tree"||prop.kind=="palm"||prop.kind=="snowpine"?1.2f:0;
+            float left=p.x-side/2-wing-wind,top=Math.Min(p.y-h+8,p.y-side*120/128);
+            float right=p.x+side/2+wing+wind,bottom=Math.Max(p.y+8,p.y+side*8/128);
+            return new Rect(left,top,right-left,bottom-top);
+        }
+        private bool WorldSceneryVisible(Decoration prop)
+        {
+            Rect bounds=WorldDecorationBounds(prop);
+            // Static scenery is ready two ground tiles before its complete
+            // sprite reaches view. Actors, interactions and danger geometry
+            // remain authoritative on their original unconditional draw paths.
+            float apron=Tile*2;
+            return bounds.x+bounds.width>=-apron&&bounds.x<=Width+apron&&bounds.y+bounds.height>=-apron&&bounds.y<=Height+apron;
         }
         private void DrawEnemyWithBars(Enemy enemy)
         {

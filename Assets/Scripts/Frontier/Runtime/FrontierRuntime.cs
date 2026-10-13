@@ -270,10 +270,13 @@ namespace Starfall
             worldOverlayRegions.Clear();
             Color ground = PixelArt.C(Game.Map.color);
             Box(0, 0, Width, Height, Color.Lerp(ground, ink, .55f));
-            for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++)
+            // Campaign terrain and art are loaded before play. Prepare a two-tile
+            // apron outside the exact rounded camera viewport on every GUI pass,
+            // rather than scanning the whole map or revealing opaque chunks late.
+            WorldTileRange visible = VisibleWorldTiles();
+            for (int y = visible.top; y < visible.bottom; y++) for (int x = visible.left; x < Math.Min(visible.right, Game.Map.rows[y].Length); x++)
             {
                 Point p = ScreenPoint(new Point(x, y));
-                if (p.x < -Tile || p.y < -Tile || p.x > Width || p.y > Height) continue;
                 char tile = Game.PresentationTile(x, y); if (tile == '%' && !Game.LowTide) tile = '~';
                 if ((tile == 'v' || tile == 'w' || tile == 'b') && Game.Has("seal_" + Game.save.room)) tile = '=';
                 DrawSurface(x, y, tile, p); DrawGroundDetail(x, y, tile, p); DrawTerrainEdge(x, y, tile, p);
@@ -281,6 +284,7 @@ namespace Starfall
             }
             DrawArenaBoundary();
             DrawArchiveWorld();
+            DrawReachWorld();
             // Sort scenery and actors by their ground position, for proper overlap.
             DrawHazardWarnings();
             foreach (Effect floorEffect in Game.effects) if (IsGroundEffect(floorEffect)) DrawCombatEffect(floorEffect);
@@ -297,6 +301,18 @@ namespace Starfall
                 Point s = ScreenPoint(new Point(near.x, near.y)); string label = ControlKey("E", "B") + "  " + Game.L(near.name, near.en);
                 Panel(s.x - 125, s.y + 14, 250, 35, new Color(.04f, .075f, .12f, .94f), gold); Text(s.x - 117, s.y + 18, 234, 27, label, 14, paper, TextAnchor.MiddleCenter);
             }
+        }
+        private struct WorldTileRange
+        { public int left, top, right, bottom; }
+        private WorldTileRange VisibleWorldTiles()
+        {
+            Point origin = WorldOrigin;
+            return new WorldTileRange {
+                left = Math.Max(0, (int)Math.Floor(-origin.x / Tile) - 2),
+                top = Math.Max(0, (int)Math.Floor(-origin.y / Tile) - 2),
+                right = Math.Min(Game.Map.rows[0].Length, (int)Math.Ceiling((Width - origin.x) / Tile) + 2),
+                bottom = Math.Min(Game.Map.rows.Length, (int)Math.Ceiling((Height - origin.y) / Tile) + 2)
+            };
         }
         private void DrawHero() { DrawPlayerActor(); }
         private void DrawLegacyHero()
@@ -315,7 +331,7 @@ namespace Starfall
         {
             if (!Game.IsObjectPresent(o)) return;
             Point p = ScreenPoint(new Point(o.x, o.y)); string kind = o.kind;
-            if (DrawPolishObject(o) || DrawExpansionObject(o)) return;
+            if (DrawReachObject(o) || DrawPolishObject(o) || DrawExpansionObject(o)) return;
             if (kind.StartsWith("portal"))
             {
                 int destination = int.Parse(kind.Substring(6)); bool available = Game.CanEnter(destination);

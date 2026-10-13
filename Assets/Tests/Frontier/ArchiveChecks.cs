@@ -300,7 +300,7 @@ namespace Starfall.Tests
         public static void ArchiveGuidanceFollowsActualPuzzleAndDefenceProgress(Campaign data)
         {
             string[] original = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal" };
-            Check(GameCore.QuestIds.Length == 13 && GameCore.QuestIds[12] == "archive", "The archive quest appends a thirteenth entry rather than replacing an existing story");
+            Check(GameCore.QuestIds.Length >= 13 && GameCore.QuestIds[12] == "archive", "The archive quest retains its thirteenth entry; later content may append without replacing it");
             for (int i = 0; i < original.Length; i++) Check(GameCore.QuestIds[i] == original[i], "All original guide identifiers retain their exact order");
             var g = Fresh(data); g.SkipTutorial(); g.save.stage = 2; g.save.flags.Add("core_2"); g.TrackQuest("archive");
             QuestGuide q = g.CurrentGuide; Point? target = g.NavigationTarget();

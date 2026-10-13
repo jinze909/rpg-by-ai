@@ -6,6 +6,13 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void ReachEarnedEntryAndMatureMapIdentity(){CoreChecks.ReachAppendedRegionRequiresEarnedPowerAndKeepsMatureRoutes(Data());}
+        [Test] public void ReachLargeMapFullFootprintsAndTerrainRoutes(){CoreChecks.ReachLargeMapFootprintsAndPermanentRoutesMatchPresentation(Data());}
+        [Test] public void ReachScaledExplorationAndLocalNavigation(){CoreChecks.ReachScaledExplorationKeepsLegacyBitsAndOwnedNavigation(Data());}
+        [Test] public void ReachLocalCallbacksAndOnceOnlyTransactions(){CoreChecks.ReachLocalActionsAndOnceOnlyRewardsRejectStaleDecisions(Data());}
+        [Test] public void ReachCanonicalSnapshotsAndForeignActorIsolation(){CoreChecks.ReachCanonicalSnapshotsRejectForeignActorsAndPreserveDefeats(Data());}
+        [Test] public void ReachLegacyMigrationTravelAndRealDefeatRecovery(){CoreChecks.ReachLegacySavesTravelAndDefeatPreserveEarnedSurvey(Data());}
+        [Test] public void ReachThreeStarterProfessionsAndPermanentPatrolDefeats(){CoreChecks.ReachEveryStarterClassClearsActualPatrolsWithoutRewardFarming(Data());}
         [Test] public void GuildChapterBriefingsAndMatureChoices(){CoreChecks.GuildChapterBriefingsFollowEarnedRoutesAndOriginalChoices(Data());}
         [Test] public void GuildDeliveryTransactionsAndCampaignGates(){CoreChecks.GuildCoreDeliveriesKeepTransactionsAndCampaignGates(Data());}
         [Test] public void GuildActualEvidenceAndMissingRecords(){CoreChecks.GuildEvidenceUsesRealDiscoveryAndTruthfulGaps(Data());}

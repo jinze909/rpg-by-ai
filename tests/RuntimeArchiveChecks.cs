@@ -137,7 +137,7 @@ public static class RuntimeArchiveChecks
         Point? goal = Get<Point?>(app, "routeGoal");
         Check(goal.HasValue && (goal.Value - g.NavigationTarget().Value).Length < .001f, "Production Update follows the current archive checkpoint");
         Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "archive");
-        Check(quest == 12 && GameCore.QuestIds.Length == 13, "The archive appends after all twelve existing journal entries");
+        Check(quest == 12 && GameCore.QuestIds.Length >= 13, "The archive retains its position after all twelve original journal entries as later quests append");
         float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length); Click(app, new Rect(279, 226 + quest * spacing, 321, spacing - 7));
         Draw(app, "journal" + suffix);
         Check(Get<int>(app, "selectedQuest") == quest && HasText(g.L("下一步：", "Next: ") + guide.next), "The real new journal row displays the current archive objective");
@@ -195,8 +195,9 @@ public static class RuntimeArchiveChecks
             flags = new List<string> { "intro", "core_2", "watch_complete", "signal_complete", "history_16" } };
         File.WriteAllText(SaveStore.PathFor(2), JsonUtility.ToJson(legacy)); saved = SaveStore.Read(2, out issue);
         Check(saved != null && issue == null, "The actual legacy decoder accepts a ten-region version-one save"); g.Load(saved); g.Start();
-        Check(g.save.room == 9 && g.save.coins == 137 && !g.ArchiveAccepted && !g.ArchiveComplete && g.save.kills.Length == 11 && g.save.explored.Length == 11,
-            "Legacy save migration retains the old inn and resources, appends one empty counter and invents no archive progress");
+        Check(g.save.room == 9 && g.save.coins == 137 && !g.ArchiveAccepted && !g.ArchiveComplete && g.save.kills.Length == g.data.maps.Length && g.save.explored.Length == g.data.maps.Length,
+            "Legacy save migration retains the old inn and resources, appends map counters and invents no archive progress");
+        for(int i=10;i<g.data.maps.Length;i++) Check(g.save.kills[i]==0&&g.save.explored[i]==0,"Every appended optional-map counter starts empty without rewriting the old prefix");
         for (int i = 0; i < 10; i++) Check(g.save.kills[i] == i + 1 && g.save.explored[i] == i + 11, "Every mature map counter retains its exact prefix");
         Check(g.Has("watch_complete") && g.Has("signal_complete") && g.Has("history_16"), "The real migration retains earlier optional stories and lore"); Draw(app, "legacy-inn");
         Console.WriteLine("PASS archive production SaveStore JSON/checksum, both pause paths, transient warning reset, actual partial-defence deaths/livingHP, travel anti-farming and old ten-map v1 save migration; NATIVE_UNVERIFIED");

@@ -16,7 +16,7 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
-        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive" };
+        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach" };
         private void SanitizeGuidance()
         {
             if (save.presentationVersion == 0)
@@ -35,11 +35,11 @@ namespace Starfall
         {
             save.tutorialDistance = Math.Min(4, save.tutorialDistance + (Position - before).Length);
             if (save.tutorialDistance >= 3) TutorialAction(0); if (save.room == 1) TutorialAction(7);
-            int bit = 1 << Sector(save.x, save.y);
+            int bit = 1 << Sector(save.room,save.x, save.y);
             if ((save.explored[save.room] & bit) == 0) { save.explored[save.room] |= bit; revision++; }
         }
-        private static int Sector(float x, float y) { return (int)Clamp(x / 6, 0, 5) + (int)Clamp(y / 6, 0, 3) * 6; }
-        public bool Explored(int room, float x, float y) { return (save.explored[room] & (1 << Sector(x, y))) != 0; }
+        private int Sector(int room,float x, float y) { MapData map=room==save.room?Map:data.maps[room]; return (int)Clamp(x*6/map.rows[0].Length,0,5)+(int)Clamp(y*4/map.rows.Length,0,3)*6; }
+        public bool Explored(int room, float x, float y) { return room>=0&&room<data.maps.Length&&(save.explored[room] & (1 << Sector(room,x, y))) != 0; }
         public void TrackQuest(string id)
         { if (Array.IndexOf(QuestIds, id) < 0 || GetQuest(id).locked) return; save.trackedQuest = id; save.frontierFocus = id == "shore"; TutorialAction(2); revision++; }
         private Point ObjectPoint(int room, string kind, Point fallback)
@@ -88,6 +88,7 @@ namespace Starfall
             if (id == "watch") return GetWatchQuest();
             if (id == "signal") return GetSignalQuest();
             if (id == "archive") return GetArchiveQuest();
+            if (id == "reach") return GetReachQuest();
             QuestGuide q = new QuestGuide { id = id, room = 0, target = new Point(18, 17), category = L("主线", "STORY"), reward = L("硬币、经验与新的路线", "Coins, experience and new routes") };
             if (id == "secrets")
             {
@@ -188,6 +189,8 @@ namespace Starfall
             QuestGuide q = CurrentGuide; if (q.complete || q.locked) return null;
             if (q.room == save.room) return q.target;
             foreach (var o in Map.objects) if (o.kind == "portal" + q.room) return new Point(o.x, o.y);
+            if(save.room==ReachRoom)return ObjectPoint(ReachRoom,"reachExit",new Point(6,41));
+            if(save.room==0&&q.room==ReachRoom)return ObjectPoint(0,"portal1",new Point(18,3));
             if (save.room == ArchiveRoom) return ObjectPoint(ArchiveRoom, "portal2", new Point(3, 18));
             if (save.room == 0 && q.room == ArchiveRoom) return ObjectPoint(0, "portal2", new Point(3, 14));
             foreach (var o in Map.objects) if (o.kind == "portal0") return new Point(o.x, o.y);

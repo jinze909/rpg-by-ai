@@ -39,6 +39,7 @@ namespace Starfall
         {
             if (room < 0 || room >= data.maps.Length) return false;
             if (room == ArchiveRoom) return ArchiveReady;
+            if (room == ReachRoom) return ReachReady;
             if (room == 9) return true;
             if (room <= 4) return room <= save.stage + 1;
             if (room == 5) return save.stage >= 1 && Has("exp_intro");
@@ -48,6 +49,7 @@ namespace Starfall
         }
         public string RouteHint(int room, bool en)
         {
+            if(room==ReachRoom)return en?"Recover the first starcore, then take the riverbank path in Thornwood.":"先找回第一枚星核，再走密林的河岸旧路。";
             if (room == ArchiveRoom) return en ? "Recover the second starcore, then visit the Tide Archive entrance in Drowned Ruins." : "先找回第二枚星核，再到沉水遗迹调查遗潮档案入口。";
             if (room <= 4) return en ? "Deliver the previous core to Lyra." : "先把上一片区域的星核交回莉雅。";
             if (room == 5) return en ? "Deliver the first core, then meet Lune in Emberfall (26,9)." : "交回第一枚星核后，找余烬镇的露恩（26,9）接取远岸来信。";
@@ -150,7 +152,7 @@ namespace Starfall
             var ids = new HashSet<int>();
             foreach (EnemyRecord r in save.abyssEnemies)
             {
-                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || IsArchiveEnemyId(r.id) || IsSparringEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || IsArchiveEnemyId(r.id) || IsSparringEnemyId(r.id) || IsReachEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
                 float maximum = Clamp(r.maxHp, 1, 5000);
                 var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, maximum, r.boss && save.abyssFloor == 6);

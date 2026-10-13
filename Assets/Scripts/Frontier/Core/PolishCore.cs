@@ -117,6 +117,7 @@ namespace Starfall
         public string PracticeHint { get { return L(new[] { "J / 左键：命中木桩", "观察红圈，空格闪避攻击", "Q：命中目标，完成练习" }[practiceStage], new[] { "J / click: hit the dummy", "Read the red circle; Space to dodge", "Q: hit the target to finish" }[practiceStage]); } }
         public void UseExplorationAbility()
         {
+            if(save.room==ReachRoom){ClearReachRoots();return;}
             if (mode != "world" || Dying || practicing) return; WorldObject near = null; float distance = 3;
             foreach (var o in Map.objects) if (o.kind.StartsWith("seal")) { float d = (Position - new Point(o.x, o.y)).Length; if (d < distance) { near = o; distance = d; } }
             if (near == null) { Notify("靠近封印入口按 R；探索能力来自前三枚星核。", "Press R near a sealed route; the first three cores grant exploration powers."); return; }
@@ -175,6 +176,8 @@ namespace Starfall
             {
                 if (r != null && IsSparringEnemyId(r.id)) continue;
                 if (r == null || r.id < 1 || r.id > 99999 || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if(save.room==ReachRoom){RestoreReachRecord(r);continue;}
+                if(IsReachEnemyId(r.id))continue;
                 if (save.room == ArchiveRoom && !IsArchiveEnemyId(r.id)) continue;
                 if (IsArchiveEnemyId(r.id) && (!ArchiveDefenceActive || r.boss || r.kind != r.id - ArchiveEnemyBase || Has("archive_defeated_" + r.id))) continue;
                 bool signal = r.id == SignalWardenId && r.boss && r.kind == 3;

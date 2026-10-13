@@ -115,9 +115,16 @@ namespace Starfall
         private void DrawMinimap() { Panel(1008, 24, 248, 191, new Color(.045f, .08f, .13f, .94f), PixelArt.C("#486073")); MiniTerrain(1024, 42, 6); Text(1024, 191, 166, 21, Game.Night ? Game.L("夜晚", "NIGHT") : Game.L("白昼", "DAY"), 11, gold); if (Button(1190, 184, 48, 25, "M")) OpenMenu("map"); }
         private void MiniTerrain(float x0, float y0, float size)
         {
+            size=MapCellSize(Game.Map,size);
             for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++) { char t = Game.PresentationTile(x,y); Color c = t == '~' || t == '%' && !Game.LowTide ? PixelArt.C("#315c76") : t == '#' ? PixelArt.C("#566879") : t == '=' ? PixelArt.C("#a09877") : PixelArt.C(Game.Map.color); Box(x0 + x * size, y0 + y * size, size, size, Game.Explored(Game.save.room, x, y) ? c : Color.Lerp(c, ink, .68f)); }
             foreach (var o in Game.Map.objects) if (Game.IsObjectPresent(o) && (o.kind.StartsWith("portal") || Game.Explored(Game.save.room, o.x, o.y))) Box(x0 + o.x * size - 1, y0 + o.y * size - 1, 3, 3, o.kind.StartsWith("portal") ? mint : gold);
             Point? goal = Game.NavigationTarget(); if (goal.HasValue && Game.save.showGuidance) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
+        }
+        private static float MapCellSize(MapData map,float originalSize)
+        {
+            // Keep all original36x24 geometry exact; larger optional maps fit
+            // the same panel and preserve objective/player coordinates.
+            return originalSize*Math.Min(1,Math.Min(36f/Math.Max(1,map.rows[0].Length),24f/Math.Max(1,map.rows.Length)));
         }
         private void DrawInventory()
         {
@@ -243,17 +250,13 @@ namespace Starfall
             if (selectedRegion == Game.save.room) MiniTerrain(888,264,8.4f);
             else
             {
+                float cell=MapCellSize(m,8.4f);
                 for (int y = 0; y < m.rows.Length; y++) for (int x = 0; x < m.rows[y].Length; x++)
                 {
-                    char t = m.rows[y][x];
-                    if (selectedRegion == GameCore.ArchiveRoom)
-                    {
-                        if (x >= 9 && x <= 12 && y >= 13 && y <= 14) t = Game.ArchiveDrained ? '=' : '~';
-                        if (x == 23 && y >= 6 && y <= 7) t = Game.ArchiveVented ? '=' : '#';
-                    }
-                    Box(888+x*8.4f,264+y*8.4f,8.4f,8.4f,t == '~' ? PixelArt.C("#365f78") : t == '#' ? PixelArt.C("#586d79") : t == '=' ? PixelArt.C("#aaa17e") : PixelArt.C(m.color));
+                    char t = Game.MapPresentationTile(selectedRegion,x,y);
+                    Box(888+x*cell,264+y*cell,cell,cell,t == '~' ? PixelArt.C("#365f78") : t == '#' ? PixelArt.C("#586d79") : t == '=' ? PixelArt.C("#aaa17e") : PixelArt.C(m.color));
                 }
-                QuestGuide q = Game.CurrentGuide; if (q.room == selectedRegion && !q.complete) Box(888+q.target.x*8.4f-3,264+q.target.y*8.4f-3,7,7,gold);
+                QuestGuide q = Game.CurrentGuide; if (q.room == selectedRegion && !q.complete) Box(888+q.target.x*cell-3,264+q.target.y*cell-3,7,7,gold);
             }
             Text(888,492,306,101,Game.CanEnter(selectedRegion) ? (selectedRegion == GameCore.ArchiveRoom ? Game.GetQuest("archive").next : Game.L(m.subtitle,m.suben)) : Game.RouteHint(selectedRegion,Game.save.english),16,muted);
             if (Button(888,616,306,47,selectedRegion == Game.save.room ? Game.L("返回本地区", "Return to region") : Game.L("快速旅行", "Fast travel"),true,selectedRegion == Game.save.room || Game.CanEnter(selectedRegion) && Game.SafeTravel))

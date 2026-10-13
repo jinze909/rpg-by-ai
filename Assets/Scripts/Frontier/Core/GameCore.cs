@@ -54,7 +54,7 @@ namespace Starfall
         public float Speed { get { return 4.5f + (save.profession == 1 ? .45f : 0) + save.talents[2] * .12f + (Relic(2) ? .4f : 0) + (racing ? .65f : 0) - (save.cold > 70 ? .55f : 0) + RoadMealWalkBonus; } }
         public bool GateOpen
         {
-            get { return save.room == 0 || save.room == 4 || save.room == 8 || save.room == 9 || save.room == ArchiveRoom || (save.room == 1 && Has("scout_saved")) || Has("gate_" + save.room); }
+            get { return save.room == 0 || save.room == 4 || save.room == 8 || save.room == 9 || save.room == ArchiveRoom || save.room == ReachRoom || (save.room == 1 && Has("scout_saved")) || Has("gate_" + save.room); }
         }
         public void Load(SaveData value)
         {
@@ -97,7 +97,8 @@ namespace Starfall
             save.foodUntil = Finite(save.foodUntil) ? Clamp(save.foodUntil, 0, save.totalTime + 120) : 0;
             if (save.weapon > 0 && !Has("weapon_" + save.weapon)) save.weapon = 0;
             if (!Finite(save.x) || !Finite(save.y) || !Fits(Position)) { save.x = Map.spawnX; save.y = Map.spawnY; }
-            ResetTransient(); SpawnRoom(); RestoreWorld(); RestoreWatchEncounter(); RestoreSignalEncounter(); RestoreArchiveEncounter(); revision++;
+            if(save.room==ReachRoom && (Position-new Point(Map.spawnX,Map.spawnY)).Length>2 && NavigationPath(new Point(Map.spawnX,Map.spawnY)).Count==0) {save.x=Map.spawnX;save.y=Map.spawnY;}
+            ResetTransient(); SpawnRoom(); RestoreWorld(); RestoreWatchEncounter(); RestoreSignalEncounter(); RestoreArchiveEncounter(); RestoreReachEncounter(); VisitReach(); revision++;
         }
         private void ResetTransient()
         {
@@ -132,8 +133,8 @@ namespace Starfall
         {
             int tx = (int)Math.Floor(x), ty = (int)Math.Floor(y);
             if (ty < 2 || tx < 2 || ty >= Map.rows.Length - 2 || tx >= Map.rows[0].Length - 2) return true;
-            if (ArchiveClosedCell(tx, ty)) return true;
-            char tile = Map.rows[ty][tx];
+            if (ArchiveClosedCell(tx, ty) || ReachClosedCell(tx,ty)) return true;
+            char tile = PresentationTile(tx,ty);
             if (tile == '#' || tile == '~' || tile == 'f') return true;
             if ((tile == 'v' || tile == 'w' || tile == 'b') && !Has("seal_" + save.room)) return true;
             if (save.room == 5 && tile == '%' && !LowTide) return true;
@@ -209,7 +210,7 @@ namespace Starfall
             save.room = room; save.x = Map.spawnX; save.y = Map.spawnY;
             save.snapshotRoom = -1; save.worldEnemies = null; save.savedRunes = 0;
             ResetTransient(); SpawnRoom(); RestoreWatchEncounter(); mode = "world"; revision++; sound = "travel";
-            Notify(Map.subtitle, Map.suben); VisitArchive();
+            Notify(Map.subtitle, Map.suben); VisitArchive(); VisitReach();
         }
         public void ReturnToTown()
         {
@@ -223,7 +224,7 @@ namespace Starfall
         private void SpawnRoom()
         {
             enemies.Clear(); enemyId = 0;
-            if (SpawnArchiveRoom() || SpawnExpansionRoom()) return;
+            if (SpawnReachRoom() || SpawnArchiveRoom() || SpawnExpansionRoom()) return;
             if (save.room == 0) return;
             float[,] locations = { { 11, 12 }, { 15, 17 }, { 21, 15 }, { 24, 6 }, { 9, 7 }, { 30, 16 }, { 23, 19 }, { 14, 9 } };
             for (int i = 0; i < 6 + (save.room > 2 ? 2 : 0); i++)
@@ -368,7 +369,7 @@ namespace Starfall
             enemies.Remove(e);
             if (SparringActive && IsSparringEnemy(e)) { effects.Add(new Effect("defeat", e.Position, .5f)); revision++; return; }
             if (IsSignalWarden(e)) { OnSignalDefeated(e); revision++; return; }
-            OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
+            OnReachKill(e); OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
             effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
             if (!InAbyss)
             {
@@ -586,6 +587,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkReach(o)) return;
             if (TalkArchive(o)) return;
             if (TalkSignal(o)) return;
             if (TalkWatch(o)) return;
@@ -701,6 +703,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseReach(action)) return;
             if (ChooseGuildStory(action)) return;
             if (ChooseSparring(action)) return;
             if (ChooseArchive(action)) return;
@@ -759,7 +762,7 @@ namespace Starfall
             }
             if (action == "boss")
             {
-                if (save.room == 0 || save.room == ArchiveRoom || !GateOpen || GateBarrierActive || enemies.Exists(e => e.boss) || Has("boss_" + save.room)) return;
+                if (save.room == 0 || save.room == ArchiveRoom || save.room == ReachRoom || !GateOpen || GateBarrierActive || enemies.Exists(e => e.boss) || Has("boss_" + save.room)) return;
                 BossData b = data.bosses[save.room - 1]; enemies.Add(CreatePlacedEnemy(++enemyId, 3, new Point(29, 9), b.hp, true));
                 save.health = save.maxHealth; save.energy = 100; Notify(b.name + "：闪避红圈，抓住反击时机！", b.en + ": dodge the red circles and counter!");
             }

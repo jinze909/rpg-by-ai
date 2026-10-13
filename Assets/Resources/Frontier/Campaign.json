@@ -471,6 +471,14 @@
           "en": "Warden lamp 3",
           "x": 23,
           "y": 9
+        },
+        {
+          "id": "reedwater_entry",
+          "name": "旧路河岸",
+          "en": "Reedwater Reach",
+          "x": 31,
+          "y": 15,
+          "kind": "portal11"
         }
       ],
       "decor": [
@@ -2513,6 +2521,862 @@
           "variant": 0
         }
       ]
+    },
+    {
+      "id": 11,
+      "name": "旧路河岸",
+      "en": "REEDWATER REACH",
+      "subtitle": "跟着旧灯走过河岸，把巡路队留下的道路重新连起来。",
+      "suben": "Follow the old lamps across the river and reconnect the wardens' road.",
+      "color": "#3d776c",
+      "spawnX": 6,
+      "spawnY": 39,
+      "rows": [
+        "########################################################################",
+        "########################################################################",
+        "##............................~~~~...........~~~~~~~~~~~~~~~..........##",
+        "##............................~~~~...........~~~~~~~~~~~~~~~..........##",
+        "##.....~~~~...................~~~~...........~~~.......~~~~~..........##",
+        "##...~~~~~~~..................~~~~...........~~~.......~~~~~....####..##",
+        "##...~~~~~~~..................~~~~...........~~~.......~~~~~....####..##",
+        "##...~~~~~~~..................~~~~...........~~~.......~~~~~....####..##",
+        "##...~~~~~~~..................~~~~...........~~~.......~~~~~....####..##",
+        "##...~~~~~~~.........=====================...~~~.......~~~~~..........##",
+        "##...~~~~~~~.........=====================...~~~===....~~.............##",
+        "##...~~~~~~~.........=====================...vvv===~~~~~~...=========.##",
+        "##...~~~~~~~.........===......~~~~.....===...vvv===~~~~~~...=========.##",
+        "##.....~~~~..........===......~~~~.....===...vvv===~~~~~~...=========.##",
+        "##...................===......~~~~.....===.==~~~~~~~~~~~~~~~===...===.##",
+        "##..........====.....===......~~~~.....========================...===.##",
+        "##..........====.....===......~~~~.....========================...===.##",
+        "##..........====...=====......~~~~.....========================...===.##",
+        "##..........===..===..........~~~~..........................===...===.##",
+        "##..........===....=..........~~~~....~~~~~.................===...===.##",
+        "##..........===....=..........~~~~.~~~~~~~~~~==================...===.##",
+        "##..........===....=..........~~~~.~~~~~~~~~~==================...===.##",
+        "##..........===..===.####.....~~~~.~~~~~~~~~~==================...===.##",
+        "##...==========..===.####.....~~~~.~~~~~~~~~~===..................===.##",
+        "##...==========..===.####.....~~~~....~~~~~..===..................===.##",
+        "##...==========..===.####.....~~~~....~~~~~..===..................===.##",
+        "##...===.........===..........~~~~...........===...........~~~~...===.##",
+        "##...===.........===..........~~~~...........===.........~~~~~~~~.===.##",
+        "##...===.........===.......===~~~~====......====.........~~~~~~~~.===.##",
+        "##...===.........===.......===~~~~====......====.........~~~~~~~~.===.##",
+        "##...===.....####===.......===~~~~====...=======.........~~~~~~~~.===.##",
+        "##...===.....####===.......===~~~~.......===.............~~~~~~~~.===.##",
+        "##...===.....####=============~~~~.......===.............~~~~~~~~.===.##",
+        "##...===.....####=============~~~~.......===.............~~~~~~~~.===.##",
+        "##...===.........=============~~~~.......===.............~~~~~~~~.===.##",
+        "##...===.........===..........~~~~.......===...............~~~~...===.##",
+        "##...===.........===..........~~~~.......===......................===.##",
+        "##...===.........===..........~~~~.......===........#####.........===.##",
+        "##...================================================================.##",
+        "##...================================================================.##",
+        "##...================================================================.##",
+        "##...===......................~~~~..................#####.............##",
+        "##...===......................~~~~....................................##",
+        "##............................~~~~....................................##",
+        "##............................~~~~....................................##",
+        "##............................~~~~....................................##",
+        "########################################################################",
+        "########################################################################"
+      ],
+      "objects": [
+        {
+          "id": "reach_exit",
+          "kind": "reachExit",
+          "name": "返回荆棘密林",
+          "en": "Return to Thornwood",
+          "x": 6,
+          "y": 41
+        },
+        {
+          "id": "reach_board",
+          "kind": "reachBoard",
+          "name": "旧路巡查图",
+          "en": "Old patrol route",
+          "x": 8,
+          "y": 38
+        },
+        {
+          "id": "reach_post0",
+          "kind": "reachPost0",
+          "name": "西岸旧灯",
+          "en": "West-bank lamp",
+          "x": 17,
+          "y": 16
+        },
+        {
+          "id": "reach_post1",
+          "kind": "reachPost1",
+          "name": "河心旧灯",
+          "en": "River-island lamp",
+          "x": 39,
+          "y": 29
+        },
+        {
+          "id": "reach_post2",
+          "kind": "reachPost2",
+          "name": "东岸旧灯",
+          "en": "East-bank lamp",
+          "x": 61,
+          "y": 12
+        },
+        {
+          "id": "reach_bridge",
+          "kind": "reachBridge",
+          "name": "旧桥水轮",
+          "en": "Bridge winch",
+          "x": 27,
+          "y": 33
+        },
+        {
+          "id": "reach_root",
+          "kind": "reachRoot",
+          "name": "河岸藤封",
+          "en": "Riverbank roots",
+          "x": 44,
+          "y": 12
+        },
+        {
+          "id": "reach_cache",
+          "kind": "reachCache",
+          "name": "巡路队旧箱",
+          "en": "Wardens' lost cache",
+          "x": 52,
+          "y": 7
+        },
+        {
+          "id": "reach_camp",
+          "kind": "campfire",
+          "name": "河岸营地",
+          "en": "Riverbank camp",
+          "x": 11,
+          "y": 38
+        },
+        {
+          "id": "reach_history20",
+          "kind": "history20",
+          "name": "旧路记录",
+          "en": "The old road log",
+          "x": 24,
+          "y": 10,
+          "lore": 20
+        },
+        {
+          "id": "reach_history21",
+          "kind": "history21",
+          "name": "旧灯名册",
+          "en": "The old lamp register",
+          "x": 65,
+          "y": 18,
+          "lore": 21
+        },
+        {
+          "id": "reach_wood0",
+          "kind": "wood",
+          "name": "木材",
+          "en": "Timber",
+          "x": 9,
+          "y": 21
+        },
+        {
+          "id": "reach_wood1",
+          "kind": "wood",
+          "name": "木材",
+          "en": "Timber",
+          "x": 24,
+          "y": 37
+        },
+        {
+          "id": "reach_wood2",
+          "kind": "wood",
+          "name": "木材",
+          "en": "Timber",
+          "x": 41,
+          "y": 42
+        },
+        {
+          "id": "reach_wood3",
+          "kind": "wood",
+          "name": "木材",
+          "en": "Timber",
+          "x": 65,
+          "y": 24
+        },
+        {
+          "id": "reach_herb0",
+          "kind": "herb",
+          "name": "月光草",
+          "en": "Moonherb",
+          "x": 14,
+          "y": 10
+        },
+        {
+          "id": "reach_herb1",
+          "kind": "herb",
+          "name": "月光草",
+          "en": "Moonherb",
+          "x": 25,
+          "y": 28
+        },
+        {
+          "id": "reach_herb2",
+          "kind": "herb",
+          "name": "月光草",
+          "en": "Moonherb",
+          "x": 36,
+          "y": 15
+        },
+        {
+          "id": "reach_herb3",
+          "kind": "herb",
+          "name": "月光草",
+          "en": "Moonherb",
+          "x": 54,
+          "y": 33
+        },
+        {
+          "id": "reach_herb4",
+          "kind": "herb",
+          "name": "月光草",
+          "en": "Moonherb",
+          "x": 65,
+          "y": 42
+        },
+        {
+          "id": "reach_ore0",
+          "kind": "ore",
+          "name": "星晶矿",
+          "en": "Starcrystal vein",
+          "x": 23,
+          "y": 27
+        },
+        {
+          "id": "reach_ore1",
+          "kind": "ore",
+          "name": "星晶矿",
+          "en": "Starcrystal vein",
+          "x": 51,
+          "y": 35
+        },
+        {
+          "id": "reach_ore2",
+          "kind": "ore",
+          "name": "星晶矿",
+          "en": "Starcrystal vein",
+          "x": 66,
+          "y": 10
+        }
+      ],
+      "decor": [
+        {
+          "kind": "tree",
+          "x": 3,
+          "y": 4,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 14,
+          "y": 4,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 19,
+          "y": 4,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 24,
+          "y": 5,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 28,
+          "y": 4,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 4,
+          "y": 16,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 8,
+          "y": 17,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 11,
+          "y": 19,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 3,
+          "y": 22,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 3,
+          "y": 29,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 9,
+          "y": 28,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 11,
+          "y": 31,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 4,
+          "y": 35,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 9,
+          "y": 34,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 13,
+          "y": 35,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 22,
+          "y": 43,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 27,
+          "y": 43,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 4,
+          "y": 44,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 10,
+          "y": 44,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 15,
+          "y": 44,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 25,
+          "y": 19,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 27,
+          "y": 21,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 26,
+          "y": 25,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 28,
+          "y": 36,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 21,
+          "y": 29,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 13,
+          "y": 13,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 16,
+          "y": 8,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 26,
+          "y": 13,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 20,
+          "y": 20,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 28,
+          "y": 8,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 35,
+          "y": 4,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 39,
+          "y": 4,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 42,
+          "y": 6,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 35,
+          "y": 7,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 35,
+          "y": 18,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 47,
+          "y": 19,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 55,
+          "y": 24,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 50,
+          "y": 27,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 47,
+          "y": 34,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 45,
+          "y": 42,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 49,
+          "y": 44,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 58,
+          "y": 43,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 63,
+          "y": 44,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 68,
+          "y": 43,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 65,
+          "y": 37,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 54,
+          "y": 44,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 55,
+          "y": 18,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 64,
+          "y": 21,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 61,
+          "y": 24,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 56,
+          "y": 36,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 49,
+          "y": 32,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 36,
+          "y": 35,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 36,
+          "y": 42,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 68,
+          "y": 4,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 61,
+          "y": 4,
+          "variant": 2
+        },
+        {
+          "kind": "tree",
+          "x": 62,
+          "y": 7,
+          "variant": 0
+        },
+        {
+          "kind": "tree",
+          "x": 43,
+          "y": 27,
+          "variant": 1
+        },
+        {
+          "kind": "tree",
+          "x": 34,
+          "y": 32,
+          "variant": 0
+        },
+        {
+          "kind": "palm",
+          "x": 3,
+          "y": 12,
+          "variant": 0
+        },
+        {
+          "kind": "palm",
+          "x": 12,
+          "y": 8,
+          "variant": 2
+        },
+        {
+          "kind": "palm",
+          "x": 35,
+          "y": 24,
+          "variant": 2
+        },
+        {
+          "kind": "palm",
+          "x": 48,
+          "y": 5,
+          "variant": 2
+        },
+        {
+          "kind": "ruin",
+          "x": 22,
+          "y": 42,
+          "variant": 1
+        },
+        {
+          "kind": "ruin",
+          "x": 41,
+          "y": 7,
+          "variant": 0
+        },
+        {
+          "kind": "ruin",
+          "x": 63,
+          "y": 10,
+          "variant": 1
+        },
+        {
+          "kind": "ruin",
+          "x": 65,
+          "y": 14,
+          "variant": 1
+        },
+        {
+          "kind": "ruin",
+          "x": 52,
+          "y": 4,
+          "variant": 2
+        },
+        {
+          "kind": "lamp",
+          "x": 15,
+          "y": 18,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 41,
+          "y": 31,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 59,
+          "y": 14,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 7,
+          "y": 37,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 24,
+          "y": 32,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 43,
+          "y": 15,
+          "variant": 0
+        },
+        {
+          "kind": "lamp",
+          "x": 51,
+          "y": 10,
+          "variant": 0
+        },
+        {
+          "kind": "fence",
+          "x": 14,
+          "y": 18,
+          "variant": 0
+        },
+        {
+          "kind": "fence",
+          "x": 15,
+          "y": 22,
+          "variant": 1
+        },
+        {
+          "kind": "fence",
+          "x": 40,
+          "y": 27,
+          "variant": 1
+        },
+        {
+          "kind": "fence",
+          "x": 44,
+          "y": 30,
+          "variant": 0
+        },
+        {
+          "kind": "fence",
+          "x": 59,
+          "y": 9,
+          "variant": 0
+        },
+        {
+          "kind": "fence",
+          "x": 63,
+          "y": 17,
+          "variant": 0
+        },
+        {
+          "kind": "fence",
+          "x": 66,
+          "y": 34,
+          "variant": 0
+        },
+        {
+          "kind": "fence",
+          "x": 26,
+          "y": 35,
+          "variant": 1
+        },
+        {
+          "kind": "fence",
+          "x": 8,
+          "y": 43,
+          "variant": 1
+        },
+        {
+          "kind": "crate",
+          "x": 10,
+          "y": 40,
+          "variant": 0
+        },
+        {
+          "kind": "crate",
+          "x": 12,
+          "y": 40,
+          "variant": 0
+        },
+        {
+          "kind": "crate",
+          "x": 25,
+          "y": 34,
+          "variant": 1
+        },
+        {
+          "kind": "crate",
+          "x": 38,
+          "y": 27,
+          "variant": 1
+        },
+        {
+          "kind": "crate",
+          "x": 60,
+          "y": 18,
+          "variant": 0
+        },
+        {
+          "kind": "crate",
+          "x": 54,
+          "y": 9,
+          "variant": 1
+        },
+        {
+          "kind": "barrel",
+          "x": 11,
+          "y": 40,
+          "variant": 0
+        },
+        {
+          "kind": "barrel",
+          "x": 26,
+          "y": 34,
+          "variant": 0
+        },
+        {
+          "kind": "barrel",
+          "x": 64,
+          "y": 17,
+          "variant": 0
+        },
+        {
+          "kind": "barrel",
+          "x": 53,
+          "y": 9,
+          "variant": 0
+        },
+        {
+          "kind": "tent",
+          "x": 10,
+          "y": 36,
+          "variant": 0
+        },
+        {
+          "kind": "bridge",
+          "x": 31,
+          "y": 11,
+          "variant": 0
+        },
+        {
+          "kind": "bridge",
+          "x": 32,
+          "y": 11,
+          "variant": 0
+        },
+        {
+          "kind": "bridge",
+          "x": 31,
+          "y": 40,
+          "variant": 0
+        },
+        {
+          "kind": "bridge",
+          "x": 32,
+          "y": 40,
+          "variant": 0
+        },
+        {
+          "kind": "boat",
+          "x": 28,
+          "y": 7,
+          "variant": 0
+        },
+        {
+          "kind": "boat",
+          "x": 35,
+          "y": 36,
+          "variant": 0
+        },
+        {
+          "kind": "boat",
+          "x": 56,
+          "y": 25,
+          "variant": 0
+        }
+      ]
     }
   ],
   "items": [
@@ -2714,6 +3578,18 @@
       "en": "Archive · the caretakers list",
       "zh": "这页写着孩子的名字、住过的村庄，和愿意照看他们的家人。没有人被写成一个数字。\n\n一位家人在空白处写道：“如果我们走散，先给孩子一碗热汤。等他能说话了，再问家在哪里。”\n\n纸角留下后来补上的记号：有人回到了家，也有人仍在等。把名单交给公会或亲手带给家人，都不能替他们写下尚未发生的重逢。",
       "text": "This page pairs each child with a village and a family willing to care for them. No one is recorded as a number.\n\nA mother wrote in the margin: “If we are separated, give the child a bowl of warm soup first. Ask where home is when they can speak.”\n\nLater marks show that some reached home and others were still waiting. Whether these names are entrusted to the guild or carried to the families, no one can write a reunion that has not happened."
+    },
+    {
+      "title": "旧路 · 巡查记录",
+      "en": "The old road · patrol log",
+      "zh": "星陨以前，这条河岸路让森林里的家人不用绕过北方山路。巡路队在西岸、河心和东岸各留下一处旧灯。\n\n最后一页写着：“水涨起来，就先走南边的旧桥。不能让修桥的人挡住回家的人。”\n\n这是他们走过的路，不是失踪的答案。你把路上的记号带回公会，让仍在等候的家人知道这里没有被忘记。",
+      "text": "Before the star fell, this river road spared the forest families the long northern climb. The wardens kept a lamp on the west bank, the river island and the east bank.\n\nThe last page reads: “When the water rises, take the old southern bridge. Those repairing a bridge must never block those going home.”\n\nThis is the road they walked, not the answer to their disappearance. Bring its markings to the guild so the families still waiting know it has not been forgotten."
+    },
+    {
+      "title": "旧路 · 旧灯名册",
+      "en": "The old road · lamp register",
+      "zh": "三处旧灯下写着三位巡路员的名字，也写着他们会照看的家人。旁边的修补记录只留下木材、绳索和换班的日子。\n\n有人在纸背上写道：“不要把名字换成数字。要是后来的人找到这些灯，请记得这里曾有人守着。”\n\n名册没有许诺所有人都会回来。它只是让公会的回信能够叫出他们的名字。",
+      "text": "Each of the three lamps lists a warden by name, with the family they looked after. The repair notes beside them record timber, rope and the dates of each watch.\n\nOn the back, someone wrote: “Never replace our names with numbers. If someone finds these lamps after us, remember that people kept watch here.”\n\nThe register promises no reunion. It gives the guild the names to use when writing to the families."
     }
   ]
 }
