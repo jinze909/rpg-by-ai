@@ -8,9 +8,9 @@ namespace Starfall
     {
         public readonly int weapon, style, masteryWeapon, combo;
         public readonly float criticalChance;
-        public readonly bool playerOwned;
-        public ImpactProfile(int weapon, int style, int masteryWeapon, int combo, float criticalChance, bool playerOwned)
-        { this.weapon=weapon;this.style=style;this.masteryWeapon=masteryWeapon;this.combo=combo;this.criticalChance=criticalChance;this.playerOwned=playerOwned; }
+        public readonly bool playerOwned, counter;
+        public ImpactProfile(int weapon, int style, int masteryWeapon, int combo, float criticalChance, bool playerOwned, bool counter = false)
+        { this.weapon=weapon;this.style=style;this.masteryWeapon=masteryWeapon;this.combo=combo;this.criticalChance=criticalChance;this.playerOwned=playerOwned;this.counter=counter; }
     }
     internal sealed class FrostField
     {
@@ -27,11 +27,11 @@ namespace Starfall
     public sealed partial class GameCore
     {
         private FrostField frost;
-        private ImpactProfile CaptureImpact(int weapon,int attackCombo=0,bool playerOwned=true)
+        private ImpactProfile CaptureImpact(int weapon,int attackCombo=0,bool playerOwned=true,bool counter=false)
         {
             weapon=(int)Clamp(weapon,0,2);
             return new ImpactProfile(weapon,save.weaponStyles[weapon],save.weapon,attackCombo,
-                Clamp(.06f+save.talents[0]*.025f+(Relic(5)?.12f:0),0,1),playerOwned);
+                Clamp(.06f+save.talents[0]*.025f+(Relic(5)?.12f:0),0,1),playerOwned,counter);
         }
         private void BeginFrost(Point center,float baseDamage,ImpactProfile impact)
         {frost=new FrostField(center,baseDamage*.4f,impact);}

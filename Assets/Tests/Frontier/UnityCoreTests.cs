@@ -6,6 +6,32 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void SparringMentorEntryAndMatureChoices(){CoreChecks.SparringEntryRequiresMentorAndPreservesBasicChoices(Data());}
+        [Test] public void SparringLiveContactFeedbackAndTactics(){CoreChecks.SparringRealHitsCountersFlanksAndBreaksKeepCombatFeedback(Data());}
+        [Test] public void SparringStarterClassesAndOnceOnlyReward(){CoreChecks.SparringEveryStarterClassClearsMixedWavesAndRewardsOnce(Data());}
+        [Test] public void SparringSandboxEconomyAndVitals(){CoreChecks.SparringSandboxFreezesWorldEconomyAndRestoresVitals(Data());}
+        [Test] public void SparringPauseAndPreparedContactTeardown(){CoreChecks.SparringPauseManualAdvanceAndExitCancelPreparedContacts(Data());}
+        [Test] public void SparringSavedReturnBody(){CoreChecks.SparringSaveReturnsSafeBodyWithoutResumingPracticeActors(Data());}
+        [Test] public void SparringLegacyAndMaturePractice(){CoreChecks.SparringLegacyProgressAndOriginalDummyPracticeRemainIndependent(Data());}
+        [Test] public void SparringMalformedReturnAndOwnedActorRecords(){CoreChecks.SparringMalformedReturnRecordsAndReservedActorsStaySafe(Data());}
+        [Test] public void SparringNativeJsonReturnRecordAndLegacyDefaults()
+        {
+            foreach(int version in new[]{1,2})
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"coins\":87,\"room\":0}");
+                var loaded = new GameCore(Data(),old);
+                Assert.IsTrue(loaded.save.sparringReturn==null); Assert.IsFalse(loaded.SparringActive); Assert.AreEqual(87,loaded.save.coins);
+            }
+            var game = new GameCore(Data()); game.NewGame(2); game.Close(); game.save.practiceBits=7;
+            game.save.x=11; game.save.y=15; game.save.health=67; game.save.energy=42;
+            Assert.IsTrue(game.StartSparring()); game.PrepareSave();
+            var saved = JsonUtility.FromJson<SaveData>(JsonUtility.ToJson(game.save));
+            Assert.NotNull(saved.sparringReturn);
+            var resumed = new GameCore(Data(),saved); resumed.Start();
+            Assert.IsFalse(resumed.SparringActive); Assert.IsTrue(resumed.save.sparringReturn==null);
+            Assert.AreEqual(11,resumed.save.x); Assert.AreEqual(15,resumed.save.y);
+            Assert.AreEqual(67,resumed.save.health); Assert.AreEqual(42,resumed.save.energy);
+        }
         [Test] public void ControllerAimRadialDeadzoneAndFiniteValues(){CoreChecks.ControllerAimUsesFiniteRadialDirections(Data());}
         [Test] public void ControllerAimSafeSettingsTransactions(){CoreChecks.ControllerAimSettingsRequireSafeSettingsModes(Data());}
         [Test] public void ControllerAimLegacyAndSavedPreferences(){CoreChecks.ControllerAimLegacyAndSavedPreferencesStayCompatible(Data());}

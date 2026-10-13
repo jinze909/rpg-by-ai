@@ -73,7 +73,8 @@ namespace Starfall
         private void DrawEnemyWithBars(Enemy enemy)
         {
             DrawEnemyActor(enemy);
-            if(Game.practicing||!enemy.boss&&enemy.hp>=enemy.maxHp&&enemy.state!=1)return;
+            if(Game.practicing&&!Game.SparringActive)return;
+            if(!Game.SparringActive&&!enemy.boss&&enemy.hp>=enemy.maxHp&&enemy.state!=1)return;
             Point p=ScreenPoint(enemy.Position);float width=enemy.boss?104:52,top=p.y-(enemy.boss?135:enemy.kind==0?54:79);
             Bar(p.x-width/2,top,width,enemy.hp/enemy.maxHp,PixelArt.C("#d58e79"),4);
             if(enemy.stagger>0)Bar(p.x-width/2,top+6,width,enemy.stagger/(enemy.boss?95:30),mint,2);

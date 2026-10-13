@@ -105,12 +105,12 @@ namespace Starfall
             SkillIntent intent = bufferedSkill;
             if (intent != null && (intent.weapon != save.weapon || intent.profession != save.profession || intent.style != Style || intent.technique != save.technique)) ClearBufferedSkill();
         }
-        private void BeginAction(string kind, float damage, float duration, float contact)
+        private void BeginAction(string kind, float damage, float duration, float contact, bool counter = false)
         {
             dashMovementPresented = false;
             playerAction = new ActorAction { kind = kind, damage = damage, duration = duration, contact = contact,
                 direction = aim, target = aimTarget, weapon = kind == "skill" ? save.profession : save.weapon, equippedWeapon = save.weapon, profession = save.profession, style = Style, combo = combo, technique = save.technique,
-                impact = CaptureImpact(kind == "skill" ? save.profession : save.weapon,kind == "attack" ? combo : 0) };
+                impact = CaptureImpact(kind == "skill" ? save.profession : save.weapon,kind == "attack" ? combo : 0,true,counter) };
         }
         private void TickAction(float dt)
         {

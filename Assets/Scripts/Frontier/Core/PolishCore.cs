@@ -99,21 +99,21 @@ namespace Starfall
         { enemies.Clear(); projectiles.Clear(); var e = new Enemy(90001, practiceStage == 1 ? 2 : 0, 16, 13, practiceStage == 2 ? 15 : 9999); e.timer = practiceStage == 1 ? .3f : 9999; e.facing = new Point(-1, 0); enemies.Add(e); }
         private void PracticeHit()
         {
-            if (!practicing) return;
+            if (!practicing || SparringActive) return;
             if (practiceStage == 0) { save.practiceBits |= 1; TutorialAction(3); practiceStage = 1; PracticeEnemy(); Notify("红圈出现后，向圈外闪避；或在命中前闪避穿过。", "When the red circle appears, dodge out or through the hit."); }
         }
         private void PracticeDodge()
-        { if (!practicing || practiceStage != 1) return; save.practiceBits |= 2; TutorialAction(4); practiceStage = 2; save.energy = 100; skillCooldown = 0; PracticeEnemy(); Notify("现在用 Q 职业技能命中目标，完成综合练习。", "Now hit the target with Q to finish your combat practice."); }
+        { if (!practicing || SparringActive || practiceStage != 1) return; save.practiceBits |= 2; TutorialAction(4); practiceStage = 2; save.energy = 100; skillCooldown = 0; PracticeEnemy(); Notify("现在用 Q 职业技能命中目标，完成综合练习。", "Now hit the target with Q to finish your combat practice."); }
         private void PracticeSkill()
         {
-            if (!practicing || practiceStage != 2) return;
+            if (!practicing || SparringActive || practiceStage != 2) return;
             save.practiceBits = 7; TutorialAction(5); bool first = !Has("practice_reward"); EndPractice();
             if (first) { Flag("practice_reward"); save.skillPoints++; save.coins += 15; }
             RecordMoment("完成训练场：攻击、观察预告、闪避与职业战技。", "Practice complete: attack, read a tell, dodge and use your technique.");
             Notify(first ? "练习完成：技能点1、硬币15！可以出发去密林了。" : "练习完成！随时可以再来。", first ? "Practice complete: 1 point, 15 coins. Ready for Thornwood." : "Practice complete! Return anytime.");
         }
         public void EndPractice()
-        { if (!practicing) return; practicing = false; CancelAction(); companionAction = null; movementDirection = new Point(); companionMoving = false; enemies.Clear(); projectiles.Clear(); effects.Clear(); save.x = practiceReturn.x; save.y = practiceReturn.y; save.energy = 100; attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0; ClearFrost(); invulnerable = 1; revision++; }
+        { if (SparringActive) { EndSparring(); return; } if (!practicing) return; practicing = false; CancelAction(); companionAction = null; movementDirection = new Point(); companionMoving = false; enemies.Clear(); projectiles.Clear(); effects.Clear(); save.x = practiceReturn.x; save.y = practiceReturn.y; save.energy = 100; attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0; ClearFrost(); invulnerable = 1; revision++; }
         public string PracticeHint { get { return L(new[] { "J / 左键：命中木桩", "观察红圈，空格闪避攻击", "Q：命中目标，完成练习" }[practiceStage], new[] { "J / click: hit the dummy", "Read the red circle; Space to dodge", "Q: hit the target to finish" }[practiceStage]); } }
         public void UseExplorationAbility()
         {
@@ -130,7 +130,7 @@ namespace Starfall
         }
         private bool TalkPolish(WorldObject o)
         {
-            if (o.kind == "mentor") { Dialog(o.name, o.en, "先练习命中，再观察预告并闪避，最后用职业技能完成挑战。训练无伤害，不消耗物资；首次完成获得技能点1、硬币15。", "Hit a dummy, read a telegraph and dodge, then land your class technique. Practice costs no health or supplies. First clear: 1 point and 15 coins.", C("开始练习", "Start practice", "practice"), C("稍后", "Later", "close")); return true; }
+            if (o.kind == "mentor") { Dialog(o.name, o.en, "先练习命中，再观察预告并闪避，最后用职业技能完成挑战。训练无伤害，不消耗物资；首次完成获得技能点1、硬币15。", "Hit a dummy, read a telegraph and dodge, then land your class technique. Practice costs no health or supplies. First clear: 1 point and 15 coins.", C("开始练习", "Start practice", "practice"), C("稍后", "Later", "close"), C("战术训练", "Tactical sparring", "sparring_menu")); return true; }
             if (o.kind == "returnscout")
             {
                 if (!Has("scout_saved")) return true;
@@ -173,6 +173,7 @@ namespace Starfall
             enemies.Clear(); var ids = new HashSet<int>();
             foreach (var r in save.worldEnemies)
             {
+                if (r != null && IsSparringEnemyId(r.id)) continue;
                 if (r == null || r.id < 1 || r.id > 99999 || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
                 if (save.room == ArchiveRoom && !IsArchiveEnemyId(r.id)) continue;
                 if (IsArchiveEnemyId(r.id) && (!ArchiveDefenceActive || r.boss || r.kind != r.id - ArchiveEnemyBase || Has("archive_defeated_" + r.id))) continue;

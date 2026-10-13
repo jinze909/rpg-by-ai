@@ -21,3 +21,5 @@ jobs:
         run: python3 tools/run_archive_checks.py
       - name: Check twin-stick aiming with production input, controls and saves
         run: python3 tools/run_controller_aim_checks.py
+      - name: Check mentor sparring with production input, results and saves
+        run: python3 tools/run_sparring_checks.py

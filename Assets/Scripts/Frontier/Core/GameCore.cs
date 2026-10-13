@@ -75,7 +75,7 @@ namespace Starfall
             SanitizeExpansion();
             SanitizeGuidance();
             SanitizePolish();
-            SanitizeControllerAim();
+            SanitizeControllerAim(); RestoreSparringReturn();
             if (Has("recovery_pending"))
             {
                 if (save.abyssFloor > 0) EndAbyss(false);
@@ -106,7 +106,7 @@ namespace Starfall
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0;
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
-            ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient();
+            ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient();
         }
         public void NewGame(int profession)
         {
@@ -214,6 +214,7 @@ namespace Starfall
         public void ReturnToTown()
         {
             if (Dying) return;
+            if (SparringActive) { EndPractice(); return; }
             if (save.room == 0) return;
             if (InAbyss) { AbyssExitConversation(); return; }
             if (!SafeTravel) { Notify("脱离敌人后才能快速回城。西侧出口随时可用。", "Leave combat to fast travel. The west exit is always available."); return; }
@@ -245,7 +246,7 @@ namespace Starfall
             for (int i = effects.Count - 1; i >= 0; i--) { effects[i].life -= dt; if (effects[i].life <= 0) effects.RemoveAt(i); }
             if (Dying) { deathTime -= dt; if (deathTime <= 0) CompleteDeath(); return; }
             bool beganInPractice = practicing;
-            save.totalTime += dt;
+            if (!SparringActive) save.totalTime += dt;
             // Resolve changed world collision before any body, missile or contact advances.
             TickTideTransition(); Point beforeMove = Position;
             attackCooldown -= dt; dashCooldown -= dt; skillCooldown -= dt; invulnerable -= dt; guardTime -= dt;
@@ -261,13 +262,14 @@ namespace Starfall
             TickExpansion(dt);
             if (Dying) return;
             TickWatch(dt); TickArchive(dt);
-            TickGuidance(beforeMove);
+            TickSparring(dt);
+            if (!SparringActive) TickGuidance(beforeMove);
             TickPolish(dt);
         }
         public void Dash(Point direction)
         {
             float cost = Relic(2) ? 25 : 20;
-            if (mode != "world" || Dying) return;
+            if (mode != "world" || Dying || SparringActionBlocked) return;
             if (dashCooldown > 0 || save.energy < cost) { ActionUnavailable(dashCooldown, cost); return; }
             CancelAction();
             dashDirection = direction.Length > .1f ? direction.Normalized : aim;
@@ -278,18 +280,20 @@ namespace Starfall
         }
         public void Attack(Point direction)
         {
-            if (mode != "world" || Dying || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null) return;
+            if (mode != "world" || Dying || SparringActionBlocked || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null) return;
             SetAim(direction);
             WeaponProfile profile = Profile(save.weapon, Style);
             if (save.energy < profile.energy) { ActionUnavailable(0, profile.energy); return; }
             save.energy -= profile.energy; attackCooldown = profile.interval;
             combo = comboTimer > 0 ? (combo + 1) % 3 : 0; comboTimer = 1.1f;
-            float attackDamage = profile.damage * (save.weapon == 0 && combo == 2 ? 1.25f : 1) * (riposteTime > 0 ? 1.5f : 1);
+            bool counterAttack = riposteTime > 0;
+            float attackDamage = profile.damage * (save.weapon == 0 && combo == 2 ? 1.25f : 1) * (counterAttack ? 1.5f : 1);
             riposteTime = 0;
-            BeginAction("attack", attackDamage, profile.interval, profile.interval * (save.weapon == 1 ? .55f : .45f));
+            BeginAction("attack", attackDamage, profile.interval, profile.interval * (save.weapon == 1 ? .55f : .45f), counterAttack);
         }
         public void Skill(Point? direction = null)
         {
+            if (SparringActionBlocked) return;
             float cost = Relic(4) ? 50 : 40;
             if (mode != "world" || Dying) return;
             if (skillCooldown > 0 || save.energy < cost) { ClearBufferedSkill(); ActionUnavailable(skillCooldown, cost); return; }
@@ -344,7 +348,7 @@ namespace Starfall
             if (!enemies.Contains(e)) return;
             ImpactProfile profile=impact??CaptureImpact(save.weapon,combo);
             if(profile.playerOwned){TutorialAction(3);if(technique)TutorialAction(5);}
-            if (practicing) { if(profile.playerOwned){if (technique) PracticeSkill(); else PracticeHit();} return; }
+            if (practicing && !SparringActive) { if(profile.playerOwned){if (technique) PracticeSkill(); else PracticeHit();} return; }
             Point approach = attackDirection.HasValue ? attackDirection.Value * -1 : (Position - e.Position).Normalized;
             if (!technique && !e.boss && e.kind == 2 && e.state == 0 && e.stun <= 0 && approach.x * e.facing.x + approach.y * e.facing.y > .45f)
             { damage *= .4f; effects.Add(new Effect("number", e.Position, .7f, L("正面护甲", "GUARDED"))); sound = "guard"; }
@@ -352,7 +356,9 @@ namespace Starfall
             bool crit = Random() < profile.criticalChance;
             if (crit) damage *= 1.7f;
             if (e.staggerRecovery <= 0) e.stagger += damage * (profile.weapon == 0 ? .7f : .45f) * (profile.weapon == 0 && profile.style == 2 ? 1.4f : 1);
-            if (e.stagger >= (e.boss ? 95 : 30)) { e.stagger = 0; e.staggerRecovery = e.boss ? 4 : 2; e.stun = e.boss ? 1.1f : 1.7f; e.state = 0; e.timer = 1; effects.Add(new Effect("break", e.Position, .7f, L("破势", "BREAK"))); }
+            bool broke = e.stagger >= (e.boss ? 95 : 30);
+            if (broke) { e.stagger = 0; e.staggerRecovery = e.boss ? 4 : 2; e.stun = e.boss ? 1.1f : 1.7f; e.state = 0; e.timer = 1; effects.Add(new Effect("break", e.Position, .7f, L("破势", "BREAK"))); }
+            OnSparringContact(e, profile, broke, !technique && e.kind == 2 && approach.x * e.facing.x + approach.y * e.facing.y < -.45f);
             e.hp -= damage; e.flash = .09f; e.hitTime = .18f; e.recoil = attackDirection ?? (e.Position - Position).Normalized;
             effects.Add(new Effect(e.kind == 2 || e.boss ? "spark" : "impact", e.Position, .22f) { direction = e.recoil });
             if (!save.reducedMotion) { hitStop = Math.Max(hitStop, technique ? .05f : .025f); impactShake = Math.Max(impactShake, technique ? .12f : profile.weapon == 0 && profile.combo == 2 ? .07f : 0); }
@@ -360,6 +366,7 @@ namespace Starfall
             if (e.hp > 0) return;
             fallen.Add(new FallenActor { actor = e, room = save.room, life = e.boss ? 1.4f : .65f, duration = e.boss ? 1.4f : .65f });
             enemies.Remove(e);
+            if (SparringActive && IsSparringEnemy(e)) { effects.Add(new Effect("defeat", e.Position, .5f)); revision++; return; }
             if (IsSignalWarden(e)) { OnSignalDefeated(e); revision++; return; }
             OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
             effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
@@ -384,13 +391,14 @@ namespace Starfall
         {
             if (mode != "world" || Dying) return;
             if (invulnerable > 0) { if (dashTime > 0 && perfectDodgeArmed) { perfectDodgeArmed = false; TutorialAction(4); PracticeDodge(); riposteTime = Relic(3) ? 3 : 1.5f; save.energy = Math.Min(100, save.energy + 8); effects.Add(new Effect("number", Position, .7f, L("闪避反击", "COUNTER"))); sound = "counter"; } return; }
-            if (practicing) { Notify("观察红圈：在命中前闪避，或闪到圈外。练习不会受伤。", "Read the red circle: dodge before impact or leave its area. Practice cannot hurt you."); return; }
+            if (practicing && !SparringActive) { Notify("观察红圈：在命中前闪避，或闪到圈外。练习不会受伤。", "Read the red circle: dodge before impact or leave its area. Practice cannot hurt you."); return; }
             float multiplier = save.difficulty == 0 ? .45f : save.difficulty == 2 ? 1.4f : 1;
             float armor = (guardTime > 0 ? .45f : 1) * (1 - save.talents[1] * .035f) * (InAbyss ? 1 - save.boons[2] * .12f : 1) * (Relic(5) ? 1.15f : 1);
             playerHitFacing=VisualFacing; playerHitWeapon=AppearanceWeapon;
             Point reaction = incoming ?? VisualFacing * -1;
             if (reaction.Length < .001f) reaction = VisualFacing * -1;
-            save.health -= damage * multiplier * armor * RoadMealDamageMultiplier(source); invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;
+            if (SparringActive) SparringHitsTaken++;
+            else save.health -= damage * multiplier * armor * RoadMealDamageMultiplier(source); invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;
             if (!save.reducedMotion) { hitStop = .045f; impactShake = source == "slam" ? .18f : 0; }
             effects.Add(new Effect("hurt", Position, .5f));
             if (save.health <= 0)
@@ -468,7 +476,7 @@ namespace Starfall
                 float desired = e.boss ? 3.5f : e.kind == 1 ? 4.5f : 1.05f;
                 bool visible = ClearAttackPath(e.Position, Position);
                 Point before = e.Position;
-                if (visible && e.kind == 1 && !e.boss && distance < 3 && !practicing) { Point back = SweepActor(e.Position, delta.Normalized * -dt * 1.6f); e.backpedaling=(back-e.Position).Length>.001f;e.x = back.x; e.y = back.y; }
+                if (visible && e.kind == 1 && !e.boss && distance < 3 && (!practicing || SparringActive)) { Point back = SweepActor(e.Position, delta.Normalized * -dt * 1.6f); e.backpedaling=(back-e.Position).Length>.001f;e.x = back.x; e.y = back.y; }
                 if (distance > desired || !visible)
                 {
                     Point p = e.Position + DirectionTo(e.Position, Position) * dt * (e.boss ? 1.15f + e.BossPhase * .15f : e.kind == 0 ? 2.1f : 1.5f) * (InAbyss && save.abyssFloor % 3 == 2 ? 1.2f : 1);
@@ -569,6 +577,7 @@ namespace Starfall
         {
             if (mode == "fish") { FishHit(); return; }
             if (mode != "world" || Dying) return;
+            if (SparringActionBlocked) { if (SparringFinished) EndPractice(); else ContinueSparring(); return; }
             WorldObject o = Nearest();
             if (o == null) { Notify("靠近居民、路牌或发光物，再按 E。", "Approach a resident, sign or glowing object, then press E."); return; }
             TutorialAction(1); Talk(o);
@@ -696,6 +705,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseSparring(action)) return;
             if (ChooseArchive(action)) return;
             if (ChooseKitchen(action)) return;
             if (ChooseSignal(action)) return;

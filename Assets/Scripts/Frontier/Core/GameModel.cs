@@ -59,6 +59,7 @@ namespace Starfall
         public float musicVolume = .65f, effectsVolume = .8f, ambienceVolume = .5f;
         public int[] weaponStyles = { 0, 0, 0 };
         public EnemyRecord[] worldEnemies;
+        public SparringReturnRecord sparringReturn;
         public int savedRunes;
         public string savedAtUtc, lastFailureZh, lastFailureEn;
         public List<JournalMoment> moments = new List<JournalMoment>();
@@ -99,6 +100,10 @@ namespace Starfall
         { this.id = id; this.kind = kind; this.x = x; this.y = y; this.hp = maxHp = hp; this.boss = boss; timer = 1.3f + id * .13f; }
         public Point Position { get { return new Point(x, y); } }
         public int BossPhase { get { return hp > maxHp * .66f ? 1 : hp > maxHp * .33f ? 2 : 3; } }
+    }
+    [Serializable] public class SparringReturnRecord
+    {
+        public float x, y, health, energy, heat, cold;
     }
     [Serializable] public class EnemyRecord
     {

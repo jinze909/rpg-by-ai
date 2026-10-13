@@ -31,7 +31,17 @@ namespace Starfall
         private void UpdateMenuInput(float dt)
         {
             pressedTime = Math.Max(0, pressedTime - dt); navigationRepeat = Math.Max(0, navigationRepeat - dt); confirmControl = null;
-            navigation.Scope(InputScope()); if (Game.mode == "world") { if (Input.GetKeyDown(KeyCode.Escape)) Back(); return; }
+            navigation.Scope(InputScope());
+            if (Game.mode == "world")
+            {
+                if (Input.GetKeyDown(KeyCode.Escape)) Back();
+                else if (Game.SparringActive && Input.GetKeyDown(KeyCode.Return))
+                {
+                    if (Game.SparringFinished) Game.EndPractice();
+                    else if (Game.SparringAwaitingNext) Game.ContinueSparring();
+                }
+                return;
+            }
             if (PadDown(0) || PadDown(1) || PadDown(4) || PadDown(5) || PadDown(7)) controllerUsed = true;
             if (PadDown(1) || Input.GetKeyDown(KeyCode.Escape)) { Back(); return; }
             bool menu = Array.IndexOf(menuModes, Game.mode) >= 0;
