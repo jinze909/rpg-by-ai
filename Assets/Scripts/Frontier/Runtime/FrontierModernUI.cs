@@ -267,7 +267,12 @@ namespace Starfall
         {
             if (Game.conversation == null) { Game.Close(); return; } Conversation c = Game.conversation; if (c != lastConversation) { lastConversation = c; dialoguePage = 0; }
             var pages = DialogueLayout.Pages(Game.L(c.text, c.textEn), Game.save.largeText); dialoguePage = Math.Min(dialoguePage, pages.Count - 1);
-            Dim(); Card(88, 180, 1104, 506); Portrait(SpeakerPortrait(c.speaker), 112, 209, 174, 219); Text(112, 452, 174, 78, Game.L(c.speaker, c.en), 18, gold, TextAnchor.MiddleCenter); Text(320, 208, 831, 36, Game.L(c.speaker, c.en), 23, gold); Text(320, 264, 832, 228, pages[dialoguePage], 19, paper);
+            // Retain every mature button position. Extra rows extend the card
+            // downward so seven-to-nine choices remain inside its background.
+            int choiceColumns=c.choices.Length>2?2:Math.Max(1,c.choices.Length);
+            int choiceRows=(c.choices.Length+choiceColumns-1)/choiceColumns;
+            float cardHeight=Math.Max(506,539-180+Math.Max(0,choiceRows-1)*45+37+20);
+            Dim(); Card(88, 180, 1104, cardHeight); Portrait(SpeakerPortrait(c.speaker), 112, 209, 174, 219); Text(112, 452, 174, 78, Game.L(c.speaker, c.en), 18, gold, TextAnchor.MiddleCenter); Text(320, 208, 831, 36, Game.L(c.speaker, c.en), 23, gold); Text(320, 264, 832, 228, pages[dialoguePage], 19, paper);
             if (pages.Count > 1) { Text(320, 497, 535, 26, Game.L("对话页 ", "Page ") + (dialoguePage + 1) + "/" + pages.Count + "  ·  " + ControlKey("SPACE / ENTER", "A"), 12, muted); if (Button(879, 494, 272, 34, dialoguePage < pages.Count - 1 ? Game.L("继续阅读", "Read more") : Game.L("重新阅读", "Read again"))) { if (dialoguePage < pages.Count - 1) AdvanceDialogue(); else dialoguePage = 0; } }
             if (dialoguePage == pages.Count - 1) { int count = c.choices.Length; for (int i = 0; i < count; i++) { int cols = count > 2 ? 2 : count; float w = (832 - (cols - 1) * 14) / Math.Max(1, cols), y = 539 + i / cols * 45; if (Button(320 + i % cols * (w + 14), y, w, 37, (controllerUsed ? "" : (i + 1) + "  ") + Game.L(c.choices[i].label, c.choices[i].en), i == 0)) { ChooseDialogue(i); break; } } }
             else Text(320, 552, 832, 50, Game.L("读完这一段，再作出你的选择。", "Finish reading before making your choice."), 15, muted);

@@ -176,8 +176,8 @@ namespace Starfall
             {
                 if (r != null && IsSparringEnemyId(r.id)) continue;
                 if (r == null || r.id < 1 || r.id > 99999 || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
-                if(save.room==ReachRoom){RestoreReachRecord(r);continue;}
-                if(IsReachEnemyId(r.id))continue;
+                if(save.room==ReachRoom){if(IsHomewardEnemyId(r.id))RestoreHomewardRecord(r);else RestoreReachRecord(r);continue;}
+                if(IsReachEnemyId(r.id)||IsHomewardEnemyId(r.id))continue;
                 if (save.room == ArchiveRoom && !IsArchiveEnemyId(r.id)) continue;
                 if (IsArchiveEnemyId(r.id) && (!ArchiveDefenceActive || r.boss || r.kind != r.id - ArchiveEnemyBase || Has("archive_defeated_" + r.id))) continue;
                 bool signal = r.id == SignalWardenId && r.boss && r.kind == 3;

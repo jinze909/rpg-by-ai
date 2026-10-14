@@ -369,7 +369,7 @@ namespace Starfall
             enemies.Remove(e);
             if (SparringActive && IsSparringEnemy(e)) { effects.Add(new Effect("defeat", e.Position, .5f)); revision++; return; }
             if (IsSignalWarden(e)) { OnSignalDefeated(e); revision++; return; }
-            OnReachKill(e); OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
+            OnHomewardKill(e); OnReachKill(e); OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
             effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
             if (!InAbyss)
             {
@@ -704,6 +704,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseHomeward(action)) return;
             if (ChooseReach(action)) return;
             if (ChooseGuildStory(action)) return;
             if (ChooseSparring(action)) return;

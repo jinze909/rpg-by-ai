@@ -167,7 +167,7 @@ public static class RuntimeReachChecks
         Point? target = Get<Point?>(app, "routeGoal"); Check(target.HasValue && (target.Value - g.NavigationTarget().Value).Length < .001f, "Production Update refreshes the route toward the nearest unsurveyed lamp");
         Check(Get<List<Point>>(app, "route").Count > 0, "The actual golden route carries reachable walking points around the river");
         Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "reach");
-        Check(quest == 13 && GameCore.QuestIds.Length == 14, "The riverbank survey appends after all thirteen mature quests");
+        Check(quest == 13 && GameCore.QuestIds.Length >= 14, "The riverbank survey retains its fourteenth row; later quests append after the mature prefix");
         float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length); Click(app, new Rect(279,226 + quest * spacing,321,spacing - 7)); Draw(app, "journal" + suffix);
         Check(Get<int>(app, "selectedQuest") == quest && HasText(g.L("下一步：", "Next: ") + q.next), "The actual fourteenth journal row displays its current survey objective");
         Click(app, new Rect(927,647,263,31)); Draw(app, "map-local" + suffix);
@@ -252,7 +252,7 @@ public static class RuntimeReachChecks
             Check(GUI.textureCalls.FindAll(c=>c.texture.name=="resource:Frontier/Art/Terrain").Count==12,"The actual repaired bridge overlays exactly its twelve collision cells using accepted boardwalk art");
             Draw(app,"bridge-open"+suffix);Position(app,new Point(61,13));Draw(app,"east-warning"+suffix);SourceArt(app);
         }
-        Console.WriteLine("PASS actual14-row journal destination/gold routes, mature and appended map-page clicks/remote travel, paged new lore20/21 and codex return, nine root blockers/twelve boardwalk cells and accepted guards across Chinese/English, normal/large text,960/1920 and effects/motion policies; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS retained fourteenth journal destination/gold routes, mature and appended map-page clicks/remote travel, paged new lore20/21 and codex return, nine root blockers/twelve boardwalk cells and accepted guards across Chinese/English, normal/large text,960/1920 and effects/motion policies; NATIVE_UNVERIFIED");
     }
     private static SaveData RoundTrip(GameCore g,int slot)
     {

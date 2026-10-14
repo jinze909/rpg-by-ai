@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 
 namespace Starfall
 {
@@ -74,12 +75,13 @@ namespace Starfall
         private void RestoreReachEncounter()
         {
             if(save.room!=ReachRoom || !ReachReady) return;
-            enemies.RemoveAll(e=>!IsReachEnemyId(e.id)||e.boss||e.kind!=reachGuardKinds[e.id-ReachEnemyBase]||Has("reach_defeated_"+e.id));
+            enemies.RemoveAll(e=>IsHomewardEnemyId(e.id)?!HomewardActorAllowed(e):!IsReachEnemyId(e.id)||e.boss||e.kind!=reachGuardKinds[e.id-ReachEnemyBase]||Has("reach_defeated_"+e.id));
             for(int i=0;i<reachGuardPoints.Length;i++)
             {
                 int id=ReachEnemyBase+i; if(Has("reach_defeated_"+id)||enemies.Exists(e=>e.id==id)) continue;
                 Enemy actor=CreatePlacedEnemy(id,reachGuardKinds[i],reachGuardPoints[i],reachGuardHealth[i]); actor.timer=.7f+i*.09f; enemies.Add(actor);
             }
+            RestoreHomewardEncounter();
         }
         private void RestoreReachRecord(EnemyRecord record)
         {
@@ -105,7 +107,7 @@ namespace Starfall
             if(o.kind.StartsWith("reachPost",StringComparison.Ordinal))
             {
                 int index=int.Parse(o.kind.Substring(9)); bool done=ReachPostRecorded(index);
-                Dialog(o.name,o.en,index==0?"退水后，西岸旧路露了出来。这里的路标朝河心，不朝矿场。有人想让回家的人绕开采矿的道路。":index==1?"河心旧灯旁有两条旧路。水轮放下浮桥后，可以从西岸直接回来；旧灯的路线不必只剩一条。":"东岸旧灯能看到密林，也能看到河上的河心。巡路队留下它，不是为了让城墙更亮，是为了让河岸的人找到回家的方向。",index==0?"The west-bank marks point toward the island, away from the mine. Someone left a safer way home.":index==1?"Two paths meet at the island lamp. Lowering the footbridge gives a shorter return; the old road need not have only one route.":"The east lamp overlooks the woods and islands. It was left to guide people home, not to make the citadel walls brighter.", C(done?"路线已记录":"清理敌人后记录",done?"Route recorded":"Survey after clearing foes",done?"close":"reach_post"+index),C("稍后再来","Later","close")); return true;
+                Dialog(o.name,o.en,index==0?"退水后，西岸旧路露了出来。这里的路标朝河心，不朝矿场。有人想让回家的人绕开采矿的道路。":index==1?"河心旧灯旁有两条旧路。水轮放下浮桥后，可以从西岸直接回来；旧灯的路线不必只剩一条。":"东岸旧灯能看到密林，也能看到河上的河心。巡路队留下它，不是为了让城墙更亮，是为了让河岸的人找到回家的方向。",index==0?"The west-bank marks point toward the island, away from the mine. Someone left a safer way home.":index==1?"Two paths meet at the island lamp. Lowering the footbridge gives a shorter return; the old road need not have only one route.":"The east lamp overlooks the woods and islands. It was left to guide people home, not to make the citadel walls brighter.", C(done?"路线已记录":"清理敌人后记录",done?"Route recorded":"Survey after clearing foes",done?"close":"reach_post"+index),C("稍后再来","Later","close")); if(HomewardAccepted&&index>0){var choices=new List<Choice>(conversation.choices);choices.Add(HomewardStopChoice(index-1));conversation.choices=choices.ToArray();} return true;
             }
             string action=o.kind=="reachBridge"?"reach_bridge":o.kind=="reachRoot"?"reach_roots":"reach_cache";
             bool opened=o.kind=="reachBridge"?ReachBridgeOpen:o.kind=="reachRoot"?ReachRootsOpen:ReachCacheRecovered;

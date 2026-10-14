@@ -6,6 +6,14 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void HomewardEarnedOfferAndCompanionChoice(){CoreChecks.HomewardEarnedAcceptanceKeepsMaturePersonalStoryAndSelection(Data());}
+        [Test] public void HomewardLocalOrderedMiraWitnesses(){CoreChecks.HomewardLocalStartsRequireOrderedStopsAndActualMira(Data());}
+        [Test] public void HomewardActualDefeatsAndManualRecords(){CoreChecks.HomewardObservationsRequireRealDefeatsAndWitnessedHandoff(Data());}
+        [Test] public void HomewardThreeStarterJourneys(){CoreChecks.HomewardEveryStarterWalksWithMiraAndWinsOrdinaryEncounters(Data());}
+        [Test] public void HomewardCanonicalCombatSnapshotOwnership(){CoreChecks.HomewardSnapshotsKeepCanonicalSurvivorsAndRejectForeignRecords(Data());}
+        [Test] public void HomewardTravelAndRealDeathRecovery(){CoreChecks.HomewardTravelAndActualDefeatKeepUnresolvedOwnership(Data());}
+        [Test] public void HomewardOldSaveAndForeignWorldIsolation(){CoreChecks.HomewardLegacySavesAndForeignWorldsPreserveMatureState(Data());}
+        [Test] public void HomewardJournalCampAndSavedFinalChoices(){CoreChecks.HomewardGuidanceAndFinalChoicesStayLocalPersistentAndOnce(Data());}
         [Test] public void BossWarningCommitmentAcrossActualHits(){CoreChecks.BossWarningsKeepPreparedPhaseAcrossRealHits(Data());}
         [Test] public void BossReleaseCommitmentAcrossHealthThresholds(){CoreChecks.BossReleaseKeepsPreparedPhaseAcrossThresholds(Data());}
         [Test] public void BossMatureThreePhaseOutputsRemain(){CoreChecks.BossUnchangedPhasesKeepMatureAttackOutputs(Data());}

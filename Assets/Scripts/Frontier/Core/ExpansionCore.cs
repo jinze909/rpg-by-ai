@@ -152,7 +152,7 @@ namespace Starfall
             var ids = new HashSet<int>();
             foreach (EnemyRecord r in save.abyssEnemies)
             {
-                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || IsArchiveEnemyId(r.id) || IsSparringEnemyId(r.id) || IsReachEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || IsArchiveEnemyId(r.id) || IsSparringEnemyId(r.id) || IsReachEnemyId(r.id) || IsHomewardEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
                 float maximum = Clamp(r.maxHp, 1, 5000);
                 var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, maximum, r.boss && save.abyssFloor == 6);
@@ -493,7 +493,7 @@ namespace Starfall
             }
             if (kind == "brazier") { Dialog(o.name, o.en, Has("warm_" + o.id) ? "火盆已经点燃。站在附近能迅速消除寒意。" : "木材两份能点燃火盆。寒意超过 70 会让你变慢，超过 90 会持续受伤。", Has("warm_" + o.id) ? "The brazier is lit. Stand near it to warm up." : "Two timber light the brazier. Cold above 70 slows you; above 90 hurts.", C(Has("warm_" + o.id) ? "暖一会儿" : "点火 · 木材2", Has("warm_" + o.id) ? "Warm up" : "Light · 2 timber", Has("warm_" + o.id) ? "close" : "warm:" + o.id), C("继续赶路", "Keep going", "close")); return true; }
             if (kind == "keeper") { KeeperConversation(o); return true; }
-            if (kind == "campfire") { Dialog(o.name, o.en, "星薄荷凉茶用药草2、星晶1制作。远行驿站建成后，可以在野外营地免费休整；完整升级的驿站还会赠送一杯凉茶。", "Star-mint tea needs 2 herbs and 1 crystal. A town waystation enables free rest at field camps; a full upgrade adds one tea per day.", C("营地休整", "Rest at camp", "fieldrest"), C("制作凉茶", "Brew tea", "tea"), C("喝凉茶", "Drink tea", "drinktea"), C("查看同伴", "Manage companions", "companions"), C("离开", "Leave", "close"), C("远行厨房", "Road kitchen", "kitchen")); return true; }
+            if (kind == "campfire") { Dialog(o.name, o.en, "星薄荷凉茶用药草2、星晶1制作。远行驿站建成后，可以在野外营地免费休整；完整升级的驿站还会赠送一杯凉茶。", "Star-mint tea needs 2 herbs and 1 crystal. A town waystation enables free rest at field camps; a full upgrade adds one tea per day.", C("营地休整", "Rest at camp", "fieldrest"), C("制作凉茶", "Brew tea", "tea"), C("喝凉茶", "Drink tea", "drinktea"), C("查看同伴", "Manage companions", "companions"), C("离开", "Leave", "close"), C("远行厨房", "Road kitchen", "kitchen")); if(save.room==ReachRoom&&HomewardAccepted){var choices=new List<Choice>(conversation.choices);choices.Add(C("米拉的新航线","Mira's new route","homeward_camp"));conversation.choices=choices.ToArray();} return true; }
             if (kind == "expAltar") { ExpansionAltar(o); return true; }
             if (kind == "council") { CouncilConversation(); return true; }
             if (kind.StartsWith("history")) { ReadHistory(int.Parse(kind.Substring(7))); return true; }
@@ -532,6 +532,7 @@ namespace Starfall
             if (!Has("personal_" + id)) choices.Add(C(new[] { "交回弟弟的名册", "帮助修复 · 零件4 星晶4", "交付药草4与密林记录" }[id], new[] { "Return the brother's manifest", "Repair · 4 parts, 4 crystals", "Bring 4 herbs and the forest log" }[id], "personal" + id));
             choices.Add(C("送一份炖汤 · 每日一次", "Share a stew · once per day", "gift" + id));
             choices.Add(C("邀请同行", "Travel together", "join" + id)); choices.Add(C("再见", "Goodbye", "close"));
+            if(id==0&&HomewardReady&&save.room==5&&o.kind=="captain")choices.Add(C("米拉的新航线","Mira's new route","homeward_offer"));
             Dialog(o.name, o.en, Has("personal_" + id) ? new[] { "米拉把名册交还给幸存的孩子。她不再等一封回信，而是开始写下一条新航线。", "伊沃给新机器起名叫明天。它没有主人，只记录每个用水人的名字。", "森拆下了钟舌，铸成一块路碑。他仍守着高原，这一次是在路口听人说话。" }[id] : zh[id], Has("personal_" + id) ? new[] { "Mira gives the manifest to the surviving children. She stops waiting for a reply and starts drawing a new route.", "Ivo names the machine Tomorrow. It has no master; it records everyone who shares its water.", "Sen casts the old clapper into a road marker. He still keeps the pass, but now he listens." }[id] : en[id], choices.ToArray());
         }
         private void ExpansionAltar(WorldObject o)

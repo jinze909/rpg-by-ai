@@ -110,6 +110,11 @@ namespace Starfall
                 zh += "\n\n灾变过后，这份回信仍要留着。新的巡路队出发时，要记得回来的人和等他们的人。";
                 en += "\n\nKeep the reply after the crisis. The next patrol must remember both those who return and those waiting for them.";
             }
+            if(HomewardComplete)
+            {
+                zh+="\n\n米拉已经把新路图带回营地。那不是失踪者回来的答案，是活着的人下一次出发的路线。";
+                en+="\n\nMira brought the new chart to camp. It does not answer the missing names; it gives the living a route for their next journey.";
+            }
             Dialog("莉雅 · 巡路队的回信", "Lyra · The patrol's reply", zh, en, C(GuildLetterReviewed ? "收起回信" : "记下回信", GuildLetterReviewed ? "Close the reply" : "Keep the reply", "guild_letter_record"), C("稍后再读", "Read later", "close"));
         }
         public bool ChooseGuildStory(string action)
