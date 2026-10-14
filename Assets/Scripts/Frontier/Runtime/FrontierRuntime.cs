@@ -167,6 +167,8 @@ namespace Starfall
                 if (Game.mode == "dialog") DrawDialogue();
                 if (Game.mode == "fish") DrawFishing();
                 if (Game.mode == "inventory") DrawInventory();
+                if (Game.mode == "plans") DrawBattlePlans();
+                if (Game.mode == "techniques") DrawTechniqueGuide();
                 if (Game.mode == "talents") DrawTalents();
                 if (Game.mode == "journal") DrawJournal();
                 if (Game.mode == "map") DrawMap();
@@ -196,7 +198,7 @@ namespace Starfall
         }
         private bool Button(float x, float y, float w, float h, string text, bool active = false, bool enabled = true)
         {
-            if ((replacePrompt || saveConfirmation != null) && !drawingModal) enabled = false;
+            if ((replacePrompt || saveConfirmation != null || Game.mode == "plans" && battlePlanConfirmation >= 0) && !drawingModal) enabled = false;
             Rect r = new Rect(x, y, w, h); Point mouse = MouseVirtual(); bool hover = mouse.x >= x && mouse.x < x + w && mouse.y >= y && mouse.y < y + h;
             string id = ControlId(x, y, w, h); bool keyboard = focusVisible && navigation.focused == id && enabled;
             bool press = enabled && ((hover && Input.GetMouseButton(0)) || pressedTime > 0 && pressedControl == id);

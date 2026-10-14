@@ -65,6 +65,15 @@ namespace Starfall
         public List<JournalMoment> moments = new List<JournalMoment>();
         public int mealKind;
         public float mealUntil;
+        public BattlePlan[] battlePlans;
+    }
+    [Serializable] public sealed class BattlePlan
+    {
+        // Inline serialization may reconstruct an empty array slot as an
+        // unassigned object. Only an explicitly recorded setup is a plan.
+        public bool recorded;
+        public int weapon, style, technique;
+        public int relicFirst = -1, relicSecond = -1;
     }
     [Serializable] public class JournalMoment { public string zh, en; public int day; }
     public sealed class WeaponProfile

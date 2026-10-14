@@ -6,6 +6,38 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void BattlePlansOwnedThreeSlotCopies(){CoreChecks.BattlePlansCaptureThreeOwnedBuildsAndReturnCopies(Data());}
+        [Test] public void BattlePlansAtomicOwnedEquipment(){CoreChecks.BattlePlansApplyOnlySelectedWeaponStanceAndOwnedChoices(Data());}
+        [Test] public void BattlePlansOwnershipRevalidation(){CoreChecks.BattlePlansRecheckAllUnlocksBeforeAtomicApply(Data());}
+        [Test] public void BattlePlansModesDefeatAndSlotBoundaries(){CoreChecks.BattlePlanTransactionsRequireLivePreparationAndValidSlots(Data());}
+        [Test] public void BattlePlansPreservePaidProgressAndVitals(){CoreChecks.BattlePlansPreservePaidGrowthStoryEconomyAndTransientVitals(Data());}
+        [Test] public void BattlePlansLegacyAndMalformedRecords(){CoreChecks.BattlePlansNormalizeLegacyRecordsWithoutInventingUnlocks(Data());}
+        [Test] public void BattlePlansPreparedContactCancellation(){CoreChecks.BattlePlansChangedApplyCancelsPreparationWithoutRefundingContacts(Data());}
+        [Test] public void BattlePlansLaunchedArrowAndFrostContacts(){CoreChecks.BattlePlansRetainLaunchedMissilesAndPersistentFrostProfiles(Data());}
+        [Test] public void BattlePlansNativeJsonDefaultsAndRoundTrip()
+        {
+            foreach(int version in new[]{1,2})
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"coins\":87}");
+                var loaded = new GameCore(Data(),old);
+                Assert.AreEqual(3,loaded.save.battlePlans.Length);
+                for(int slot=0;slot<3;slot++) Assert.IsTrue(loaded.BattlePlanAt(slot)==null);
+                Assert.AreEqual(87,loaded.save.coins);
+            }
+            var ghost = JsonUtility.FromJson<BattlePlan>("{}");
+            Assert.IsFalse(ghost.recorded);
+            var ghostLoaded = new GameCore(Data(),new SaveData { battlePlans=new[]{ghost} });
+            Assert.IsTrue(ghostLoaded.BattlePlanAt(0)==null);
+            Assert.IsFalse(ghostLoaded.BattlePlanAvailable(0));
+            var game = new GameCore(Data()); game.NewGame(2); game.Close(); game.mode="plans";
+            Assert.IsTrue(game.SaveBattlePlan(2)); game.PrepareSave();
+            var resumed = new GameCore(Data(),JsonUtility.FromJson<SaveData>(JsonUtility.ToJson(game.save)));
+            Assert.IsTrue(resumed.BattlePlanAt(0)==null); Assert.IsTrue(resumed.BattlePlanAt(1)==null);
+            Assert.NotNull(resumed.BattlePlanAt(2)); Assert.IsTrue(resumed.BattlePlanIsCurrent(2));
+            Assert.IsTrue(resumed.BattlePlanAt(2).recorded);
+            Assert.AreEqual(2,resumed.BattlePlanAt(2).weapon);
+            Assert.AreEqual(-1,resumed.BattlePlanAt(2).relicFirst); Assert.AreEqual(-1,resumed.BattlePlanAt(2).relicSecond);
+        }
         [Test] public void HomewardEarnedOfferAndCompanionChoice(){CoreChecks.HomewardEarnedAcceptanceKeepsMaturePersonalStoryAndSelection(Data());}
         [Test] public void HomewardLocalOrderedMiraWitnesses(){CoreChecks.HomewardLocalStartsRequireOrderedStopsAndActualMira(Data());}
         [Test] public void HomewardActualDefeatsAndManualRecords(){CoreChecks.HomewardObservationsRequireRealDefeatsAndWitnessedHandoff(Data());}

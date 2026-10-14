@@ -35,7 +35,7 @@ namespace Starfall
             if (id < 0 || portraits == null) { Icon(id < 0 ? "journal" : "companion", x + w * .2f, y + h * .25f, w * .6f); return; }
             float size = Math.Min(w, h); id = Math.Max(0, Math.Min(7, id)); GUI.DrawTextureWithTexCoords(new Rect(x + (w - size) / 2, y + h - size, size, size), portraits, new Rect(id % 4 / 4f, id < 4 ? .5f : 0, .25f, .5f));
         }
-        private void OpenMenu(string mode) { if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
+        private void OpenMenu(string mode) { battlePlanConfirmation = -1; if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
         private void Dim() { Box(0, 0, Width, Height, new Color(.02f, .035f, .07f, .87f)); }
         private void Bar(float x, float y, float w, float value, Color color, float h = 6)
         { Box(x, y, w, h, PixelArt.C("#0d1c2c")); Box(x, y, w * Mathf.Clamp01(value), h, color); Box(x, y, w * Mathf.Clamp01(value), 1, Color.Lerp(color, paper, .3f)); }
@@ -54,7 +54,7 @@ namespace Starfall
         }
         private string WeaponName(int id) { return Game.L(new[] { "短剑", "猎弓", "星火杖" }[id], new[] { "Sword", "Bow", "Starfire staff" }[id]); }
         private string SkillName()
-        { return Game.L(Game.save.technique == 0 ? new[] { "护盾震波", "扇形箭雨", "星火新星" }[Game.save.profession] : new[] { "震地反击", "穿林一矢", "寒星领域" }[Game.save.profession], Game.save.technique == 0 ? new[] { "Shield pulse", "Arrow fan", "Star nova" }[Game.save.profession] : new[] { "Seismic counter", "Woodpiercer", "Frost field" }[Game.save.profession]); }
+        { return Game.ClassTechniqueName(Game.save.technique); }
         private void DrawTitle()
         {
             for (int i = 0; i < 20; i++) Box(i * 32, 0, 32, Height, new Color(.025f, .06f, .11f, .82f - i * .035f));
@@ -131,13 +131,14 @@ namespace Starfall
             Window(Game.L("冒险背包", "Inventory"), Game.L("查看物品 · 比较武器与打法 · 确认后装备", "Inspect items · compare weapons & styles · confirm to equip")); string[] ids = { "wood", "crystal", "herb", "fish", "gear", "relic", "stew", "seed" };
             for (int i = 0; i < 8; i++) { float x = 279 + i % 4 * 158, y = 177 + i / 4 * 126; Card(x, y, 145, 113, selectedItem == i); Icon(ids[i], x + 47, y + 7, 46); if (Button(x + 7, y + 59, 131, 46, Game.L(Game.data.items[i].name, Game.data.items[i].en) + "\n× " + Game.save.inventory[i], selectedItem == i)) selectedItem = i; }
             DrawWeaponComparison();
-            Card(924, 177, 295, 512); Icon(ids[selectedItem], 1030, 203, 82); Text(947, 306, 250, 41, Game.L(Game.data.items[selectedItem].name, Game.data.items[selectedItem].en), 23, gold);
+            Card(924, 177, 295, 552); Icon(ids[selectedItem], 1030, 203, 82); Text(947, 306, 250, 41, Game.L(Game.data.items[selectedItem].name, Game.data.items[selectedItem].en), 23, gold);
             string[] zh = { "建设与制作的基础材料。探索木堆，或向铁匠购买。", "用于武器、修理与记忆锻印。采集星晶矿获得。", "用于料理、救援与镇民委托。药田种植与野外采集获得。", "镇东湖边钓获。料理与老潮的委托需要它。", "矿点会提供备用零件。修理机关、制作武器与城镇建设需要它。", "冒险背包中的星核碎片。远岸记忆碎片与硬币另有独立余额，可在侧栏查看。", "恢复55生命与全部耐力，攻击增强90秒。按F使用。", "到杏的药田种植。生长60秒，成熟后收获药草与新种子。" };
             string[] en = { "A building and crafting material. Gather timber or buy it from Noll.", "For weapons, repairs and relic forging. Gather starcrystal veins.", "For cooking, rescues and town requests. Grow or gather Moonherbs.", "Catch these in the eastern lake. Used for cooking and Old Tide's request.", "Ore veins yield spare parts. Used in repairs, weapons and town projects.", "Starcore shards in your pack. Distant-shores memory shards and coins are separate balances in the sidebar.", "Restores 55 health and full energy; boosts damage for 90 seconds. Press F.", "Plant in An's garden. Harvest after 60 seconds for herbs and new seeds." };
             Text(947, 369, 246, 152, Game.L(zh[selectedItem], en[selectedItem]), 17, muted);
             if (Button(947, 546, 246, 35, Game.L("使用炖汤 × ", "Use stew × ") + Game.save.inventory[6], false, Game.save.inventory[6] > 0 && !Game.practicing)) Game.Eat();
             if (Button(947, 590, 246, 35, Game.L("使用凉茶 × ", "Use tea × ") + Game.save.tea, false, Game.save.tea > 0 && !Game.practicing)) Game.DrinkTea();
-            Text(947, 642, 246, 40, Game.L("旅店休息可更新野外采集点。", "Inn rest renews resource nodes."), 12, muted);
+            if(Button(947, 642, 246, 35, Game.L("装备方案", "Battle plans"))) OpenBattlePlans();
+            Text(947, 681, 246, 40, Game.L("旅店休息可更新野外采集点。", "Inn rest renews resource nodes."), 12, muted);
             DrawRoadMealInventory();
         }
         private void DrawTalents()
@@ -147,7 +148,7 @@ namespace Starfall
             string[] info = { Game.L("每级攻击+3\n暴击率+2.5%", "+3 damage per rank\n+2.5% critical chance"), Game.L("每级生命+12\n受到伤害-3.5%", "+12 health per rank\n-3.5% incoming damage"), Game.L("提高移动速度\n缩短闪避冷却", "Faster movement\nShorter dodge cooldown") };
             for (int i = 0; i < 3; i++) { float x = 279 + i * 318; Card(x, 178, 302, 338); Icon(icons[i], x + 111, 194, 80); Text(x + 23, 288, 256, 40, names[i], 27, gold, TextAnchor.MiddleCenter); Text(x + 23, 350, 256, 76, info[i], 17, muted, TextAnchor.MiddleCenter); for (int n = 0; n < 5; n++) Box(x + 62 + n * 37, 442, 26, 5, n < Game.save.talents[i] ? gold : PixelArt.C("#43566b")); if (Button(x + 18, 475, 266, 29, Game.L("投入1技能点", "Spend 1 point"), false, Game.save.skillPoints > 0 && Game.save.talents[i] < 5)) Game.Learn(i); }
             if (Button(279, 704, 938, 25, Game.L("重置三项天赋：20硬币，返还全部投入点数", "Reset talents: 20 coins; refunds all invested points"), false, Game.save.coins >= 20 && Game.save.talents[0] + Game.save.talents[1] + Game.save.talents[2] > 0)) Game.ResetTalents();
-            Card(279, 540, 938, 150); Text(302, 560, 885, 35, Game.L("战技专精", "Combat technique"), 22, gold); Text(302, 603, 883, 28, Game.L("当前 Q：", "Current Q: ") + SkillName() + "  /  " + Game.L("熟练度等级 ", "Mastery rank ") + Game.MasteryRank(Game.save.weapon), 16, paper);
+            Card(279, 540, 938, 150); if(Button(302, 560, 885, 35, Game.L("战技效果与用途", "Technique field notes"))) OpenTechniqueGuide(); Text(302, 603, 883, 28, Game.L("当前 Q：", "Current Q: ") + SkillName() + "  /  " + Game.L("熟练度等级 ", "Mastery rank ") + Game.MasteryRank(Game.save.weapon), 16, paper);
             bool learned = Game.Has("technique_" + Game.save.profession); if (Button(302, 646, 891, 31, learned ? Game.L("切换为另一种职业战技", "Switch to the other class technique") : Game.L("学习第二战技：等级5、技能点1", "Learn alternate technique: level 5, 1 talent point"), Game.save.technique == 1, learned || Game.save.level >= 5 && Game.save.skillPoints > 0)) Game.LearnTechnique();
         }
         private void DrawCompanions()
