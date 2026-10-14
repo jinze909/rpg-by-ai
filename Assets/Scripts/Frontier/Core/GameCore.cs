@@ -108,7 +108,7 @@ namespace Starfall
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0;
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
-            ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetCommissionTransient();
+            ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetCommissionTransient(); ResetShelterTransient();
         }
         public void NewGame(int profession)
         {
@@ -263,6 +263,7 @@ namespace Starfall
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
             TickExpansion(dt);
             if (Dying) return;
+            TickShelterTrail(dt); if (Dying) return;
             TickWatch(dt); TickArchive(dt);
             TickSparring(dt);
             if (!SparringActive) TickGuidance(beforeMove);
@@ -410,7 +411,7 @@ namespace Starfall
                 save.lastFailureZh = source == "shot" ? "被远射击倒：侧移避开锁定射线，用墙体挡箭。" : source == "slam" || source == "area" ? "被范围攻击击倒：离开红圈，保留耐力用于闪避。" : source == "lunge" ? "被近身扑击击倒：闪到敌人侧面，再连击或破势。" : "被环境伤害击倒：准备凉茶，寻找阴影、火盆与安全营地。";
                 save.lastFailureEn = source == "shot" ? "Fell to arrows: sidestep locked shots and use walls." : source == "slam" || source == "area" ? "Fell to an area strike: leave red circles and save dodge energy." : source == "lunge" ? "Fell to a lunge: dodge sideways, then combo or stagger." : "Fell to the environment: bring tea and find shade, braziers or a camp.";
                 RecordMoment(save.lastFailureZh, save.lastFailureEn);
-                save.health = 0; save.coins = Math.Max(0, save.coins - 10); BeginDeath();
+                save.health = 0; save.coins = Math.Max(0, save.coins - 10); ResetShelterTransient(); BeginDeath();
             }
         }
         private void UpdateEnemies(float dt)
@@ -563,6 +564,7 @@ namespace Starfall
         public bool IsObjectPresent(WorldObject o)
         {
             if (o == null) return false;
+            if (o.kind != null && o.kind.StartsWith("shelterMark")) return save.room == 7 && ShelterAccepted;
             if (o.kind == "returnscout") return Has("scout_saved");
             if (o.kind == "scout") return !Has("scout_saved");
             return true;
@@ -591,6 +593,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkShelter(o)) return;
             if (TalkCommission(o)) return;
             if (TalkReach(o)) return;
             if (TalkArchive(o)) return;
@@ -708,6 +711,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseShelter(action)) return;
             if (ChooseCommission(action)) return;
             if (ChooseHomeward(action)) return;
             if (ChooseReach(action)) return;

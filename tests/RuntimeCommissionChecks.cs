@@ -243,7 +243,9 @@ public static class RuntimeCommissionChecks
             Screen.width = policy == 0 ? 960 : 1920; Screen.height = policy == 0 ? 600 : 1080; Call(app, "Resize"); Set(app, "camera", g.Position);
             string suffix = (language == 1 ? "-en" : "-zh") + (large == 1 ? "-large" : "-normal") + (policy == 0 ? "-960-minimal" : "-1920-rich");
             Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "commission"); float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
-            Check(quest == 15 && GameCore.QuestIds.Length == 16, "Commission appends after all fifteen existing journal rows");
+            string[] original = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward", "commission" };
+            Check(quest == 15 && GameCore.QuestIds.Length >= original.Length, "Commission keeps its sixteenth journal row when new content appends");
+            for (int i = 0; i < original.Length; i++) Check(GameCore.QuestIds[i] == original[i], "Every original journal id keeps its exact index: " + original[i]);
             GUI.queuedClick = new Rect(279, 226 + quest * spacing, 321, spacing - 7); Draw(app, "journal" + suffix); Check(!GUI.queuedClick.HasValue, "Actual sixteenth journal row accepts its click"); Draw(app, "objective" + suffix);
             Check(Get<int>(app, "selectedQuest") == 15 && HasText(g.L("下一步：", "Next: ") + g.GetQuest("commission").next), "Actual journal shows the earned report objective");
             Key(app, KeyCode.Escape); int coins = g.save.coins; Report(app, language == 1, "report" + suffix);
@@ -263,7 +265,7 @@ public static class RuntimeCommissionChecks
             Screen.width = minimal ? 960 : 1920; Screen.height = minimal ? 600 : 1080; Call(app, "Resize"); Accept(app);
             for (int pattern = 0; pattern < 3; pattern++) { WaitWarning(app, pattern); WarningGeometry(app, Guardian(app.Game), "warning" + pattern + (english ? "-en" : "-zh") + (minimal ? "-960-minimal" : "-1920-rich")); }
         }
-        Console.WriteLine("PASS actual16-row journal, all paged authored settlement/cup dialogues, both outcomes and preserved mature receiver/camp numbers under Chinese/English normal/large960/1920; real AI beam/circle/check warning geometry at minimal/full effects and reduced motion; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS actual sixteenth journal click and complete original sixteen-id prefix, all paged authored settlement/cup dialogues, both outcomes and preserved mature receiver/camp numbers under Chinese/English normal/large960/1920; real AI beam/circle/check warning geometry at minimal/full effects and reduced motion; NATIVE_UNVERIFIED");
     }
     public static void SaveStorePauseRetryDeathAndLegacy(FrontierRuntime app)
     {

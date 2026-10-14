@@ -322,7 +322,7 @@ namespace Starfall
             save.heat = Clamp(save.heat + dt * (save.room == 6 && !tea && !NearKind("shade", 3) && !racing ? 1.3f : -10), 0, 100);
             bool warm = false;
             if (save.room == 7) foreach (WorldObject o in Map.objects) if (o.kind == "brazier" && Has("warm_" + o.id) && (new Point(o.x, o.y) - Position).Length < 3.5f) warm = true;
-            save.cold = Clamp(save.cold + dt * (save.room == 7 && !tea && !warm ? 1.1f : -8), 0, 100);
+            save.cold = Clamp(save.cold + dt * (save.room == 7 && !tea && !warm ? ShelterColdProtected ? 0 : 1.1f : -8), 0, 100);
             climateTimer -= dt;
             if (climateTimer <= 0) { climateTimer = 1; if (save.heat >= 85 || save.cold >= 90) Hurt(4); }
             if (Dying) return;
@@ -491,7 +491,7 @@ namespace Starfall
                 int id = int.Parse(kind.Substring(4)); save.bells[id] = (save.bells[id] + 1) % 4; CheckBells(); revision++;
                 Notify("钟 " + (id + 1) + "：第 " + (save.bells[id] + 1) + " 音", "Chime " + (id + 1) + ": tone " + (save.bells[id] + 1)); return true;
             }
-            if (kind == "brazier") { Dialog(o.name, o.en, Has("warm_" + o.id) ? "火盆已经点燃。站在附近能迅速消除寒意。" : "木材两份能点燃火盆。寒意超过 70 会让你变慢，超过 90 会持续受伤。", Has("warm_" + o.id) ? "The brazier is lit. Stand near it to warm up." : "Two timber light the brazier. Cold above 70 slows you; above 90 hurts.", C(Has("warm_" + o.id) ? "暖一会儿" : "点火 · 木材2", Has("warm_" + o.id) ? "Warm up" : "Light · 2 timber", Has("warm_" + o.id) ? "close" : "warm:" + o.id), C("继续赶路", "Keep going", "close")); return true; }
+            if (kind == "brazier") { Dialog(o.name, o.en, Has("warm_" + o.id) ? "火盆已经点燃。站在附近能迅速消除寒意。" : "木材两份能点燃火盆。寒意超过 70 会让你变慢，超过 90 会持续受伤。", Has("warm_" + o.id) ? "The brazier is lit. Stand near it to warm up." : "Two timber light the brazier. Cold above 70 slows you; above 90 hurts.", C(Has("warm_" + o.id) ? "暖一会儿" : "点火 · 木材2", Has("warm_" + o.id) ? "Warm up" : "Light · 2 timber", Has("warm_" + o.id) ? "close" : "warm:" + o.id), C("继续赶路", "Keep going", "close")); AppendShelterChoices(o); return true; }
             if (kind == "keeper") { KeeperConversation(o); return true; }
             if (kind == "campfire") { Dialog(o.name, o.en, "星薄荷凉茶用药草2、星晶1制作。远行驿站建成后，可以在野外营地免费休整；完整升级的驿站还会赠送一杯凉茶。", "Star-mint tea needs 2 herbs and 1 crystal. A town waystation enables free rest at field camps; a full upgrade adds one tea per day.", C("营地休整", "Rest at camp", "fieldrest"), C("制作凉茶", "Brew tea", "tea"), C("喝凉茶", "Drink tea", "drinktea"), C("查看同伴", "Manage companions", "companions"), C("离开", "Leave", "close"), C("远行厨房", "Road kitchen", "kitchen")); if(save.room==ReachRoom&&HomewardAccepted){var choices=new List<Choice>(conversation.choices);choices.Add(C("米拉的新航线","Mira's new route","homeward_camp"));conversation.choices=choices.ToArray();} if (save.room == 6 && CommissionReported && Has("commission_caravan") && (new Point(o.x,o.y)-CommissionWaterPoint).Length < .01f){var choices=new List<Choice>(conversation.choices);choices.Add(C("明天的共享供水", "Tomorrow's shared water", "commission_supply"));conversation.choices=choices.ToArray();} return true; }
             if (kind == "expAltar") { ExpansionAltar(o); return true; }
@@ -534,7 +534,9 @@ namespace Starfall
             choices.Add(C("邀请同行", "Travel together", "join" + id)); choices.Add(C("再见", "Goodbye", "close"));
             if(id==0&&HomewardReady&&save.room==5&&o.kind=="captain")choices.Add(C("米拉的新航线","Mira's new route","homeward_offer"));
             if (id == 1 && CommissionReady && save.room == 6 && o.kind == "tinker") choices.Add(C("明天的第一班", "Tomorrow's first shift", "commission_offer"));
+            if (id == 2 && ShelterReady && save.room == 7 && o.kind == "keeper") choices.Add(C("森的避风路", "Sen's shelter trail", "shelter_offer"));
             Dialog(o.name, o.en, Has("personal_" + id) ? new[] { "米拉把名册交还给幸存的孩子。她不再等一封回信，而是开始写下一条新航线。", "伊沃给新机器起名叫明天。它没有主人，只记录每个用水人的名字。", "森拆下了钟舌，铸成一块路碑。他仍守着高原，这一次是在路口听人说话。" }[id] : zh[id], Has("personal_" + id) ? new[] { "Mira gives the manifest to the surviving children. She stops waiting for a reply and starts drawing a new route.", "Ivo names the machine Tomorrow. It has no master; it records everyone who shares its water.", "Sen casts the old clapper into a road marker. He still keeps the pass, but now he listens." }[id] : en[id], choices.ToArray());
+            if (id == 2 && o.kind == "keeper") AppendShelterChoices(o);
         }
         private void ExpansionAltar(WorldObject o)
         {

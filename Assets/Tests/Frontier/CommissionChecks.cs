@@ -308,8 +308,8 @@ namespace Starfall.Tests
 
         public static void CommissionJournalPrefixLegacyAndForeignSnapshotBoundaries(Campaign data)
         {
-            string[] old={"main","shore","ally1","ally2","ally3","personal0","personal1","personal2","bounty","secrets","watch","signal","archive","reach","homeward"};
-            Check(GameCore.QuestIds.Length==16&&GameCore.QuestIds[15]=="commission","The machine trial appends one journal entry after all fifteen mature quests");
+            string[] old={"main","shore","ally1","ally2","ally3","personal0","personal1","personal2","bounty","secrets","watch","signal","archive","reach","homeward","commission"};
+            Check(GameCore.QuestIds.Length>=old.Length&&GameCore.QuestIds[15]=="commission","The machine trial keeps its sixteenth journal index when later stories append entries");
             for(int i=0;i<old.Length;i++)Check(GameCore.QuestIds[i]==old[i],"The existing quest prefix retains exact index and identity: "+old[i]);
             var g=CommissionGame(data,0,false);Check(!g.GetQuest("commission").locked&&!g.GetQuest("commission").complete&&g.GetQuest("commission").room==6,"The earned unaccepted guide points to the original desert engineer");
             Check(g.AcceptCommission()&&g.save.trackedQuest=="commission","Real acceptance tracks the appended story");Check((g.GetQuest("commission").target-GameCore.CommissionReceiverPoint).Length<.01f,"The accepted unstarted guide targets the actual reservoir");

@@ -102,6 +102,7 @@ namespace Starfall
             foreach (Hazard hazard in Game.hazards)
             { Point p = ScreenPoint(hazard.position); float size = hazard.radius * Tile; if (Overlap(rect, new Rect(p.x-size,p.y-size,size*2,size*2))) return true; }
             foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && Overlap(rect,EnemyWarningBounds(enemy))) return true;
+            if (Game.ShelterWindWarning && Overlap(rect, ShelterWindBounds())) return true;
             return false;
         }
         private void DrawHud()
@@ -123,6 +124,7 @@ namespace Starfall
                 if (OverlapsRegions(regions,PlayerHudBounds())) DrawPlayerActor();
             }
             finally { drawingOutline = false; }
+            if (Game.ShelterWindWarning && OverlapsRegions(regions, ShelterWindBounds())) DrawShelterWind(true);
             foreach (Projectile shot in Game.projectiles)
             {
                 Point p = ScreenPoint(shot.position); p.y -= shot.height;

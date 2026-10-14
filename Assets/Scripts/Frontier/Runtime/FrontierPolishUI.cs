@@ -77,6 +77,7 @@ namespace Starfall
             // Retain the trial's thin contact boundary over foreground plants.
             foreach (Enemy enemy in Game.enemies) if (GameCore.IsSignalWarden(enemy)) DrawSignalWarning(enemy,true);
             foreach (Enemy enemy in Game.enemies) if (GameCore.IsCommissionGuardian(enemy)) DrawCommissionWarning(enemy,true);
+            DrawShelterWind(true);
             Enemy warden = Game.enemies.Find(e => GameCore.IsSignalWarden(e) && (e.Position-Game.Position).Length < 7 && (e.state == 1 || e.state == 0 && !e.moving && e.timer > 0 && e.cycle > 0));
             Enemy commission = Game.enemies.Find(e => GameCore.IsCommissionGuardian(e) && (e.Position-Game.Position).Length < 7);
             Enemy near = Game.enemies.Find(e => e.state == 1 && (e.Position - Game.Position).Length < 7);

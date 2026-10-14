@@ -6,6 +6,16 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void ShelterAcceptanceRetainsKeeperPersonalStoryAndExplicitCompanion(){CoreChecks.ShelterAcceptanceRetainsKeeperPersonalStoryAndExplicitCompanion(Data());}
+        [Test] public void ShelterLocalActionsRequireLitBraziersAndOrderedRealMarks(){CoreChecks.ShelterLocalActionsRequireLitBraziersAndOrderedRealMarks(Data());}
+        [Test] public void ShelterAllStartersWalkThreeRealLegsAndEarnAChosenRoad(){CoreChecks.ShelterAllStartersWalkThreeRealLegsAndEarnAChosenRoad(Data());}
+        [Test] public void ShelterWindWarningsCaptureAlternatingClippedFootprintsAndContacts(){CoreChecks.ShelterWindWarningsCaptureAlternatingClippedFootprintsAndContacts(Data());}
+        [Test] public void ShelterWarningPauseDashAndLitSheltersKeepTheirExistingProtection(){CoreChecks.ShelterWarningPauseDashAndLitSheltersKeepTheirExistingProtection(Data());}
+        [Test] public void ShelterReportBothChoicesIsLocalCappedOnceAndCannotReplaceMountainStory(){CoreChecks.ShelterReportBothChoicesIsLocalCappedOnceAndCannotReplaceMountainStory(Data());}
+        [Test] public void ShelterMaintainedRoadPreventsOnlyItsOwnColdGrowthAndRetainsTeaAndBraziers(){CoreChecks.ShelterMaintainedRoadPreventsOnlyItsOwnColdGrowthAndRetainsTeaAndBraziers(Data());}
+        [Test] public void ShelterCheckpointSavesRetainEarnedMarksWithoutReplayingTransientWeather(){CoreChecks.ShelterCheckpointSavesRetainEarnedMarksWithoutReplayingTransientWeather(Data());}
+        [Test] public void ShelterAttemptsCancelOnTravelDefeatPracticeAndExplicitStop(){CoreChecks.ShelterAttemptsCancelOnTravelDefeatPracticeAndExplicitStop(Data());}
+        [Test] public void ShelterJournalAppendsAfterAllMatureIdsAndOwnsReachableProgress(){CoreChecks.ShelterJournalAppendsAfterAllMatureIdsAndOwnsReachableProgress(Data());}
         [Test] public void CommissionAcceptanceRequiresEarnedActualEngineerAndPreservesPersonalRepair(){CoreChecks.CommissionAcceptanceRequiresEarnedActualEngineerAndPreservesPersonalRepair(Data());}
         [Test] public void CommissionStartsAndVentRevalidateLocalWindows(){CoreChecks.CommissionStartsAndVentRevalidateLocalWindows(Data());}
         [Test] public void CommissionPreparedFootprintsKeepTimingAcrossRealThresholdHits(){CoreChecks.CommissionPreparedFootprintsKeepTimingAcrossRealThresholdHits(Data());}

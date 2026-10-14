@@ -2106,6 +2106,30 @@
           "x": 4.5,
           "y": 19.5,
           "lore": 15
+        },
+        {
+          "id": "sen_waymark0",
+          "name": "森的路碑 · 山脚线",
+          "en": "Sen's waymark · Lower trail",
+          "x": 12,
+          "y": 13,
+          "kind": "shelterMark0"
+        },
+        {
+          "id": "sen_waymark1",
+          "name": "森的路碑 · 高岭线",
+          "en": "Sen's waymark · Upper trail",
+          "x": 21,
+          "y": 8,
+          "kind": "shelterMark1"
+        },
+        {
+          "id": "sen_waymark2",
+          "name": "森的路碑 · 回程线",
+          "en": "Sen's waymark · Return trail",
+          "x": 18,
+          "y": 9,
+          "kind": "shelterMark2"
         }
       ],
       "decor": [

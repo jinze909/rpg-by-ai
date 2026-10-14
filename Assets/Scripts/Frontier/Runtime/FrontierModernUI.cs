@@ -222,7 +222,8 @@ namespace Starfall
             float questSpacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
             for (int i = 0; i < GameCore.QuestIds.Length; i++) { QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); if (Button(279, 226 + i * questSpacing, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
             QuestGuide q = Game.GetQuest(GameCore.QuestIds[selectedQuest]); Card(625, 226, 592, 464); Text(650, 244, 541, 27, q.category + (q.complete ? Game.L(" · 已完成", " · COMPLETE") : ""), 12, gold); Text(650, 281, 541, 45, q.title, 26, paper); Text(650, 342, 541, 62, q.description, 17, muted); Text(650, 410, 541, 60, Game.L("下一步：", "Next: ") + q.next, 14, gold);
-            for (int i = 0; i < q.steps.Count; i++) Text(650, 482 + i * 34, 542, 34, (q.steps[i].done ? "✓  " : "○  ") + q.steps[i].text, 15, q.steps[i].done ? mint : paper);
+            float stepSpacing = Math.Min(34, 140f / Math.Max(1, q.steps.Count));
+            for (int i = 0; i < q.steps.Count; i++) Text(650, 482 + i * stepSpacing, 542, stepSpacing, (q.steps[i].done ? "✓  " : "○  ") + q.steps[i].text, 15, q.steps[i].done ? mint : paper);
             Text(650, 622, 540, 22, q.reward, 12, gold); if (Button(650, 647, 258, 31, Game.L("追踪任务", "Track quest"), Game.save.trackedQuest == q.id, !q.locked && !q.complete)) Game.TrackQuest(q.id); if (Button(927, 647, 263, 31, Game.L("查看目标地图", "Show destination"), false, !q.locked)) { selectedRegion = q.room; OpenMenu("map"); }
         }
         private void DrawMap()
