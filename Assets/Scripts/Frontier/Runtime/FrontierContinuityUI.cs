@@ -80,6 +80,7 @@ namespace Starfall
         {foreach(Rect region in regions)if(Overlap(region,bounds))return true;return false;}
         private Rect EnemyWarningBounds(Enemy enemy)
         {
+            if(GameCore.IsCommissionGuardian(enemy))return CommissionWarningBounds(enemy);
             if(GameCore.IsSignalWarden(enemy))return SignalWarningBounds(enemy);
             if(!enemy.boss&&enemy.kind==1)
             {
@@ -129,6 +130,7 @@ namespace Starfall
             }
             foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && OverlapsRegions(regions,EnemyWarningBounds(enemy)))
             {
+                if(GameCore.IsCommissionGuardian(enemy)){DrawCommissionWarning(enemy,true);continue;}
                 if(GameCore.IsSignalWarden(enemy)){DrawSignalWarning(enemy,true);continue;}
                 if(!enemy.boss&&enemy.kind!=2){DrawEnemyWarning(enemy);continue;}
                 Point p=ScreenPoint(enemy.target);float radius=GameCore.EnemyAreaRadius(enemy);
@@ -167,7 +169,7 @@ namespace Starfall
                 Text(396,26,488,27,Game.L(Game.CurrentBoss.name,Game.CurrentBoss.en)+"  /  "+boss.BossPhase,16,gold,TextAnchor.MiddleCenter);
                 Bar(399,58,482,boss.hp/boss.maxHp,PixelArt.C("#d28b86"),6); Bar(399,73,482,boss.stagger/95,mint,3);
             }
-            else if (HasFallenBoss) Text(380,29,520,31,Game.L("守护者已倒下 · 战利品已收取","Guardian defeated · loot secured"),18,gold,TextAnchor.MiddleCenter);
+            else if (HasFallenBoss) Text(380,29,520,31,Game.fallen.Exists(f=>f.room==Game.save.room&&GameCore.IsCommissionGuardian(f.actor)) ? Game.L("试机成功 · 向伊沃回报","Test complete · report to Ivo") : Game.L("守护者已倒下 · 战利品已收取","Guardian defeated · loot secured"),18,gold,TextAnchor.MiddleCenter);
             Panel(426,730,428,54,new Color(.045f,.08f,.13f,.65f),new Color(.3f,.4f,.46f,.4f));
             ActionSlot(430,ControlKey("Q","Y"),SkillName(),Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff",Game.skillCooldown,Game.save.energy >= (Game.Relic(4)?50:40),()=>Game.Skill(InputAim(true)),3.5f,Game.L("耐力不足","Low energy"));
             ActionSlot(515,ControlKey("F","LB"),Game.L("汤 ","Stew ")+Game.save.inventory[6],"stew",0,Game.save.inventory[6]>0&&!Game.practicing,()=>Game.Eat());

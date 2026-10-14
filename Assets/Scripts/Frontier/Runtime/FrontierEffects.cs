@@ -99,6 +99,7 @@ namespace Starfall
         private void DrawEnemyWarning(Enemy enemy)
         {
             if(enemy.state!=1)return;
+            if(GameCore.IsCommissionGuardian(enemy)){DrawCommissionWarning(enemy);return;}
             if(GameCore.IsSignalWarden(enemy)){DrawSignalWarning(enemy);return;}
             if(enemy.boss||enemy.kind==2){DrawTelegraph(enemy);return;}
             float progress=Mathf.Clamp01(1-enemy.timer/Math.Max(.01f,enemy.windupDuration));

@@ -313,7 +313,10 @@ public static class RuntimeHomewardChecks
             Set(app, "camera", g.Position);
             Draw(app, "camp-world" + suffix); Key(app, KeyCode.Tab); Draw(app);
             int quest = Array.IndexOf(GameCore.QuestIds, "homeward"); float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
-            Check(quest == 14 && GameCore.QuestIds.Length == 15, "The new route appends after all fourteen mature quest rows");
+            string[] originalQuestPrefix = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward" };
+            Check(quest == 14 && GameCore.QuestIds.Length >= originalQuestPrefix.Length, "The route retains its fifteenth row after all fourteen preceding mature quests when future quests append");
+            for (int i = 0; i < originalQuestPrefix.Length; i++)
+                Check(GameCore.QuestIds[i] == originalQuestPrefix[i], "The exact mature fifteen-quest prefix retains its identity and index: " + originalQuestPrefix[i]);
             Click(app, new Rect(279, 226 + quest * spacing, 321, spacing - 7)); Draw(app, "journal" + suffix);
             Check(Get<int>(app, "selectedQuest") == 14 && HasText(g.L("下一步：", "Next: ") + g.GetQuest("homeward").next), "The actual fifteenth row exposes the earned camp objective");
             Click(app, new Rect(927, 647, 263, 31)); Draw(app, "destination" + suffix);
@@ -348,7 +351,7 @@ public static class RuntimeHomewardChecks
             }
             game.Close();
         }
-        Console.WriteLine("PASS actual15-row journal/map destination, all six mature camp choices plus appended seventh, complete family/public and earned guild-letter pages with intact original story/once-only no-economy acknowledgment across Chinese/English, normal/large960/1920 and effects/motion policies; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS retained actual fifteenth journal row/map destination, all six mature camp choices plus appended seventh, complete family/public and earned guild-letter pages with intact original story/once-only no-economy acknowledgment across Chinese/English, normal/large960/1920 and effects/motion policies; NATIVE_UNVERIFIED");
     }
     public static void HomewardSaveStorePauseTravelDeathAndLegacy(FrontierRuntime app)
     {

@@ -76,10 +76,13 @@ namespace Starfall
             if (Game.Dying) { Panel(426, 536, 428, 77, panel, gold); Text(442, 551, 395, 46, Game.L("你倒下了 · 镇民正在带你回家", "You fell · your neighbors are bringing you home"), 18, paper, TextAnchor.MiddleCenter); return; }
             // Retain the trial's thin contact boundary over foreground plants.
             foreach (Enemy enemy in Game.enemies) if (GameCore.IsSignalWarden(enemy)) DrawSignalWarning(enemy,true);
+            foreach (Enemy enemy in Game.enemies) if (GameCore.IsCommissionGuardian(enemy)) DrawCommissionWarning(enemy,true);
             Enemy warden = Game.enemies.Find(e => GameCore.IsSignalWarden(e) && (e.Position-Game.Position).Length < 7 && (e.state == 1 || e.state == 0 && !e.moving && e.timer > 0 && e.cycle > 0));
+            Enemy commission = Game.enemies.Find(e => GameCore.IsCommissionGuardian(e) && (e.Position-Game.Position).Length < 7);
             Enemy near = Game.enemies.Find(e => e.state == 1 && (e.Position - Game.Position).Length < 7);
             if (warden != null) near = warden;
-            if (near != null && !Game.practicing) { Panel(24, 228, 298, 90, new Color(.06f, .08f, .13f, .88f), PixelArt.C("#b37c6a")); Text(40, 241, 266, 68, GameCore.IsSignalWarden(near)?SignalMoveHint(near):Game.EnemyHint(near), 13, paper, TextAnchor.MiddleCenter); }
+            if (commission != null) near = commission;
+            if (near != null && !Game.practicing) { Panel(24, 228, 298, 90, new Color(.06f, .08f, .13f, .88f), PixelArt.C("#b37c6a")); Text(40, 241, 266, 68, GameCore.IsCommissionGuardian(near)?CommissionMoveHint(near):GameCore.IsSignalWarden(near)?SignalMoveHint(near):Game.EnemyHint(near), 13, paper, TextAnchor.MiddleCenter); }
             if (Game.SparringActive) DrawSparringPresentation();
             else if (Game.practicing) { Panel(348, 190, 584, 104, panel, mint); Text(365, 206, 549, 34, Game.L("安全练习 ", "Safe practice ") + (Game.practiceStage + 1) + "/3", 20, gold); Text(365, 250, 390, 31, PracticeInputHint, 16, paper); if (Button(785, 246, 130, 34, Game.L("结束练习", "End practice"))) Game.EndPractice(); }
             if (resumeTime > 0 && !Game.practicing) { Panel(352, 205, 576, 98, panel, gold); Text(369, 219, 542, 27, Game.L("欢迎回来 · 接下来", "Welcome back · next step"), 19, gold); Text(369, 255, 542, 40, resumeBrief, 14, paper); }

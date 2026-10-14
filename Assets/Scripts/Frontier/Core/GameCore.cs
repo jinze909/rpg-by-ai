@@ -37,7 +37,7 @@ namespace Starfall
         }
         public Point Position { get { return new Point(save.x, save.y); } }
         public MapData Map { get { return save.room == 8 && abyssMap != null ? abyssMap : data.maps[save.room]; } }
-        public BossData CurrentBoss { get { return SignalActive ? new BossData { name = "旧路守望", en = "The Signal Warden", hp = SignalWardenHealth } : save.room == 8 ? new BossData { name = "地脉收割者", en = "The Root Reaper", hp = 680 + save.abyssRisk * 140 } : data.bosses[Math.Min(data.bosses.Length - 1, Math.Max(0, save.room - 1))]; } }
+        public BossData CurrentBoss { get { return CommissionActive ? new BossData { name = "试机守卫", en = "Commissioning guardian", hp = CommissionGuardianHealth } : SignalActive ? new BossData { name = "旧路守望", en = "The Signal Warden", hp = SignalWardenHealth } : save.room == 8 ? new BossData { name = "地脉收割者", en = "The Root Reaper", hp = 680 + save.abyssRisk * 140 } : data.bosses[Math.Min(data.bosses.Length - 1, Math.Max(0, save.room - 1))]; } }
         public string L(string zh, string en) { return save.english ? en : zh; }
         public static float Clamp(float x, float min, float max) { return Math.Max(min, Math.Min(max, x)); }
         private static bool Finite(float f) { return !float.IsNaN(f) && !float.IsInfinity(f); }
@@ -108,7 +108,7 @@ namespace Starfall
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0;
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
-            ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient();
+            ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetCommissionTransient();
         }
         public void NewGame(int profession)
         {
@@ -369,6 +369,7 @@ namespace Starfall
             fallen.Add(new FallenActor { actor = e, room = save.room, life = e.boss ? 1.4f : .65f, duration = e.boss ? 1.4f : .65f });
             enemies.Remove(e);
             if (SparringActive && IsSparringEnemy(e)) { effects.Add(new Effect("defeat", e.Position, .5f)); revision++; return; }
+            if (e.id == CommissionGuardianId) { OnCommissionDefeated(e); revision++; return; }
             if (IsSignalWarden(e)) { OnSignalDefeated(e); revision++; return; }
             OnHomewardKill(e); OnReachKill(e); OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
             effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
@@ -424,10 +425,11 @@ namespace Starfall
                 {
                     // This echo announces a fixed lane. Hit reactions may pause
                     // it, but cannot move its body off that captured attack path.
-                    if (IsSignalWarden(e) && e.state == 1) continue;
+                    if ((IsSignalWarden(e) && e.state == 1) || IsCommissionGuardian(e)) continue;
                     Point pushed = SweepActor(e.Position, e.recoil * dt * (e.boss ? .15f : .8f)); e.x = pushed.x; e.y = pushed.y; continue;
                 }
                 if (e.stun > 0 || e.releaseTime > 0) continue;
+                if (IsCommissionGuardian(e)) { TickCommissionEnemy(e, dt); continue; }
                 if (IsSignalWarden(e)) { TickSignalEnemy(e, dt); continue; }
                 Point delta = Position - e.Position; float distance = delta.Length;
                 if (e.state == 1)
@@ -589,6 +591,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkCommission(o)) return;
             if (TalkReach(o)) return;
             if (TalkArchive(o)) return;
             if (TalkSignal(o)) return;
@@ -705,6 +708,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseCommission(action)) return;
             if (ChooseHomeward(action)) return;
             if (ChooseReach(action)) return;
             if (ChooseGuildStory(action)) return;

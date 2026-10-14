@@ -85,7 +85,7 @@ namespace Starfall
         private void ActionUnavailable(float cooldown, float cost)
         { if (actionHintTimer > 0) return; actionHintTimer = 1.5f; Notify(cooldown > 0 ? "正在冷却，剩余 " + Math.Ceiling(cooldown) + " 秒。" : "耐力不足，需要 " + (int)cost + "。", cooldown > 0 ? "Cooling down: " + Math.Ceiling(cooldown) + " seconds." : "Need " + (int)cost + " energy."); sound = "deny"; }
         public string EnemyHint(Enemy e)
-        { return e.boss ? L("红圈锁定落点：离开后再反击", "Locked red circle: leave, then counter") : e.kind == 1 ? L("射手：沿侧面接近，利用墙体挡箭", "Archer: approach sideways; walls stop arrows") : e.kind == 2 ? L("重甲：绕到背后，或等抡击时破势", "Heavy: flank or break during its wind-up") : L("追猎者：闪过近身扑击，再接连击", "Hunter: dodge its lunge, then combo"); }
+        { return IsCommissionGuardian(e) ? CommissionHint(e, save.english) : e.boss ? L("红圈锁定落点：离开后再反击", "Locked red circle: leave, then counter") : e.kind == 1 ? L("射手：沿侧面接近，利用墙体挡箭", "Archer: approach sideways; walls stop arrows") : e.kind == 2 ? L("重甲：绕到背后，或等抡击时破势", "Heavy: flank or break during its wind-up") : L("追猎者：闪过近身扑击，再接连击", "Hunter: dodge its lunge, then combo"); }
         public void StartPractice()
         {
             if (Dying) return;
@@ -176,6 +176,7 @@ namespace Starfall
             {
                 if (r != null && IsSparringEnemyId(r.id)) continue;
                 if (r == null || r.id < 1 || r.id > 99999 || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if (r.id == CommissionGuardianId) { RestoreCommissionRecord(r); continue; }
                 if(save.room==ReachRoom){if(IsHomewardEnemyId(r.id))RestoreHomewardRecord(r);else RestoreReachRecord(r);continue;}
                 if(IsReachEnemyId(r.id)||IsHomewardEnemyId(r.id))continue;
                 if (save.room == ArchiveRoom && !IsArchiveEnemyId(r.id)) continue;

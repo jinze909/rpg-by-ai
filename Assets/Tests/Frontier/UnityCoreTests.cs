@@ -6,6 +6,16 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void CommissionAcceptanceRequiresEarnedActualEngineerAndPreservesPersonalRepair(){CoreChecks.CommissionAcceptanceRequiresEarnedActualEngineerAndPreservesPersonalRepair(Data());}
+        [Test] public void CommissionStartsAndVentRevalidateLocalWindows(){CoreChecks.CommissionStartsAndVentRevalidateLocalWindows(Data());}
+        [Test] public void CommissionPreparedFootprintsKeepTimingAcrossRealThresholdHits(){CoreChecks.CommissionPreparedFootprintsKeepTimingAcrossRealThresholdHits(Data());}
+        [Test] public void CommissionWarningsMatchBeamCircleAndUnventedChargeContacts(){CoreChecks.CommissionWarningsMatchBeamCircleAndUnventedChargeContacts(Data());}
+        [Test] public void CommissionEveryStarterWinsActualTrialAndEarnsFirstWater(){CoreChecks.CommissionEveryStarterWinsActualTrialAndEarnsFirstWater(Data());}
+        [Test] public void CommissionReportIsLocalOnceAndKeepsMatureDesertChoices(){CoreChecks.CommissionReportIsLocalOnceAndKeepsMatureDesertChoices(Data());}
+        [Test] public void CommissionRealHitSnapshotsKeepCanonicalHealthAndFreshWarnings(){CoreChecks.CommissionRealHitSnapshotsKeepCanonicalHealthAndFreshWarnings(Data());}
+        [Test] public void CommissionTravelAndActualDefeatRequireDeliberateUnpaidRetries(){CoreChecks.CommissionTravelAndActualDefeatRequireDeliberateUnpaidRetries(Data());}
+        [Test] public void CommissionDailyWaterStaysChosenLocalBoundedAndIndependentOfRest(){CoreChecks.CommissionDailyWaterStaysChosenLocalBoundedAndIndependentOfRest(Data());}
+        [Test] public void CommissionJournalPrefixLegacyAndForeignSnapshotBoundaries(){CoreChecks.CommissionJournalPrefixLegacyAndForeignSnapshotBoundaries(Data());}
         [Test] public void BattlePlansOwnedThreeSlotCopies(){CoreChecks.BattlePlansCaptureThreeOwnedBuildsAndReturnCopies(Data());}
         [Test] public void BattlePlansAtomicOwnedEquipment(){CoreChecks.BattlePlansApplyOnlySelectedWeaponStanceAndOwnedChoices(Data());}
         [Test] public void BattlePlansOwnershipRevalidation(){CoreChecks.BattlePlansRecheckAllUnlocksBeforeAtomicApply(Data());}

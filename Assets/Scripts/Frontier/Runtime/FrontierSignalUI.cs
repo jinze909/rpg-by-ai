@@ -8,7 +8,7 @@ namespace Starfall
         // The optional trial reuses the accepted forest guardian art, even when
         // its fallen actor is inspected after a room change.
         private static int BossArtRoom(Enemy enemy, int room)
-        { return GameCore.IsSignalWarden(enemy) ? 1 : room; }
+        { return GameCore.IsSignalWarden(enemy) ? 1 : GameCore.IsCommissionGuardian(enemy) ? 6 : room; }
 
         private Rect SignalLaneBounds(Point from, Point to, float radius)
         {
