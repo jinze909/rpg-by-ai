@@ -8,7 +8,7 @@
 
 本轮继续检查延迟伤害与恢复状态，修复 Q 前摇/连锁击杀后属性变化、冰霜借用后来装备与位置、某些帧间隔多一次冰霜伤害、同伴替玩家完成教学，以及深渊操作打断死亡恢复。62组生产核心回归通过，含三职业18,000帧组合操作。复现与修复见 [DELAYED-SKILL-RECOVERY-BUGFIX.md](docs/DELAYED-SKILL-RECOVERY-BUGFIX.md)，最终验证见 [QA-REPORT.json](docs/QA-REPORT.json)。此前状态边界修复和全项目逐项复查继续保留。
 
-上一版建立的人物256图格、固定脚底、独立头部、22张角色图集注册和44张预生成遮罩继续保留。没有新增职业、地图或玩法。尺寸、握持与逐帧预览记录见 [FRAME-CONTINUITY-POLISH.md](docs/FRAME-CONTINUITY-POLISH.md)。
+主角三种装备外观改为完整 256 图格，取消造成肩甲、弓弦和领口割裂的头身矩形拼接；固定脚底、原金发 Viola、22张图集注册及44张遮罩保留。正式路径使用 SpriteRenderer + Animator，并在原世界排序位置合成。A–E 离线回归门槛已加入，原生 Frontier 导入/试玩仍为 `NATIVE_UNVERIFIED`；实现与验收边界见 [HERO-ANIMATION-REBUILD.md](docs/HERO-ANIMATION-REBUILD.md)。历史尺寸、握持记录见 [FRAME-CONTINUITY-POLISH.md](docs/FRAME-CONTINUITY-POLISH.md)。
 
 ## 启动
 

@@ -40,18 +40,16 @@ public static class ActorRegistrationChecks
                 if(state==9){g.dashTime=.1f;Set(g,"dashDirection",Directions[direction]);}if(state==10)g.guardTime=1;if(state==11)g.playerHitTime=.1f;if(state==12)g.deathTime=.7f;
                 Point pixel=new Point(54+state*96,210+weapon*190);Place(app,g.Position,pixel);
                 var calls=Draw(app,"DrawPlayerActor");Density(calls,.75f);var actors=calls.Where(ActorTexture).ToArray();Check(actors.Length>0,"Playable actor has no visible pixels");
-                if(state!=12)
-                {
-                    var face=actors.Last();Check(face.texture.name.EndsWith("/WalkVanguard"),"All classes use the playable blonde identity");
-                    Check(Math.Abs(face.rect.width-42)<.001f&&Math.Abs(face.rect.height-42)<.001f,"Player face changes size across actions");
-                    if(state<=4)Check(Math.Abs(face.rect.x-(pixel.x-21))<1.1f&&Math.Abs(face.rect.y-(pixel.y-75))<1.1f,"Walking head cannot bob or shift between steps");
-                }
-                else Check(actors.All(c=>!c.texture.name.EndsWith("/WalkVanguard")),"A fallen body may not wear a floating standing head");
+                var expected=HeroAnimationState.Select(g);
+                Check(actors.Length==1&&actors[0].texture.name.EndsWith("/"+expected.atlas),"One complete authored frame must carry the blond identity and its own equipment");
+                var body=actors[0];
+                Check(Math.Abs(body.rect.width-192)<.001f&&Math.Abs(body.rect.height-192)<.001f&&Math.Abs(Math.Abs(body.uv.width)-.25f)<.0001f&&Math.Abs(body.uv.height-1f/3)<.0001f,"A whole-body cell cannot be split into head/torso rectangles");
+                Check(Math.Abs(body.rect.x-(pixel.x-96))<.001f&&Math.Abs(body.rect.y-(pixel.y-180))<.001f,"All authored frames retain the exact foot pivot, including death");
                 Caption(pixel,states[state]);total++;
             }
             GUI.Export(folder,"review-registered-player-"+direction);
         }
-        Console.WriteLine("PASS "+total+" player combinations: exact foot/canvas density, fixed blonde head, four directions, contact, guard, recoil and death");
+        Console.WriteLine("PASS "+total+" player combinations: exact foot/canvas density, whole authored blonde body, four directions, contact, guard, recoil and death");
     }
     static void Companions(FrontierRuntime app,string folder)
     {

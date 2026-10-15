@@ -59,43 +59,54 @@ namespace Starfall
             Atlas(sheet, columns, rows, frame, new Rect(foot.x - size / 2, foot.y - size * 120 / 128, size, size), color, flip, angle);
         }
         private void DrawPlayerPreview(int equipment, float x, float y, float size)
-        { HumanActor(playerSheets[(int)GameCore.Clamp(equipment,0,2)],4,3,0,new Point(x,y),size/192,Color.white,false,walkSheets[0],0,true); }
+        { Texture2D sheet = playerSheets[(int)GameCore.Clamp(equipment,0,2)]; Actor(sheet,4,3,0,new Point(x,y),ActorCanvas(sheet,4,size/192),Color.white); }
         private void DrawPlayerActor()
         {
             Point p = ScreenPoint(Game.Position); if(!drawingOutline)Box(p.x - 17, p.y - 3, 34, 7, new Color(.025f, .04f, .07f, .38f));
             if (Game.racing && !drawingOutline) PropImage("skiff", 0, p.x - 51, p.y - 68, 102, 118);
-            int look = Game.AppearanceWeapon, pose = Game.PlayerPose;
+            int look = Game.AppearanceWeapon;
             if (playerSheets == null || playerSheets[look] == null) { DrawLegacyHero(); return; }
             Point direction = Game.VisualFacing;
             Color tint = Game.playerFlash > 0 ? new Color(1.5f, 1.5f, 1.5f) : Color.white;
             if (Game.invulnerable > 0 && !Game.Dying && Game.playerFlash <= 0) tint.a = .65f + .35f * (float)Math.Abs(Math.Sin(clock * 16));
-            Texture2D sheet = playerSheets[look]; int frame = pose;
-            if (pose >= 2 && pose <= 3 && walkSheets[look] != null)
-            {
-                int row = GameCore.DirectionRow(direction);
-                sheet = walkSheets[look]; frame = row * 4 + Game.WalkFrame;
-                HumanActor(sheet,4,3,frame,p,.75f,tint,row==0&&direction.x<0,walkSheets[0],row*4,true);
-                if(!drawingOutline&&Game.playerFlash>0)HumanActor(sheet,4,3,frame,p,.75f,new Color(1,1,1,Game.playerFlash/.09f*.86f),row==0&&direction.x<0,walkSheets[0],row*4,true,true);
-            }
-            else
-            {
-                int facingRow=GameCore.DirectionRow(direction);bool resting=pose<=1;
-                if(resting){frame=facingRow==1?1:0;if(facingRow==2&&walkSheets[look]!=null){sheet=walkSheets[look];frame=8;}}
-                bool rear = playerRear != null && direction.y < -Math.Abs(direction.x) && pose >= 2 && pose <= 7;
-                if (rear) { sheet = playerRear; frame = look * 4 + (pose < 4 ? pose - 2 : pose == 4 || pose == 6 ? 2 : 3); }
-                bool south = playerSouth != null && direction.y > Math.Abs(direction.x) && pose >= 4 && pose <= 7;
-                if (south)
-                {
-                    sheet = playerSouth; frame = look * 4 + pose - 4;
-                }
-                if(pose>=8&&facingRow!=0){Texture2D reaction=facingRow==1?playerReactionsRear:playerReactionsSouth;if(reaction!=null){sheet=reaction;frame=look*4+(pose==8?0:pose==9?1:pose==10?2:3);}}
-                bool flip=!rear&&!south&&facingRow==0&&direction.x<-.1f;
-                HumanActor(sheet,4,3,frame,p,.75f,tint,flip,walkSheets[0],facingRow*4,resting,false,Game.Dying);
-                if(!drawingOutline&&Game.playerFlash>0)HumanActor(sheet,4,3,frame,p,.75f,new Color(1,1,1,Game.playerFlash/.09f*.86f),flip,walkSheets[0],facingRow*4,false,true,Game.Dying);
-            }
+            HeroVisualFrame selected = HeroAnimationState.Select(Game);
+            DrawWholeHero(selected, p, tint);
             if (!drawingOutline && Game.save.upgrades > 0 && !Game.Dying)
             { Point rune=p+new Point(direction.x<0?-24:24,-26);Atlas(effectSheet,4,4,13,new Rect(rune.x-7,rune.y-7,14,14),new Color(1,.83f,.54f,Math.Min(.8f,.3f+Game.save.upgrades*.09f))); }
             if (!drawingOutline && Game.guardTime > 0 && !Game.Dying) Ring(Game.Position, .44f, new Color(.76f, .87f, .73f, .65f), 20);
+        }
+        private Texture2D HeroAtlas(string name)
+        {
+            for (int i = 0; i < 3; i++)
+            {
+                if (name == HeroAnimationState.Atlases[i]) return playerSheets[i];
+                if (name == HeroAnimationState.Atlases[i + 3]) return walkSheets[i];
+            }
+            if (name == "PlayerRear") return playerRear;
+            if (name == "PlayerSouth") return playerSouth;
+            if (name == "PlayerReactionsRear") return playerReactionsRear;
+            if (name == "PlayerReactionsSouth") return playerReactionsSouth;
+            throw new InvalidOperationException("Unknown whole-body hero atlas: " + name);
+        }
+        private void DrawWholeHero(HeroVisualFrame selected, Point foot, Color tint)
+        {
+#if UNITY_5_3_OR_NEWER
+            // Native SpriteRenderer/Animator output occupies the original sorted
+            // actor slot. A screen-space renderer would be hidden by IMGUI terrain.
+            RenderTexture target = nativeHero.Render(selected, drawingOutline ? new Color(1, .56f, .35f, .9f) : tint, drawingOutline,
+                !drawingOutline && Game.playerFlash > 0 ? Game.playerFlash / .09f * .86f : 0);
+            Color previous = GUI.color;
+            try { GUI.color = Color.white; GUI.DrawTexture(new Rect(foot.x - 96, foot.y - 180, 192, 192), target); }
+            finally { GUI.color = previous; }
+#else
+            // Offline draw-call evidence uses the identical whole cell and foot.
+            // This branch cannot certify native Animator or GPU behavior.
+            Texture2D sheet = HeroAtlas(selected.atlas);
+            Actor(sheet, 4, 3, selected.frame, foot, 192, tint, selected.flip);
+            if (!drawingOutline && Game.playerFlash > 0)
+                Actor(art.FlashMask(sheet), 4, 3, selected.frame, foot, 192,
+                    new Color(1, 1, 1, Game.playerFlash / .09f * .86f), selected.flip);
+#endif
         }
         private int EnemyPose(Enemy e)
         {

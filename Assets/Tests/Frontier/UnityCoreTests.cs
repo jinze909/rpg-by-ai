@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void HeroFullBodyContactsFollowRealAttackAndTechnique(){CoreChecks.HeroFullBodyContactsFollowRealAttackAndTechnique(Data());}
+        [Test] public void HeroFullBodyRecoveryAndReactionsKeepActualEquipment(){CoreChecks.HeroFullBodyRecoveryAndReactionsKeepActualEquipment(Data());}
+        [Test] public void HeroFullBodyLastDodgeAndDeathKeepCapturedFacing(){CoreChecks.HeroFullBodyLastDodgeAndDeathKeepCapturedFacing(Data());}
+        [Test] public void HeroFullBodySelectionPreservesPauseHitStopAndSaveState(){CoreChecks.HeroFullBodySelectionPreservesPauseHitStopAndSaveState(Data());}
         [Test] public void FieldcraftAcceptanceKeepsAdaPracticeAndRequiresEarnedLocalWorld(){CoreChecks.FieldcraftAcceptanceKeepsAdaPracticeAndRequiresEarnedLocalWorld(Data());}
         [Test] public void FieldcraftAllThreeProfessionsEarnActualSwordBowStaffAndReport(){CoreChecks.FieldcraftAllThreeProfessionsEarnActualSwordBowStaffAndReport(Data());}
         [Test] public void FieldcraftBowRequiresOneFocusedArrowAndCapturedGear(){CoreChecks.FieldcraftBowRequiresOneFocusedArrowAndCapturedGear(Data());}

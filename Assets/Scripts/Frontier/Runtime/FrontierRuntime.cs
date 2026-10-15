@@ -10,6 +10,9 @@ namespace Starfall
         private const float Width = 1280, Height = 800, Tile = 36;
         public GameCore Game { get; private set; }
         private PixelArt art;
+#if UNITY_5_3_OR_NEWER
+        private FrontierHeroPresenter nativeHero;
+#endif
         private FrontierAudio audioSystem;
         private Texture2D hero, titleArt, portraits, worldProps;
         private Font font;
@@ -49,6 +52,9 @@ namespace Starfall
                 art = new PixelArt(); hero = Resources.Load<Texture2D>("Frontier/ViolaMoves");
                 titleArt = Resources.Load<Texture2D>("Frontier/Art/TitleVista"); portraits = Resources.Load<Texture2D>("Frontier/Art/Portraits"); worldProps = Resources.Load<Texture2D>("Frontier/Art/WorldProps");
                 LoadVisuals();
+#if UNITY_5_3_OR_NEWER
+                nativeHero = new FrontierHeroPresenter(gameObject);
+#endif
                 font = Resources.Load<Font>("Frontier/Fonts/NotoSansSC-Regular");
                 if (font == null) font = Font.CreateDynamicFontFromOSFont(new[] { "Microsoft YaHei", "PingFang SC", "Noto Sans CJK SC", "Arial" }, 18);
                 audioSystem = new FrontierAudio(gameObject); selectedClass = Game.save.profession;
@@ -58,7 +64,7 @@ namespace Starfall
         }
         private void Update()
         {
-            if (Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
+            if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
             clock += Time.unscaledDeltaTime; Resize();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);
             moving = movement.Length > .1f;
@@ -123,6 +129,7 @@ namespace Starfall
         { return new Point((Input.mousePosition.x - offsetX) / scale, (Screen.height - Input.mousePosition.y - offsetY) / scale); }
         private bool Save()
         {
+            if (bootError != null) return false;
             if (VisualReviewActive) return true;
             if (Game == null || !Game.Has("intro")) return false;
             Game.PrepareSave();
@@ -133,7 +140,13 @@ namespace Starfall
         private void OnApplicationFocus(bool focused)
         { if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }
-        private void OnDestroy() { if (art != null) art.Dispose(); if (audioSystem != null) audioSystem.Dispose(); }
+        private void OnDestroy()
+        {
+#if UNITY_5_3_OR_NEWER
+            if (nativeHero != null) nativeHero.Dispose();
+#endif
+            if (art != null) art.Dispose(); if (audioSystem != null) audioSystem.Dispose();
+        }
 
         private void OnGUI()
         {
@@ -144,7 +157,7 @@ namespace Starfall
         private void DrawGUI()
         {
             Resize(); GUI.matrix = Matrix4x4.TRS(new Vector3(offsetX, offsetY, 0), Quaternion.identity, new Vector3(scale, scale, 1));
-            if (Game == null) { GUI.Label(new Rect(30, 30, 1100, 500), bootError ?? "Loading Starfall Frontier…"); return; }
+            if (bootError != null || Game == null) { GUI.Label(new Rect(30, 30, 1100, 500), bootError ?? "Loading Starfall Frontier…"); return; }
             // Update handles keyboard navigation; IMGUI must not activate a second focused button.
             if (Event.current.type == EventType.KeyDown || Event.current.type == EventType.KeyUp) Event.current.Use();
             BeginControls();

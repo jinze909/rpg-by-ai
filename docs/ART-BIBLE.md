@@ -63,7 +63,11 @@ UI 沿用靛蓝面板、金铜边、米白字、青绿状态；每种主要武�
 
 重新打包图集需要 Python 3、Pillow、NumPy、SciPy：`python3 tools/pack_visual_atlases.py`。随后运行 `python3 tools/sync_unity_meta.py` 和 `python3 tools/check_visual_assets.py`。正常在Unity运行已打包的工程不需要Python或这些库。
 
-## 连贯性规范（2026-10-06）
+## 主角路径修订（2026-10-15）
+
+三职业主角使用已接受图集的完整身体帧，禁止再挖除头部后贴入 `WalkVanguard` 矩形。旧矩形包含肩甲、手臂与武器像素，是割裂的根因。原身份、修复图、256画布、脚底与动作时钟不变；同伴的既有实现不在本次替换范围。正式主角路径改为 SpriteRenderer + Animator 的完整帧输出，透明合成回原世界排序槽位。以下独立头部段落保留作历史记录，不再约束主角生产路径。新路径、A–E 门槛及尚未完成的原生验收见 [HERO-ANIMATION-REBUILD.md](HERO-ANIMATION-REBUILD.md)。
+
+## 连贯性规范（2026-10-06，主角显示已由上节替代）
 
 本场景的动画由生产 Core 的时钟和 OnGUI 图格驱动。不要向未使用的 SampleScene Animator 添加层或事件来替代实际修复。对应关系是：基础移动状态、攻击阶段、受击优先级、死亡状态；像素图格直接切换，不做全身缩放、时间驱动的身体上下跳或虚假的视觉位移。
 

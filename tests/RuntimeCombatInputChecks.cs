@@ -334,7 +334,7 @@ public static class RuntimeCombatInputChecks
         return row * 4 + column;
     }
 
-    private static void CheckPlayerDrawing(FrontierRuntime app, string sheet, int frame, Point direction, bool head = true)
+    private static void CheckPlayerDrawing(FrontierRuntime app, string sheet, int frame, Point direction, bool living = true)
     {
         GUI.commands.Clear(); GUI.textureCalls.Clear(); GUI.buttonCalls.Clear();
         Call(app, "DrawPlayerActor");
@@ -342,12 +342,17 @@ public static class RuntimeCombatInputChecks
             && !draw.texture.name.Contains("Effects"));
         Check(body != null && body.texture.name == "resource:Frontier/Art/" + sheet && DrawnFrame(body) == frame,
             "Actual player rendering must select " + sheet + " frame " + frame);
-        if (head)
-        {
-            var identity = GUI.textureCalls.Find(draw => draw.texture.name == "resource:Frontier/Art/WalkVanguard");
-            Check(identity != null && DrawnFrame(identity) == GameCore.DirectionRow(direction) * 4,
-                "Equipment and action transitions keep the canonical head and its facing source");
-        }
+        var whole = GUI.textureCalls.FindAll(draw => draw.texture.name.StartsWith("resource:Frontier/Art/")
+            && !draw.texture.name.Contains("Effects") && !draw.texture.name.Contains("/ActorMasks/"));
+        Point foot = (Point)Call(app, "ScreenPoint", app.Game.Position);
+        Check(whole.Count == 1 && body.rect.width == 192 && body.rect.height == 192
+            && Math.Abs(Math.Abs(body.uv.width) - .25f) < .0001f && Math.Abs(body.uv.height - 1f / 3) < .0001f,
+            "Every action uses one complete accepted body frame, with no cropped head or foreign shoulder fragments");
+        Check(Math.Abs(body.rect.x - (foot.x - 96)) < .001f && Math.Abs(body.rect.y - (foot.y - 180)) < .001f,
+            "The complete body retains its original fixed foot throughout contact, walking, dodge and reaction");
+        Check((body.uv.width < 0) == (GameCore.DirectionRow(direction) == 0 && direction.x < -.1f),
+            "Whole-body mirroring retains the captured action/reaction direction");
+        Check(living == !app.Game.Dying, "The drawing expectation retains actual living/death state");
         // These checks validate source selection, not anatomy or user art acceptance.
     }
 
@@ -404,7 +409,7 @@ public static class RuntimeCombatInputChecks
             CheckPlayerDrawing(app, equipped == 1 ? "WalkRanger" : "WalkArcanist",
                 row * 4 + app.Game.WalkFrame, direction);
         }
-        Console.WriteLine("PASS Actual standing Q and moving recovery use skill/equipped body sheets with the same canonical head");
+        Console.WriteLine("PASS Actual standing Q and moving recovery use skill/equipped body sheets with the same whole-body foot anchor");
     }
 
     private static void RecoveryHitAndDeathRetainVisibleEquipment(FrontierRuntime app)
@@ -480,7 +485,7 @@ public static class RuntimeCombatInputChecks
             Check(!app.Game.ActuallyMoving && app.Game.PlayerPose != 8,
                 "The next ordinary stationary tick releases the final dodge presentation");
         }
-        Console.WriteLine("PASS Actual final-dodge body/head sources and mirroring for all class/direction selections; no extra walk contact");
+        Console.WriteLine("PASS Actual final-dodge whole-body sources and mirroring for all class/direction selections; no extra walk contact");
     }
 
     private static void FinalDodgeStepYieldsToAcceptedCombatInput(FrontierRuntime app)
