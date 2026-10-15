@@ -208,6 +208,11 @@ public static class RuntimeReachShoreChecks
             }
         }
         Check(canonical.Count==47,"Independent eight-neighbour normalization has exactly47 valid topologies");
+        // Legacy lighting creates soft_glow on its first non-minimal FX draw.
+        // CaptureScenarios used to warm it incidentally, hiding this fixture
+        // dependency in local capture runs. Prepare that unrelated FX cache
+        // explicitly; keep the strict total-cache/ownership assertion below.
+        art.Glow();
         Prepare(app);Draw(app);int owned=Owned(art).Count,cache=Cache(art).Count;
         for(int step=0;step<24;step++)
         {
