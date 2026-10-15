@@ -109,6 +109,7 @@ namespace Starfall
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
             ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetCommissionTransient(); ResetShelterTransient();
+            ClearFieldcraftTransient();
         }
         public void NewGame(int profession)
         {
@@ -362,7 +363,9 @@ namespace Starfall
             bool broke = e.stagger >= (e.boss ? 95 : 30);
             if (broke) { e.stagger = 0; e.staggerRecovery = e.boss ? 4 : 2; e.stun = e.boss ? 1.1f : 1.7f; e.state = 0; e.timer = 1; effects.Add(new Effect("break", e.Position, .7f, L("破势", "BREAK"))); }
             OnSparringContact(e, profile, broke, !technique && e.kind == 2 && approach.x * e.facing.x + approach.y * e.facing.y < -.45f);
+            float fieldcraftHealthBefore = e.hp;
             e.hp -= damage; e.flash = .09f; e.hitTime = .18f; e.recoil = attackDirection ?? (e.Position - Position).Normalized;
+            OnFieldcraftContact(e, profile, fieldcraftHealthBefore);
             effects.Add(new Effect(e.kind == 2 || e.boss ? "spark" : "impact", e.Position, .22f) { direction = e.recoil });
             if (!save.reducedMotion) { hitStop = Math.Max(hitStop, technique ? .05f : .025f); impactShake = Math.Max(impactShake, technique ? .12f : profile.weapon == 0 && profile.combo == 2 ? .07f : 0); }
             effects.Add(new Effect("number", e.Position, .7f, (crit ? "! " : "") + ((int)damage)));
@@ -711,6 +714,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseFieldcraft(action)) return;
             if (ChooseShelter(action)) return;
             if (ChooseCommission(action)) return;
             if (ChooseHomeward(action)) return;

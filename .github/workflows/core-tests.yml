@@ -41,3 +41,5 @@ jobs:
         run: python3 tools/run_commission_checks.py
       - name: Check Sen's shelter trail with production walking, wind, cold, dialogue and saves
         run: python3 tools/run_shelter_trail_checks.py
+      - name: Check Ada's field notes with real weapon contacts, input, menus and saves
+        run: python3 tools/run_fieldcraft_checks.py

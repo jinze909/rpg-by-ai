@@ -6,6 +6,16 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void FieldcraftAcceptanceKeepsAdaPracticeAndRequiresEarnedLocalWorld(){CoreChecks.FieldcraftAcceptanceKeepsAdaPracticeAndRequiresEarnedLocalWorld(Data());}
+        [Test] public void FieldcraftAllThreeProfessionsEarnActualSwordBowStaffAndReport(){CoreChecks.FieldcraftAllThreeProfessionsEarnActualSwordBowStaffAndReport(Data());}
+        [Test] public void FieldcraftBowRequiresOneFocusedArrowAndCapturedGear(){CoreChecks.FieldcraftBowRequiresOneFocusedArrowAndCapturedGear(Data());}
+        [Test] public void FieldcraftStaffCountsDistinctLiveBlastContactsIncludingLethal(){CoreChecks.FieldcraftStaffCountsDistinctLiveBlastContactsIncludingLethal(Data());}
+        [Test] public void FieldcraftOnlyRegisteredPostAcceptanceBasicsCount(){CoreChecks.FieldcraftOnlyRegisteredPostAcceptanceBasicsCount(Data());}
+        [Test] public void FieldcraftConcurrentActionsKeepIndependentOwnershipAndSafeRoomsStayExcluded(){CoreChecks.FieldcraftConcurrentActionsKeepIndependentOwnershipAndSafeRoomsStayExcluded(Data());}
+        [Test] public void FieldcraftWhiffsCanceledWindupsPauseAndExpiredContactsStayUnpaid(){CoreChecks.FieldcraftWhiffsCanceledWindupsPauseAndExpiredContactsStayUnpaid(Data());}
+        [Test] public void FieldcraftPartialContactsResetAcrossWorldBoundariesButNotesPersist(){CoreChecks.FieldcraftPartialContactsResetAcrossWorldBoundariesButNotesPersist(Data());}
+        [Test] public void FieldcraftReportingRechecksLocalSafetyModesAndPaysExactlyOnce(){CoreChecks.FieldcraftReportingRechecksLocalSafetyModesAndPaysExactlyOnce(Data());}
+        [Test] public void FieldcraftJournalLegacyAndQuestPrefixRemainCompatible(){CoreChecks.FieldcraftJournalLegacyAndQuestPrefixRemainCompatible(Data());}
         [Test] public void ShelterAcceptanceRetainsKeeperPersonalStoryAndExplicitCompanion(){CoreChecks.ShelterAcceptanceRetainsKeeperPersonalStoryAndExplicitCompanion(Data());}
         [Test] public void ShelterLocalActionsRequireLitBraziersAndOrderedRealMarks(){CoreChecks.ShelterLocalActionsRequireLitBraziersAndOrderedRealMarks(Data());}
         [Test] public void ShelterAllStartersWalkThreeRealLegsAndEarnAChosenRoad(){CoreChecks.ShelterAllStartersWalkThreeRealLegsAndEarnAChosenRoad(Data());}

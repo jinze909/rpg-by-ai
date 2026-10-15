@@ -90,7 +90,7 @@ namespace Starfall
         {
             if (Dying) return;
             if (save.room != 0 || mode == "title") { Notify("回到余烬镇，在训练场重新练习。", "Return to Emberfall to use the practice yard."); return; }
-            if (practicing) return; Close(); ResetCombatPresentation(); practicing = true; practiceStage = 0; practiceReturn = Position;
+            if (practicing) return; Close(); ClearFieldcraftTransient(); ResetCombatPresentation(); practicing = true; practiceStage = 0; practiceReturn = Position;
             enemies.Clear(); projectiles.Clear(); hazards.Clear(); save.x = 14; save.y = 13; invulnerable = 0; save.energy = 100;
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0; ClearFrost();
             PracticeEnemy(); Notify("训练场：先命中练习木桩。练习不会损失生命或物资。", "Practice yard: hit the dummy. Health and supplies are safe.");
@@ -131,7 +131,7 @@ namespace Starfall
         }
         private bool TalkPolish(WorldObject o)
         {
-            if (o.kind == "mentor") { Dialog(o.name, o.en, "先练习命中，再观察预告并闪避，最后用职业技能完成挑战。训练无伤害，不消耗物资；首次完成获得技能点1、硬币15。", "Hit a dummy, read a telegraph and dodge, then land your class technique. Practice costs no health or supplies. First clear: 1 point and 15 coins.", C("开始练习", "Start practice", "practice"), C("稍后", "Later", "close"), C("战术训练", "Tactical sparring", "sparring_menu")); return true; }
+            if (o.kind == "mentor") { Dialog(o.name, o.en, "先练习命中，再观察预告并闪避，最后用职业技能完成挑战。训练无伤害，不消耗物资；首次完成获得技能点1、硬币15。", "Hit a dummy, read a telegraph and dodge, then land your class technique. Practice costs no health or supplies. First clear: 1 point and 15 coins.", C("开始练习", "Start practice", "practice"), C("稍后", "Later", "close"), C("战术训练", "Tactical sparring", "sparring_menu"), C("实战记录", "Field notes", "fieldcraft_offer")); return true; }
             if (o.kind == "returnscout")
             {
                 if (!Has("scout_saved")) return true;

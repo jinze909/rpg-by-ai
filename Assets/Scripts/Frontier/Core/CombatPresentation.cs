@@ -111,6 +111,7 @@ namespace Starfall
             playerAction = new ActorAction { kind = kind, damage = damage, duration = duration, contact = contact,
                 direction = aim, target = aimTarget, weapon = kind == "skill" ? save.profession : save.weapon, equippedWeapon = save.weapon, profession = save.profession, style = Style, combo = combo, technique = save.technique,
                 impact = CaptureImpact(kind == "skill" ? save.profession : save.weapon,kind == "attack" ? combo : 0,true,counter) };
+            RegisterFieldcraftAction(playerAction);
         }
         private void TickAction(float dt)
         {
@@ -167,6 +168,7 @@ namespace Starfall
         }
         private void BeginDeath()
         {
+            ClearFieldcraftTransient();
             fallenPlayerWeapon=AppearanceWeapon;fallenPlayerFacing=VisualFacing;
             CancelAction(); companionAction = null; dashTime = 0; deathTime = .9f; hitStop = 0;
             Flag("recovery_pending"); // A quit during the death pose resumes safely at the inn.

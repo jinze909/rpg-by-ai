@@ -80,8 +80,8 @@ public static class RuntimeSparringChecks
     private static Point Start(FrontierRuntime app, string suffix = "", bool pad = false)
     {
         InteractMentor(app, pad); var g = app.Game;
-        Check(g.conversation.choices.Length == 3 && g.conversation.choices[0].action == "practice" && g.conversation.choices[1].action == "close"
-            && g.conversation.choices[2].action == "sparring_menu", "The two original mentor choices keep their actions and numbers before the appended Alpha3 option");
+        Check(g.conversation.choices.Length >= 3 && g.conversation.choices[0].action == "practice" && g.conversation.choices[1].action == "close"
+            && g.conversation.choices[2].action == "sparring_menu", "All three mature mentor choices keep their actions and numbers before any appended field-note choice");
         Point origin = g.Position; Choose(app, "sparring_menu", "mentor" + suffix); Choose(app, "sparring_start", "instructions" + suffix);
         Check(g.mode == "world" && g.SparringActive && g.practicing && g.SparringStage == 0 && !g.SparringAwaitingNext && !g.SparringFinished,
             "The actual E/B, Alpha3 and numbered instruction choice starts the safe first drill");

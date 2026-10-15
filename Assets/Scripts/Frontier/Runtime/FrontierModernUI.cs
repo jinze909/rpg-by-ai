@@ -6,6 +6,7 @@ namespace Starfall
     {
         private int selectedItem, selectedQuest, selectedRegion = -1, helpTopic, dialoguePage, recordsPage, mapPage, lastMapRegion = -1;
         private Conversation lastConversation;
+        private readonly RectOffset questRowPadding = new RectOffset(6, 6, 0, 0);
         private readonly string[] menuModes = { "inventory", "loadout", "talents", "companions", "journal", "map", "camp", "bounties", "help" };
         private readonly string[] menuZh = { "冒险背包", "遗物配装", "职业成长", "同行伙伴", "任务手帐", "世界地图", "城镇建设", "公会悬赏", "冒险指南" };
         private readonly string[] menuEn = { "Inventory", "Relics", "Talents", "Companions", "Journal", "World map", "Town projects", "Contracts", "Field guide" };
@@ -220,7 +221,15 @@ namespace Starfall
             }
             if (journalTab == 2) { for (int i = 0; i < 3; i++) { float y = 229 + i * 100; Card(279, y, 938, 83); Text(303, y + 14, 855, 31, Game.L(GameCore.FactionNames[i], GameCore.FactionNamesEn[i]) + "  " + Game.save.reputation[i] + "/10", 20, gold); Bar(303, y + 59, 888, Game.save.reputation[i] / 10f, mint); } Text(282, 553, 925, 91, Game.L("共同治理条件：三份证词、建设总等级3、两名同伴、三方声望各2。协定影响补给、旅行和同伴指令。", "Shared governance: three reports, three project tiers, two companions, trust 2 with each faction. Covenants affect supplies, travel and commands."), 18, paper); Text(282, 663, 925, 31, Game.L("证词 ", "Reports ") + Game.Proofs + "/3  ·  " + Game.L("建设 ", "Projects ") + Game.ProjectTiers + "/3  ·  " + Game.L("同伴 ", "Companions ") + Game.CompanionCount + "/2", 16, muted); return; }
             float questSpacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
-            for (int i = 0; i < GameCore.QuestIds.Length; i++) { QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); if (Button(279, 226 + i * questSpacing, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
+            // Compact rows keep their existing hitboxes and full-size labels.
+            // Ordinary button padding would crop the glyphs as stories append.
+            RectOffset rowOriginalPadding = buttonStyle.padding;
+            try
+            {
+                if (questSpacing < 32) buttonStyle.padding = questRowPadding;
+                for (int i = 0; i < GameCore.QuestIds.Length; i++) { QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); if (Button(279, 226 + i * questSpacing, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
+            }
+            finally { buttonStyle.padding = rowOriginalPadding; }
             QuestGuide q = Game.GetQuest(GameCore.QuestIds[selectedQuest]); Card(625, 226, 592, 464); Text(650, 244, 541, 27, q.category + (q.complete ? Game.L(" · 已完成", " · COMPLETE") : ""), 12, gold); Text(650, 281, 541, 45, q.title, 26, paper); Text(650, 342, 541, 62, q.description, 17, muted); Text(650, 410, 541, 60, Game.L("下一步：", "Next: ") + q.next, 14, gold);
             float stepSpacing = Math.Min(34, 140f / Math.Max(1, q.steps.Count));
             for (int i = 0; i < q.steps.Count; i++) Text(650, 482 + i * stepSpacing, 542, stepSpacing, (q.steps[i].done ? "✓  " : "○  ") + q.steps[i].text, 15, q.steps[i].done ? mint : paper);

@@ -63,6 +63,7 @@ namespace Starfall
                 if (Game.RoadMealActive) rects.Add(RoadMealHudBounds(false));
                 if (Game.save.showGuidance && Game.TutorialStep < 8 && !Game.practicing) rects.Add(new Rect(24,474,298,204));
             }
+            if (FieldcraftCounterVisible) rects.Add(FieldcraftCounterBounds());
             rects.AddRange(worldOverlayRegions); return rects;
         }
         private List<Rect> HudPointerRegions()
@@ -71,7 +72,11 @@ namespace Starfall
             // Read-only status, Boss health and toast pass world input through.
             // The real action controls retain their pointer protection.
             hudPointerRegions.Clear();
-            if (!CombatHud) for (int i = 0; i < regions.Count - worldOverlayRegions.Count; i++) hudPointerRegions.Add(regions[i]);
+            if (!CombatHud)
+            {
+                for (int i = 0; i < regions.Count - worldOverlayRegions.Count; i++)
+                    if (!FieldcraftCounterVisible || !SameFieldcraftCounterRegion(regions[i])) hudPointerRegions.Add(regions[i]);
+            }
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
             AddSparringPointerRegions(hudPointerRegions);
             return hudPointerRegions;

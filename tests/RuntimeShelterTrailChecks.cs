@@ -205,7 +205,8 @@ public static class RuntimeShelterTrailChecks
             Screen.width=minimal?960:1920;Screen.height=minimal?600:1080;Call(app,"Resize");Set(app,"camera",g.Position);
             string suffix=(english?"-en":"-zh")+(large?"-large":"-normal")+(minimal?"-960-minimal":"-1920-rich");
             Key(app,KeyCode.Tab);Draw(app);int quest=Array.IndexOf(GameCore.QuestIds,"shelter");float spacing=Math.Min(46,464f/GameCore.QuestIds.Length);
-            Check(quest==16&&GameCore.QuestIds.Length==17,"Shelter appends seventeenth row after all sixteen mature quests");GUI.queuedClick=new Rect(279,226+quest*spacing,321,spacing-7);Draw(app,"journal"+suffix);Check(!GUI.queuedClick.HasValue,"Actual seventeenth row accepts its click");Draw(app,"objective"+suffix);
+            string[] matureQuests={"main","shore","ally1","ally2","ally3","personal0","personal1","personal2","bounty","secrets","watch","signal","archive","reach","homeward","commission","shelter"};
+            Check(quest==16&&GameCore.QuestIds.Length>=matureQuests.Length,"Shelter remains the seventeenth row after all sixteen mature quests");for(int i=0;i<matureQuests.Length;i++)Check(GameCore.QuestIds[i]==matureQuests[i],"Appended optional quests cannot renumber mature quest "+matureQuests[i]);GUI.queuedClick=new Rect(279,226+quest*spacing,321,spacing-7);Draw(app,"journal"+suffix);Check(!GUI.queuedClick.HasValue,"Actual seventeenth row accepts its click");Draw(app,"objective"+suffix);
             Check(Get<int>(app,"selectedQuest")==16&&HasText(g.L("下一步：","Next: ")+g.GetQuest("shelter").next),"Actual journal displays earned publication objective");
             var guide=g.GetQuest("shelter");Rect reward=TextBounds(guide.reward);
             foreach(var step in guide.steps)Check(!Overlap(TextBounds((step.done?"✓  ":"○  ")+step.text),reward),"Each actual progress step stays clear of the fixed reward band");
