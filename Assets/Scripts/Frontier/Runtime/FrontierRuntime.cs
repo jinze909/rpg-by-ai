@@ -312,7 +312,7 @@ namespace Starfall
             DrawFieldcraftWorld();
             if (!Game.save.reducedMotion && Game.save.effectsQuality > 0)
                 for (int i = 0; i < 18; i++) { float x = (i * 137 + Mathf.Sin(clock * .35f + i) * 45 + Width) % Width, y = (i * 83 - clock * 6 + Height * 100) % Height; Box(x, y, 2, 2, new Color(.96f, .87f, .6f, .45f)); }
-            DrawAtmosphere(); DrawPolishWorld();
+            DrawAtmosphere(); DrawForegroundThreatContours(); DrawPolishWorld();
             WorldObject near = Game.Nearest();
             if (near != null && Game.mode == "world" && Game.SafeTravel)
             {

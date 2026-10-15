@@ -83,6 +83,12 @@ namespace Starfall
         }
         private static bool OverlapsRegions(List<Rect> regions,Rect bounds)
         {foreach(Rect region in regions)if(Overlap(region,bounds))return true;return false;}
+        private static Rect WarningStrokeBounds(Rect bounds)
+        {
+            // The damage/legacy warning bounds remain exact. Only the visual
+            // HUD overlap includes the 7px stroke's outward half-width.
+            return new Rect(bounds.x-4,bounds.y-4,bounds.width+8,bounds.height+8);
+        }
         private Rect EnemyWarningBounds(Enemy enemy)
         {
             if(GameCore.IsCommissionGuardian(enemy))return CommissionWarningBounds(enemy);
@@ -105,8 +111,8 @@ namespace Starfall
             foreach (Projectile shot in Game.projectiles)
             { Point p = ScreenPoint(shot.position); p.y -= shot.height; if (Overlap(rect, new Rect(p.x-14,p.y-14,28,28))) return true; }
             foreach (Hazard hazard in Game.hazards)
-            { Point p = ScreenPoint(hazard.position); float size = hazard.radius * Tile; if (Overlap(rect, new Rect(p.x-size,p.y-size,size*2,size*2))) return true; }
-            foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && Overlap(rect,EnemyWarningBounds(enemy))) return true;
+            { Point p = ScreenPoint(hazard.position); float size = hazard.radius * Tile; if (Overlap(rect, WarningStrokeBounds(new Rect(p.x-size,p.y-size,size*2,size*2)))) return true; }
+            foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && Overlap(rect,WarningStrokeBounds(EnemyWarningBounds(enemy)))) return true;
             if (Game.ShelterWindWarning && Overlap(rect, ShelterWindBounds())) return true;
             return false;
         }
@@ -135,20 +141,21 @@ namespace Starfall
                 Point p = ScreenPoint(shot.position); p.y -= shot.height;
                 foreach (Rect rect in regions) if (Contains(rect,p)) { Frame(p.x-9,p.y-9,18,18,shot.friendly?mint:PixelArt.C("#df8a68")); break; }
             }
-            foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && OverlapsRegions(regions,EnemyWarningBounds(enemy)))
+            foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && OverlapsRegions(regions,WarningStrokeBounds(EnemyWarningBounds(enemy))))
             {
                 if(GameCore.IsCommissionGuardian(enemy)){DrawCommissionWarning(enemy,true);continue;}
                 if(GameCore.IsSignalWarden(enemy)){DrawSignalWarning(enemy,true);continue;}
-                if(!enemy.boss&&enemy.kind!=2){DrawEnemyWarning(enemy);continue;}
+                if(!enemy.boss&&enemy.kind!=2){DrawEnemyWarning(enemy);DrawEnemyDangerContour(enemy);continue;}
                 Point p=ScreenPoint(enemy.target);float radius=GameCore.EnemyAreaRadius(enemy);
-                foreach(Rect rect in regions) if(Overlap(rect,new Rect(p.x-radius*Tile,p.y-radius*Tile,radius*Tile*2,radius*Tile*2)))
+                foreach(Rect rect in regions) if(Overlap(rect,WarningStrokeBounds(new Rect(p.x-radius*Tile,p.y-radius*Tile,radius*Tile*2,radius*Tile*2))))
                 { Ring(enemy.target,radius,new Color(.87f,.54f,.41f,.8f),48);break; }
+                DrawEnemyDangerContour(enemy);
             }
             foreach (Hazard hazard in Game.hazards)
             {
                 Point p = ScreenPoint(hazard.position); float radius = hazard.radius * Tile;
-                if (OverlapsRegions(regions, new Rect(p.x-radius,p.y-radius,radius*2,radius*2)))
-                { Color color = HazardWarningColor(hazard); color.a = .8f; Ring(hazard.position,hazard.radius,color,48); }
+                if (OverlapsRegions(regions, WarningStrokeBounds(new Rect(p.x-radius,p.y-radius,radius*2,radius*2))))
+                { Color color = HazardWarningColor(hazard); color.a = .8f; Ring(hazard.position,hazard.radius,color,48); DrawHazardDangerContour(hazard); }
             }
         }
         private void DrawCombatHud()
