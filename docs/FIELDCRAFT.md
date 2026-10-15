@@ -38,4 +38,6 @@ Completed demonstrations persist across saves and travel. In-flight attacks and 
 
 The new shared Core checks exercise real three-class combat, captured attack ownership, exclusions, local handoff, once-only payment, guide routes and legacy saves. The production runtime runner is `python3 tools/run_fieldcraft_checks.py`; it uses actual Update input, equipment/crafting menus, numbered Ada dialogue, SaveStore/checksum and recorded OnGUI commands against offline Unity declarations. Existing combat, story, map and save suites remain enabled in CI.
 
+The offline rendering assertions require the original production actor masks to be materialized from Git LFS. CI fetches only `Assets/Resources/Frontier/Art/ActorMasks/*.png`; use `git lfs pull --include="Assets/Resources/Frontier/Art/ActorMasks/*.png" --exclude=""` after a checkout that skipped LFS. The runner rejects missing masks, pointer text and mismatched dimensions before compiling. No local pixel cache is required, and the silhouette and warning assertions remain enabled.
+
 **NATIVE_UNVERIFIED**: these checks and approximate font/layout previews do not certify native Unity import, compilation/build, GPU rendering, audio, hardware input or player feel. The existing Editor license limitation remains recorded in AI_STATE.md.

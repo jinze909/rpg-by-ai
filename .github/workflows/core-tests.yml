@@ -5,6 +5,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+      - name: Materialize production actor masks for offline rendering checks
+        run: git lfs pull --include="Assets/Resources/Frontier/Art/ActorMasks/*.png" --exclude=""
       - name: Check Unity metadata without rewriting assets
         run: python3 tools/check_unity_metadata.py && python3 -m unittest discover -s tests -p 'test_unity_metadata.py'
       - name: Install Mono
