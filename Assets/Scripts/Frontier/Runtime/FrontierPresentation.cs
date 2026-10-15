@@ -102,6 +102,7 @@ namespace Starfall
                 return;
             }
             if (!WaterSurface(tile)) return;
+            if (Game.save.room == GameCore.ReachRoom) { DrawReachShore(x,y,p); return; }
             Color foam = new Color(.73f, .83f, .72f, .62f), edge = new Color(.12f, .28f, .36f, .6f);
             if (y > 0 && !WaterSurface(Game.PresentationTile(x, y - 1))) { Box(p.x, p.y, Tile, 4, edge); Box(p.x + 2, p.y + 4, Tile - 4, 1, foam); }
             if (y + 1 < Game.Map.rows.Length && !WaterSurface(Game.PresentationTile(x, y + 1))) { Box(p.x, p.y + Tile - 4, Tile, 4, edge); Box(p.x + 2, p.y + Tile - 5, Tile - 4, 1, foam); }

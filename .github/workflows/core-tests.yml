@@ -35,6 +35,8 @@ jobs:
         run: python3 tools/run_guild_story_checks.py
       - name: Check expanded riverbank with production movement, interactions and saves
         run: python3 tools/run_reach_checks.py
+      - name: Check cached riverbank shores, pixel seams, live bridge topology and legacy saves
+        run: python3 tools/run_reach_shore_checks.py
       - name: Check viewport terrain, scenery continuity and fitted maps offline
         run: python3 tools/run_map_visibility_checks.py
       - name: Check mature boss attack commitment with production input, warnings and saves

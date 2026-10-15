@@ -52,6 +52,7 @@ namespace Starfall
                 art = new PixelArt(); hero = Resources.Load<Texture2D>("Frontier/ViolaMoves");
                 titleArt = Resources.Load<Texture2D>("Frontier/Art/TitleVista"); portraits = Resources.Load<Texture2D>("Frontier/Art/Portraits"); worldProps = Resources.Load<Texture2D>("Frontier/Art/WorldProps");
                 LoadVisuals();
+                art.PrewarmReachShores();
 #if UNITY_5_3_OR_NEWER
                 nativeHero = new FrontierHeroPresenter(gameObject);
 #endif
