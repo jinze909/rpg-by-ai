@@ -53,6 +53,7 @@ namespace Starfall
                 titleArt = Resources.Load<Texture2D>("Frontier/Art/TitleVista"); portraits = Resources.Load<Texture2D>("Frontier/Art/Portraits"); worldProps = Resources.Load<Texture2D>("Frontier/Art/WorldProps");
                 LoadVisuals();
                 art.PrewarmReachShores();
+                art.PrewarmContactShadow();
 #if UNITY_5_3_OR_NEWER
                 nativeHero = new FrontierHeroPresenter(gameObject);
 #endif
@@ -336,7 +337,7 @@ namespace Starfall
         private void DrawHero() { DrawPlayerActor(); }
         private void DrawLegacyHero()
         {
-            Point p = ScreenPoint(Game.Position); Box(p.x - 15, p.y - 1, 30, 7, new Color(.04f, .1f, .15f, .3f));
+            Point p = ScreenPoint(Game.Position); DrawContactShadow(p, 30, 7, -1, new Color(.04f, .1f, .15f, .3f));
             if (Game.racing) PropImage("skiff", 1, p.x - 42, p.y - 41, 84, 56);
             if (Game.guardTime > 0) Ring(Game.Position, .8f, mint, 20);
             if (hero == null) { PropImage("npc", 1, p.x - 28, p.y - 55, 56, 65); return; }

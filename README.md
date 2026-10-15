@@ -21,6 +21,8 @@
 
 ## 当前：统一视觉与战斗表现
 
+主角、三类普通怪、八地 Boss、居民和同伴的硬矩形落影改为提前缓存的透明椭圆，保留原脚底范围、色值、角色图格和排序；HUD 轮廓不重复画地面阴影。见 [CONTACT-SHADOWS.md](docs/CONTACT-SHADOWS.md)，原生效果仍为 `NATIVE_UNVERIFIED`。
+
 旧路河岸的水岸改为水格内的浅深过渡、沉水暗边与断续泡沫，随实际桥面邻接更新；行走只读取提前准备的遮罩，低特效保留岸缘信息。原地形、碰撞、路线与主角素材保留，原生验证仍为 `NATIVE_UNVERIFIED`，见 [REEDWATER-SHORE.md](docs/REEDWATER-SHORE.md)。
 
 危险范围新增景物后的静态轮廓：普通敌人、原 Boss 与环境危险使用暗底衬亮边，树冠、角色或 HUD 覆盖时仍补绘真实边界；最低特效也保留。伤害、半径、计时、存档和既有内容不变。验证与原生限制见 [THREAT-CONTOURS.md](docs/THREAT-CONTOURS.md)。

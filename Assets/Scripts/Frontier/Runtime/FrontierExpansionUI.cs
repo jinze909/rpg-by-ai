@@ -22,7 +22,7 @@ namespace Starfall
             int frame = north ? 8 : 0;
             if (action != null)
                 frame = north ? (action.released ? 7 : 6) : south ? (action.released ? 10 : 9) : action.released && action.kind == "command" && id != 1 ? 5 : action.released ? 4 : 3;
-            Box(p.x - 14, p.y - 3, 28, 6, new Color(.025f, .04f, .07f, .32f));
+            DrawContactShadow(p, 28, 6, -3, new Color(.025f, .04f, .07f, .32f));
             bool overlaps = Math.Abs(Game.companionPosition.x - Game.save.x) < .85f && Game.save.y <= Game.companionPosition.y && Game.save.y > Game.companionPosition.y - 1.8f;
             Color tint = overlaps ? new Color(1, 1, 1, .45f) : Color.white;
             if (Game.companionMoving && action == null && companionWalkSheets[id] != null)

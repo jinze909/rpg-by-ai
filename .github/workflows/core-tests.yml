@@ -19,6 +19,8 @@ jobs:
         run: python3 tools/run_combat_input_checks.py
       - name: Check foreground threat contours, real damage boundaries and HUD visibility
         run: python3 tools/run_threat_contour_checks.py
+      - name: Check cached actor contact shadows, retained frames, HUD isolation and real combat
+        run: python3 tools/run_contact_shadow_checks.py
       - name: Check optional patrol story with production runtime and saves
         run: python3 tools/run_watch_quest_checks.py
       - name: Check optional Warden trial with production runtime and saves

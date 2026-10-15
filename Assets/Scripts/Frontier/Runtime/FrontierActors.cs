@@ -62,10 +62,11 @@ namespace Starfall
         { Texture2D sheet = playerSheets[(int)GameCore.Clamp(equipment,0,2)]; Actor(sheet,4,3,0,new Point(x,y),ActorCanvas(sheet,4,size/192),Color.white); }
         private void DrawPlayerActor()
         {
-            Point p = ScreenPoint(Game.Position); if(!drawingOutline)Box(p.x - 17, p.y - 3, 34, 7, new Color(.025f, .04f, .07f, .38f));
-            if (Game.racing && !drawingOutline) PropImage("skiff", 0, p.x - 51, p.y - 68, 102, 118);
+            Point p = ScreenPoint(Game.Position);
             int look = Game.AppearanceWeapon;
             if (playerSheets == null || playerSheets[look] == null) { DrawLegacyHero(); return; }
+            DrawContactShadow(p, 34, 7, -3, new Color(.025f, .04f, .07f, .38f));
+            if (Game.racing && !drawingOutline) PropImage("skiff", 0, p.x - 51, p.y - 68, 102, 118);
             Point direction = Game.VisualFacing;
             Color tint = Game.playerFlash > 0 ? new Color(1.5f, 1.5f, 1.5f) : Color.white;
             if (Game.invulnerable > 0 && !Game.Dying && Game.playerFlash <= 0) tint.a = .65f + .35f * (float)Math.Abs(Math.Sin(clock * 16));
@@ -119,7 +120,7 @@ namespace Starfall
         {
             int bossRoom = BossArtRoom(e,Game.save.room);
             Point p = ScreenPoint(e.Position); float size = e.boss ? BossCanvasSize(bossRoom) : e.kind == 2 ? 106 : 96;
-            if(!drawingOutline)Box(p.x - size * .22f, p.y - 3, size * .44f, 7, new Color(.025f, .04f, .07f, .35f));
+            DrawContactShadow(p, size * .44f, 7, -3, new Color(.025f, .04f, .07f, .35f));
             if (Game.practicing && !Game.SparringActive)
             {
                 // The safe training rig still demonstrates a bodily wind-up and
@@ -177,7 +178,7 @@ namespace Starfall
         private void DrawNpc(string kind, Point position, int id = -1)
         {
             Point p = ScreenPoint(position);
-            Box(p.x - 13, p.y - 2, 26, 5, new Color(.025f, .04f, .07f, .32f));
+            DrawContactShadow(p, 26, 5, -2, new Color(.025f, .04f, .07f, .32f));
             bool occludes = Math.Abs(position.x - Game.save.x) < .85f && Game.save.y < position.y && Game.save.y > position.y - 1.8f;
             Actor(npcSheet, 4, 4, id < 0 ? NpcId(kind) : id, p, 96, occludes ? new Color(1, 1, 1, .45f) : Color.white);
         }
