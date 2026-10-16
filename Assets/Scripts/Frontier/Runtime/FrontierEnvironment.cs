@@ -17,6 +17,50 @@ namespace Starfall
         }
         private static int TileSeed(int x, int y, int room)
         { unchecked { int n = x * 73856093 ^ y * 19349663 ^ (room + 1) * 83492791; return n & 0x7fffffff; } }
+        private void DrawRegionalAir()
+        {
+            if (Game.save.reducedMotion || Game.save.effectsQuality <= 0) return;
+            int room = Game.save.room;
+            if (room != 3 && room != 6 && room != 7)
+            {
+                // Keep the existing woodland motes and all other regions exact.
+                for (int i = 0; i < 18; i++)
+                {
+                    float x = (i * 137 + Mathf.Sin(clock * .35f + i) * 45 + Width) % Width;
+                    float y = (i * 83 - clock * 6 + Height * 100) % Height;
+                    Box(x, y, 2, 2, new Color(.96f, .87f, .6f, .45f));
+                }
+                return;
+            }
+            // Analytic, sparse layers: no particles to spawn, accumulate or save.
+            // Use the same presentation clock as the old motes/snow, including
+            // menu backgrounds. Application/review pause still stops that clock.
+            bool snow = room == 7, sand = room == 6;
+            int count = snow ? 28 : sand ? 18 : 12;
+            if (Game.save.effectsQuality == 1) count /= 2;
+            Point origin = WorldOrigin;
+            for (int i = 0; i < count; i++)
+            {
+                int seed = TileSeed(i, room, room);
+                bool near = (i & 1) == 0;
+                float layer = near ? .35f : .15f, phase = seed % 997 * .01f;
+                float drift = snow ? (near ? 9 : 5) : sand ? (near ? 26 : 18) : 4;
+                float fall = snow ? (near ? 27 : 16) : sand ? -2 : -5;
+                float sway = (float)Math.Sin(clock * (snow ? .45f : .27f) + phase) * (snow ? 7 : 3);
+                float x = AirWrap(seed % 1301 + clock * drift + sway + origin.x * layer, Width + 48) - 24;
+                float y = AirWrap(seed / 1301 % 821 + clock * fall + origin.y * layer, Height + 48) - 24;
+                float edge = Mathf.Clamp01(Math.Min(Math.Min(x + 24, Width + 24 - x), Math.Min(y + 24, Height + 24 - y)) / 24);
+                float alpha = (snow ? (near ? .4f : .23f) : sand ? (near ? .23f : .13f) : (near ? .26f : .15f)) * edge;
+                x = (float)Math.Round(x); y = (float)Math.Round(y);
+                Color tint = snow ? new Color(.82f, .91f, .96f, alpha) : sand ? new Color(.71f, .58f, .38f, alpha) : new Color(.66f, .62f, .57f, alpha);
+                Box(x, y, snow ? (near ? 3 : 2) : sand ? (near ? 5 : 3) : 2, snow ? 2 : 1, tint);
+                // Tiny broken clusters, not opaque streaks across warning lines.
+                if (snow && near) Box(x + 1, y - 1, 1, 1, new Color(tint.r, tint.g, tint.b, alpha * .65f));
+                else if (!snow && i % 3 == 0) Box(x - 3, y + 1, sand ? 2 : 1, 1, new Color(tint.r, tint.g, tint.b, alpha * .45f));
+            }
+        }
+        private static float AirWrap(float value, float span)
+        { return value - (float)Math.Floor(value / span) * span; }
         private void DrawSurface(int x, int y, char tile, Point p)
         {
             if (terrainSheet == null) { Image(art.Tile(Game.ArtRoom, tile, (x * 7 + y * 11) % 4, PixelArt.C(Game.Map.color)), p.x, p.y, Tile + .5f, Tile + .5f); return; }
