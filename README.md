@@ -12,6 +12,8 @@
 
 飞行投射物经过 HUD 时，原方框提示改为沿真实飞行方向显示的暗衬亮边轮廓；低特效与减少动态保持可读，边缘擦过面板也会提示。原特效、本体/尾迹与战斗规则保留，见 [PROJECTILE-WITNESSES.md](docs/PROJECTILE-WITNESSES.md)。
 
+敌人受控期间，原血条旁保留静态金星提示，避免“破势”文字消失后看不出剩余机会；同样保留低特效和 HUD 遮挡可读性，见 [ENEMY-STUN-CUES.md](docs/ENEMY-STUN-CUES.md)。
+
 ## 启动
 
 1. **升级现有项目**：关闭 Unity，备份项目，覆盖包内 `Assets`、`Packages` 与 `ProjectSettings`；本轮也请更新 `ProjectSettings/ProjectVersion.txt`，清除旧的 C1 和 revision 信息。

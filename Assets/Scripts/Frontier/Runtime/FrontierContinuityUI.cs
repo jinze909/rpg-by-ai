@@ -107,7 +107,8 @@ namespace Starfall
             // projectile left. Keep its feedback readable over the resting hero.
             if (Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished)) return false;
             if (Overlap(rect, PlayerHudBounds())) return true;
-            foreach (Enemy enemy in Game.enemies) if (Overlap(rect, EnemyHudBounds(enemy))) return true;
+            foreach (Enemy enemy in Game.enemies)
+                if (Overlap(rect, EnemyHudBounds(enemy)) || EnemyStunVisible(enemy) && Overlap(rect, EnemyStunBounds(enemy))) return true;
             foreach (Projectile shot in Game.projectiles)
                 if (Overlap(rect, ProjectileHudBounds(shot))) return true;
             foreach (Hazard hazard in Game.hazards)
@@ -126,8 +127,9 @@ namespace Starfall
         {
             if (Game.mode != "world") return;
             if (Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished)) return;
-            // Only the alpha edge is redrawn above the HUD. World art remains
-            // visible through the faded background; resource text stays legible.
+            // Actor edges and compact status marks are repeated above the HUD.
+            // World art stays visible through its faded background, with no
+            // opaque duplicate bodies covering the resource text.
             List<Rect> regions = HudRegions();drawingOutline = true;
             try
             {
@@ -135,6 +137,8 @@ namespace Starfall
                 if (OverlapsRegions(regions,PlayerHudBounds())) DrawPlayerActor();
             }
             finally { drawingOutline = false; }
+            foreach (Enemy enemy in Game.enemies)
+                if (EnemyStunVisible(enemy) && OverlapsRegions(regions, EnemyStunBounds(enemy))) DrawEnemyStunIndicator(enemy);
             if (Game.ShelterWindWarning && OverlapsRegions(regions, ShelterWindBounds())) DrawShelterWind(true);
             foreach (Projectile shot in Game.projectiles)
                 if (OverlapsRegions(regions, ProjectileHudBounds(shot))) DrawProjectileWitness(shot);

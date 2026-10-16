@@ -116,10 +116,39 @@ namespace Starfall
         {
             DrawEnemyActor(enemy);
             if(Game.practicing&&!Game.SparringActive)return;
+            DrawEnemyStunIndicator(enemy);
             if(!Game.SparringActive&&!enemy.boss&&enemy.hp>=enemy.maxHp&&enemy.state!=1)return;
             Point p=ScreenPoint(enemy.Position);float width=enemy.boss?104:52,top=p.y-(enemy.boss?135:enemy.kind==0?54:79);
             Bar(p.x-width/2,top,width,enemy.hp/enemy.maxHp,PixelArt.C("#d58e79"),4);
             if(enemy.stagger>0)Bar(p.x-width/2,top+6,width,enemy.stagger/(enemy.boss?95:30),mint,2);
+        }
+        private bool EnemyStunVisible(Enemy enemy)
+        {
+            return Game.mode=="world"&&enemy.hp>0&&enemy.stun>0&&
+                !(Game.practicing&&!Game.SparringActive)&&
+                !(Game.SparringActive&&(Game.SparringAwaitingNext||Game.SparringFinished));
+        }
+        private Rect EnemyStunBounds(Enemy enemy)
+        {
+            Point p=ScreenPoint(enemy.Position);
+            // Stable feet/bar anchor: changing hurt/idle frames must not make
+            // the status jump with the authored body's changing opaque bounds.
+            float half=enemy.boss?52:26,top=p.y-(enemy.boss?135:enemy.kind==0?54:79);
+            return new Rect(p.x+half+4,top-6,26,12);
+        }
+        private void DrawEnemyStunIndicator(Enemy enemy)
+        {
+            if(drawingOutline||!EnemyStunVisible(enemy))return;
+            Rect bounds=EnemyStunBounds(enemy);
+            // Three static four-point pixel stars describe the real control
+            // window. No orbit, timer, FX setting or gameplay state is added.
+            for(int i=0;i<3;i++)
+            {
+                float x=bounds.x+4+i*9,y=bounds.y+8-(i==1?4:0);
+                Color backing=new Color(ink.r,ink.g,ink.b,.95f);
+                Box(x-2,y-4,4,8,backing);Box(x-4,y-2,8,4,backing);
+                Box(x-1,y-3,2,6,gold);Box(x-3,y-1,6,2,gold);
+            }
         }
     }
 }
