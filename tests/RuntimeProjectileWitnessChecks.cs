@@ -20,7 +20,7 @@ public static class RuntimeProjectileWitnessChecks
         public string visual,name; public bool friendly,explosive;
         public Sample(string name,string visual,bool friendly,bool explosive=false){this.name=name;this.visual=visual;this.friendly=friendly;this.explosive=explosive;}
     }
-    private static readonly Sample[] samples={new Sample("friendly-arrow","arrow",true),new Sample("hostile-arrow","enemyArrow",false),new Sample("friendly-starfire","starfire",true,true),new Sample("hostile-starfire","starfire",false,true),new Sample("friendly-orb","orb",true),new Sample("hostile-orb","enemyOrb",false),new Sample("default-arrow",null,true),new Sample("default-starfire",null,true,true),new Sample("default-orb",null,false)};
+    private static readonly Sample[] samples={new Sample("friendly-arrow","arrow",true),new Sample("hostile-arrow","enemyArrow",false),new Sample("friendly-starfire","starfire",true,true),new Sample("hostile-starfire","starfire",false,true),new Sample("friendly-orb","orb",true),new Sample("hostile-orb","enemyOrb",false),new Sample("default-arrow",null,true),new Sample("default-starfire",null,true,true),new Sample("default-orb",null,false),new Sample("nonexplosive-starfire","starfire",true),new Sample("explosive-orb","enemyOrb",false,true)};
     private static void Check(bool value,string reason){if(!value)throw new Exception(reason);}
     private static object Call(object app,string method,params object[] args){var m=app.GetType().GetMethod(method,Private|BindingFlags.Public|BindingFlags.Static);Check(m!=null,"Existing production entry point: "+method);return m.Invoke(app,args);}
     private static T Get<T>(object app,string field){return (T)app.GetType().GetField(field,Private).GetValue(app);}
@@ -41,6 +41,7 @@ public static class RuntimeProjectileWitnessChecks
     }
     private static string Visual(Projectile p){return p.visual??(p.friendly?p.explosive?"starfire":"arrow":"enemyOrb");}
     private static bool Arrow(Projectile p){return Visual(p)=="arrow"||Visual(p)=="enemyArrow";}
+    private static bool Directional(Projectile p){return Arrow(p)||Visual(p)=="starfire";}
     private static string Shape(Projectile p){return Arrow(p)?"Arrow":Visual(p)=="starfire"?"Starfire":"Orb";}
     private static float Size(Projectile p){return Arrow(p)?30:p.explosive?28:22;}
     private static float Angle(Projectile p){return (float)(Math.Atan2(p.velocity.y,p.velocity.x)*180/Math.PI);}
@@ -59,10 +60,10 @@ public static class RuntimeProjectileWitnessChecks
     {Clear();Call(app,"DrawHudThreatWitness");return Masks();}
     private static void VerifyPair(FrontierRuntime app,Projectile p,List<GUI.TextureCall> masks,Matrix4x4 canvas)
     {
-        Check(masks.Count==2,"Exactly one dark/bright authored-alpha pair, replacing the square HUD marker");float size=Size(p)*144/128;Point centre=Centre(app,p);var rect=new Rect(centre.x-size/2,centre.y-size/2,size,size);var matrix=Rotation(canvas,centre,Arrow(p)?Angle(p):0);
+        Check(masks.Count==2,"Exactly one dark/bright authored-alpha pair, replacing the square HUD marker");float size=Size(p)*144/128;Point centre=Centre(app,p);var rect=new Rect(centre.x-size/2,centre.y-size/2,size,size);var matrix=Rotation(canvas,centre,Directional(p)?Angle(p):0);
         Check(masks[0].texture.name.EndsWith("/dark_"+Shape(p))&&masks[1].texture.name.EndsWith("/edge_"+Shape(p)),"Projectile source category selects its matching dark/edge alpha silhouette in order");
         Color bright=p.friendly?PixelArt.C("#7acabb"):PixelArt.C("#df8a68");bright.a=.95f;Color dark=PixelArt.C("#101a2b");dark.a=.95f;
-        for(int i=0;i<2;i++)Check(Same(masks[i].rect,rect)&&Same(masks[i].uv,new Rect(0,0,1,1))&&Same(masks[i].matrix,matrix)&&Same(masks[i].color,i==0?dark:bright),"Padded whole silhouette uses the original elevated centre, correct arrow rotation and allegiance tint");
+        for(int i=0;i<2;i++)Check(Same(masks[i].rect,rect)&&Same(masks[i].uv,new Rect(0,0,1,1))&&Same(masks[i].matrix,matrix)&&Same(masks[i].color,i==0?dark:bright),"Padded whole silhouette uses the original elevated centre, correct directional rotation and allegiance tint");
     }
     private static void Draw(FrontierRuntime app,string capture=null)
     {Clear();Call(app,"OnGUI");if(captureFolder!=null&&capture!=null){var commands=GUI.commands.ToArray();var textures=GUI.textureCalls.ToArray();var buttons=GUI.buttonCalls.ToArray();GUI.Export(captureFolder,capturePrefix+"-"+capture);captures++;GUI.commands.AddRange(commands);GUI.textureCalls.AddRange(textures);GUI.buttonCalls.AddRange(buttons);}}
@@ -82,6 +83,16 @@ public static class RuntimeProjectileWitnessChecks
         Prepare(app);var p=Shot(app,samples[1],new Point(12,50),1);Point centre=Centre(app,p);Check(centre.x<20,"Diagonal grazing arrow centre lies outside the HUD while its visible tip crosses the edge");
         VerifyPair(app,p,Witness(app),Matrix4x4.identity);var panel=new Rect(20,20,260,77);Check((bool)Call(app,"ThreatOver",panel),"A diagonal padded silhouette grazing HUD also fades the same panel");
         Shot(app,samples[1],new Point(-5,50),1);Check(Witness(app).Count==0&&!(bool)Call(app,"ThreatOver",panel),"Beyond the rotated canvas bounds, the witness and panel fade both stop");
+        foreach(var sample in new[]{samples[2],samples[9]})
+        {
+            float half=(sample.explosive?28:22)*144/128f/2,rotated=half*(float)Math.Sqrt(2);
+            p=Shot(app,sample,new Point(20-(half+rotated)/2,50),1);
+            Check(Centre(app,p).x+half<20,"Starfire canvas fixture lies beyond the old unrotated HUD envelope");
+            VerifyPair(app,p,Witness(app),Matrix4x4.identity);Check((bool)Call(app,"ThreatOver",panel),"Explosive and nonexplosive Starfire share their rotated padded canvas bounds with panel fading");
+            // ScreenPoint snaps the projected feet to pixels. Put the negative
+            // fixture beyond that final pixel, not just a fractional input edge.
+            Shot(app,sample,new Point((float)Math.Floor(20-rotated)-1,50),1);Check(Witness(app).Count==0&&!(bool)Call(app,"ThreatOver",panel),"Starfire past its rotated canvas support has no stale witness or panel fade");
+        }
         p=Shot(app,samples[1],new Point(120,50),1);var region=new Rect(94,24,2,2);Check(!(bool)Call(app,"ThreatOver",region),"An unrelated tiny rectangle outside padded rotated silhouette remains opaque");
         foreach(Point clear in new[]{new Point(640,300),new Point(900,500)}){Shot(app,samples[0],clear,3);Check(Witness(app).Count==0,"Open-world missiles gain no extra HUD overlay");}
         foreach(string mode in new[]{"pause","dialog","inventory","title"}){Shot(app,samples[1],new Point(120,50),1);app.Game.mode=mode;Check(Witness(app).Count==0,"Non-world "+mode+" cannot draw witnesses over menus");app.Game.mode="world";}
@@ -109,7 +120,7 @@ public static class RuntimeProjectileWitnessChecks
             string visual=Visual(p);int frame=Arrow(p)?8:visual=="starfire"?9:10;float size=Size(p);Color tint=p.friendly?Color.white:(Color)Call(app,"BossEffectColor",p.theme);
             for(int index=0;index<GUI.textureCalls.Count;index++)
             {
-                int tail=tails-index;var call=GUI.textureCalls[index];Point at=(Point)Call(app,"ScreenPoint",tail>0?p.position-p.velocity.Normalized*tail*.18f:p.position);at.y-=p.height;int cell=tail>0?(Arrow(p)?11:12):frame;float angle=tail>0||Arrow(p)?Angle(p):0;
+                int tail=tails-index;var call=GUI.textureCalls[index];Point at=(Point)Call(app,"ScreenPoint",tail>0?p.position-p.velocity.Normalized*tail*.18f:p.position);at.y-=p.height;int cell=tail>0?(Arrow(p)?11:12):frame;float angle=tail>0||Directional(p)?Angle(p):0;
                 var rect=new Rect(at.x-size/2,at.y-size/2,size,size);var color=tail>0?new Color(tint.r,tint.g,tint.b,.42f/tail):tint;
                 Check(call.texture.name=="resource:Frontier/Art/Effects"&&Same(call.rect,rect)&&Same(call.uv,new Rect(cell%4/4f,1-(cell/4+1)/4f,.25f,.25f))&&Same(call.color,color)&&Same(call.matrix,Rotation(Matrix4x4.identity,at,angle)),"Original world source frame/RGB/height/rotation/tail geometry survive for "+sample.name);
                 Record(preservation,call);

@@ -524,7 +524,7 @@ namespace Starfall
                 if(p.launchHeight>=0&&p.flightHeight>=0)
                 { float t=Clamp(p.age/.25f,0,1);t=t*t*(3-2*t);p.height=p.launchHeight+(p.flightHeight-p.launchHeight)*t; }
                 if (p.life <= 0 && flightDt <= 0)
-                { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = p.visual == "arrow" || p.visual == "enemyArrow" ? 8 : p.explosive ? 9 : 10, height = p.height }); continue; }
+                { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height }); continue; }
                 int steps = Math.Max(1, (int)Math.Ceiling(p.velocity.Length * flightDt / .1f));
                 bool dead = p.blockedAtSpawn || ShotBlocked(p,p.position); float impactRadius = 0;
                 for (int step = 0; step < steps && !dead; step++)
@@ -558,7 +558,7 @@ namespace Starfall
                     else if ((Position - p.position).Length < .38f) { Hurt(p.damage, p.source ?? "shot", p.velocity.Normalized); dead = true; }
                 }
                 if (dead && projectiles.Remove(p)) effects.Add(new Effect(p.explosive ? "magicImpact" : "projectileImpact", p.position, .28f) { direction = p.velocity.Normalized, variant = p.friendly ? 0 : 1, radius = impactRadius, height = p.height });
-                else if (p.life <= 0 && projectiles.Remove(p)) effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = p.visual == "arrow" || p.visual == "enemyArrow" ? 8 : p.explosive ? 9 : 10, height = p.height });
+                else if (p.life <= 0 && projectiles.Remove(p)) effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height });
             }
             tickingProjectiles.Clear();
         }

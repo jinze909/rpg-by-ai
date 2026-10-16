@@ -12,6 +12,8 @@
 
 飞行投射物经过 HUD 时，原方框提示改为沿真实飞行方向显示的暗衬亮边轮廓；低特效与减少动态保持可读，边缘擦过面板也会提示。原特效、本体/尾迹与战斗规则保留，见 [PROJECTILE-WITNESSES.md](docs/PROJECTILE-WITNESSES.md)。
 
+星火弹的亮头与尾迹现在共同朝向实际飞行方向，经过 HUD 和自然消失时保持一致。米拉不带爆炸伤害的星火弹也沿用星火外形消失，见 [STARFIRE-ALIGNMENT.md](docs/STARFIRE-ALIGNMENT.md)。
+
 敌人受控期间，原血条旁保留静态金星提示，避免“破势”文字消失后看不出剩余机会；同样保留低特效和 HUD 遮挡可读性，见 [ENEMY-STUN-CUES.md](docs/ENEMY-STUN-CUES.md)。
 
 ## 启动

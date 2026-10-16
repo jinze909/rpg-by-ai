@@ -155,11 +155,18 @@ namespace Starfall
             shot.friendly = true; shot.explosive = explosive; shot.visual = weapon == 1 ? "arrow" : "starfire";
             shot.impact = impact ?? CaptureImpact(weapon); return shot;
         }
+        private static int ProjectileFadeFrame(Projectile shot)
+        {
+            // The picture is independent of splash damage: Mira also fires
+            // Starfire, without the explosive gameplay flag.
+            string visual=shot.visual??(shot.friendly?shot.explosive?"starfire":"arrow":"enemyOrb");
+            return visual=="arrow"||visual=="enemyArrow"?8:visual=="starfire"?9:10;
+        }
         private void RetireHostileProjectiles(Point? center = null, float radius = 0)
         {
             foreach (Projectile p in projectiles.ToArray())
                 if (!p.friendly && (!center.HasValue || (p.position - center.Value).Length < radius))
-                { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = p.visual == "enemyArrow" ? 8 : 10, height = p.height }); }
+                { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height }); }
         }
         private bool ShotBlocked(Projectile shot,Point point)
         {

@@ -29,7 +29,7 @@ namespace Starfall
         {
             Point p = ScreenPoint(projectile.position); p.y -= projectile.height;
             int kind = ProjectileWitnessIndex(projectile); float half = ProjectileWitnessSize(projectile, kind) / 2;
-            if (kind == 0)
+            if (kind < 2)
             {
                 double angle = Math.Atan2(projectile.velocity.y, projectile.velocity.x);
                 half *= (float)(Math.Abs(Math.Cos(angle)) + Math.Abs(Math.Sin(angle)));
@@ -42,7 +42,7 @@ namespace Starfall
         {
             Point p = ScreenPoint(projectile.position); p.y -= projectile.height;
             int kind = ProjectileWitnessIndex(projectile); float size = ProjectileWitnessSize(projectile, kind);
-            float angle = kind == 0 ? (float)(Math.Atan2(projectile.velocity.y, projectile.velocity.x) * 180 / Math.PI) : 0;
+            float angle = kind < 2 ? (float)(Math.Atan2(projectile.velocity.y, projectile.velocity.x) * 180 / Math.PI) : 0;
             Rect rect = new Rect(p.x - size / 2, p.y - size / 2, size, size);
             Color edge = projectile.friendly ? mint : PixelArt.C("#df8a68"); edge.a = .95f;
             // Alpha-derived rings, not opaque duplicate sprites: the original
@@ -66,7 +66,9 @@ namespace Starfall
                     tail.y -= height;
                     Atlas(effectSheet, 4, 4, arrow ? 11 : 12, new Rect(tail.x - size / 2, tail.y - size / 2, size, size), new Color(tint.r, tint.g, tint.b, .42f / i), false, angle);
                 }
-            if (effectSheet != null) Atlas(effectSheet, 4, 4, id, new Rect(p.x - size / 2, p.y - size / 2, size, size), tint, false, arrow ? angle : 0);
+            // Arrow and Starfire both have authored +X heads and trailing tails.
+            // Round orbs keep their original unrotated presentation.
+            if (effectSheet != null) Atlas(effectSheet, 4, 4, id, new Rect(p.x - size / 2, p.y - size / 2, size, size), tint, false, (arrow || visual == "starfire") ? angle : 0);
             else { Box(p.x - 4, p.y - 4, 8, 8, projectile.friendly ? gold : PixelArt.C("#e39382")); }
         }
         private bool DrawAuthoredEffect(Effect effect)
