@@ -10,6 +10,8 @@
 
 主角三种装备外观改为完整 256 图格，取消造成肩甲、弓弦和领口割裂的头身矩形拼接；固定脚底、原金发 Viola、22张图集注册及44张遮罩保留。正式路径使用 SpriteRenderer + Animator，并在原世界排序位置合成。运行中主角绘制失败会显示原始错误并停止模拟/保存；A–E 离线门槛含七项故障负向控制，编译检查覆盖隔离的 Player 分支。原生 Frontier 导入/试玩仍为 `NATIVE_UNVERIFIED`；实现与验收边界见 [HERO-ANIMATION-REBUILD.md](docs/HERO-ANIMATION-REBUILD.md)。历史尺寸、握持记录见 [FRAME-CONTINUITY-POLISH.md](docs/FRAME-CONTINUITY-POLISH.md)。
 
+飞行投射物经过 HUD 时，原方框提示改为沿真实飞行方向显示的暗衬亮边轮廓；低特效与减少动态保持可读，边缘擦过面板也会提示。原特效、本体/尾迹与战斗规则保留，见 [PROJECTILE-WITNESSES.md](docs/PROJECTILE-WITNESSES.md)。
+
 ## 启动
 
 1. **升级现有项目**：关闭 Unity，备份项目，覆盖包内 `Assets`、`Packages` 与 `ProjectSettings`；本轮也请更新 `ProjectSettings/ProjectVersion.txt`，清除旧的 C1 和 revision 信息。

@@ -4,9 +4,55 @@ namespace Starfall
 {
     public sealed partial class FrontierRuntime
     {
+        private Texture2D[] projectileWitnessDark, projectileWitnessEdge;
+        private void LoadProjectileWitnessMasks()
+        {
+            projectileWitnessDark = new Texture2D[3]; projectileWitnessEdge = new Texture2D[3];
+            string[] names = { "Arrow", "Starfire", "Orb" };
+            for (int i = 0; i < names.Length; i++)
+            {
+                string root = "Frontier/Art/ProjectileMasks/";
+                projectileWitnessDark[i] = Resources.Load<Texture2D>(root + "dark_" + names[i]);
+                projectileWitnessEdge[i] = Resources.Load<Texture2D>(root + "edge_" + names[i]);
+                foreach (Texture2D mask in new[] { projectileWitnessDark[i], projectileWitnessEdge[i] })
+                    if (mask == null || mask.width != 144 || mask.height != 144)
+                        throw new InvalidOperationException("Missing or invalid prepared projectile witness: " + names[i]);
+            }
+        }
+        private static string ProjectileVisual(Projectile projectile)
+        { return projectile.visual ?? (projectile.friendly ? projectile.explosive ? "starfire" : "arrow" : "enemyOrb"); }
+        private static int ProjectileWitnessIndex(Projectile projectile)
+        { string visual = ProjectileVisual(projectile); return visual == "arrow" || visual == "enemyArrow" ? 0 : visual == "starfire" ? 1 : 2; }
+        private static float ProjectileWitnessSize(Projectile projectile, int kind)
+        { return (kind == 0 ? 30 : projectile.explosive ? 28 : 22) * 144 / 128f; }
+        private Rect ProjectileHudBounds(Projectile projectile)
+        {
+            Point p = ScreenPoint(projectile.position); p.y -= projectile.height;
+            int kind = ProjectileWitnessIndex(projectile); float half = ProjectileWitnessSize(projectile, kind) / 2;
+            if (kind == 0)
+            {
+                double angle = Math.Atan2(projectile.velocity.y, projectile.velocity.x);
+                half *= (float)(Math.Abs(Math.Cos(angle)) + Math.Abs(Math.Sin(angle)));
+            }
+            // A conservative rotated canvas also catches tips whose centres are
+            // outside a panel. This visual envelope never changes collision.
+            return new Rect(p.x - half, p.y - half, half * 2, half * 2);
+        }
+        private void DrawProjectileWitness(Projectile projectile)
+        {
+            Point p = ScreenPoint(projectile.position); p.y -= projectile.height;
+            int kind = ProjectileWitnessIndex(projectile); float size = ProjectileWitnessSize(projectile, kind);
+            float angle = kind == 0 ? (float)(Math.Atan2(projectile.velocity.y, projectile.velocity.x) * 180 / Math.PI) : 0;
+            Rect rect = new Rect(p.x - size / 2, p.y - size / 2, size, size);
+            Color edge = projectile.friendly ? mint : PixelArt.C("#df8a68"); edge.a = .95f;
+            // Alpha-derived rings, not opaque duplicate sprites: the original
+            // projectile stays below HUD text, while its direction remains clear.
+            Atlas(projectileWitnessDark[kind], 1, 1, 0, rect, new Color(ink.r, ink.g, ink.b, .95f), false, angle);
+            Atlas(projectileWitnessEdge[kind], 1, 1, 0, rect, edge, false, angle);
+        }
         private void DrawProjectileVisual(Projectile projectile)
         {
-            Point p = ScreenPoint(projectile.position); string visual = projectile.visual ?? (projectile.friendly ? projectile.explosive ? "starfire" : "arrow" : "enemyOrb");
+            Point p = ScreenPoint(projectile.position); string visual = ProjectileVisual(projectile);
             float height = projectile.height; p.y -= height;
             bool arrow = visual == "arrow" || visual == "enemyArrow";
             int id = arrow ? 8 : visual == "starfire" ? 9 : 10;

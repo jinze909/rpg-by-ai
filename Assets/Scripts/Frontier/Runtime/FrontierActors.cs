@@ -39,6 +39,7 @@ namespace Starfall
             fieldProps = Resources.Load<Texture2D>(root + "FieldProps"); terrainSheet = Resources.Load<Texture2D>(root + "Terrain");
             terrainVariants = Resources.Load<Texture2D>(root + "TerrainVariants");
             detailSheet = Resources.Load<Texture2D>(root + "Details"); effectSheet = Resources.Load<Texture2D>(root + "Effects"); iconSheet = Resources.Load<Texture2D>(root + "Icons");
+            LoadProjectileWitnessMasks();
         }
         private void Atlas(Texture2D sheet, int columns, int rows, int index, Rect rect, Color color, bool flip = false, float angle = 0)
         {

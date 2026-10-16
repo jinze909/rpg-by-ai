@@ -109,7 +109,7 @@ namespace Starfall
             if (Overlap(rect, PlayerHudBounds())) return true;
             foreach (Enemy enemy in Game.enemies) if (Overlap(rect, EnemyHudBounds(enemy))) return true;
             foreach (Projectile shot in Game.projectiles)
-            { Point p = ScreenPoint(shot.position); p.y -= shot.height; if (Overlap(rect, new Rect(p.x-14,p.y-14,28,28))) return true; }
+                if (Overlap(rect, ProjectileHudBounds(shot))) return true;
             foreach (Hazard hazard in Game.hazards)
             { Point p = ScreenPoint(hazard.position); float size = hazard.radius * Tile; if (Overlap(rect, WarningStrokeBounds(new Rect(p.x-size,p.y-size,size*2,size*2)))) return true; }
             foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && Overlap(rect,WarningStrokeBounds(EnemyWarningBounds(enemy)))) return true;
@@ -137,10 +137,7 @@ namespace Starfall
             finally { drawingOutline = false; }
             if (Game.ShelterWindWarning && OverlapsRegions(regions, ShelterWindBounds())) DrawShelterWind(true);
             foreach (Projectile shot in Game.projectiles)
-            {
-                Point p = ScreenPoint(shot.position); p.y -= shot.height;
-                foreach (Rect rect in regions) if (Contains(rect,p)) { Frame(p.x-9,p.y-9,18,18,shot.friendly?mint:PixelArt.C("#df8a68")); break; }
-            }
+                if (OverlapsRegions(regions, ProjectileHudBounds(shot))) DrawProjectileWitness(shot);
             foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && OverlapsRegions(regions,WarningStrokeBounds(EnemyWarningBounds(enemy))))
             {
                 if(GameCore.IsCommissionGuardian(enemy)){DrawCommissionWarning(enemy,true);continue;}

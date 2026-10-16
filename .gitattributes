@@ -58,3 +58,4 @@
 /docs/previews/*.png -filter -diff -merge
 
 /Assets/Resources/Frontier/Art/*.png -filter -diff -merge
+/Assets/Resources/Frontier/Art/ProjectileMasks/*.png -filter -diff -merge
