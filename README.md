@@ -21,6 +21,8 @@
 
 ## 当前：统一视觉与战斗表现
 
+成熟地图的树冠与遗迹遮挡改为连续空间过渡，避免轻微移动时整棵树突然变回不透明；实际出场的同伴也能触发淡化，低特效同样保留。景物、地图、碰撞和排序不变，见 [SCENERY-COVER.md](docs/SCENERY-COVER.md)。
+
 主角、三类普通怪、八地 Boss、居民和同伴的硬矩形落影改为提前缓存的透明椭圆，保留原脚底范围、色值、角色图格和排序；HUD 轮廓不重复画地面阴影。见 [CONTACT-SHADOWS.md](docs/CONTACT-SHADOWS.md)，原生效果仍为 `NATIVE_UNVERIFIED`。
 
 旧路河岸的水岸改为水格内的浅深过渡、沉水暗边与断续泡沫，随实际桥面邻接更新；行走只读取提前准备的遮罩，低特效保留岸缘信息。原地形、碰撞、路线与主角素材保留，原生验证仍为 `NATIVE_UNVERIFIED`，见 [REEDWATER-SHORE.md](docs/REEDWATER-SHORE.md)。

@@ -63,26 +63,22 @@ namespace Starfall
             if(prop.kind=="garden")variant=Game.save.plantedAt<0?0:Game.save.totalTime-Game.save.plantedAt>=60?2:1;
             float h=w*112/96;
             bool canopy=prop.kind=="tree"||prop.kind=="palm"||prop.kind=="snowpine",cover=canopy||prop.kind=="ruin";
-            float opacity=1;
-            if(cover&&Game.save.room==GameCore.ReachRoom)opacity=ReachSceneryOpacity(prop);
-            else if(cover)
-            {
-                bool occludes=Math.Abs(Game.save.x-prop.x)<1.4f&&Game.save.y<prop.y&&Game.save.y>prop.y-2.7f;
-                foreach(Enemy actor in Game.enemies)occludes|=Math.Abs(actor.x-prop.x)<1.6f&&actor.y<prop.y&&actor.y>prop.y-2.9f;
-                opacity=occludes?.4f:1;
-            }
+            float opacity=cover?SceneryOpacity(prop):1;
             Color tint=new Color(1,1,1,opacity);
             Rect rect=new Rect(p.x-w/2,p.y-h+8,w,h);
             if(canopy)DrawRootedPlant(prop,rect,tint);else PropImage(prop.kind,variant,rect.x,rect.y,rect.width,rect.height,tint);
             if(prop.kind=="well"&&Game.Has("ally_3"))Box(p.x-5,p.y-16,10,5,mint);
         }
-        private float ReachSceneryOpacity(Decoration prop)
+        private float SceneryOpacity(Decoration prop)
         {
-            // Feather actor-cover edges spatially on the new exploration map.
+            // Feather actor-cover edges spatially in every region.
             // No reveal timers or frame history: reduced motion and minimal FX
             // retain exactly the same readability during a slow approach.
             float cover=SceneryCoverWeight(Game.Position,prop,1.4f,2.7f);
             foreach(Enemy actor in Game.enemies)cover=Math.Max(cover,SceneryCoverWeight(actor.Position,prop,1.6f,2.9f));
+            // Match the world draw list: only an actually selected companion
+            // witnesses cover, using the same body envelope as the protagonist.
+            if(Game.save.companion>=0)cover=Math.Max(cover,SceneryCoverWeight(Game.companionPosition,prop,1.4f,2.7f));
             return 1-.6f*cover;
         }
         private static float SceneryCoverWeight(Point actor,Decoration prop,float halfWidth,float height)
