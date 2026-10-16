@@ -116,6 +116,26 @@ namespace Starfall
             if (e.releaseTime > 0) return 3;
             return e.moving ? 1 : 0;
         }
+        private float BossCoverOpacity(Enemy boss)
+        {
+            float cover = BossCoverWeight(boss, Game.Position);
+            if (Game.save.companion >= 0)
+                cover = Math.Max(cover, BossCoverWeight(boss, Game.companionPosition));
+            return 1 - .45f * cover;
+        }
+        private static float BossCoverWeight(Enemy boss, Point actor)
+        {
+            // The front edge fades INSIDE the old -.01 boundary: actors drawn
+            // in front (including equal-depth ties) must never reveal the Boss.
+            float front = GameCore.Clamp((boss.y - .01f - actor.y) / .2f, 0, 1);
+            if (front <= 0) return 0;
+            float dx = Math.Max(0, Math.Abs(actor.x - boss.x) - 1.4f);
+            float dy = Math.Max(0, boss.y - 2.7f - actor.y);
+            float edge = GameCore.Clamp(1 - (float)Math.Sqrt(dx * dx + dy * dy) / .8f, 0, 1);
+            // Preserve the original .55 floor without a new timer, frame
+            // history or changes to the authored body, flash or warning phase.
+            return edge * edge * (3 - 2 * edge) * front * front * (3 - 2 * front);
+        }
         private void DrawEnemyActor(Enemy e)
         {
             int bossRoom = BossArtRoom(e,Game.save.room);
@@ -134,7 +154,7 @@ namespace Starfall
             // Recoil is swept in Core rather than sliding the drawing through walls.
             Color tint = e.flash > 0 ? new Color(1.55f, 1.55f, 1.55f) : Color.white;
             if (GameCore.IsSignalWarden(e) && e.flash <= 0) tint = new Color(.8f,1,.88f);
-            if (e.boss && Math.Abs(e.x - Game.save.x) < 1.4f && Game.save.y < e.y - .01f && Game.save.y > e.y - 2.7f) tint.a = .55f;
+            if (e.boss) tint.a = BossCoverOpacity(e);
             if (e.boss)
             {
                 int row = Math.Max(0, bossRoom - 1), frame = pose == 2 ? 1 : pose == 3 ? 2 : 0;
