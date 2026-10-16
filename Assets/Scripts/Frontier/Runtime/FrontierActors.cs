@@ -91,6 +91,8 @@ namespace Starfall
         }
         private void DrawWholeHero(HeroVisualFrame selected, Point foot, Color tint)
         {
+            try
+            {
 #if UNITY_5_3_OR_NEWER
             // Native SpriteRenderer/Animator output occupies the original sorted
             // actor slot. A screen-space renderer would be hidden by IMGUI terrain.
@@ -108,6 +110,8 @@ namespace Starfall
                 Actor(art.FlashMask(sheet), 4, 3, selected.frame, foot, 192,
                     new Color(1, 1, 1, Game.playerFlash / .09f * .86f), selected.flip);
 #endif
+            }
+            catch (Exception ex) { throw new HeroPresentationException(ex); }
         }
         private int EnemyPose(Enemy e)
         {

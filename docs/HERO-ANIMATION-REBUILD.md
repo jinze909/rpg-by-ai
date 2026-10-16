@@ -19,6 +19,16 @@
 - Unity `SpriteFrag` 输出预乘 RGB，GUI 使用普通 alpha 合成。局部 shader 将透明中间纹理转换为 straight alpha，再交给原 GUI 位置；不改全局材质或现有世界排序。
 - 离线检查编译时没有 Unity 平台符号，使用同一 selector 的完整图格提交分支。该分支不是原生 Animator 的模拟器，也不能证明真实 GPU 输出。
 
+## 后续补强：运行中失败与 Player 编译隔离
+
+基线 `75a73fb`，恢复点 `refs/codex/checkpoints/hero-failure-baseline-75a73fb`。原实现只在初始化阶段阻止失败后的模拟；若运行中完整主角绘制抛出异常，OnGUI 会退出，后续 Update 和自动保存仍可能继续。本次让完整主角绘制以专用异常保留原始原因，由 OnGUI 显示同一错误并遮盖当帧的残缺世界。沿用原错误状态阻止 Update、手动/自动/生命周期保存；不捕获或改写其他世界/UI 异常。
+
+离线故障注入先在原代码复现第四组失败，修复后覆盖三个职业、实际 OnGUI/Update/Save、存档和备份字节、GUI 状态恢复及无关地形错误继续抛出。注入发生在离线整帧绘制边界，不能证明原生 GPU 故障已经重现。正常动作、原美术、场景、Core 和存档结构未改。
+
+真实 Unity DLL 检查新增两个 Player 阶段：仅定义 Unity 平台/版本符号，剔除 Editor、测试与 Cecil 程序集，Player Runtime 仅依赖 Player Core。原五阶段保留。CI 另以六项纯编译计划测试阻断 Editor/Test 引用泄漏；实际 SDK 编译仍需安装的 Editor DLL。独立探针已确认同一 EditorWindow 依赖在 Editor 上下文可编译，在 Player 上下文被真实编译器拒绝。这是编译分支检查，不是 Player 构建。
+
+本轮定向验证通过：主角 Runtime 4/4（含完整原异常堆栈、失焦/暂停/退出存档保护）、原战斗输入14/14、A–E 七项负向控制、六项编译计划测试、七阶段真实 DLL 编译；Core191/191、离线 Editor 语法和75项导入规则、276对元数据与7项检查器测试、LFS fsck 通过。475个基线保护文件（含276份旧 metadata、87项 LFS 资源）保持原字节或 OID/大小。日志与报告只保留于忽略目录 `.starfall-checks/hero-failure-*`。
+
 ## A–E 检查的范围
 
 | 类别 | 本次检查 | 不能据此宣称 |
@@ -26,14 +36,14 @@
 | A 资源与身份 | 120 个完整帧、20 张匹配遮罩、原 Viola SHA、图集 SHA/GUID、修复来源、完整 PNG 解码及导入配置 | 仅凭哈希证明人体美术质量 |
 | B 完整身体 | 192 次生产输入后的实际绘制记录；唯一完整 UV、原像素、尺寸、脚底与十张图集覆盖；拒绝头身再拼接 | 离线 draw-call 重建等于 GPU 截图 |
 | C 动作衔接 | 四组 Core + 四组 Runtime：J/Q 接触、换装备收招、闪避末步、受击/死亡、暂停与 hitstop；保留原全部战斗断言 | 修改过攻击数值、dash 时机或输入缓冲 |
-| D 正式接线 | Frontier 启动、真实 Animator/SpriteRenderer、整帧曲线、透明合成、alpha 转换、Editor/预构建门槛 | 静态源码检查等于原生场景运行 |
-| E 负向控制 | 在临时副本注入头身拼接、错误接触姿态、关闭原生路径、跳过 alpha 转换、LFS 指针和损坏 PNG，必须逐项被拒绝 | 未执行的原生测试通过 |
+| D 正式接线 | Frontier 启动、真实 Animator/SpriteRenderer、整帧曲线、透明合成、alpha 转换、Editor/预构建门槛、运行中失败边界 | 静态源码检查等于原生场景运行 |
+| E 负向控制 | 在临时副本注入头身拼接、错误接触姿态、关闭原生路径、跳过 alpha 转换、绕过运行中失败边界、LFS 指针和损坏 PNG，七项必须逐项被拒绝 | 未执行的原生测试通过 |
 
 `tools/check_hero_animation.py` 是阻断式离线 CI；任一类别或负向控制失败即非零退出。它明确输出 `NATIVE_UNVERIFIED`，不把 D 的静态接线结果伪装成原生验收。现有 CI 所有游戏回归继续保留。
 
 ## 验证与原生剩余项
 
-本次实际通过：Core 191/191、成熟 Runtime 69/69、新主角 Runtime 4/4、156 组主角绘制与既有角色/Continuity 检查、A–E 六项负向控制、五阶段真实 Unity DLL 绑定编译、75 项导入规则、272 个唯一 GUID 与7项元数据单测。465 个受保护基线文件（含265个旧 metadata）保持原字节或 LFS OID/大小，LFS fsck 通过。汇总回归脚本曾收到退出143；保留原中断证据后，已按独立进程补齐全部未完成检查，没有把中断伪报为成功。
+最初重构交付时实际通过：Core 191/191、成熟 Runtime 69/69、新主角 Runtime 4/4、156 组主角绘制与既有角色/Continuity 检查、A–E 六项负向控制、当时五阶段真实 Unity DLL 绑定编译、75 项导入规则、272 个唯一 GUID 与7项元数据单测。465 个受保护基线文件（含265个旧 metadata）保持原字节或 LFS OID/大小，LFS fsck 通过。汇总回归脚本曾收到退出143；保留原中断证据后，已按独立进程补齐全部未完成检查，没有把中断伪报为成功。
 
 离线命令：
 
@@ -53,7 +63,7 @@ python3 tools/check_hero_unity_bindings.py --editor /path/to/Editor/Unity \
   --report .starfall-checks/hero-unity-bindings.json
 ```
 
-该命令编译 Core、Runtime、Editor、Core 原生包装和 PlayMode 测试，使用安装目录内真实 Unity/NUnit/TestRunner DLL，不使用离线 Unity 声明。它不导入资产、不编译 shader、不运行测试、不构建 Player。
+该命令现编译 Core、Runtime、Editor、Core 原生包装、PlayMode 测试，以及隔离的 Player Core/Runtime，共七阶段。使用安装目录内真实 Unity DLL，测试阶段另用真实 NUnit/TestRunner DLL，不使用离线 Unity 声明。它不导入资产、不编译 shader、不运行测试、不构建 Player。
 
 **NATIVE_UNVERIFIED**：2026-10-15 的隔离 Unity2022.3.53f1 探针在进入项目方法前退出 1，日志为 `No ULF license found` / `No valid Unity Editor license found`。当前没有连接的 Editor；GitHub 也没有可用原生许可证 secret。生成的 library/controller 尚未由 Editor 实际落盘；不手写伪造生成资产来冒充导入成功。
 

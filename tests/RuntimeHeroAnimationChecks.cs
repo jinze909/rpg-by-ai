@@ -115,7 +115,54 @@ public static class RuntimeHeroAnimationChecks
             Check(GUI.textureCalls.Count==0,"Failed native initialization must show the boot error instead of drawing a partial world");
         }
         finally{Set(app,"bootError",null);}
+        LateHeroFailureStopsHiddenCombatAndSaving(app);
         Console.WriteLine("PASS Hero production pause, hitstop, read-only drawing and failed-boot simulation/save boundary");
+    }
+    private static string StoredFiles()
+    {
+        Directory.CreateDirectory(Application.persistentDataPath);
+        return string.Join("|",Directory.GetFiles(Application.persistentDataPath,"*",SearchOption.AllDirectories).OrderBy(p=>p,StringComparer.Ordinal).Select(p=>p+":"+Convert.ToBase64String(File.ReadAllBytes(p))).ToArray());
+    }
+    private static void LateHeroFailureStopsHiddenCombatAndSaving(FrontierRuntime app)
+    {
+        for(int profession=0;profession<3;profession++)
+        {
+            Prepare(app,profession);var game=app.Game;game.Attack(new Point(1,0));Check(game.playerAction!=null,"The late-failure fixture begins a real accepted attack");
+            var action=game.playerAction;float elapsed=action.elapsed,health=game.save.health,energy=game.save.energy,time=game.save.totalTime;Point feet=game.Position;
+            Directory.CreateDirectory(Application.persistentDataPath);File.WriteAllText(Path.Combine(Application.persistentDataPath,"starfall-slot-2.json.bak"),"unchanged-late-render-backup");string files=StoredFiles();
+            var review=typeof(FrontierRuntime).GetField("reviewOriginal",Private).GetValue(app);
+            var error=new InvalidOperationException("Injected whole-body presentation failure class "+profession);
+            GUI.failTextureName="resource:Frontier/Art/"+HeroAnimationState.Select(game).atlas;GUI.textureFailure=error;
+            var matrix=Matrix4x4.TRS(new Vector3(19,31,0),Quaternion.Euler(0,0,17),new Vector3(1.4f,1.4f,1));var color=new Color(.3f,.5f,.7f,.8f);
+            try
+            {
+                GUI.commands.Clear();GUI.textureCalls.Clear();GUI.buttonCalls.Clear();GUI.matrix=matrix;GUI.color=color;GUI.enabled=false;
+                try{Call(app,"OnGUI");}catch(TargetInvocationException ex){throw new Exception("Late hero draw failure escaped instead of entering the fatal presentation boundary",ex.InnerException);}
+                string fatal=(string)typeof(FrontierRuntime).GetField("bootError",Private).GetValue(app);
+                Check(fatal!=null&&fatal.Contains(error.Message)&&fatal.Contains("InvalidOperationException"),"Fatal diagnostics retain the original presentation error and its stack");
+                Check(!string.IsNullOrEmpty(error.StackTrace)&&fatal.Contains(error.StackTrace),"Fatal diagnostics include the complete original throw stack, not only its message/type");
+                Check(GUI.commands.Any(c=>c.Contains(error.Message)),"The same failed OnGUI displays the actual error instead of silently losing the hero");
+                Check(GUI.matrix.m00==matrix.m00&&GUI.matrix.m01==matrix.m01&&GUI.matrix.m03==matrix.m03&&GUI.matrix.m10==matrix.m10&&GUI.matrix.m11==matrix.m11&&GUI.matrix.m13==matrix.m13&&GUI.color.r==color.r&&GUI.color.g==color.g&&GUI.color.b==color.b&&GUI.color.a==color.a&&!GUI.enabled,"Fatal presentation restores incoming GUI matrix/color/enabled state");
+                // Exercise the normal Save gate, rather than getting a no-op
+                // merely because this is an isolated visual-review fixture.
+                Set(app,"reviewOriginal",null);Input.held.Add(KeyCode.J);Input.axes["Horizontal"]=1;Input.keys.Add(KeyCode.Q);
+                for(int frame=0;frame<12;frame++)Update(app);
+                Check(ReferenceEquals(action,game.playerAction)&&action.elapsed==elapsed&&game.save.health==health&&game.save.energy==energy&&game.save.totalTime==time&&(game.Position-feet).Length==0,"A late render failure must stop hidden movement, combat, costs and world clocks");
+                Check(!(bool)Call(app,"Save")&&StoredFiles()==files,"Fatal presentation blocks the real save path and preserves every slot/backup byte");
+                Call(app,"OnApplicationFocus",false);Call(app,"OnApplicationPause",true);Call(app,"OnApplicationQuit");Check(StoredFiles()==files,"Focus/pause/quit callbacks must not persist an invisible battle");
+                GUI.commands.Clear();GUI.textureCalls.Clear();GUI.buttonCalls.Clear();Call(app,"OnGUI");
+                Check(GUI.textureCalls.Count==0&&GUI.buttonCalls.Count==0&&GUI.commands.Any(c=>c.Contains(error.Message)),"Later frames show only the same fatal error, with no repeated body/world rendering or controls");
+            }
+            finally{GUI.failTextureName=null;GUI.textureFailure=null;Set(app,"reviewOriginal",review);Set(app,"bootError",null);Set(app,"applicationPaused",false);GUI.matrix=Matrix4x4.identity;GUI.color=Color.white;GUI.enabled=true;Input.Clear();}
+        }
+        Prepare(app,0);GUI.failTextureName="resource:Frontier/Art/TerrainVariants";var unrelated=new InvalidOperationException("Unrelated terrain diagnostic must propagate");GUI.textureFailure=unrelated;
+        try
+        {
+            bool propagated=false;try{Call(app,"OnGUI");}catch(TargetInvocationException ex){propagated=ReferenceEquals(ex.InnerException,unrelated);}
+            Check(propagated&&typeof(FrontierRuntime).GetField("bootError",Private).GetValue(app)==null,"The hero boundary cannot swallow or relabel unrelated world errors");
+        }
+        finally{GUI.failTextureName=null;GUI.textureFailure=null;}
+        Console.WriteLine("PASS Hero late-draw injected failures in three classes stop hidden Update/Save, show original diagnostics, preserve GUI/backups and do not mask unrelated errors; NATIVE_UNVERIFIED");
     }
     public static int Main(string[] args)
     {

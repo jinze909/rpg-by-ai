@@ -25,6 +25,11 @@ namespace Starfall
         private bool pointerSeen, pointerAimActive;
         private static readonly KeyCode[] keyboardControls={KeyCode.Q,KeyCode.Space,KeyCode.E,KeyCode.F,KeyCode.T,KeyCode.Z,KeyCode.H,KeyCode.R,KeyCode.Escape,KeyCode.Return,KeyCode.Tab,KeyCode.I,KeyCode.K,KeyCode.M,KeyCode.B,KeyCode.C,KeyCode.G,KeyCode.N,KeyCode.F1};
         private string bootError;
+        private sealed class HeroPresentationException : Exception
+        {
+            public HeroPresentationException(Exception cause)
+                : base("Whole-body hero presentation failed. Simulation and saving are stopped.", cause) { }
+        }
         private readonly Color ink = PixelArt.C("#101a2b"), panel = PixelArt.C("#19283c"), paper = PixelArt.C("#f2ead7"), muted = PixelArt.C("#a4b4c5"), gold = PixelArt.C("#ebc58b"), mint = PixelArt.C("#7acabb");
 
         [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
@@ -154,6 +159,14 @@ namespace Starfall
         {
             Matrix4x4 previousMatrix = GUI.matrix; Color previousColor = GUI.color; bool previousEnabled = GUI.enabled;
             try { GUI.color = Color.white; GUI.enabled = true; DrawGUI(); }
+            catch (HeroPresentationException ex)
+            {
+                // Preserve the cause and make the failure visible. The existing
+                // boot-error gates then stop hidden Update/Save, including quit.
+                // Unrelated world/UI exceptions are deliberately not caught.
+                bootError = ex.ToString(); Debug.LogError(bootError);
+                Box(0, 0, Width, Height, ink); DrawGUI();
+            }
             finally { GUI.matrix = previousMatrix; GUI.color = previousColor; GUI.enabled = previousEnabled; }
         }
         private void DrawGUI()

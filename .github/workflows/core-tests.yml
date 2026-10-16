@@ -9,6 +9,8 @@ jobs:
         run: git lfs pull --include="Assets/Resources/Frontier/Art/ActorMasks/*.png,Assets/ArtSource/Frontier/RepairMageBackIdle.png,Assets/ArtSource/Frontier/RepairMageRear.png,Assets/ArtSource/Frontier/RepairRangerSouth.png,Assets/ArtSource/Frontier/RepairVanguardWalk.png" --exclude=""
       - name: Check Unity metadata without rewriting assets
         run: python3 tools/check_unity_metadata.py && python3 -m unittest discover -s tests -p 'test_unity_metadata.py'
+      - name: Check shipping Player compiler isolation without requiring a Unity SDK
+        run: python3 -m unittest discover -s tests -p 'test_hero_unity_compile_plan.py'
       - name: Install Mono and image validation dependencies
         run: sudo apt-get update && sudo apt-get install -y mono-mcs python3-pil
       - name: Run actual C# gameplay checks

@@ -16,6 +16,43 @@ import tempfile
 ROOT = Path(__file__).resolve().parents[1]
 
 
+def compile_plan(mono, mcs, engine, facade, nunit, test_runner, sources, output_dir):
+    """Build actual compiler invocations, with isolated shipping-player branches.
+
+    The installed UnityEngine directory also contains UnityEditor assemblies.
+    A player compilation must not gain editor/test APIs through that directory.
+    This pure plan is checked in CI even when no Unity SDK is installed there.
+    """
+    native_defines = ['UNITY_5_3_OR_NEWER', 'UNITY_2022_3']
+    editor_defines = ['UNITY_EDITOR', 'UNITY_INCLUDE_TESTS'] + native_defines
+    editor_refs = list(engine) + [facade]
+    player_refs = [path for path in engine if path.name.startswith('UnityEngine.')
+                   and path.name != 'UnityEngine.TestRunner.dll'] + [facade]
+    stages = [
+        ('Core', 'Core', [], False),
+        ('Runtime', 'Runtime', ['Core'], False),
+        ('Editor', 'Editor', ['Core', 'Runtime'], False),
+        ('Tests', 'Tests', ['Core'], True),
+        ('VisualTests', 'VisualTests', ['Core', 'Runtime'], True),
+        ('PlayerCore', 'Core', [], False),
+        ('PlayerRuntime', 'Runtime', ['PlayerCore'], False),
+    ]
+    outputs, plan = {}, []
+    for stage, group, dependencies, tests in stages:
+        player = stage.startswith('Player')
+        defines = native_defines if player else editor_defines
+        refs = list(player_refs if player else editor_refs) + [outputs[name] for name in dependencies]
+        if tests:
+            refs += [nunit, test_runner]
+        output = output_dir / ('Starfall.' + stage + '.dll')
+        command = [str(mono), str(mcs), '-target:library', '-define:' + ','.join(defines), '-out:' + str(output)]
+        command += ['-r:' + str(path) for path in refs] + [str(path) for path in sources[group]]
+        plan.append({'stage': stage, 'command': command, 'sources': len(sources[group]),
+                     'defines': list(defines), 'references': [str(path) for path in refs]})
+        outputs[stage] = output
+    return plan
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--editor', required=True, type=Path, help='Installed Unity executable (2022.3.53f1 for this project).')
@@ -53,30 +90,24 @@ def main():
             with archive.extractfile(member) as stream:
                 nunit = temp / 'nunit.framework.dll'
                 nunit.write_bytes(stream.read())
-        common = [str(mono), str(mcs), '-target:library', '-define:UNITY_EDITOR,UNITY_INCLUDE_TESTS,UNITY_5_3_OR_NEWER,UNITY_2022_3']
-        engine = references + [facade]
-        outputs = {}
-        for stage, dependencies in [('Core', []), ('Runtime', ['Core']), ('Editor', ['Core', 'Runtime']), ('Tests', ['Core']), ('VisualTests', ['Core', 'Runtime'])]:
-            output = temp / ('Starfall.' + stage + '.dll')
-            refs = engine + [outputs[name] for name in dependencies]
-            if stage in ('Tests', 'VisualTests'):
-                refs += [nunit, test_runners[0]]
-            command = common + ['-out:' + str(output)] + ['-r:' + str(path) for path in refs] + [str(path) for path in sources[stage]]
-            result = subprocess.run(command, cwd=ROOT, capture_output=True, text=True)
+        plan = compile_plan(mono, mcs, references, facade, nunit, test_runners[0], sources, temp)
+        for item in plan:
+            stage = item['stage']
+            result = subprocess.run(item['command'], cwd=ROOT, capture_output=True, text=True)
             diagnostic = result.stdout + result.stderr
-            results.append({'stage': stage, 'exit': result.returncode, 'sources': len(sources[stage]), 'diagnostic': diagnostic})
+            results.append({'stage': stage, 'exit': result.returncode, 'sources': item['sources'],
+                            'defines': item['defines'], 'references': item['references'], 'diagnostic': diagnostic})
             print(diagnostic, end='')
             print(('PASS ' if result.returncode == 0 else 'FAIL ') + stage + ': actual Unity DLL binding compilation', flush=True)
             if result.returncode:
                 break
-            outputs[stage] = output
     changed = [path for path, digest in hashes.items() if hashlib.sha256((ROOT / path).read_bytes()).hexdigest() != digest]
     report = {'editor': str(args.editor.resolve()), 'checks': results, 'source_drift': changed, 'native_editor_executed': False, 'native_acceptance': 'NATIVE_UNVERIFIED'}
     if report_path:
         report_path.write_text(json.dumps(report, indent=2) + '\n')
-    if changed or len(results) != 5 or any(item['exit'] for item in results):
+    if changed or len(results) != 7 or any(item['exit'] for item in results):
         raise SystemExit('Unity DLL binding compilation failed or sources changed during verification.')
-    print('PASS all five actual-DLL compilation stages. No native Editor/import/PlayMode/shader/GPU/player build was executed. NATIVE_UNVERIFIED.')
+    print('PASS all seven actual-DLL compilation stages, including isolated Player Core/Runtime. No native Editor/import/PlayMode/shader/GPU/player build was executed. NATIVE_UNVERIFIED.')
 
 
 if __name__ == '__main__':

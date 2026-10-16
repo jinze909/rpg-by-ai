@@ -175,6 +175,11 @@ def native_integration_source(source_root,quiet=False):
     require('nativeHero = new FrontierHeroPresenter(gameObject);' in method(runtime,'Awake'),'D','Production Awake must instantiate the native whole-body presenter')
     whole=method(actors,'DrawWholeHero')
     require('nativeHero.Render(selected, drawingOutline ? new Color(1, .56f, .35f, .9f) : tint, drawingOutline,' in whole and 'GUI.DrawTexture(new Rect(foot.x - 96, foot.y - 180, 192, 192), target)' in whole,'D','Native rendered body must occupy the real sorted actor slot behind HUD, not an invisible background camera')
+    on_gui=method(runtime,'OnGUI')
+    require('catch (Exception ex)' in whole and 'throw new HeroPresentationException(ex);' in whole,'D','Late whole-body failures must enter the typed fatal presentation boundary with their original cause')
+    require('catch (HeroPresentationException ex)' in on_gui and 'bootError = ex.ToString();' in on_gui and 'Debug.LogError(bootError);' in on_gui and 'Box(0, 0, Width, Height, ink); DrawGUI();' in on_gui,'D','A late hero failure must log its full cause and visibly replace the partial world in the same GUI pass')
+    require('catch (Exception' not in on_gui,'D','The hero failure boundary must not swallow unrelated world or UI errors')
+    require('if (bootError != null || Game == null' in method(runtime,'Update') and 'if (bootError != null) return false;' in method(runtime,'Save'),'D','Fatal presentation must stop hidden simulation and all callers of the real save path')
     required=('AddComponent<SpriteRenderer>()','AddComponent<Animator>()','animator.runtimeAnimatorController = library.Controller','animator.speed = 0','animator.Play(','animator.Update(0)','renderCamera.Render()','renderCamera.backgroundColor = Color.clear','RenderTextureFormat.ARGB32','body.sprite != set.body[frame.frame]')
     require(all(token in presenter for token in required),'D','Native renderer/controller/sample/transparent-composite contract is missing')
     require('body.sprite =' not in presenter.replace('body.sprite !=',''),'D','Manual body.sprite assignment cannot bypass the actual Animator clip binding')
@@ -218,6 +223,7 @@ def negative_controls():
             ('C contact pose replaced by idle',SELECTOR,'pose = game.PlayerPose;','pose = 0;',lambda root:simulation(root,True),'C:'),
             ('D disabled native production route',RUNTIME,'nativeHero = new FrontierHeroPresenter(gameObject);','nativeHero = null;',lambda root:native_integration_source(root,True),'D:'),
             ('D bypassed straight-alpha conversion',PRESENTER,'Graphics.Blit(premultipliedTarget, target, straightAlphaMaterial);','Graphics.CopyTexture(premultipliedTarget, target);',lambda root:native_integration_source(root,True),'D:'),
+            ('D bypassed late hero failure boundary',ACTORS,'throw new HeroPresentationException(ex);','throw;',lambda root:native_integration_source(root,True),'D:'),
         ]
         for name,relative,before,after,check,category in cases:
             path=temp/relative;original=path.read_text();require(original.count(before)==1,'E','Mutation insertion point changed; update negative control rather than skip it: '+name)
@@ -240,7 +246,7 @@ def negative_controls():
             else:raise GateFailure('E: Invalid actor asset was not rejected: '+label)
     changed=[str(path) for path,expected in originals.items() if digest(ROOT/path)!=expected]
     require(not changed,'E','Production source changed during negative controls (rerun with source frozen): '+', '.join(changed))
-    require(len(controls)==6,'E','Exactly six regression controls must reject their isolated temporary mutations')
+    require(len(controls)==7,'E','Exactly seven regression controls must reject their isolated temporary mutations')
     return controls
 
 

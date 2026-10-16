@@ -111,6 +111,9 @@ namespace UnityEngine
         public sealed class ButtonCall {public Rect rect;public GUIStyle style;public bool enabled;public Texture2D background;}
         public static Matrix4x4 matrix=Matrix4x4.identity;public static Color color=Color.white;public static bool enabled=true;public static GUISkin skin=new GUISkin();
         public static float pixelsPerPoint=1; public static Rect? queuedClick;
+        // Fault injection is offline instrumentation, never a Unity API or
+        // evidence that an actual GPU/Animator error was executed.
+        public static string failTextureName; public static Exception textureFailure;
         public static List<TextureCall> textureCalls=new List<TextureCall>();public static List<ButtonCall> buttonCalls=new List<ButtonCall>();
         public static List<string> commands=new List<string>();public static Dictionary<string,Texture2D> textures=new Dictionary<string,Texture2D>();public static HashSet<string> exportedTextures=new HashSet<string>();
         public static string S(string s){return "\""+s.Replace("\\","\\\\").Replace("\"","\\\"").Replace("\n","\\n").Replace("\r","\\r")+"\"";}
@@ -119,7 +122,7 @@ namespace UnityEngine
         static string C(Color c){return "["+N(c.r)+","+N(c.g)+","+N(c.b)+","+N(c.a)+"]";}
         static string M(Matrix4x4 m){return "["+N(m.m00)+","+N(m.m01)+","+N(m.m03)+","+N(m.m10)+","+N(m.m11)+","+N(m.m13)+"]";}
         public static void DrawTexture(Rect r,Texture2D t){DrawTextureWithTexCoords(r,t,new Rect(0,0,1,1));}
-        public static void DrawTextureWithTexCoords(Rect r,Texture2D t,Rect uv){textures[t.name]=t;textureCalls.Add(new TextureCall {rect=r,uv=uv,matrix=matrix,texture=t,color=color});commands.Add("{\"k\":\"texture\",\"name\":"+S(t.name)+",\"r\":"+R(r)+",\"uv\":"+R(uv)+",\"color\":"+C(color)+",\"m\":"+M(matrix)+",\"screen\":["+Screen.width+","+Screen.height+"]}");}
+        public static void DrawTextureWithTexCoords(Rect r,Texture2D t,Rect uv){if(textureFailure!=null&&t.name==failTextureName)throw textureFailure;textures[t.name]=t;textureCalls.Add(new TextureCall {rect=r,uv=uv,matrix=matrix,texture=t,color=color});commands.Add("{\"k\":\"texture\",\"name\":"+S(t.name)+",\"r\":"+R(r)+",\"uv\":"+R(uv)+",\"color\":"+C(color)+",\"m\":"+M(matrix)+",\"screen\":["+Screen.width+","+Screen.height+"]}");}
         public static void Label(Rect r,string s){Label(r,s,new GUIStyle());}
         public static void Label(Rect r,string s,GUIStyle style){var p=style.padding;commands.Add("{\"k\":\"text\",\"text\":"+S(s)+",\"padding\":["+(p==null?"0,0,0,0":p.left+","+p.right+","+p.top+","+p.bottom)+"],\"r\":"+R(r)+",\"size\":"+style.fontSize+",\"color\":"+C(style.normal.textColor)+",\"center\":"+(style.alignment==TextAnchor.MiddleCenter?"true":"false")+",\"m\":"+M(matrix)+",\"screen\":["+Screen.width+","+Screen.height+"]}");}
         public static bool Button(Rect r,string text,GUIStyle s)
