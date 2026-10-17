@@ -14,6 +14,8 @@
 
 星火弹的亮头与尾迹现在共同朝向实际飞行方向，经过 HUD 和自然消失时保持一致。米拉不带爆炸伤害的星火弹也沿用星火外形消失，见 [STARFIRE-ALIGNMENT.md](docs/STARFIRE-ALIGNMENT.md)。
 
+同时出现的伤害、正面护甲、破势和治疗浮字分开排列；旧文字消失后，仍存活的文字保持原位置。保留实际事件时序、完整文本及原样式，见 [COMBAT-TEXT.md](docs/COMBAT-TEXT.md)。
+
 敌人受控期间，原血条旁保留静态金星提示，避免“破势”文字消失后看不出剩余机会；同样保留低特效和 HUD 遮挡可读性，见 [ENEMY-STUN-CUES.md](docs/ENEMY-STUN-CUES.md)。
 
 ## 启动

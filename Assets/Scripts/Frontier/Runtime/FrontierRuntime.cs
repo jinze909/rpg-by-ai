@@ -149,6 +149,7 @@ namespace Starfall
         private void OnApplicationQuit() { Save(); }
         private void OnDestroy()
         {
+            ResetCombatTextLayout();
 #if UNITY_5_3_OR_NEWER
             if (nativeHero != null) nativeHero.Dispose();
 #endif
@@ -320,6 +321,7 @@ namespace Starfall
             foreach (Effect floorEffect in Game.effects) if (IsGroundEffect(floorEffect)) DrawCombatEffect(floorEffect);
             DrawOrderedWorld();
             foreach (Projectile p in Game.projectiles) DrawProjectileVisual(p);
+            PrepareCombatTextLayout();
             foreach (Effect e in Game.effects) if (!IsGroundEffect(e)) DrawCombatEffect(e);
             DrawExpansionWorld();
             DrawCommissionWorld();

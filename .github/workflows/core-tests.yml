@@ -27,6 +27,8 @@ jobs:
         run: python3 tools/run_projectile_witness_checks.py
       - name: Check real staff and companion Starfire flight and fade alignment
         run: python3 tools/run_starfire_alignment_checks.py
+      - name: Check real combat feedback text, stable lanes, clipping and lifetime cleanup
+        run: python3 tools/run_combat_text_checks.py
       - name: Check persistent enemy stun cues, real break windows and HUD visibility
         run: python3 tools/run_enemy_stun_checks.py
       - name: Check cached actor contact shadows, retained frames, HUD isolation and real combat

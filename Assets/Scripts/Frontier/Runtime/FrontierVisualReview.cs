@@ -95,6 +95,7 @@ namespace Starfall
         public void EndVisualReview()
         {
             if (!VisualReviewActive) return;
+            ResetCombatTextLayout();
             Game = reviewOriginal; reviewOriginal = null; VisualReviewPaused = false;
             camera = reviewCamera; saveTimer = reviewSaveTimer; moving = false;
             combatHudTime = 0; previousRoom = -1; route.Clear(); routeGoal = null; arrivalTime = shakeTime = 0;
