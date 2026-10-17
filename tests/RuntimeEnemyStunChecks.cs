@@ -80,7 +80,18 @@ public static class RuntimeEnemyStunChecks
         int routes=0;
         for(int route=0;route<13;route++)
         {
-            Enemy e=Prepare(app,route);e.stun=.4f;EnemyDraw(app,e);Verify(app,e);var expected=Expected(app,e,GUI.matrix);var retained=GUI.textureCalls.FindAll(c=>!expected.Exists(x=>Same(x,c)));e.stun=0;EnemyDraw(app,e);Check(GUI.textureCalls.Count==retained.Count,"Only new stars change the original enemy/body/shadow/bars draw count");for(int i=0;i<retained.Count;i++)Check(Same(retained[i],GUI.textureCalls[i]),"All original enemy/body/shadow/bar frame, UV, color, geometry and order stay exact");
+            Enemy e=Prepare(app,route);e.stun=.4f;EnemyDraw(app,e);Verify(app,e);var expected=Expected(app,e,GUI.matrix);var retained=GUI.textureCalls.FindAll(c=>!expected.Exists(x=>Same(x,c)));e.stun=0;EnemyDraw(app,e);
+            var original=new List<GUI.TextureCall>(GUI.textureCalls);
+            // Removing stun now legitimately restores the new frontal guard.
+            // Subtract only its exact owned submissions, then retain every
+            // original body/shadow/bar assertion. Older archives have no cue.
+            var guard=app.GetType().GetMethod("DrawEnemyGuard",Private);
+            if(guard!=null)
+            {
+                Clear();guard.Invoke(app,new object[]{e});
+                foreach(var mark in GUI.textureCalls){int index=original.FindIndex(c=>Same(c,mark));Check(index>=0,"Every guard-owned submission exists in the actual unstunned actor draw");original.RemoveAt(index);}
+            }
+            Check(original.Count==retained.Count,"Status cues leave the original enemy/body/shadow/bars draw count unchanged");for(int i=0;i<retained.Count;i++)Check(Same(retained[i],original[i]),"All original enemy/body/shadow/bar frame, UV, color, geometry and order stay exact");
             foreach(float stun in new[]{-.01f,0f,.00001f,.4f,2.2f}){e.stun=stun;EnemyDraw(app,e);if(stun>0)Verify(app,e);else Check(Markers(app,e).Count==0,"Zero/negative remaining control has no marker");}e.stun=.4f;
             foreach(bool motion in new[]{false,true})foreach(int fx in new[]{0,1,2})foreach(float clock in new[]{0f,91.2f}){app.Game.save.reducedMotion=motion;app.Game.save.effectsQuality=fx;Set(app,"clock",clock);EnemyDraw(app,e);Verify(app,e);}
             foreach(string mode in new[]{"pause","dialog","inventory","title"}){app.Game.mode=mode;EnemyDraw(app,e);Check(Markers(app,e).Count==0,"World-only marker cannot cover "+mode);}app.Game.mode="world";e.hp=0;EnemyDraw(app,e);Check(Markers(app,e).Count==0,"A dead actor cannot retain stars");e.hp=e.maxHp;EnemyDraw(app,e);Verify(app,e);

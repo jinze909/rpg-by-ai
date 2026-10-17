@@ -354,7 +354,7 @@ namespace Starfall
             if(profile.playerOwned){TutorialAction(3);if(technique)TutorialAction(5);}
             if (practicing && !SparringActive) { if(profile.playerOwned){if (technique) PracticeSkill(); else PracticeHit();} return; }
             Point approach = attackDirection.HasValue ? attackDirection.Value * -1 : (Position - e.Position).Normalized;
-            if (!technique && !e.boss && e.kind == 2 && e.state == 0 && e.stun <= 0 && approach.x * e.facing.x + approach.y * e.facing.y > .45f)
+            if (!technique && EnemyArmorBlocks(e, approach))
             { damage *= .4f; effects.Add(new Effect("number", e.Position, .7f, L("正面护甲", "GUARDED"))); sound = "guard"; }
             else sound = "hit";
             bool crit = Random() < profile.criticalChance;

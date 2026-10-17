@@ -108,7 +108,7 @@ namespace Starfall
             if (Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished)) return false;
             if (Overlap(rect, PlayerHudBounds())) return true;
             foreach (Enemy enemy in Game.enemies)
-                if (Overlap(rect, EnemyHudBounds(enemy)) || EnemyStunVisible(enemy) && Overlap(rect, EnemyStunBounds(enemy))) return true;
+                if (Overlap(rect, EnemyHudBounds(enemy)) || EnemyStunVisible(enemy) && Overlap(rect, EnemyStunBounds(enemy)) || EnemyGuardVisible(enemy) && Overlap(rect, EnemyGuardBounds(enemy))) return true;
             foreach (Projectile shot in Game.projectiles)
                 if (Overlap(rect, ProjectileHudBounds(shot))) return true;
             foreach (Hazard hazard in Game.hazards)
@@ -137,6 +137,8 @@ namespace Starfall
                 if (OverlapsRegions(regions,PlayerHudBounds())) DrawPlayerActor();
             }
             finally { drawingOutline = false; }
+            foreach (Enemy enemy in Game.enemies)
+                if (EnemyGuardVisible(enemy) && OverlapsRegions(regions, EnemyGuardBounds(enemy))) DrawEnemyGuard(enemy);
             foreach (Enemy enemy in Game.enemies)
                 if (EnemyStunVisible(enemy) && OverlapsRegions(regions, EnemyStunBounds(enemy))) DrawEnemyStunIndicator(enemy);
             if (Game.ShelterWindWarning && OverlapsRegions(regions, ShelterWindBounds())) DrawShelterWind(true);

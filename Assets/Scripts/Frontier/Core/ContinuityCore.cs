@@ -60,6 +60,11 @@ namespace Starfall
         }
         public const float EnemyMeleeRadius=1.5f;
         public const float EnemyMeleeCosine=-.1f;
+        public const float EnemyArmorCosine = .45f;
+        public static bool EnemyHasFrontalArmor(Enemy enemy)
+        { return enemy != null && !enemy.boss && enemy.kind == 2 && enemy.state == 0 && enemy.stun <= 0; }
+        public static bool EnemyArmorBlocks(Enemy enemy, Point approach)
+        { return EnemyHasFrontalArmor(enemy) && approach.x * enemy.facing.x + approach.y * enemy.facing.y > EnemyArmorCosine; }
         public static float EnemyAreaRadius(Enemy enemy)
         { return enemy.boss?2.2f+enemy.AttackPhase*.2f:EnemyMeleeRadius; }
         public static bool InEnemyMeleeArc(Enemy enemy,Point target)

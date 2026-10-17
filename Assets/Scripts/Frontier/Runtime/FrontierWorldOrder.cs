@@ -116,6 +116,7 @@ namespace Starfall
         {
             DrawEnemyActor(enemy);
             if(Game.practicing&&!Game.SparringActive)return;
+            DrawEnemyGuard(enemy);
             DrawEnemyStunIndicator(enemy);
             if(!Game.SparringActive&&!enemy.boss&&enemy.hp>=enemy.maxHp&&enemy.state!=1)return;
             Point p=ScreenPoint(enemy.Position);float width=enemy.boss?104:52,top=p.y-(enemy.boss?135:enemy.kind==0?54:79);

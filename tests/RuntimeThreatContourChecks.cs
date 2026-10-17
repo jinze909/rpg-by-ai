@@ -239,7 +239,16 @@ public static class RuntimeThreatContourChecks
     private static string State(GameCore game)
     {var result=new StringBuilder();AppendState(result,game,new HashSet<object>());return result.ToString();}
     private static void NoContour(FrontierRuntime app,string reason)
-    {Draw(app);Check(Contour(7,Shadow).Count==0,reason);}
+        {
+            Draw(app);
+            // A released Heavy regains its legitimate blue guard arc. Its
+            // backing shares the dark stroke style, but is not a danger tell.
+            // Exclude only center-lines paired with that distinct guard core;
+            // all original danger lifetime/geometry/contact assertions remain.
+            var guard=Contour(3,new Color(145f/255,179f/255,204f/255,1));
+            var danger=Contour(7,Shadow).FindAll(line=>!guard.Exists(core=>SameSegment(line,core)));
+            Check(danger.Count==0,reason);
+        }
     private static void LifetimeVisibilityAndDrawIsolation(FrontierRuntime app)
     {
         Prepare(app);Enemy e=Warning(app);Draw(app);PairedContour(EnemyInk);

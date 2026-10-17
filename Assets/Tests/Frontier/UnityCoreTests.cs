@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void HeavyArmorEightHeadingsMatchExactContactSector(){CoreChecks.HeavyArmorEightHeadingsMatchExactContactSector(Data());}
+        [Test] public void HeavyArmorRolesStatesAndTechniquesKeepMatureDamage(){CoreChecks.HeavyArmorRolesStatesAndTechniquesKeepMatureDamage(Data());}
+        [Test] public void HeavyArmorRealWindupReleaseAndBreakRestoreEligibility(){CoreChecks.HeavyArmorRealWindupReleaseAndBreakRestoreEligibility(Data());}
+        [Test] public void HeavyArmorSafeDummySparringAndDefeatStayDistinct(){CoreChecks.HeavyArmorSafeDummySparringAndDefeatStayDistinct(Data());}
         [Test] public void HeroFullBodyContactsFollowRealAttackAndTechnique(){CoreChecks.HeroFullBodyContactsFollowRealAttackAndTechnique(Data());}
         [Test] public void HeroFullBodyRecoveryAndReactionsKeepActualEquipment(){CoreChecks.HeroFullBodyRecoveryAndReactionsKeepActualEquipment(Data());}
         [Test] public void HeroFullBodyLastDodgeAndDeathKeepCapturedFacing(){CoreChecks.HeroFullBodyLastDodgeAndDeathKeepCapturedFacing(Data());}

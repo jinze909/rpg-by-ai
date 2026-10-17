@@ -18,6 +18,8 @@
 
 敌人受控期间，原血条旁保留静态金星提示，避免“破势”文字消失后看不出剩余机会；同样保留低特效和 HUD 遮挡可读性，见 [ENEMY-STUN-CUES.md](docs/ENEMY-STUN-CUES.md)。
 
+重甲敌人的灰蓝盾弧显示实际正面护甲方向，蓄力和受控时按原规则关闭；玩家可在命中前判断绕后或等待反击。低特效与 HUD 遮挡时继续可见，见 [HEAVY-GUARD.md](docs/HEAVY-GUARD.md)。
+
 ## 启动
 
 1. **升级现有项目**：关闭 Unity，备份项目，覆盖包内 `Assets`、`Packages` 与 `ProjectSettings`；本轮也请更新 `ProjectSettings/ProjectVersion.txt`，清除旧的 C1 和 revision 信息。
