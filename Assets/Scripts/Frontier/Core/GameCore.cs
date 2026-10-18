@@ -97,6 +97,7 @@ namespace Starfall
             save.foodUntil = Finite(save.foodUntil) ? Clamp(save.foodUntil, 0, save.totalTime + 120) : 0;
             if (save.weapon > 0 && !Has("weapon_" + save.weapon)) save.weapon = 0;
             SanitizeBattlePlans();
+            SanitizeLandmarkPin();
             if (!Finite(save.x) || !Finite(save.y) || !Fits(Position)) { save.x = Map.spawnX; save.y = Map.spawnY; }
             if(save.room==ReachRoom && (Position-new Point(Map.spawnX,Map.spawnY)).Length>2 && NavigationPath(new Point(Map.spawnX,Map.spawnY)).Count==0) {save.x=Map.spawnX;save.y=Map.spawnY;}
             ResetTransient(); SpawnRoom(); RestoreWorld(); RestoreWatchEncounter(); RestoreSignalEncounter(); RestoreArchiveEncounter(); RestoreReachEncounter(); VisitReach(); revision++;

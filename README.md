@@ -10,6 +10,8 @@
 
 三份镇民委托完成后，阿茴会邀请你准备「炉火共餐」：与杏、老潮、诺尔确认准备，在炉火旅店备餐、逐处送汤，并留下可重读的桌边故事。沿用原有生活玩法，支持分段存档与一次性报酬，见 [HEARTH-SUPPER.md](docs/HEARTH-SUPPER.md)。
 
+世界地图新增「本地路标」：为已经探索的居民、营地、厨房、出口或机关设置独立路线，不更换当前追踪任务；路标随存档保留，清除即可恢复任务导航。见 [LOCAL-LANDMARKS.md](docs/LOCAL-LANDMARKS.md)。
+
 地脉深渊第2、4层新增可选「地脉回声」：清层后可取一次生命补给，或挑战三轮有明确预告的地脉脉冲，获取本层未结算收益。支持取消重试、暂停和断点存档，六层原地图、敌人、Boss与结算不变，见 [ROOT-ECHO.md](docs/ROOT-ECHO.md)。
 
 主角三种装备外观改为完整 256 图格，取消造成肩甲、弓弦和领口割裂的头身矩形拼接；固定脚底、原金发 Viola、22张图集注册及44张遮罩保留。正式路径使用 SpriteRenderer + Animator，并在原世界排序位置合成。运行中主角绘制失败会显示原始错误并停止模拟/保存；A–E 离线门槛含七项故障负向控制，编译检查覆盖隔离的 Player 分支。原生 Frontier 导入/试玩仍为 `NATIVE_UNVERIFIED`；实现与验收边界见 [HERO-ANIMATION-REBUILD.md](docs/HERO-ANIMATION-REBUILD.md)。历史尺寸、握持记录见 [FRAME-CONTINUITY-POLISH.md](docs/FRAME-CONTINUITY-POLISH.md)。

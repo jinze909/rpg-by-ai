@@ -201,6 +201,7 @@ namespace Starfall
                 if (Game.mode == "talents") DrawTalents();
                 if (Game.mode == "journal") DrawJournal();
                 if (Game.mode == "map") DrawMap();
+                if (Game.mode == "landmarks") DrawLandmarks();
                 if (Game.mode == "pause") DrawPause();
                 if (Game.mode == "controls") DrawControllerSettings();
                 if (Game.mode == "saves") DrawSaves();

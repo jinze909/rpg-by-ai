@@ -81,9 +81,11 @@ namespace Starfall
         private void DrawNavigation()
         {
             if (Game.mode != "world" || !Game.save.showGuidance) return; Point? target = Game.NavigationTarget(); if (!target.HasValue) return;
-            if (Game.SafeTravel && route.Count > 0) for (int i = 0; i < Math.Min(route.Count, 22); i += 2) { Point p = ScreenPoint(route[i]); Box(p.x - 2, p.y - 1, 4, 3, new Color(.94f, .77f, .48f, .55f)); }
-            Point goal = ScreenPoint(target.Value); if (goal.x > 34 && goal.x < 978 && goal.y > 132 && goal.y < 675) { float bob = Game.save.reducedMotion ? 0 : (float)Math.Sin(clock * 3) * 3; Diamond(goal.x, goal.y - 38 + bob, 8, gold); Diamond(goal.x, goal.y - 38 + bob, 3, ink); }
-            else { Point center = ScreenPoint(Game.Position), delta = goal - center; float kx = delta.x == 0 ? 999 : (delta.x > 0 ? 966 - center.x : 40 - center.x) / delta.x, ky = delta.y == 0 ? 999 : (delta.y > 0 ? 665 - center.y : 150 - center.y) / delta.y; float k = Math.Min(1, Math.Max(0, Math.Min(kx, ky))); Point edge = center + delta * k; Diamond(edge.x, edge.y, 9, gold); Text(edge.x - 80, edge.y + 13, 160, 40, Game.CurrentGuide.room == Game.save.room ? Game.L("任务目标", "OBJECTIVE") : Game.L("区域出口", "REGION EXIT"), 11, gold, TextAnchor.MiddleCenter); }
+            bool pinned = Game.PinnedLandmark != null;
+            Color accent = pinned ? mint : gold, pathColor = pinned ? new Color(mint.r, mint.g, mint.b, .55f) : new Color(.94f, .77f, .48f, .55f);
+            if (Game.SafeTravel && route.Count > 0) for (int i = 0; i < Math.Min(route.Count, 22); i += 2) { Point p = ScreenPoint(route[i]); Box(p.x - 2, p.y - 1, 4, 3, pathColor); }
+            Point goal = ScreenPoint(target.Value); if (goal.x > 34 && goal.x < 978 && goal.y > 132 && goal.y < 675) { float bob = Game.save.reducedMotion ? 0 : (float)Math.Sin(clock * 3) * 3; Diamond(goal.x, goal.y - 38 + bob, 8, accent); Diamond(goal.x, goal.y - 38 + bob, 3, ink); }
+            else { Point center = ScreenPoint(Game.Position), delta = goal - center; float kx = delta.x == 0 ? 999 : (delta.x > 0 ? 966 - center.x : 40 - center.x) / delta.x, ky = delta.y == 0 ? 999 : (delta.y > 0 ? 665 - center.y : 150 - center.y) / delta.y; float k = Math.Min(1, Math.Max(0, Math.Min(kx, ky))); Point edge = center + delta * k; Diamond(edge.x, edge.y, 9, accent); Text(edge.x - 80, edge.y + 13, 160, 40, pinned ? Game.L("自选路标", "WAYPOINT") : Game.CurrentGuide.room == Game.save.room ? Game.L("任务目标", "OBJECTIVE") : Game.L("区域出口", "REGION EXIT"), 11, accent, TextAnchor.MiddleCenter); }
         }
         private void DrawTerrainEdge(int x, int y, char tile, Point p)
         {

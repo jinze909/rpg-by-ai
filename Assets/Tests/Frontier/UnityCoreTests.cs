@@ -6,6 +6,14 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void LandmarksExploredPresentOrderedObjects(){CoreChecks.LandmarksProjectOnlyExploredPresentNamedNonresourceObjectsInAuthoredOrder(Data());}
+        [Test] public void LandmarksCanonicalCallbacksAndModes(){CoreChecks.LandmarksRejectCopiedForeignMalformedAndStalePinCallbacks(Data());}
+        [Test] public void LandmarksUnambiguousMetadata(){CoreChecks.LandmarksValidateCanonicalMetadataAndUnambiguousSavedIds(Data());}
+        [Test] public void LandmarksExistingNavigationOwnership(){CoreChecks.LandmarksKeepQuestTutorialPracticeAndAbyssNavigationOwnership(Data());}
+        [Test] public void LandmarksTravelDeathLegacyAndNewJourneys(){CoreChecks.LandmarksPersistThroughTravelDefeatLegacyLoadsAndResetForNewJourneys(Data());}
+        [Test] public void LandmarksNamespaceAndStoryPresence(){CoreChecks.LandmarksNormalizeOnlyTheirNamespaceAndSuppressHiddenStoryObjectsReadOnly(Data());}
+        [Test] public void LandmarksLiveBridgeRootsAndTide(){CoreChecks.LandmarksUseLiveBridgeRootAndTidePathsWithoutOpeningGates(Data());}
+        [Test] public void LandmarksReadOnlySimulationIsolation(){CoreChecks.LandmarksReadQueriesAndRoutesNeverAwardInteractOrAdvanceWorldState(Data());}
         [Test] public void HeavyArmorEightHeadingsMatchExactContactSector(){CoreChecks.HeavyArmorEightHeadingsMatchExactContactSector(Data());}
         [Test] public void HeavyArmorRolesStatesAndTechniquesKeepMatureDamage(){CoreChecks.HeavyArmorRolesStatesAndTechniquesKeepMatureDamage(Data());}
         [Test] public void HeavyArmorRealWindupReleaseAndBreakRestoreEligibility(){CoreChecks.HeavyArmorRealWindupReleaseAndBreakRestoreEligibility(Data());}

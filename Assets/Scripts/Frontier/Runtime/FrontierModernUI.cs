@@ -82,8 +82,9 @@ namespace Starfall
             if (world)
             {
                 DrawMinimap(); QuestGuide q = Game.CurrentGuide; Panel(1008, 233, 248, 209, new Color(.045f, .08f, .13f, .88f), PixelArt.C("#405970"));
-                Text(1025, 247, 214, 22, Game.practicing ? Game.L("实战教学", "COMBAT PRACTICE") : q.category + "  /  " + ControlKey("TAB", "VIEW"), 11, gold); Text(1025, 277, 214, 48, Game.practicing ? Game.L(new[] { "命中目标", "观察与闪避", "职业战技" }[Game.practiceStage], new[] { "Hit the target", "Read & evade", "Class technique" }[Game.practiceStage]) : q.title, 17, paper);
-                Text(1025, 334, 214, 65, Game.practicing ? PracticeInputHint : Game.InAbyss ? Game.Objective() : TideBlocksGuide ? Game.L("潮水阻路：等待退潮，或开启控潮闸门。", "Tide blocks the route. Wait for ebb or use the sluice.") : Game.GuidanceHint(), 13, muted); Bar(1025, 422, 214, Game.practicing ? Game.practiceStage / 3f : q.Progress, gold, 3);
+                WorldObject pin = Game.PinnedLandmark;
+                Text(1025, 247, 214, 22, pin != null ? Game.L("自选路标", "WAYPOINT") + "  /  " + ControlKey("M", "START") : Game.practicing ? Game.L("实战教学", "COMBAT PRACTICE") : q.category + "  /  " + ControlKey("TAB", "VIEW"), 11, pin != null ? mint : gold); Text(1025, 277, 214, 48, pin != null ? Game.L(pin.name, pin.en) : Game.practicing ? Game.L(new[] { "命中目标", "观察与闪避", "职业战技" }[Game.practiceStage], new[] { "Hit the target", "Read & evade", "Class technique" }[Game.practiceStage]) : q.title, 17, paper);
+                Text(1025, 334, 214, 65, pin != null ? LandmarkHudHint(pin) : Game.practicing ? PracticeInputHint : Game.InAbyss ? Game.Objective() : TideBlocksGuide ? Game.L("潮水阻路：等待退潮，或开启控潮闸门。", "Tide blocks the route. Wait for ebb or use the sluice.") : Game.GuidanceHint(), 13, muted); Bar(1025, 422, 214, pin != null ? ((new Point(pin.x, pin.y) - Game.Position).Length < 1.75f ? 1 : 0) : Game.practicing ? Game.practiceStage / 3f : q.Progress, pin != null ? mint : gold, 3);
                 if (!Game.practicing && Button(1015, 448, 234, 33, Game.save.showGuidance ? Game.L("路线指引 ON", "Route guide ON") : Game.L("路线指引 OFF", "Route guide OFF"))) { Game.save.showGuidance = !Game.save.showGuidance; Game.revision++; }
                 if (Game.save.room >= 5 || Game.save.teaUntil > Game.save.totalTime) { Panel(24, 145, 298, 60, new Color(.045f, .08f, .13f, .85f), PixelArt.C("#405970")); Text(39, 156, 271, 42, Game.Conditions(), 13, muted); }
                 DrawRoadMealHud(false);
@@ -119,7 +120,7 @@ namespace Starfall
             size=MapCellSize(Game.Map,size);
             for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++) { char t = Game.PresentationTile(x,y); Color c = t == '~' || t == '%' && !Game.LowTide ? PixelArt.C("#315c76") : t == '#' ? PixelArt.C("#566879") : t == '=' ? PixelArt.C("#a09877") : PixelArt.C(Game.Map.color); Box(x0 + x * size, y0 + y * size, size, size, Game.Explored(Game.save.room, x, y) ? c : Color.Lerp(c, ink, .68f)); }
             foreach (var o in Game.Map.objects) if (Game.IsObjectPresent(o) && (o.kind.StartsWith("portal") || Game.Explored(Game.save.room, o.x, o.y))) Box(x0 + o.x * size - 1, y0 + o.y * size - 1, 3, 3, o.kind.StartsWith("portal") ? mint : gold);
-            Point? goal = Game.NavigationTarget(); if (goal.HasValue && Game.save.showGuidance) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
+            Point? goal = Game.NavigationTarget(); if (goal.HasValue && Game.save.showGuidance) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, Game.PinnedLandmark != null ? mint : gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
         }
         private static float MapCellSize(MapData map,float originalSize)
         {
@@ -275,6 +276,7 @@ namespace Starfall
             Text(888,492,306,101,Game.CanEnter(selectedRegion) ? (selectedRegion == GameCore.ArchiveRoom ? Game.GetQuest("archive").next : Game.L(m.subtitle,m.suben)) : Game.RouteHint(selectedRegion,Game.save.english),16,muted);
             if (Button(888,616,306,47,selectedRegion == Game.save.room ? Game.L("返回本地区", "Return to region") : Game.L("快速旅行", "Fast travel"),true,selectedRegion == Game.save.room || Game.CanEnter(selectedRegion) && Game.SafeTravel))
             { if (selectedRegion == Game.save.room) Game.Close(); else { Game.Enter(selectedRegion); camera = CameraTarget(); } }
+            if (Button(913,692,304,30,Game.L("本地路标", "Local landmarks"),false,CanOpenLandmarks)) OpenLandmarks();
             Text(282,690,554,28,Game.SafeTravel ? Game.L("选择地区查看路线与目标。", "Select a region to inspect its route and target.") : Game.L("附近有敌人，快速旅行暂不可用。", "Enemies nearby; fast travel unavailable."),14,muted);
         }
         private void DrawDialogue()
