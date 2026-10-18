@@ -146,7 +146,7 @@ namespace Starfall
             int bossRoom = BossArtRoom(e,Game.save.room);
             Point p = ScreenPoint(e.Position); float size = e.boss ? BossCanvasSize(bossRoom) : e.kind == 2 ? 106 : 96;
             DrawContactShadow(p, size * .44f, 7, -3, new Color(.025f, .04f, .07f, .35f));
-            if (Game.practicing && !Game.SparringActive)
+            if (Game.practicing && !Game.SafeTrainingActive)
             {
                 // The safe training rig still demonstrates a bodily wind-up and
                 // release. A static sign plus a red circle cannot teach timing.

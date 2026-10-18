@@ -12,7 +12,7 @@ namespace Starfall
         {
             return DangerContoursVisible && enemy != null && enemy.hp > 0
                 && Game.enemies.Contains(enemy) && GameCore.EnemyHasFrontalArmor(enemy)
-                && !(Game.practicing && !Game.SparringActive)
+                && !(Game.practicing && !Game.SafeTrainingActive)
                 && FiniteContourPoint(enemy.Position) && FiniteContourPoint(enemy.facing)
                 && enemy.facing.Length > .001f && ContourInViewport(EnemyGuardBounds(enemy));
         }

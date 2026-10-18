@@ -72,7 +72,7 @@ namespace Starfall
         {
             if (mouse.x < 0 || mouse.x >= Width || mouse.y < 0 || mouse.y >= Height) return true;
             foreach (Rect rect in HudPointerRegions()) if (Contains(rect, mouse)) return true;
-            return Game.practicing && Contains(new Rect(785,246,130,34), mouse);
+            return Game.practicing && !Game.RangeActive && Contains(new Rect(785,246,130,34), mouse);
         }
         private bool TideBlocksGuide { get { return Game.save.room == 5 && !Game.LowTide && routeGoal.HasValue && (routeGoal.Value - Game.Position).Length > 1.8f && route.Count == 0; } }
         private bool DialogueChoicesVisible() { return Game.conversation != null && Game.conversation == lastConversation && dialoguePage >= DialogueLayout.Pages(Game.L(Game.conversation.text, Game.conversation.textEn), Game.save.largeText).Count - 1; }

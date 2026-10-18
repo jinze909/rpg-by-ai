@@ -6,6 +6,14 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void RangeMenusPreserveMatureAdaChoicesAndRequireEarnedLocalControl(){CoreChecks.RangeMenusPreserveMatureAdaChoicesAndRequireEarnedLocalControl(Data());}
+        [Test] public void RangeThreeClassesAndLayoutsUseRealContactsAndClearWithoutRewards(){CoreChecks.RangeThreeClassesAndLayoutsUseRealContactsAndClearWithoutRewards(Data());}
+        [Test] public void RangeArmorFlanksBreaksAndStunKeepActualSimulation(){CoreChecks.RangeArmorFlanksBreaksAndStunKeepActualSimulation(Data());}
+        [Test] public void RangeDamageCountsOnlyAcceptedPlayerOwnedPositiveHealthLoss(){CoreChecks.RangeDamageCountsOnlyAcceptedPlayerOwnedPositiveHealthLoss(Data());}
+        [Test] public void RangeAcceptedActionTimingMenusAndSafeVitalsStayIsolated(){CoreChecks.RangeAcceptedActionTimingMenusAndSafeVitalsStayIsolated(Data());}
+        [Test] public void RangeManualResetsSeverPreparedMissilesAndPersistentFrost(){CoreChecks.RangeManualResetsSeverPreparedMissilesAndPersistentFrost(Data());}
+        [Test] public void RangeSaveRecoveryAndReservedActorsKeepCampaignAndAbyssBoundaries(){CoreChecks.RangeSaveRecoveryAndReservedActorsKeepCampaignAndAbyssBoundaries(Data());}
+
         [Test] public void LandmarksExploredPresentOrderedObjects(){CoreChecks.LandmarksProjectOnlyExploredPresentNamedNonresourceObjectsInAuthoredOrder(Data());}
         [Test] public void LandmarksCanonicalCallbacksAndModes(){CoreChecks.LandmarksRejectCopiedForeignMalformedAndStalePinCallbacks(Data());}
         [Test] public void LandmarksUnambiguousMetadata(){CoreChecks.LandmarksValidateCanonicalMetadataAndUnambiguousSavedIds(Data());}

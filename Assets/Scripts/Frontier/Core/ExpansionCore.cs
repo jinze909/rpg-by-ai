@@ -152,7 +152,7 @@ namespace Starfall
             var ids = new HashSet<int>();
             foreach (EnemyRecord r in save.abyssEnemies)
             {
-                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || r.id == CommissionGuardianId || IsArchiveEnemyId(r.id) || IsSparringEnemyId(r.id) || IsReachEnemyId(r.id) || IsHomewardEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
+                if (r == null || r.id < 1 || r.id > 99999 || (r.id == SignalWardenId || r.id == CommissionGuardianId || IsArchiveEnemyId(r.id) || IsSparringEnemyId(r.id) || IsRangeEnemyId(r.id) || IsReachEnemyId(r.id) || IsHomewardEnemyId(r.id)) || !ids.Add(r.id) || !Finite(r.hp) || !Finite(r.maxHp) || r.hp <= 0) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
                 float maximum = Clamp(r.maxHp, 1, 5000);
                 var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, maximum, r.boss && save.abyssFloor == 6);
@@ -726,7 +726,7 @@ namespace Starfall
         }
         public void StartAbyss(int risk)
         {
-            if (Dying || SparringActive || !CanEnter(8) || InAbyss || risk < 0 || risk > 2) return;
+            if (Dying || SafeTrainingActive || !CanEnter(8) || InAbyss || risk < 0 || risk > 2) return;
             save.abyssFloor = 1; save.abyssRisk = risk; save.abyssSeed = (int)(Random() * 1000000) + 137;
             save.abyssEnemies = null; save.abyssSnapshotFloor = 0;
             save.runCoins = save.runShards = save.runXp = 0; Array.Clear(save.boons, 0, 3); save.flags.RemoveAll(f => f.StartsWith("abyss_clear_") || f.StartsWith("abyss_echo_") || f == "boss_8");

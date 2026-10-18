@@ -53,6 +53,8 @@ jobs:
         run: python3 tools/run_controller_aim_checks.py
       - name: Check mentor sparring with production input, results and saves
         run: python3 tools/run_sparring_checks.py
+      - name: Check Ada's freeform loadout range, real contacts, manual resets and safe saves
+        run: python3 tools/run_range_checks.py
       - name: Check guild story with production dialogue, chapters and saves
         run: python3 tools/run_guild_story_checks.py
       - name: Check expanded riverbank with production movement, interactions and saves

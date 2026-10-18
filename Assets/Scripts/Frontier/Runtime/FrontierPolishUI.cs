@@ -84,7 +84,8 @@ namespace Starfall
             if (warden != null) near = warden;
             if (commission != null) near = commission;
             if (near != null && !Game.practicing) { Panel(24, 228, 298, 90, new Color(.06f, .08f, .13f, .88f), PixelArt.C("#b37c6a")); Text(40, 241, 266, 68, GameCore.IsCommissionGuardian(near)?CommissionMoveHint(near):GameCore.IsSignalWarden(near)?SignalMoveHint(near):Game.EnemyHint(near), 13, paper, TextAnchor.MiddleCenter); }
-            if (Game.SparringActive) DrawSparringPresentation();
+            if (Game.RangeActive) DrawRangePresentation();
+            else if (Game.SparringActive) DrawSparringPresentation();
             else if (Game.practicing) { Panel(348, 190, 584, 104, panel, mint); Text(365, 206, 549, 34, Game.L("安全练习 ", "Safe practice ") + (Game.practiceStage + 1) + "/3", 20, gold); Text(365, 250, 390, 31, PracticeInputHint, 16, paper); if (Button(785, 246, 130, 34, Game.L("结束练习", "End practice"))) Game.EndPractice(); }
             if (resumeTime > 0 && !Game.practicing) { Panel(352, 205, 576, 98, panel, gold); Text(369, 219, 542, 27, Game.L("欢迎回来 · 接下来", "Welcome back · next step"), 19, gold); Text(369, 255, 542, 40, resumeBrief, 14, paper); }
             if (Game.save.reducedMotion || Game.save.effectsQuality == 0) return;

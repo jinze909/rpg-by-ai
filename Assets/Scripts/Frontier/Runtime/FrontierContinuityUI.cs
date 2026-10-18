@@ -16,7 +16,7 @@ namespace Starfall
         private bool HasLiveBoss { get {foreach(Enemy e in Game.enemies)if(e.boss)return true;return false;} }
         private bool HasFallenBoss { get {foreach(FallenActor f in Game.fallen)if(f.actor.boss)return true;return false;} }
         private bool CombatHud
-        { get {if(Game.mode!="world")return false;if(Game.SparringActive||combatHudTime>0||Game.Dying||HasFallenBoss)return true;foreach(Enemy e in Game.enemies)if(e.boss||(e.Position-Game.Position).Length<8)return true;return false;} }
+        { get {if(Game.mode!="world")return false;if(Game.SafeTrainingActive||combatHudTime>0||Game.Dying||HasFallenBoss)return true;foreach(Enemy e in Game.enemies)if(e.boss||(e.Position-Game.Position).Length<8)return true;return false;} }
         private static bool Contains(Rect r, Point p) { return p.x >= r.x && p.x < r.x + r.width && p.y >= r.y && p.y < r.y + r.height; }
         private static bool Overlap(Rect a, Rect b) { return a.x < b.x + b.width && a.x + a.width > b.x && a.y < b.y + b.height && a.y + a.height > b.y; }
         private Rect ActorBounds(Point feet, bool boss = false)
@@ -28,7 +28,7 @@ namespace Starfall
             int pose=EnemyPose(enemy),columns=6,frame=Math.Min(2,enemy.kind)*6+pose;
             Texture2D sheet=monsterSheet;float density=(enemy.kind==2?106:96)/128f;
             bool flip=enemy.VisualFlip;
-            if(Game.practicing&&!Game.SparringActive){frame=12+pose;density=106/128f;}
+            if(Game.practicing&&!Game.SafeTrainingActive){frame=12+pose;density=106/128f;}
             else if(enemy.boss)
             {
                 int bossRoom=BossArtRoom(enemy,Game.save.room),row=Math.Max(0,bossRoom-1);columns=4;density=BossCanvasSize(bossRoom)/320f;
@@ -79,6 +79,7 @@ namespace Starfall
             }
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
             AddSparringPointerRegions(hudPointerRegions);
+            AddRangePointerRegions(hudPointerRegions);
             return hudPointerRegions;
         }
         private static bool OverlapsRegions(List<Rect> regions,Rect bounds)
@@ -105,7 +106,7 @@ namespace Starfall
         {
             // A cleared drill is a paused review, with no live contact or
             // projectile left. Keep its feedback readable over the resting hero.
-            if (Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished)) return false;
+            if (TrainingReview) return false;
             if (Overlap(rect, PlayerHudBounds())) return true;
             foreach (Enemy enemy in Game.enemies)
                 if (Overlap(rect, EnemyHudBounds(enemy)) || EnemyStunVisible(enemy) && Overlap(rect, EnemyStunBounds(enemy)) || EnemyGuardVisible(enemy) && Overlap(rect, EnemyGuardBounds(enemy))) return true;
@@ -126,7 +127,7 @@ namespace Starfall
         private void DrawHudThreatWitness()
         {
             if (Game.mode != "world") return;
-            if (Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished)) return;
+            if (TrainingReview) return;
             // Actor edges and compact status marks are repeated above the HUD.
             // World art stays visible through its faded background, with no
             // opaque duplicate bodies covering the resource text.
@@ -176,8 +177,8 @@ namespace Starfall
             DrawRoadMealHud(true);
             QuestGuide guide = Game.CurrentGuide;
             Panel(1030,22,230,70,new Color(.045f,.08f,.13f,.45f),new Color(gold.r,gold.g,gold.b,.4f));
-            Text(1041,27,208,27,Game.RootEchoActive ? Game.L("回声挑战 ","ROOT ECHO ")+(Game.RootEchoStep+1)+"/3" : Game.SparringActive ? Game.L("战术训练","TACTICS DRILLS") : Game.practicing ? Game.L("实战教学","COMBAT PRACTICE") : guide.title,12,gold);
-            Text(1041,56,136,23,Game.RootEchoActive ? Game.L("观察光圈","Read circles") : Game.SparringActive ? Game.L("训练 ","Drill ")+(Game.SparringStage+1)+"/3" : (int)(guide.Progress*100)+"%  ·  "+Game.L("查看步骤","View steps"),11,paper);
+            Text(1041,27,208,27,Game.RootEchoActive ? Game.L("回声挑战 ","ROOT ECHO ")+(Game.RootEchoStep+1)+"/3" : Game.RangeActive ? Game.L("试装训练场","LOADOUT RANGE") : Game.SparringActive ? Game.L("战术训练","TACTICS DRILLS") : Game.practicing ? Game.L("实战教学","COMBAT PRACTICE") : guide.title,12,gold);
+            Text(1041,56,136,23,Game.RootEchoActive ? Game.L("观察光圈","Read circles") : Game.RangeActive ? Game.L(Game.RangeFinished ? "记录暂停" : Game.RangeStarted ? "正在试装" : "准备试装", Game.RangeFinished ? "Results paused" : Game.RangeStarted ? "Testing gear" : "Ready to test") : Game.SparringActive ? Game.L("训练 ","Drill ")+(Game.SparringStage+1)+"/3" : (int)(guide.Progress*100)+"%  ·  "+Game.L("查看步骤","View steps"),11,paper);
             if (Button(CombatJournalButton.x,CombatJournalButton.y,CombatJournalButton.width,CombatJournalButton.height,ControlKey("TAB","VIEW"))) OpenMenu("journal");
             Enemy boss = Game.enemies.Find(e => e.boss);
             if (boss != null)

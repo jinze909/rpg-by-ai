@@ -7,8 +7,8 @@ namespace Starfall
     {
         private bool FieldcraftCounterVisible
         {
-            get { return Game.mode == "world" && !applicationPaused && !VisualReviewPaused && !Game.Dying && Game.riposteTime > 0
-                && !(Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished)); }
+            get { return Game.mode == "world" && !Game.RangeActive && !applicationPaused && !VisualReviewPaused && !Game.Dying && Game.riposteTime > 0
+                && !(TrainingReview); }
         }
         private Rect FieldcraftCounterBounds()
         { return new Rect(405, CombatHud ? 89 : 102, 470, CombatHud ? 22 : 24); }

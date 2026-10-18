@@ -12,7 +12,7 @@ namespace Starfall
             get
             {
                 return Game != null && Game.mode == "world" && !Game.Dying
-                    && !(Game.SparringActive && (Game.SparringAwaitingNext || Game.SparringFinished));
+                    && !(TrainingReview);
             }
         }
         private static bool FiniteContourPoint(Point point)
