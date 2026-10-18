@@ -90,7 +90,7 @@ namespace Starfall
         {
             if (Dying) return;
             if (save.room != 0 || mode == "title") { Notify("回到余烬镇，在训练场重新练习。", "Return to Emberfall to use the practice yard."); return; }
-            if (practicing) return; Close(); ClearFieldcraftTransient(); ResetCombatPresentation(); practicing = true; practiceStage = 0; practiceReturn = Position;
+            if (practicing) return; Close(); ResetCompanionTactics(); ClearFieldcraftTransient(); ResetCombatPresentation(); practicing = true; practiceStage = 0; practiceReturn = Position;
             enemies.Clear(); projectiles.Clear(); hazards.Clear(); save.x = 14; save.y = 13; invulnerable = 0; save.energy = 100;
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0; ClearFrost();
             PracticeEnemy(); Notify("训练场：先命中练习木桩。练习不会损失生命或物资。", "Practice yard: hit the dummy. Health and supplies are safe.");
@@ -113,7 +113,7 @@ namespace Starfall
             Notify(first ? "练习完成：技能点1、硬币15！可以出发去密林了。" : "练习完成！随时可以再来。", first ? "Practice complete: 1 point, 15 coins. Ready for Thornwood." : "Practice complete! Return anytime.");
         }
         public void EndPractice()
-        { if (RangeActive) { EndRange(); return; } if (SparringActive) { EndSparring(); return; } if (!practicing) return; practicing = false; CancelAction(); companionAction = null; movementDirection = new Point(); companionMoving = false; enemies.Clear(); projectiles.Clear(); effects.Clear(); save.x = practiceReturn.x; save.y = practiceReturn.y; save.energy = 100; attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0; ClearFrost(); invulnerable = 1; revision++; }
+        { if (RangeActive) { EndRange(); return; } if (SparringActive) { EndSparring(); return; } if (!practicing) return; ResetCompanionTactics(); practicing = false; CancelAction(); companionAction = null; movementDirection = new Point(); companionMoving = false; enemies.Clear(); projectiles.Clear(); effects.Clear(); save.x = practiceReturn.x; save.y = practiceReturn.y; save.energy = 100; attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0; ClearFrost(); invulnerable = 1; revision++; }
         public string PracticeHint { get { return L(new[] { "J / 左键：命中木桩", "观察红圈，空格闪避攻击", "Q：命中目标，完成练习" }[practiceStage], new[] { "J / click: hit the dummy", "Read the red circle; Space to dodge", "Q: hit the target to finish" }[practiceStage]); } }
         public void UseExplorationAbility()
         {

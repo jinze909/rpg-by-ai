@@ -64,6 +64,7 @@ namespace Starfall
                 if (Game.save.showGuidance && Game.TutorialStep < 8 && !Game.practicing) rects.Add(new Rect(24,474,298,204));
             }
             if (FieldcraftCounterVisible) rects.Add(FieldcraftCounterBounds());
+            if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
             rects.AddRange(worldOverlayRegions); return rects;
         }
         private List<Rect> HudPointerRegions()
@@ -75,7 +76,8 @@ namespace Starfall
             if (!CombatHud)
             {
                 for (int i = 0; i < regions.Count - worldOverlayRegions.Count; i++)
-                    if (!FieldcraftCounterVisible || !SameFieldcraftCounterRegion(regions[i])) hudPointerRegions.Add(regions[i]);
+                    if ((!FieldcraftCounterVisible || !SameFieldcraftCounterRegion(regions[i]))
+                        && (!CompanionFeedbackVisible || !SameCompanionFeedbackRegion(regions[i]))) hudPointerRegions.Add(regions[i]);
             }
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
             AddSparringPointerRegions(hudPointerRegions);
@@ -121,7 +123,7 @@ namespace Starfall
         private void DrawHud()
         {
             drawingHud = true;
-            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); }
+            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawCompanionFeedbackHud(); }
             finally { drawingHud = false; }
         }
         private void DrawHudThreatWitness()
@@ -192,7 +194,7 @@ namespace Starfall
             ActionSlot(430,ControlKey("Q","Y"),SkillName(),Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff",Game.skillCooldown,Game.save.energy >= (Game.Relic(4)?50:40),()=>Game.Skill(InputAim(true)),3.5f,Game.L("耐力不足","Low energy"));
             ActionSlot(515,ControlKey("F","LB"),Game.L("汤 ","Stew ")+Game.save.inventory[6],"stew",0,Game.save.inventory[6]>0&&!Game.practicing,()=>Game.Eat());
             ActionSlot(600,ControlKey("T","PACK"),Game.L("茶 ","Tea ")+Game.save.tea,"tea",0,Game.save.tea>0&&!Game.practicing,()=>Game.DrinkTea());
-            ActionSlot(685,ControlKey("Z","RB"),Game.L("同伴","Command"),"companion",Game.companionCooldown,Game.save.companion>=0&&!Game.practicing,()=>Game.CommandCompanion(),Game.save.frontierEnding==3?12:18);
+            ActionSlot(685,ControlKey("Z","RB"),CompanionActionLabel,"companion",Game.companionCooldown,Game.save.companion>=0&&!Game.practicing,()=>Game.CommandCompanion(),Game.CompanionCommandCooldownTotal);
             ActionSlot(770,ControlKey("SPACE","A"),Game.L("闪避","Dodge"),"shield",Game.dashCooldown,Game.save.energy>=(Game.Relic(2)?25:20),()=>Game.Dash(Game.aim),.75f-Game.save.talents[2]*.06f,Game.L("耐力不足","Low energy"),acceptEarly:Game.dashCooldown>0&&Game.dashCooldown<=GameCore.DodgeBufferWindow);
             if (Button(1134,746,126,36,Game.L("暂停 ","Pause ")+ControlKey("ESC","START"))) { OpenMenu("pause"); Save(); }
         }

@@ -103,7 +103,7 @@ namespace Starfall
         private void ResetExpansionTransient()
         {
             hazards.Clear(); racing = false; raceTime = 0; raceCheckpoint = 0;
-            companionAction = null; companionAim = new Point(1, 0); companionMoving = false; companionMoveTime = 0;
+            ResetCompanionTactics(); companionAction = null; companionAim = new Point(1, 0); companionMoving = false; companionMoveTime = 0;
             companionPosition = CompanionFollowTarget(); companionAttack = 2; companionCooldown = 0;
             climateTimer = 1; stormTimer = 6; ClearFrost();
             combo = 0; comboTimer = riposteTime = 0; perfectDodgeArmed = false; previousLowTide = LowTide;
@@ -198,7 +198,7 @@ namespace Starfall
         public void SelectCompanion(int id)
         {
             if (id < -1 || id > 2 || (id >= 0 && !Has("companion_" + id)) || !SafeTravel) return;
-            save.companion = id; companionAction = null; companionPosition = CompanionFollowTarget(); companionAttack = 1; revision++;
+            save.companion = id; ResetCompanionTactics(); companionAction = null; companionPosition = CompanionFollowTarget(); companionAttack = 1; revision++;
         }
         public void CompanionStory(int id)
         {
@@ -208,30 +208,38 @@ namespace Starfall
         public void CommandCompanion()
         {
             if (mode != "world" || Dying || practicing || save.companion < 0 || companionCooldown > 0) return;
-            companionCooldown = save.frontierEnding == 3 ? 12 : 18;
+            ResetCompanionTactics(); companionCooldown = CompanionCommandCooldownTotal;
             companionAction = new ActorAction { kind = "command", weapon = save.companion, combo = save.relationships[save.companion], damage = Damage,
-                direction = aimTarget.HasValue?(aimTarget.Value-companionPosition).Normalized:aim, target=aimTarget, duration = .52f, contact = .2f, impact = CaptureImpact(save.companion==1?1:2,0,false) };
+                direction = aimTarget.HasValue?(aimTarget.Value-companionPosition).Normalized:aim, target=aimTarget, duration = CompanionCommandDuration, contact = CompanionCommandContact, impact = CaptureImpact(save.companion==1?1:2,0,false) };
             companionAim = companionAction.direction;
         }
         private void ReleaseCompanionCommand(ActorAction action)
         {
             int bond = action.combo; sound = "skill";
+            float healthBefore = save.health, energyBefore = save.energy; int arrowCount = 0, controlCount = 0;
+            Point center = action.weapon == 1 ? companionPosition : Position;
             if (action.weapon == 0)
-            { save.health = Math.Min(save.maxHealth, save.health + 18 + bond * 3); save.energy = Math.Min(100, save.energy + 15); guardTime = Math.Max(guardTime, 3); }
+            { save.health = Math.Min(save.maxHealth, save.health + CompanionHealingBase + bond * CompanionHealingPerBond); save.energy = Math.Min(100, save.energy + CompanionCommandEnergy); guardTime = Math.Max(guardTime, CompanionCommandGuardSeconds); }
             else if (action.weapon == 1)
-                for (int i = -1; i <= 1; i++)
+                for (int arrow = 0; arrow < CompanionCommandArrows; arrow++)
                 {
-                    Projectile shot = FriendlyShot(companionPosition, 1, action.direction, 13, action.damage * (.8f + bond * .05f), false, action.target, action.impact);
+                    int i = arrow - 1;
+                    Projectile shot = FriendlyShot(companionPosition, 1, action.direction, 13, CompanionCommandArrowDamage(action.damage, bond), false, action.target, action.impact);
                     double angle = Math.Atan2(shot.velocity.y, shot.velocity.x) + i * .17;
-                    shot.velocity = new Point((float)Math.Cos(angle), (float)Math.Sin(angle)) * 13; shot.piercing = true; projectiles.Add(shot);
+                    shot.velocity = new Point((float)Math.Cos(angle), (float)Math.Sin(angle)) * 13; shot.piercing = true; projectiles.Add(shot); arrowCount++;
                 }
             else
             {
                 BeginFrost(Position,action.damage,action.impact??CaptureImpact(2,0,false));
-                foreach (Enemy e in enemies) if ((e.Position - Position).Length < 5 && ClearAttackPath(Position, e.Position)) { e.stun = 1.4f; e.state = 0; e.timer = 1.2f; }
+                foreach (Enemy e in enemies) if ((e.Position - Position).Length < CompanionControlRadius && ClearAttackPath(Position, e.Position)) { e.stun = CompanionControlSeconds; e.state = 0; e.timer = 1.2f; controlCount++; }
             }
             if (action.weapon == 0) effects.Add(new Effect("heal", Position, .6f));
             else if (action.weapon == 1) effects.Add(new Effect("release", WeaponOrigin(companionPosition, 1, action.direction), .18f) { direction = action.direction, variant = 1, height = WeaponHeight(1, action.direction) });
+            RecordCompanionReceipt(new CompanionCommandReceipt(action.weapon, bond,
+                action.weapon == 0 ? Math.Max(0, save.health - healthBefore) : 0,
+                action.weapon == 0 ? Math.Max(0, save.energy - energyBefore) : 0,
+                arrowCount, action.weapon == 1 ? CompanionCommandArrowDamage(action.damage, bond) : 0,
+                controlCount, center, action.weapon == 2 ? action.damage * FrostDamageMultiplier : 0));
         }
         private Point CompanionFollowTarget()
         {
@@ -320,7 +328,7 @@ namespace Starfall
         {
             if (mode != "world" || Dying) return;
             comboTimer -= dt; riposteTime -= dt;
-            TickCompanion(dt);
+            TickCompanionReceipt(dt); TickCompanion(dt);
             TickFrost(dt);
             if(Dying||mode!="world")return;
             bool tea = save.teaUntil > save.totalTime;

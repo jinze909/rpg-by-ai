@@ -283,6 +283,12 @@ namespace Starfall.Tests
         [Test] public void SupperEveryCheckpointAndLegacyVersionReloadKeepsEarnedProgress() { CoreChecks.SupperEveryCheckpointAndLegacyVersionReloadKeepsEarnedProgress(Data()); }
         [Test] public void SupperGuidanceAppendsReadOnlyAndTargetsPhysicalMissingSteps() { CoreChecks.SupperGuidanceAppendsReadOnlyAndTargetsPhysicalMissingSteps(Data()); }
         [Test] public void SupperLeavesMatureKitchenRestAndTownLifeAvailable() { CoreChecks.SupperLeavesMatureKitchenRestAndTownLifeAvailable(Data()); }
+        [Test] public void CompanionTacticNotesAreReadOnlyAndShareActualFormulas() { CoreChecks.CompanionTacticNotesAreReadOnlyAndShareActualFormulas(Data()); }
+        [Test] public void CompanionReceiptsRequireActualContactAndKeepMatureCommands() { CoreChecks.CompanionReceiptsRequireActualContactAndKeepMatureCommands(Data()); }
+        [Test] public void CompanionMiraReceiptReportsClampedRecoveryAndActualGuard() { CoreChecks.CompanionMiraReceiptReportsClampedRecoveryAndActualGuard(Data()); }
+        [Test] public void CompanionIvoAndSenReceiptsKeepCapturedDamageAndRealGeometry() { CoreChecks.CompanionIvoAndSenReceiptsKeepCapturedDamageAndRealGeometry(Data()); }
+        [Test] public void CompanionReceiptClockPauseRetentionAndNewCommandsAreHonest() { CoreChecks.CompanionReceiptClockPauseRetentionAndNewCommandsAreHonest(Data()); }
+        [Test] public void CompanionReceiptsCancelAtLifecycleBoundariesWithoutSaveFields() { CoreChecks.CompanionReceiptsCancelAtLifecycleBoundariesWithoutSaveFields(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }

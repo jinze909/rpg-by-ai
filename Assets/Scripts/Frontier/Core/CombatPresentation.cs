@@ -169,7 +169,7 @@ namespace Starfall
         }
         private void BeginDeath()
         {
-            ClearFieldcraftTransient();
+            ResetCompanionTactics(); ClearFieldcraftTransient();
             fallenPlayerWeapon=AppearanceWeapon;fallenPlayerFacing=VisualFacing;
             CancelAction(); companionAction = null; dashTime = 0; deathTime = .9f; hitStop = 0;
             Flag("recovery_pending"); // A quit during the death pose resumes safely at the inn.

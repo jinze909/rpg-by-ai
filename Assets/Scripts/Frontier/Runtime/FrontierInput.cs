@@ -47,6 +47,7 @@ namespace Starfall
             int menuIndex=Array.IndexOf(menuModes,Game.mode);
             if(Game.mode=="plans")menuIndex=Array.IndexOf(menuModes,"inventory");
             if(Game.mode=="landmarks")menuIndex=Array.IndexOf(menuModes,"map");
+            if(Game.mode=="companionnotes")menuIndex=Array.IndexOf(menuModes,"companions");
             if(Game.mode=="techniques")menuIndex=Array.IndexOf(menuModes,techniqueGuideParent=="plans"?"inventory":techniqueGuideParent);
             if (menuIndex >= 0 && battlePlanConfirmation < 0 && (PadDown(4) || PadDown(5))) { OpenMenu(menuModes[(menuIndex + (PadDown(5) ? 1 : -1) + menuModes.Length) % menuModes.Length]); return; }
             Point direction = new Point();
@@ -72,6 +73,7 @@ namespace Starfall
             if (replacePrompt) { replacePrompt = false; return; }
             if (Game.mode == "title") return;
             if (Game.mode == "landmarks") { OpenMenu("map"); return; }
+            if (Game.mode == "companionnotes") { OpenMenu("companions"); return; }
             if (Game.mode == "world") { OpenMenu("pause"); Save(); return; }
             if (Game.mode == "saves" || Game.mode == "controls") { Game.mode = "pause"; ResetControllerAim(); return; }
             if (Game.mode == "pause" && settingsParent == "title") { Game.mode = "title"; settingsParent = "world"; return; }

@@ -34,7 +34,7 @@ namespace Starfall
                 Clamp(.06f+save.talents[0]*.025f+(Relic(5)?.12f:0),0,1),playerOwned,counter);
         }
         private void BeginFrost(Point center,float baseDamage,ImpactProfile impact)
-        {frost=new FrostField(center,baseDamage*.4f,impact);}
+        {frost=new FrostField(center,baseDamage*FrostDamageMultiplier,impact);}
         private void ClearFrost(){frost=null;}
         private void TickFrost(float dt)
         {

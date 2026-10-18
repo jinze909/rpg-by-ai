@@ -92,7 +92,7 @@ namespace Starfall
                 ActionSlot(354, ControlKey("Q", "Y"), SkillName(), Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff", Game.skillCooldown, Game.save.energy >= (Game.Relic(4) ? 50 : 40), () => Game.Skill(InputAim(true)), 3.5f, Game.L("耐力不足", "Low energy"));
                 ActionSlot(470, ControlKey("F", "LB"), Game.L("炖汤", "Stew") + " " + Game.save.inventory[6], "stew", 0, Game.save.inventory[6] > 0 && !Game.practicing, () => Game.Eat());
                 ActionSlot(586, ControlKey("T", "PACK"), Game.L("凉茶", "Tea") + " " + Game.save.tea, "tea", 0, Game.save.tea > 0 && !Game.practicing, () => Game.DrinkTea());
-                ActionSlot(702, ControlKey("Z", "RB"), Game.L("同行指令", "Command"), "companion", Game.companionCooldown, Game.save.companion >= 0 && !Game.practicing, () => Game.CommandCompanion(), Game.save.frontierEnding == 3 ? 12 : 18);
+                ActionSlot(702, ControlKey("Z", "RB"), CompanionActionLabel, "companion", Game.companionCooldown, Game.save.companion >= 0 && !Game.practicing, () => Game.CommandCompanion(), Game.CompanionCommandCooldownTotal);
                 ActionSlot(818, ControlKey("SPACE", "A"), Game.L("闪避", "Dodge"), "shield", Game.dashCooldown, Game.save.energy >= (Game.Relic(2) ? 25 : 20), () => Game.Dash(Game.aim), .75f - Game.save.talents[2] * .06f, Game.L("耐力不足", "Low energy"), acceptEarly: Game.dashCooldown > 0 && Game.dashCooldown <= GameCore.DodgeBufferWindow);
                 Text(25, 725, 302, 24, Game.save.coins + Game.L(" 硬币  ·  ", " coins  ·  ") + WeaponName(Game.save.weapon), 13, paper); Text(25, 752, 302, 23, controllerUsed ? Game.L("X 攻击 · B 互动 · 凉茶在背包使用", "X attack · B interact · tea from inventory") : Game.L("J / 左键攻击 · E 互动", "J / click attack · E interact"), 12, muted);
                 if (Button(972, 718, 130, 52, Game.L("手帐  ", "Journal  ") + ControlKey("TAB", "VIEW"))) OpenMenu("journal"); if (Button(1114, 718, 142, 52, Game.L("菜单  ", "Menu  ") + ControlKey("ESC", "START"))) { OpenMenu("pause"); Save(); }
@@ -168,6 +168,8 @@ namespace Starfall
                 if (Button(x + 17, 583, 268, 32, Game.L("个人故事与赠礼", "Story & shared meal"), false, owned)) { dialogParent = "companions"; Game.CompanionStory(i); }
             }
             if (Button(279, 652, 938, 38, Game.L("独自旅行", "Travel alone"), Game.save.companion < 0, Game.SafeTravel)) Game.SelectCompanion(-1);
+            for (int i = 0; i < 3; i++)
+                if (CompanionNoteButton(279 + i * 318, 704, 302, 25, Game.L("指令：", "Command: ") + CompanionTacticName(i))) OpenCompanionNotes(i);
         }
         private void DrawLoadout()
         {
