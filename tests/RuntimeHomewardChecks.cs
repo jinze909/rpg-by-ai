@@ -312,7 +312,7 @@ public static class RuntimeHomewardChecks
             if (policy == 1) g.save.relationships[0] = 5; // A mature max-bond fixture, never route progress.
             Set(app, "camera", g.Position);
             Draw(app, "camp-world" + suffix); Key(app, KeyCode.Tab); Draw(app);
-            int quest = Array.IndexOf(GameCore.QuestIds, "homeward"); float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
+            int quest = Array.IndexOf(GameCore.QuestIds, "homeward"); float spacing = Math.Min(46, 464f / 18);
             string[] originalQuestPrefix = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward" };
             Check(quest == 14 && GameCore.QuestIds.Length >= originalQuestPrefix.Length, "The route retains its fifteenth row after all fourteen preceding mature quests when future quests append");
             for (int i = 0; i < originalQuestPrefix.Length; i++)

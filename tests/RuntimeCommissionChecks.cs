@@ -242,7 +242,7 @@ public static class RuntimeCommissionChecks
             g.save.english = language == 1; g.save.largeText = large == 1; g.save.effectsQuality = policy == 0 ? 0 : 2; g.save.reducedMotion = policy == 0; g.toastTime = 0;
             Screen.width = policy == 0 ? 960 : 1920; Screen.height = policy == 0 ? 600 : 1080; Call(app, "Resize"); Set(app, "camera", g.Position);
             string suffix = (language == 1 ? "-en" : "-zh") + (large == 1 ? "-large" : "-normal") + (policy == 0 ? "-960-minimal" : "-1920-rich");
-            Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "commission"); float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
+            Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "commission"); float spacing = Math.Min(46, 464f / 18);
             string[] original = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward", "commission" };
             Check(quest == 15 && GameCore.QuestIds.Length >= original.Length, "Commission keeps its sixteenth journal row when new content appends");
             for (int i = 0; i < original.Length; i++) Check(GameCore.QuestIds[i] == original[i], "Every original journal id keeps its exact index: " + original[i]);

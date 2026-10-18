@@ -168,7 +168,7 @@ public static class RuntimeReachChecks
         Check(Get<List<Point>>(app, "route").Count > 0, "The actual golden route carries reachable walking points around the river");
         Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "reach");
         Check(quest == 13 && GameCore.QuestIds.Length >= 14, "The riverbank survey retains its fourteenth row; later quests append after the mature prefix");
-        float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length); Click(app, new Rect(279,226 + quest * spacing,321,spacing - 7)); Draw(app, "journal" + suffix);
+        float spacing = Math.Min(46, 464f / 18); Click(app, new Rect(279,226 + quest * spacing,321,spacing - 7)); Draw(app, "journal" + suffix);
         Check(Get<int>(app, "selectedQuest") == quest && HasText(g.L("下一步：", "Next: ") + q.next), "The actual fourteenth journal row displays its current survey objective");
         Click(app, new Rect(927,647,263,31)); Draw(app, "map-local" + suffix);
         Check(g.mode == "map" && Get<int>(app, "selectedRegion") == 11 && Get<int>(app, "mapPage") == 1, "Actual destination opens riverbank on the second map page");

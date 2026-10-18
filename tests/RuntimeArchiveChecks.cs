@@ -138,7 +138,7 @@ public static class RuntimeArchiveChecks
         Check(goal.HasValue && (goal.Value - g.NavigationTarget().Value).Length < .001f, "Production Update follows the current archive checkpoint");
         Key(app, KeyCode.Tab); Draw(app); int quest = Array.IndexOf(GameCore.QuestIds, "archive");
         Check(quest == 12 && GameCore.QuestIds.Length >= 13, "The archive retains its position after all twelve original journal entries as later quests append");
-        float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length); Click(app, new Rect(279, 226 + quest * spacing, 321, spacing - 7));
+        float spacing = Math.Min(46, 464f / 18); Click(app, new Rect(279, 226 + quest * spacing, 321, spacing - 7));
         Draw(app, "journal" + suffix);
         Check(Get<int>(app, "selectedQuest") == quest && HasText(g.L("下一步：", "Next: ") + guide.next), "The real new journal row displays the current archive objective");
         Click(app, new Rect(927, 647, 263, 31)); Draw(app, "map" + suffix);

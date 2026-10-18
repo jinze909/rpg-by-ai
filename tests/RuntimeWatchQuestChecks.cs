@@ -87,7 +87,7 @@ public static class RuntimeWatchQuestChecks
         if (Get<float>(app, "combatHudTime") <= 0)
             Check(GUI.commands.Exists(c => c.Contains("\"text\":" + GUI.S(g.GuidanceHint()))), "The exploration HUD displays the patrol next step");
         Key(app, KeyCode.Tab); Draw(app);
-        int quest = Array.IndexOf(GameCore.QuestIds, "watch"); float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
+        int quest = Array.IndexOf(GameCore.QuestIds, "watch"); float spacing = Math.Min(46, 464f / 18);
         Rect row = new Rect(279, 226 + quest * spacing, 321, spacing - 7);
         Check(row.y + row.height <= 690 && GUI.buttonCalls.Exists(b => Math.Abs(b.rect.y - row.y) < .01f && Math.Abs(b.rect.height - row.height) < .01f),
             "All eleven quest rows remain visible and the patrol has a real selectable journal row");

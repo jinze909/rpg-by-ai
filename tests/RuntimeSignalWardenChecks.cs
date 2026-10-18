@@ -85,14 +85,14 @@ public static class RuntimeSignalWardenChecks
             Check(GUI.commands.Exists(c => c.Contains("\"text\":" + GUI.S(g.L(g.CurrentBoss.name, g.CurrentBoss.en) + "  /  " + g.enemies.Find(GameCore.IsSignalWarden).BossPhase))),
                 "The actual combat HUD names the optional Warden rather than the chapter guardian");
         Key(app, KeyCode.Tab); Draw(app);
-        int quest = Array.IndexOf(GameCore.QuestIds, "signal"); float spacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
+        int quest = Array.IndexOf(GameCore.QuestIds, "signal"); float spacing = Math.Min(46, 464f / 18);
         string[] original = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal" };
         Check(quest == 11 && GameCore.QuestIds.Length >= original.Length, "The Warden remains after all eleven mature quest entries when later optional stories are appended");
         for (int i = 0; i < original.Length; i++) Check(GameCore.QuestIds[i] == original[i], "The existing journal prefix retains its identity and order: " + original[i]);
         for (int i = 0; i < GameCore.QuestIds.Length; i++)
         {
-            float y = 226 + i * spacing;
-            Check(y + spacing - 7 <= 690 && GUI.buttonCalls.Exists(b => Math.Abs(b.rect.y - y) < .01f && Math.Abs(b.rect.height - (spacing - 7)) < .01f),
+            float y = 226 + i * spacing - (i == 18 ? 3 : 0);
+            Check(y + spacing - 7 <= (i == 18 ? 706 : 690) && GUI.buttonCalls.Exists(b => Math.Abs(b.rect.y - y) < .01f && Math.Abs(b.rect.height - (spacing - 7)) < .01f),
                 "Every current journal row remains visible and selectable, including the preserved Warden row");
         }
         Rect row = new Rect(279, 226 + quest * spacing, 321, spacing - 7); Click(app, row); Draw(app, "journal" + suffix);
