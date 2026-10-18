@@ -176,8 +176,8 @@ namespace Starfall
             DrawRoadMealHud(true);
             QuestGuide guide = Game.CurrentGuide;
             Panel(1030,22,230,70,new Color(.045f,.08f,.13f,.45f),new Color(gold.r,gold.g,gold.b,.4f));
-            Text(1041,27,208,27,Game.SparringActive ? Game.L("战术训练","TACTICS DRILLS") : Game.practicing ? Game.L("实战教学","COMBAT PRACTICE") : guide.title,12,gold);
-            Text(1041,56,136,23,Game.SparringActive ? Game.L("训练 ","Drill ")+(Game.SparringStage+1)+"/3" : (int)(guide.Progress*100)+"%  ·  "+Game.L("查看步骤","View steps"),11,paper);
+            Text(1041,27,208,27,Game.RootEchoActive ? Game.L("回声挑战 ","ROOT ECHO ")+(Game.RootEchoStep+1)+"/3" : Game.SparringActive ? Game.L("战术训练","TACTICS DRILLS") : Game.practicing ? Game.L("实战教学","COMBAT PRACTICE") : guide.title,12,gold);
+            Text(1041,56,136,23,Game.RootEchoActive ? Game.L("观察光圈","Read circles") : Game.SparringActive ? Game.L("训练 ","Drill ")+(Game.SparringStage+1)+"/3" : (int)(guide.Progress*100)+"%  ·  "+Game.L("查看步骤","View steps"),11,paper);
             if (Button(CombatJournalButton.x,CombatJournalButton.y,CombatJournalButton.width,CombatJournalButton.height,ControlKey("TAB","VIEW"))) OpenMenu("journal");
             Enemy boss = Game.enemies.Find(e => e.boss);
             if (boss != null)

@@ -109,7 +109,7 @@ namespace Starfall
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
             ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetCommissionTransient(); ResetShelterTransient();
-            ClearFieldcraftTransient();
+            ClearFieldcraftTransient(); ResetRootEcho();
         }
         public void NewGame(int profession)
         {
@@ -263,6 +263,7 @@ namespace Starfall
             UpdateEnemies(dt); if (Dying) return;
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
             TickExpansion(dt);
+            TickRootEcho(dt);
             if (Dying) return;
             TickShelterTrail(dt); if (Dying) return;
             TickWatch(dt); TickArchive(dt);
@@ -715,6 +716,7 @@ namespace Starfall
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
             if (ChooseFieldcraft(action)) return;
+            if (ChooseRootEcho(action)) return;
             if (ChooseShelter(action)) return;
             if (ChooseCommission(action)) return;
             if (ChooseHomeward(action)) return;

@@ -246,6 +246,13 @@ namespace Starfall.Tests
             var saved = JsonUtility.FromJson<SaveData>(JsonUtility.ToJson(game.save)); var loaded = new GameCore(Data(), saved);
             Assert.AreEqual(2, loaded.save.profession); Assert.AreEqual(1, loaded.Style); Assert.AreEqual(7, loaded.save.practiceBits); Assert.AreEqual("回家的路", loaded.save.moments[0].zh);
         }
+        [Test] public void RootEchoPreservesSixSeededFloorsAndCanonicalEncounters() { CoreChecks.RootEchoPreservesSixSeededFloorsAndCanonicalEncounters(Data()); }
+        [Test] public void RootEchoRequiresEarnedClearanceAndRechecksPhysicalChoices() { CoreChecks.RootEchoRequiresEarnedClearanceAndRechecksPhysicalChoices(Data()); }
+        [Test] public void RootEchoThreeWarningsKeepTheirCapturedReadableGeometry() { CoreChecks.RootEchoThreeWarningsKeepTheirCapturedReadableGeometry(Data()); }
+        [Test] public void RootEchoThreeClassesAndRisksEarnUnbankedRewardsThroughRealMovement() { CoreChecks.RootEchoThreeClassesAndRisksEarnUnbankedRewardsThroughRealMovement(Data()); }
+        [Test] public void RootEchoRestReloadAndFreshRunNeverDuplicateResolution() { CoreChecks.RootEchoRestReloadAndFreshRunNeverDuplicateResolution(Data()); }
+        [Test] public void RootEchoCancellationPauseAndBankGuardsRemainTransactional() { CoreChecks.RootEchoCancellationPauseAndBankGuardsRemainTransactional(Data()); }
+        [Test] public void RootEchoActualWarningContactAndDodgeKeepCombatRules() { CoreChecks.RootEchoActualWarningContactAndDodgeKeepCombatRules(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }

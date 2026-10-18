@@ -96,6 +96,18 @@ namespace Starfall
             }
             if (kind.StartsWith("history") || kind == "manifest")
             { PropImage("post", 0, p.x - 24, p.y - 55, 48, 56); Text(p.x - 16, p.y - 51, 32, 23, "?", 17, gold, TextAnchor.MiddleCenter); return true; }
+            if (kind == "abyssEcho")
+            {
+                bool resolved = Game.RootEchoResolved;
+                bool ready = resolved || Game.enemies.Count == 0 && Game.Has("abyss_clear_" + Game.save.abyssFloor);
+                Color tint = resolved ? mint : ready ? gold : muted;
+                PropImage("root", 0, p.x - 34, p.y - 68, 68, 79, tint);
+                Ring(new Point(o.x, o.y), .6f, tint, 24);
+                Text(p.x - 90, p.y - 101, 180, 29, resolved ? Game.L("回声已平息", "ECHO RESOLVED")
+                    : Game.RootEchoActive ? Game.L("回声 ", "ECHO ") + (Game.RootEchoStep + 1) + "/3"
+                    : Game.L("地脉回声", "ROOT ECHO"), 13, tint, TextAnchor.MiddleCenter);
+                return true;
+            }
             if (kind == "expAltar" || kind == "receiver" || kind == "sluice" || kind == "abyssGate" || kind == "abyssEntry" || kind == "abyssExit")
             {
                 bool active = kind == "expAltar" ? Game.GateOpen : kind == "receiver" ? Game.Has("mirrors_lit") : kind == "abyssEntry" ? Game.CanEnter(8) : true;

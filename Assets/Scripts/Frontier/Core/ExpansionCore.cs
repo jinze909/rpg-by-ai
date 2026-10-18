@@ -172,7 +172,12 @@ namespace Starfall
                 save.runCoins += e.boss ? 70 : 8 + save.abyssRisk * 3;
                 save.runShards += (e.boss ? 5 : 1) + save.abyssRisk;
                 save.runXp += e.boss ? 100 : 14;
-                if (enemies.Count == 0) { Flag("abyss_clear_" + save.abyssFloor); Notify("本层已清理。到东侧地脉门选择祝福并结算。", "Floor cleared. Choose a blessing and bank rewards at the east gate."); }
+                if (enemies.Count == 0)
+                {
+                    Flag("abyss_clear_" + save.abyssFloor);
+                    Notify(RootEchoAvailable && !RootEchoResolved ? "本层已清理。西北根系可选择补给或回声挑战；东门结算。" : "本层已清理。到东侧地脉门选择祝福并结算。",
+                        RootEchoAvailable && !RootEchoResolved ? "Floor cleared. The northwest root offers supplies or an echo trial; bank at the east gate." : "Floor cleared. Choose a blessing and bank rewards at the east gate.");
+                }
                 PrepareSave();
             }
         }
@@ -367,6 +372,7 @@ namespace Starfall
         }
         public string Conditions()
         {
+            if (RootEchoActive) return RootEchoStatus;
             if (InAbyss) return L("地脉 ", "ABYSS ") + save.abyssFloor + "/6  ·  " + L("未结算碎片 ", "UNBANKED SHARDS ") + save.runShards;
             if (save.room == 5) return LowTide ? L("低潮 · 潮滩可通行", "LOW TIDE · shoals open") : L("高潮 · 等待退潮或使用闸门", "HIGH TIDE · wait or use the sluice");
             if (save.room == 6) return L("热度 ", "HEAT ") + (int)save.heat + "/100 · " + L("绿洲降温 / 凉茶免疫", "shade cools / tea protects");
@@ -500,6 +506,7 @@ namespace Starfall
             if (kind == "abyssEntry") { OpenAbyssEntrance(); return true; }
             if (kind == "abyssExit") { AbyssExitConversation(); return true; }
             if (kind == "abyssGate") { AbyssGateConversation(); return true; }
+            if (TalkRootEcho(o)) return true;
             return false;
         }
         private void CaptainConversation(WorldObject o)
@@ -632,7 +639,7 @@ namespace Starfall
             if (action.StartsWith("abyssStart")) { StartAbyss(int.Parse(action.Substring(10))); return true; }
             if (action == "abyssLeave") { EndAbyss(false); Enter(0); return true; }
             if (action.StartsWith("boon")) { TakeBoon(int.Parse(action.Substring(4))); return true; }
-            if (action == "abyssBank") { BankFloor(); EndAbyss(true); Enter(0); return true; }
+            if (action == "abyssBank") { if (RootEchoActive) return true; BankFloor(); EndAbyss(true); Enter(0); return true; }
             return false;
         }
         private void CompletePersonal(int id)
@@ -698,6 +705,7 @@ namespace Starfall
         {
             if (save.room == ArchiveRoom) return GetArchiveQuest().next;
             if (save.room == 9) return L("休息、备好热汤，或从南门返回余烬镇。", "Rest, prepare stew, or return to Emberfall through the south door.");
+            if (RootEchoActive) return L("观察三轮光圈；走出根系范围可取消重试。", "Read three pulse warnings; leave the root's range to cancel and retry.");
             if (InAbyss) return enemies.Count > 0 ? L("清理本层敌人 · 小心地脉落印，东门可结算", "Clear this floor · avoid rift marks; bank at the east gate") : L("到东侧地脉门，选择祝福或安全撤离。", "Choose a blessing or extract at the east gate.");
             if (save.room >= 5 && save.room <= 7)
             {
@@ -714,14 +722,14 @@ namespace Starfall
         private void OpenAbyssEntrance()
         {
             if (!CanEnter(8)) { Notify(RouteHint(8, false), RouteHint(8, true)); return; }
-            Dialog("地脉裂口", "The root fissure", "每次远征有六层，房间随种子改变。清层后选择一种祝福，并结算本层战利品；继续深入会保留祝福。\n\n倒下或提前离开会失去本层未结算收益，已结算物品保留。第三层之后有落印，最后一层有地脉收割者。风险越高，生命与碎片收益越高。", "Six seeded floors. Clear a floor, choose a boon and bank its loot; boons stay while descending.\n\nFalling or leaving loses only the unbanked floor. Rift marks begin on floor three; the Root Reaper waits on six. Higher risk means tougher enemies and more shards.", C("巡行 · 风险0", "Survey · risk 0", "abyssStart0"), C("深入 · 风险1", "Delve · risk 1", "abyssStart1"), C("裂隙 · 风险2", "Rift · risk 2", "abyssStart2"), C("稍后再来", "Later", "close"));
+            Dialog("地脉裂口", "The root fissure", "每次远征有六层，房间随种子改变。清层后选择一种祝福，并结算本层战利品；继续深入会保留祝福。\n\n倒下或提前离开会失去本层未结算收益，已结算物品保留。第三层之后有落印，最后一层有地脉收割者。风险越高，生命与碎片收益越高。\n\n第2、4层西北有地脉回声：清层后可选一次补给，或完成三轮光圈挑战增加未结算收益。也可直接跳过，不影响远征。", "Six seeded floors. Clear a floor, choose a boon and bank its loot; boons stay while descending.\n\nFalling or leaving loses only the unbanked floor. Rift marks begin on floor three; the Root Reaper waits on six. Higher risk means tougher enemies and more shards.\n\nFloors 2 and 4 have an optional northwest root echo: after clearing, take supplies or complete three pulse warnings for extra unbanked loot. Skipping it never blocks the expedition.", C("巡行 · 风险0", "Survey · risk 0", "abyssStart0"), C("深入 · 风险1", "Delve · risk 1", "abyssStart1"), C("裂隙 · 风险2", "Rift · risk 2", "abyssStart2"), C("稍后再来", "Later", "close"));
         }
         public void StartAbyss(int risk)
         {
             if (Dying || SparringActive || !CanEnter(8) || InAbyss || risk < 0 || risk > 2) return;
             save.abyssFloor = 1; save.abyssRisk = risk; save.abyssSeed = (int)(Random() * 1000000) + 137;
             save.abyssEnemies = null; save.abyssSnapshotFloor = 0;
-            save.runCoins = save.runShards = save.runXp = 0; Array.Clear(save.boons, 0, 3); save.flags.RemoveAll(f => f.StartsWith("abyss_clear_") || f == "boss_8");
+            save.runCoins = save.runShards = save.runXp = 0; Array.Clear(save.boons, 0, 3); save.flags.RemoveAll(f => f.StartsWith("abyss_clear_") || f.StartsWith("abyss_echo_") || f == "boss_8");
             save.room = 8; GenerateAbyss(); save.x = 5; save.y = 14; ResetTransient(); SpawnRoom(); mode = "world"; revision++;
         }
         private void GenerateAbyss()
@@ -737,10 +745,17 @@ namespace Starfall
             abyssMap = new MapData { id = 8, name = "地脉深渊 · 第" + save.abyssFloor + "层", en = "ROOT ABYSS · FLOOR " + save.abyssFloor, color = save.abyssFloor % 2 == 0 ? "#4f576c" : "#425b5c", subtitle = "越深入，越要决定带什么回来。", suben = "Every descent asks what you will carry home.", spawnX = 5, spawnY = 14, rows = strings,
                 objects = new[] { new WorldObject { id = "abyssExit", kind = "abyssExit", name = "放弃本层收益，返回", en = "Leave unbanked loot", x = 3, y = 14 }, new WorldObject { id = "abyssGate", kind = "abyssGate", name = "地脉门 · 祝福与结算", en = "Root gate · boons and banking", x = 31, y = 14 } },
                 decor = new[] { new Decoration { kind = "crystal", x = 8, y = 6 }, new Decoration { kind = "obelisk", x = 18, y = 6 }, new Decoration { kind = "root", x = 29, y = 18 } } };
+            if (RootEchoAvailable)
+            {
+                var objects = new List<WorldObject>(abyssMap.objects);
+                objects.Add(new WorldObject { id = "abyssEcho", kind = "abyssEcho", name = "地脉回声 · 补给或挑战", en = "Root echo · supplies or trial", x = RootEchoPoint.x, y = RootEchoPoint.y });
+                abyssMap.objects = objects.ToArray();
+            }
         }
         private void AbyssGateConversation()
         {
             if (!InAbyss) return;
+            if (RootEchoActive) { Notify("先结束回声挑战，或离开根系范围取消。", "Finish the echo or leave its range to cancel first."); return; }
             if (enemies.Count > 0) { Notify("先清理本层敌人，地脉门才会回应。", "Clear this floor before the root gate answers."); return; }
             Flag("abyss_clear_" + save.abyssFloor);
             List<Choice> choices = new List<Choice>();
@@ -751,7 +766,7 @@ namespace Starfall
         }
         private void BankFloor()
         {
-            if (Dying || !InAbyss || enemies.Count > 0 || !Has("abyss_clear_" + save.abyssFloor)) return;
+            if (Dying || RootEchoActive || !InAbyss || enemies.Count > 0 || !Has("abyss_clear_" + save.abyssFloor)) return;
             save.coins += save.runCoins; save.shards += save.runShards + (save.frontierEnding == 3 ? 2 : 0); AddXp(save.runXp);
             save.runCoins = save.runShards = save.runXp = 0; save.bestFloor = Math.Max(save.bestFloor, save.abyssFloor);
             BountyEvent(5, 1);
@@ -761,7 +776,7 @@ namespace Starfall
         }
         public void TakeBoon(int id)
         {
-            if (Dying || id < 0 || id > 2 || !InAbyss || save.abyssFloor >= 6 || enemies.Count > 0 || !Has("abyss_clear_" + save.abyssFloor)) return;
+            if (Dying || RootEchoActive || id < 0 || id > 2 || !InAbyss || save.abyssFloor >= 6 || enemies.Count > 0 || !Has("abyss_clear_" + save.abyssFloor)) return;
             BankFloor(); save.boons[id] = Math.Min(4, save.boons[id] + 1); save.abyssFloor++;
             GenerateAbyss(); save.x = 5; save.y = 14; save.health = Math.Min(save.maxHealth, save.health + save.maxHealth * .5f); save.energy = 100;
             ResetTransient(); SpawnRoom(); mode = "world"; revision++; sound = "travel";
@@ -772,6 +787,6 @@ namespace Starfall
             Dialog("返回的道路", "The way back", "现在返回会失去本层尚未结算的战利品。之前结算的收益不会丢失。清完本层后到东门，可以带走所有收益。", "Leaving now loses this floor's unbanked loot only. Earlier banked rewards remain. Clear the floor and use the east gate to take everything.", C("返回，放弃本层收益", "Return and leave this floor's loot", "abyssLeave"), C("继续远征", "Keep delving", "close"));
         }
         private void EndAbyss(bool banked)
-        { save.abyssFloor = 0; save.runCoins = save.runShards = save.runXp = 0; save.abyssEnemies = null; save.abyssSnapshotFloor = 0; Array.Clear(save.boons, 0, 3); abyssMap = null; revision++; }
+        { ResetRootEcho(); save.abyssFloor = 0; save.runCoins = save.runShards = save.runXp = 0; save.abyssEnemies = null; save.abyssSnapshotFloor = 0; Array.Clear(save.boons, 0, 3); abyssMap = null; revision++; }
     }
 }
