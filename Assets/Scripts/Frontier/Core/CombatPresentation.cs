@@ -91,19 +91,20 @@ namespace Starfall
         private void ResetCombatPresentation()
         {
             dashMovementPresented = false;
-            ClearBufferedSkill();
+            ClearBufferedCombatInputs();
             playerAction = null; fallen.Clear(); playerHitTime = playerFlash = deathTime = hitStop = impactShake = finaleDelay = 0;
             playerRecoil = movementDirection = new Point();
             fallenPlayerWeapon=-1;fallenPlayerFacing=new Point();
             playerHitFacing=new Point(); playerHitWeapon = -1;
         }
-        private void CancelAction() { playerAction = null; ClearBufferedSkill(); dashMovementPresented = false; }
+        private void CancelAction() { playerAction = null; ClearBufferedCombatInputs(); dashMovementPresented = false; }
         private void ValidateActionProfile()
         {
             ActorAction a = playerAction;
             if (a != null && (a.equippedWeapon != save.weapon || a.profession != save.profession || a.style != Style || a.technique != save.technique)) CancelAction();
             SkillIntent intent = bufferedSkill;
             if (intent != null && (intent.weapon != save.weapon || intent.profession != save.profession || intent.style != Style || intent.technique != save.technique)) ClearBufferedSkill();
+            ValidateDodgeProfile();
         }
         private void BeginAction(string kind, float damage, float duration, float contact, bool counter = false)
         {

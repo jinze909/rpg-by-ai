@@ -23,7 +23,7 @@ namespace Starfall
         public string mode
         {
             get { return currentMode; }
-            set { currentMode = value; if (value != "world") ClearBufferedSkill(); }
+            set { currentMode = value; if (value != "world") ClearBufferedCombatInputs(); }
         }
         public string toast = "";
         public Conversation conversation;
@@ -244,7 +244,7 @@ namespace Starfall
             if (mode == "fish") { fishTime += dt; fishCursor = .5f + .5f * (float)Math.Sin(fishTime * (2.5f + fishHits * .35f)); return; }
             if (mode != "world") return;
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
-            float skillReadyDelay = SkillReadyDelay();
+            float skillReadyDelay = SkillReadyDelay(), dodgeReadyDelay = Math.Max(0, dashCooldown);
             movementDirection = new Point();
             TickVisuals(dt); if (mode != "world") return; TickGate(dt);
             for (int i = effects.Count - 1; i >= 0; i--) { effects[i].life -= dt; if (effects[i].life <= 0) effects.RemoveAt(i); }
@@ -260,6 +260,7 @@ namespace Starfall
             TickMovement(dt, movement, explicitAim);
             TickAction(dt);
             if (mode != "world" || beganInPractice && !practicing) return;
+            TickBufferedDodge(dt, dodgeReadyDelay);
             TickBufferedSkill(dt, skillReadyDelay);
             UpdateEnemies(dt); if (Dying) return;
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
@@ -271,18 +272,6 @@ namespace Starfall
             TickSparring(dt); TickRange(dt);
             if (!SafeTrainingActive) TickGuidance(beforeMove);
             TickPolish(dt);
-        }
-        public void Dash(Point direction)
-        {
-            float cost = Relic(2) ? 25 : 20;
-            if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked) return;
-            if (dashCooldown > 0 || save.energy < cost) { ActionUnavailable(dashCooldown, cost); return; }
-            CancelAction();
-            dashDirection = direction.Length > .1f ? direction.Normalized : aim;
-            dashTime = .18f; dashCooldown = .75f - save.talents[2] * .06f; invulnerable = .32f; save.energy -= cost;
-            perfectDodgeArmed = true;
-            if (Relic(0)) save.health = Math.Min(save.maxHealth, save.health + 3);
-            effects.Add(new Effect("dash", Position, .3f) { direction = dashDirection }); sound = "dash";
         }
         public void Attack(Point direction)
         {
@@ -304,6 +293,7 @@ namespace Starfall
             if (mode != "world" || Dying) return;
             if (skillCooldown > 0 || save.energy < cost) { ClearBufferedSkill(); ActionUnavailable(skillCooldown, cost); return; }
             Point facing = direction.HasValue && Finite(direction.Value.x) && Finite(direction.Value.y) && direction.Value.Length > .05f ? direction.Value.Normalized : aim;
+            ClearBufferedDodge();
             if (ActionTransitionBlocked)
             {
                 bufferedSkill = new SkillIntent { remaining = SkillBufferWindow, direction = facing, target = aimTarget,

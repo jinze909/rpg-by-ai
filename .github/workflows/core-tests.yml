@@ -21,6 +21,8 @@ jobs:
         run: /usr/bin/python3 tools/check_hero_animation.py
       - name: Check production combat input with offline Unity declarations
         run: python3 tools/run_combat_input_checks.py
+      - name: Check early dodge requests, real input priority, HUD and lifecycle cleanup
+        run: python3 tools/run_dodge_buffer_checks.py
       - name: Check foreground threat contours, real damage boundaries and HUD visibility
         run: python3 tools/run_threat_contour_checks.py
       - name: Check directional projectile HUD witnesses, edge grazes and real contacts

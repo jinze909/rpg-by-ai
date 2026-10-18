@@ -143,7 +143,7 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) { Game.ClearBufferedSkill(); ResetControllerAim(); } Save(); } }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) { Game.ClearBufferedCombatInputs(); ResetControllerAim(); } Save(); } }
         private void OnApplicationFocus(bool focused)
         { if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }

@@ -6,6 +6,13 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void DodgeLatePressCapturesDirectionAndExecutesOnceAtRealCooldown(){CoreChecks.DodgeLatePressCapturesDirectionAndExecutesOnceAtRealCooldown(Data());}
+        [Test] public void DodgeRejectedRequestsNeverWaitForEnergyOrAnUnrelatedCooldown(){CoreChecks.DodgeRejectedRequestsNeverWaitForEnergyOrAnUnrelatedCooldown(Data());}
+        [Test] public void DodgeAndSkillHonorTheLastValidDiscreteIntent(){CoreChecks.DodgeAndSkillHonorTheLastValidDiscreteIntent(Data());}
+        [Test] public void DodgeIntentCannotSurviveMenusTravelDeathOrTrainingBoundaries(){CoreChecks.DodgeIntentCannotSurviveMenusTravelDeathOrTrainingBoundaries(Data());}
+        [Test] public void DodgeIntentRevalidatesGearProfilesAndCurrentExecutionCost(){CoreChecks.DodgeIntentRevalidatesGearProfilesAndCurrentExecutionCost(Data());}
+        [Test] public void DodgeBufferPreservesImmediateCancellationHitSafetyAndWalls(){CoreChecks.DodgeBufferPreservesImmediateCancellationHitSafetyAndWalls(Data());}
+
         [Test] public void RangeMenusPreserveMatureAdaChoicesAndRequireEarnedLocalControl(){CoreChecks.RangeMenusPreserveMatureAdaChoicesAndRequireEarnedLocalControl(Data());}
         [Test] public void RangeThreeClassesAndLayoutsUseRealContactsAndClearWithoutRewards(){CoreChecks.RangeThreeClassesAndLayoutsUseRealContactsAndClearWithoutRewards(Data());}
         [Test] public void RangeArmorFlanksBreaksAndStunKeepActualSimulation(){CoreChecks.RangeArmorFlanksBreaksAndStunKeepActualSimulation(Data());}
