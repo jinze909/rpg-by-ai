@@ -23,7 +23,7 @@ namespace Starfall
         private Point camera;
         private Point lastPointer;
         private bool pointerSeen, pointerAimActive;
-        private static readonly KeyCode[] keyboardControls={KeyCode.Q,KeyCode.Space,KeyCode.E,KeyCode.F,KeyCode.T,KeyCode.Z,KeyCode.H,KeyCode.R,KeyCode.Escape,KeyCode.Return,KeyCode.Tab,KeyCode.I,KeyCode.K,KeyCode.M,KeyCode.B,KeyCode.C,KeyCode.G,KeyCode.N,KeyCode.F1};
+        private static readonly KeyCode[] keyboardControls={KeyCode.V,KeyCode.Q,KeyCode.Space,KeyCode.E,KeyCode.F,KeyCode.T,KeyCode.Z,KeyCode.H,KeyCode.R,KeyCode.Escape,KeyCode.Return,KeyCode.Tab,KeyCode.I,KeyCode.K,KeyCode.M,KeyCode.B,KeyCode.C,KeyCode.G,KeyCode.N,KeyCode.F1};
         private string bootError;
         private sealed class HeroPresentationException : Exception
         {
@@ -86,9 +86,11 @@ namespace Starfall
             lastPointer = pointer; pointerSeen = true;
             bool padInput = false;
             for (int i = 0; i < 8; i++) if (PadDown(i)) { controllerUsed = true; padInput = true; }
+            if (PadDown(9)) { controllerUsed = true; padInput = true; }
             // Preserve the existing fresh-pad priority when the pointer also
             // changes position during a device handoff (including HUD entry).
             UpdateControllerAim(!padInput && (pointerMoved || Input.GetMouseButton(0) || keyboardMove || keyboardAction));
+            if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.V) || PadDown(9))) ToggleCombatFocusFromInput();
             Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {
@@ -143,7 +145,7 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) { Game.ClearBufferedCombatInputs(); ResetControllerAim(); } Save(); } }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
         private void OnApplicationFocus(bool focused)
         { if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }
@@ -214,6 +216,7 @@ namespace Starfall
             }
             if (Game.toastTime > 0 && Game.mode != "title") DrawToast();
             DrawControllerAimReticle();
+            DrawCombatFocusMarker();
             DrawHudThreatWitness();
             EndControls();
             GUI.matrix = Matrix4x4.identity; GUI.color = Color.white;
@@ -262,6 +265,12 @@ namespace Starfall
         }
         private Point? InputAim(bool technique=false)
         {
+            Enemy focused = Game.CombatFocusTarget;
+            if (focused != null)
+            { Game.SetAimTarget(focused.Position); return focused.Position - Game.Position; }
+            // Retire a lost lock before a fresh pointer target is sampled.
+            // Otherwise Tick's validation could erase that new manual aim.
+            Game.ClearCombatFocus();
             if(controllerUsed||Game.mode!="world")
             { Game.SetAimTarget(null); return ControllerAimActive ? (Point?)controllerAimDirection : null; }
             Point mouse=MouseVirtual();

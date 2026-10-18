@@ -289,6 +289,13 @@ namespace Starfall.Tests
         [Test] public void CompanionIvoAndSenReceiptsKeepCapturedDamageAndRealGeometry() { CoreChecks.CompanionIvoAndSenReceiptsKeepCapturedDamageAndRealGeometry(Data()); }
         [Test] public void CompanionReceiptClockPauseRetentionAndNewCommandsAreHonest() { CoreChecks.CompanionReceiptClockPauseRetentionAndNewCommandsAreHonest(Data()); }
         [Test] public void CompanionReceiptsCancelAtLifecycleBoundariesWithoutSaveFields() { CoreChecks.CompanionReceiptsCancelAtLifecycleBoundariesWithoutSaveFields(Data()); }
+        [Test] public void CombatFocusSelectionWeightsAimDistanceAndStableActorIdentity() { CoreChecks.CombatFocusSelectionWeightsAimDistanceAndStableActorIdentity(Data()); }
+        [Test] public void CombatFocusRangeSightAndHealthLossRequireDeliberateReacquisition() { CoreChecks.CombatFocusRangeSightAndHealthLossRequireDeliberateReacquisition(Data()); }
+        [Test] public void CombatFocusBackpedalingAndDodgeKeepRealMovementIndependent() { CoreChecks.CombatFocusBackpedalingAndDodgeKeepRealMovementIndependent(Data()); }
+        [Test] public void CombatFocusActionsCaptureLiveTargetsWithoutChangingCostsOrContacts() { CoreChecks.CombatFocusActionsCaptureLiveTargetsWithoutChangingCostsOrContacts(Data()); }
+        [Test] public void CombatFocusQueuedSkillsAndFlyingMissilesRetainOriginalAim() { CoreChecks.CombatFocusQueuedSkillsAndFlyingMissilesRetainOriginalAim(Data()); }
+        [Test] public void CombatFocusMenusWorldDeathAndTrainingClearTransientOwnership() { CoreChecks.CombatFocusMenusWorldDeathAndTrainingClearTransientOwnership(Data()); }
+        [Test] public void CombatFocusQueriesLeaveEntireSimulationAndSaveReadOnly() { CoreChecks.CombatFocusQueriesLeaveEntireSimulationAndSaveReadOnly(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }

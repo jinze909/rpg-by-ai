@@ -90,6 +90,7 @@ namespace Starfall
 
         private void ResetCombatPresentation()
         {
+            ClearCombatFocus();
             dashMovementPresented = false;
             ClearBufferedCombatInputs();
             playerAction = null; fallen.Clear(); playerHitTime = playerFlash = deathTime = hitStop = impactShake = finaleDelay = 0;
@@ -169,6 +170,7 @@ namespace Starfall
         }
         private void BeginDeath()
         {
+            ClearCombatFocus();
             ResetCompanionTactics(); ClearFieldcraftTransient();
             fallenPlayerWeapon=AppearanceWeapon;fallenPlayerFacing=VisualFacing;
             CancelAction(); companionAction = null; dashTime = 0; deathTime = .9f; hitStop = 0;

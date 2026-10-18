@@ -63,6 +63,7 @@ namespace Starfall
                 if (Game.RoadMealActive) rects.Add(RoadMealHudBounds(false));
                 if (Game.save.showGuidance && Game.TutorialStep < 8 && !Game.practicing) rects.Add(new Rect(24,474,298,204));
             }
+            if (CombatFocusVisible) rects.Add(CombatFocusBounds());
             if (FieldcraftCounterVisible) rects.Add(FieldcraftCounterBounds());
             if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
             rects.AddRange(worldOverlayRegions); return rects;
@@ -80,6 +81,7 @@ namespace Starfall
                         && (!CompanionFeedbackVisible || !SameCompanionFeedbackRegion(regions[i]))) hudPointerRegions.Add(regions[i]);
             }
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
+            if (CombatHud && CombatFocusVisible) hudPointerRegions.Add(CombatFocusBounds());
             AddSparringPointerRegions(hudPointerRegions);
             AddRangePointerRegions(hudPointerRegions);
             return hudPointerRegions;
@@ -177,6 +179,7 @@ namespace Starfall
                 Text(30,107,240,20,Game.save.teaUntil>Game.save.totalTime?Game.L("凉茶保护 · ","Tea ward · ")+(int)(Game.save.teaUntil-Game.save.totalTime)+"s":Game.save.room==6?Game.L("炎热 ","Heat ")+(int)Game.save.heat+"%":Game.L("寒冷 ","Cold ")+(int)Game.save.cold+"%",12,Game.save.heat>75||Game.save.cold>75?gold:mint);
             }
             DrawRoadMealHud(true);
+            DrawCombatFocusControl();
             QuestGuide guide = Game.CurrentGuide;
             Panel(1030,22,230,70,new Color(.045f,.08f,.13f,.45f),new Color(gold.r,gold.g,gold.b,.4f));
             Text(1041,27,208,27,Game.RootEchoActive ? Game.L("回声挑战 ","ROOT ECHO ")+(Game.RootEchoStep+1)+"/3" : Game.RangeActive ? Game.L("试装训练场","LOADOUT RANGE") : Game.SparringActive ? Game.L("战术训练","TACTICS DRILLS") : Game.practicing ? Game.L("实战教学","COMBAT PRACTICE") : guide.title,12,gold);

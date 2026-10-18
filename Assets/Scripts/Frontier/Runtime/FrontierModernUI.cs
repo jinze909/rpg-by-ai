@@ -88,6 +88,7 @@ namespace Starfall
                 if (!Game.practicing && Button(1015, 448, 234, 33, Game.save.showGuidance ? Game.L("路线指引 ON", "Route guide ON") : Game.L("路线指引 OFF", "Route guide OFF"))) { Game.save.showGuidance = !Game.save.showGuidance; Game.revision++; }
                 if (Game.save.room >= 5 || Game.save.teaUntil > Game.save.totalTime) { Panel(24, 145, 298, 60, new Color(.045f, .08f, .13f, .85f), PixelArt.C("#405970")); Text(39, 156, 271, 42, Game.Conditions(), 13, muted); }
                 DrawRoadMealHud(false);
+                DrawCombatFocusControl();
                 DrawTutorialPrompt(); Panel(342, 696, 596, 80, new Color(.045f, .08f, .13f, .95f), PixelArt.C("#4d6478"));
                 ActionSlot(354, ControlKey("Q", "Y"), SkillName(), Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff", Game.skillCooldown, Game.save.energy >= (Game.Relic(4) ? 50 : 40), () => Game.Skill(InputAim(true)), 3.5f, Game.L("耐力不足", "Low energy"));
                 ActionSlot(470, ControlKey("F", "LB"), Game.L("炖汤", "Stew") + " " + Game.save.inventory[6], "stew", 0, Game.save.inventory[6] > 0 && !Game.practicing, () => Game.Eat());

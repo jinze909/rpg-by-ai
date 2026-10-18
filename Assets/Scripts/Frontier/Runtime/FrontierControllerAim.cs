@@ -72,7 +72,7 @@ namespace Starfall
         }
         private void DrawControllerAimReticle()
         {
-            if (!ControllerAimActive) return;
+            if (!ControllerAimActive || Game.CombatFocusTarget != null) return;
             Point p = ScreenPoint(Game.Position + Game.aim * 1.8f);
             // A stationary outlined direction marker. It identifies the live
             // aim without implying a lock, projectile origin or damage radius.

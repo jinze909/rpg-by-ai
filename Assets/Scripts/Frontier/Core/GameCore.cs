@@ -23,7 +23,7 @@ namespace Starfall
         public string mode
         {
             get { return currentMode; }
-            set { currentMode = value; if (value != "world") ClearBufferedCombatInputs(); }
+            set { currentMode = value; if (value != "world") { ClearBufferedCombatInputs(); ClearCombatFocus(); } }
         }
         public string toast = "";
         public Conversation conversation;
@@ -243,6 +243,7 @@ namespace Starfall
             toastTime -= dt;
             if (mode == "fish") { fishTime += dt; fishCursor = .5f + .5f * (float)Math.Sin(fishTime * (2.5f + fishHits * .35f)); return; }
             if (mode != "world") return;
+            ValidateCombatFocus();
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
             float skillReadyDelay = SkillReadyDelay(), dodgeReadyDelay = Math.Max(0, dashCooldown);
             movementDirection = new Point();
@@ -257,6 +258,8 @@ namespace Starfall
             save.energy = Clamp(save.energy + dt * ((save.profession == 2 ? 18 : 14) + (InAbyss ? save.boons[1] * 4 : 0) + (save.teaUntil > save.totalTime ? 6 : 0) + (racing ? 8 : 0) - (save.cold > 70 ? 4 : 0) + RoadMealEnergyBonus), 0, 100);
             if (movement.Length > 1) movement = movement.Normalized;
             ValidateActionProfile();
+            Enemy focusedEnemy = CombatFocusTarget;
+            if (focusedEnemy != null) { explicitAim = focusedEnemy.Position - Position; SetAimTarget(focusedEnemy.Position); }
             TickMovement(dt, movement, explicitAim);
             TickAction(dt);
             if (mode != "world" || beganInPractice && !practicing) return;
@@ -276,7 +279,7 @@ namespace Starfall
         public void Attack(Point direction)
         {
             if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null) return;
-            SetAim(direction);
+            SetAim(ResolveCombatFocusDirection(direction));
             WeaponProfile profile = Profile(save.weapon, Style);
             if (save.energy < profile.energy) { ActionUnavailable(0, profile.energy); return; }
             save.energy -= profile.energy; attackCooldown = profile.interval;
@@ -293,6 +296,7 @@ namespace Starfall
             if (mode != "world" || Dying) return;
             if (skillCooldown > 0 || save.energy < cost) { ClearBufferedSkill(); ActionUnavailable(skillCooldown, cost); return; }
             Point facing = direction.HasValue && Finite(direction.Value.x) && Finite(direction.Value.y) && direction.Value.Length > .05f ? direction.Value.Normalized : aim;
+            facing = ResolveCombatFocusDirection(facing);
             ClearBufferedDodge();
             if (ActionTransitionBlocked)
             {
