@@ -8,6 +8,8 @@
 
 本轮继续检查延迟伤害与恢复状态，修复 Q 前摇/连锁击杀后属性变化、冰霜借用后来装备与位置、某些帧间隔多一次冰霜伤害、同伴替玩家完成教学，以及深渊操作打断死亡恢复。62组生产核心回归通过，含三职业18,000帧组合操作。复现与修复见 [DELAYED-SKILL-RECOVERY-BUGFIX.md](docs/DELAYED-SKILL-RECOVERY-BUGFIX.md)，最终验证见 [QA-REPORT.json](docs/QA-REPORT.json)。此前状态边界修复和全项目逐项复查继续保留。
 
+三份镇民委托完成后，阿茴会邀请你准备「炉火共餐」：与杏、老潮、诺尔确认准备，在炉火旅店备餐、逐处送汤，并留下可重读的桌边故事。沿用原有生活玩法，支持分段存档与一次性报酬，见 [HEARTH-SUPPER.md](docs/HEARTH-SUPPER.md)。
+
 地脉深渊第2、4层新增可选「地脉回声」：清层后可取一次生命补给，或挑战三轮有明确预告的地脉脉冲，获取本层未结算收益。支持取消重试、暂停和断点存档，六层原地图、敌人、Boss与结算不变，见 [ROOT-ECHO.md](docs/ROOT-ECHO.md)。
 
 主角三种装备外观改为完整 256 图格，取消造成肩甲、弓弦和领口割裂的头身矩形拼接；固定脚底、原金发 Viola、22张图集注册及44张遮罩保留。正式路径使用 SpriteRenderer + Animator，并在原世界排序位置合成。运行中主角绘制失败会显示原始错误并停止模拟/保存；A–E 离线门槛含七项故障负向控制，编译检查覆盖隔离的 Player 分支。原生 Frontier 导入/试玩仍为 `NATIVE_UNVERIFIED`；实现与验收边界见 [HERO-ANIMATION-REBUILD.md](docs/HERO-ANIMATION-REBUILD.md)。历史尺寸、握持记录见 [FRAME-CONTINUITY-POLISH.md](docs/FRAME-CONTINUITY-POLISH.md)。

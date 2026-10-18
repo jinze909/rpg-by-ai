@@ -568,6 +568,7 @@ namespace Starfall
         public bool IsObjectPresent(WorldObject o)
         {
             if (o == null) return false;
+            if (o.kind != null && o.kind.StartsWith("supperBowl", StringComparison.Ordinal)) return save.room == 9 && SupperReady && SupperCooked;
             if (o.kind != null && o.kind.StartsWith("shelterMark")) return save.room == 7 && ShelterAccepted;
             if (o.kind == "returnscout") return Has("scout_saved");
             if (o.kind == "scout") return !Has("scout_saved");
@@ -597,6 +598,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkSupper(o)) return;
             if (TalkShelter(o)) return;
             if (TalkCommission(o)) return;
             if (TalkReach(o)) return;
@@ -627,6 +629,7 @@ namespace Starfall
                 if (!Has("ally_1")) list.Add(C("支线：交付月光草 ×6", "Commission: deliver 6 Moonherbs", "ally1"));
                 list.Add(C(save.plantedAt < 0 ? "种植 · 种子 ×1" : "收获 / 查看生长", save.plantedAt < 0 ? "Plant · 1 seed" : "Harvest / check growth", save.plantedAt < 0 ? "plant" : "harvest"));
                 list.Add(C("买种子 · 5 硬币", "Buy seeds · 5 coins", "seeds")); list.Add(C("再见", "Goodbye", "close"));
+                AppendSupperChoice(list, 0);
                 Dialog(o.name, o.en, "我需要六株月光草，为受伤的居民配药。你可以在野外采集，也可以种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。", "I need six Moonherbs for the wounded. Gather them in the wild, or grow your own: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need.", list.ToArray()); return;
             }
             if (kind == "fish")
@@ -634,6 +637,7 @@ namespace Starfall
                 List<Choice> list = new List<Choice> { C("开始钓鱼", "Cast the line", "fish") };
                 if (!Has("ally_2")) list.Add(C("支线：交付银鳍鱼 ×3", "Commission: deliver 3 Silverfin", "ally2"));
                 list.Add(C("再见", "Goodbye", "close"));
+                AppendSupperChoice(list, 1);
                 Dialog(o.name, o.en, "我想给避难的孩子们煮一锅鱼汤，需要三条银鳍鱼。\n\n钓鱼时按 E 或点收线，让浮标停在绿色区，成功三次就能钓到鱼。没有鱼饵消耗，慢慢试。", "Three Silverfin would make soup for the refugee children.\n\nPress E or Reel while the marker is in the green band. Three good pulls catch a fish. No bait cost; take your time.", list.ToArray()); return;
             }
             if (kind == "forge")
@@ -641,9 +645,10 @@ namespace Starfall
                 List<Choice> list = new List<Choice> { C("强化装备 · 木3 晶2 零件2", "Upgrade · 3 timber / 2 crystal / 2 parts", "upgrade"), C("制作猎弓 · 木4 零件2", "Craft bow · 4 timber / 2 parts", "bow"), C("制作星火杖 · 晶4 零件3", "Craft staff · 4 crystal / 3 parts", "staff") };
                 if (!Has("ally_3")) list.Add(C("支线：交付零件 ×5", "Commission: deliver 5 parts", "ally3"));
                 list.Add(C("再见", "Goodbye", "close"));
+                AppendSupperChoice(list, 2);
                 Dialog(o.name, o.en, "短剑快，猎弓远，法杖能让星火在敌人间爆开。强化装备提升生命与攻击。\n\n我还需要五个零件修好镇里的水泵。堡垒里有那么多机器，小镇却没有一口能用的井。", "Swords are quick, bows reach far, and staves burst starfire between enemies. Upgrades improve health and damage.\n\nI also need five parts to repair our water pump. So many machines in the citadel, and no working well in town.", list.ToArray()); return;
             }
-            if (kind == "cook") { Dialog(o.name, o.en, "暖潮炖汤：鱼1、药草2。回复55生命与耐力，增加攻击90秒。F喝汤。\n\n星薄荷凉茶：药草2、星晶1。T喝茶，抗暑抗寒并增加耐力回复180秒。", "Stew: 1 fish, 2 herbs. Heals 55, refills energy and boosts damage for 90 seconds. F drinks it.\n\nTea: 2 herbs, 1 crystal. T drinks it for climate protection and faster energy recovery, 180 seconds.", C("制作炖汤", "Cook stew", "cook"), C("买炖汤 · " + ShopStewCost + " 硬币", "Buy stew · " + ShopStewCost + " coins", "buymeal"), C("买木材 ×4 · " + ShopTimberCost + " 硬币", "Buy timber ×4 · " + ShopTimberCost + " coins", "buywood"), C("制作凉茶", "Brew tea", "tea"), C("再见", "Goodbye", "close"), C("远行厨房", "Road kitchen", "kitchen")); return; }
+            if (kind == "cook") { Dialog(o.name, o.en, "暖潮炖汤：鱼1、药草2。回复55生命与耐力，增加攻击90秒。F喝汤。\n\n星薄荷凉茶：药草2、星晶1。T喝茶，抗暑抗寒并增加耐力回复180秒。", "Stew: 1 fish, 2 herbs. Heals 55, refills energy and boosts damage for 90 seconds. F drinks it.\n\nTea: 2 herbs, 1 crystal. T drinks it for climate protection and faster energy recovery, 180 seconds.", SupperCookChoices(C("制作炖汤", "Cook stew", "cook"), C("买炖汤 · " + ShopStewCost + " 硬币", "Buy stew · " + ShopStewCost + " coins", "buymeal"), C("买木材 ×4 · " + ShopTimberCost + " 硬币", "Buy timber ×4 · " + ShopTimberCost + " coins", "buywood"), C("制作凉茶", "Brew tea", "tea"), C("再见", "Goodbye", "close"), C("远行厨房", "Road kitchen", "kitchen"))); return; }
             if (kind == "scout")
             {
                 if (Has("scout_saved")) { Notify("侦察员已经安全离开。", "The scout reached safety."); return; }
@@ -717,6 +722,7 @@ namespace Starfall
             string action = conversation.choices[index].action; Close();
             if (ChooseFieldcraft(action)) return;
             if (ChooseRootEcho(action)) return;
+            if (ChooseSupper(action)) return;
             if (ChooseShelter(action)) return;
             if (ChooseCommission(action)) return;
             if (ChooseHomeward(action)) return;

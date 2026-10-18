@@ -253,6 +253,13 @@ namespace Starfall.Tests
         [Test] public void RootEchoRestReloadAndFreshRunNeverDuplicateResolution() { CoreChecks.RootEchoRestReloadAndFreshRunNeverDuplicateResolution(Data()); }
         [Test] public void RootEchoCancellationPauseAndBankGuardsRemainTransactional() { CoreChecks.RootEchoCancellationPauseAndBankGuardsRemainTransactional(Data()); }
         [Test] public void RootEchoActualWarningContactAndDodgeKeepCombatRules() { CoreChecks.RootEchoActualWarningContactAndDodgeKeepCombatRules(Data()); }
+        [Test] public void SupperEarnedOfferPreservesOriginalCommissionsAndMenus() { CoreChecks.SupperEarnedOfferPreservesOriginalCommissionsAndMenus(Data()); }
+        [Test] public void SupperAcceptanceAndPreparationRecheckPhysicalCallbacks() { CoreChecks.SupperAcceptanceAndPreparationRecheckPhysicalCallbacks(Data()); }
+        [Test] public void SupperCookingServingAndFinishRequireActualOwnedStations() { CoreChecks.SupperCookingServingAndFinishRequireActualOwnedStations(Data()); }
+        [Test] public void SupperAllProfessionsAndPreparationServiceOrdersFinishOnce() { CoreChecks.SupperAllProfessionsAndPreparationServiceOrdersFinishOnce(Data()); }
+        [Test] public void SupperEveryCheckpointAndLegacyVersionReloadKeepsEarnedProgress() { CoreChecks.SupperEveryCheckpointAndLegacyVersionReloadKeepsEarnedProgress(Data()); }
+        [Test] public void SupperGuidanceAppendsReadOnlyAndTargetsPhysicalMissingSteps() { CoreChecks.SupperGuidanceAppendsReadOnlyAndTargetsPhysicalMissingSteps(Data()); }
+        [Test] public void SupperLeavesMatureKitchenRestAndTownLifeAvailable() { CoreChecks.SupperLeavesMatureKitchenRestAndTownLifeAvailable(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }

@@ -56,6 +56,17 @@ namespace Starfall
         {
             if (DrawArchiveObject(o)) return true;
             string kind = o.kind; Point p = ScreenPoint(new Point(o.x, o.y));
+            if (kind.StartsWith("supperBowl", StringComparison.Ordinal))
+            {
+                int index;
+                if (!int.TryParse(kind.Substring(10), out index) || index < 0 || index > 2) return true;
+                Color tint = Game.SupperServed(index) ? mint : gold;
+                Icon("stew", p.x - 14, p.y - 31, 28);
+                Ring(new Point(o.x, o.y), .4f, tint, 20);
+                Text(p.x - 86, p.y - 61, 172, 27, Game.L("桌边 ", "TABLE PLACE ") + (index + 1)
+                    + (Game.SupperServed(index) ? " +" : ""), 12, tint, TextAnchor.MiddleCenter);
+                return true;
+            }
             if (kind.StartsWith("watchSignal"))
             {
                 int id;

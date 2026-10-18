@@ -16,7 +16,7 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
-        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward", "commission", "shelter", "fieldcraft" };
+        public static readonly string[] QuestIds = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward", "commission", "shelter", "fieldcraft", "supper" };
         private void SanitizeGuidance()
         {
             if (save.presentationVersion == 0)
@@ -93,6 +93,7 @@ namespace Starfall
             if (id == "commission") return GetCommissionQuest();
             if (id == "shelter") return GetShelterQuest();
             if (id == "fieldcraft") return GetFieldcraftQuest();
+            if (id == "supper") return GetSupperQuest();
             QuestGuide q = new QuestGuide { id = id, room = 0, target = new Point(18, 17), category = L("主线", "STORY"), reward = L("硬币、经验与新的路线", "Coins, experience and new routes") };
             if (id == "secrets")
             {

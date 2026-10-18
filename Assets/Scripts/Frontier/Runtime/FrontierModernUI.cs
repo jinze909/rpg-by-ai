@@ -220,14 +220,17 @@ namespace Starfall
                 return;
             }
             if (journalTab == 2) { for (int i = 0; i < 3; i++) { float y = 229 + i * 100; Card(279, y, 938, 83); Text(303, y + 14, 855, 31, Game.L(GameCore.FactionNames[i], GameCore.FactionNamesEn[i]) + "  " + Game.save.reputation[i] + "/10", 20, gold); Bar(303, y + 59, 888, Game.save.reputation[i] / 10f, mint); } Text(282, 553, 925, 91, Game.L("共同治理条件：三份证词、建设总等级3、两名同伴、三方声望各2。协定影响补给、旅行和同伴指令。", "Shared governance: three reports, three project tiers, two companions, trust 2 with each faction. Covenants affect supplies, travel and commands."), 18, paper); Text(282, 663, 925, 31, Game.L("证词 ", "Reports ") + Game.Proofs + "/3  ·  " + Game.L("建设 ", "Projects ") + Game.ProjectTiers + "/3  ·  " + Game.L("同伴 ", "Companions ") + Game.CompanionCount + "/2", 16, muted); return; }
-            float questSpacing = Math.Min(46, 464f / GameCore.QuestIds.Length);
+            // Keep the mature eighteen rows at their established size. The
+            // nineteenth uses the existing free space above the footer, so
+            // appending this story does not compress the mature hitboxes.
+            float questSpacing = Math.Min(46, 464f / Math.Min(GameCore.QuestIds.Length, 18));
             // Compact rows keep their existing hitboxes and full-size labels.
             // Ordinary button padding would crop the glyphs as stories append.
             RectOffset rowOriginalPadding = buttonStyle.padding;
             try
             {
                 if (questSpacing < 32) buttonStyle.padding = questRowPadding;
-                for (int i = 0; i < GameCore.QuestIds.Length; i++) { QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); if (Button(279, 226 + i * questSpacing, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
+                for (int i = 0; i < GameCore.QuestIds.Length; i++) { QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); float y = 226 + i * questSpacing - (i == 18 ? 3 : 0); if (Button(279, y, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
             }
             finally { buttonStyle.padding = rowOriginalPadding; }
             QuestGuide q = Game.GetQuest(GameCore.QuestIds[selectedQuest]); Card(625, 226, 592, 464); Text(650, 244, 541, 27, q.category + (q.complete ? Game.L(" · 已完成", " · COMPLETE") : ""), 12, gold); Text(650, 281, 541, 45, q.title, 26, paper); Text(650, 342, 541, 62, q.description, 17, muted); Text(650, 410, 541, 60, Game.L("下一步：", "Next: ") + q.next, 14, gold);

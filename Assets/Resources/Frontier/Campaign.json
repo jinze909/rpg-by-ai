@@ -2313,6 +2313,30 @@
           "en": "The inn ledger",
           "x": 9,
           "y": 13
+        },
+        {
+          "id": "supper_bowl_0",
+          "kind": "supperBowl0",
+          "name": "炉火共餐 · 桌边1",
+          "en": "Hearth supper · place 1",
+          "x": 15,
+          "y": 14
+        },
+        {
+          "id": "supper_bowl_1",
+          "kind": "supperBowl1",
+          "name": "炉火共餐 · 桌边2",
+          "en": "Hearth supper · place 2",
+          "x": 21,
+          "y": 14
+        },
+        {
+          "id": "supper_bowl_2",
+          "kind": "supperBowl2",
+          "name": "炉火共餐 · 桌边3",
+          "en": "Hearth supper · place 3",
+          "x": 20,
+          "y": 16
         }
       ],
       "decor": [

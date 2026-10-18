@@ -186,8 +186,9 @@ public static class RuntimeFieldcraftChecks
         foreach(bool english in new[]{false,true})foreach(bool large in new[]{false,true})foreach(bool small in new[]{true,false})
         {
             Prepare(app);var g=app.Game;g.save.english=english;g.save.largeText=large;Screen.width=small?960:1920;Screen.height=small?600:1080;Call(app,"Resize");string suffix=(english?"en":"zh")+(large?"-large":"-normal")+(small?"-960":"-1920");Accept(app,"-"+suffix);
-            Key(app,KeyCode.Tab);Draw(app);int quest=Array.IndexOf(GameCore.QuestIds,"fieldcraft");Check(quest==17&&GameCore.QuestIds.Length==18,"New quest appends after old seventeen without renumbering");float spacing=Math.Min(46,464f/GameCore.QuestIds.Length);
-            for(int i=0;i<GameCore.QuestIds.Length;i++){GUI.queuedClick=new Rect(279,226+i*spacing,321,spacing-7);Draw(app);Check(!GUI.queuedClick.HasValue&&Get<int>(app,"selectedQuest")==i,"All eighteen actual journal rows remain clickable: "+i);}
+            Key(app,KeyCode.Tab);Draw(app);int quest=Array.IndexOf(GameCore.QuestIds,"fieldcraft");Check(quest==17&&GameCore.QuestIds.Length==19&&GameCore.QuestIds[18]=="supper","The field quest retains eighteenth position and supper appends without renumbering");float spacing=Math.Min(46,464f/18);
+            for(int i=0;i<GameCore.QuestIds.Length;i++){GUI.queuedClick=new Rect(279,226+i*spacing-(i==18?3:0),321,spacing-7);Draw(app);Check(!GUI.queuedClick.HasValue&&Get<int>(app,"selectedQuest")==i,"All actual journal rows remain clickable: "+i);}
+            GUI.queuedClick=new Rect(279,226+quest*spacing,321,spacing-7);Draw(app);Check(Get<int>(app,"selectedQuest")==quest,"Return to the original field-notes row after checking all appended rows");
             Draw(app,"journal-"+suffix);RowGlyphRoom(spacing-7);OrdinaryPadding(g.L("任务","Quests"));OrdinaryPadding(g.L("追踪任务","Track quest"));OrdinaryPadding(g.L("查看目标地图","Show destination"));var guide=g.GetQuest("fieldcraft");Check(Has(g.L("下一步：","Next: ")+guide.next),"Actual eighteenth row shows truthful next step");Rect reward=TextBounds(guide.reward);foreach(var step in guide.steps)Check(!Overlap(TextBounds((step.done?"✓  ":"○  ")+step.text),reward),"Every field objective remains above reward band");Key(app,KeyCode.Escape);
             // Isolated display fixtures only select which newly authored next-step
             // copy is visible. Actual records are earned in the first group.
@@ -207,7 +208,7 @@ public static class RuntimeFieldcraftChecks
             app.VisualReviewPaused=true;Draw(app,"counter-review-hidden-"+suffix);Check(!HasPart(L(app,"闪避反击 1.3","COUNTER 1.3")),"Paused visual review hides live counter opportunity");app.VisualReviewPaused=false;
             g.riposteTime=0;Draw(app,"counter-expired-"+suffix);Check(!HasPart(L(app,"闪避反击 1.3","COUNTER 1.3")),"Expired live counter is not advertised");
         }
-        Console.WriteLine("PASS all eighteen real journal rows with strict glyph-height room, complete offer pages, both languages normal/large at 960/1920, exact timer in both HUDs, read-only pointer aiming and menu/application/review/expiry hiding; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS all nineteen real journal rows with strict glyph-height room, complete offer pages, both languages normal/large at 960/1920, exact timer in both HUDs, read-only pointer aiming and menu/application/review/expiry hiding; NATIVE_UNVERIFIED");
     }
     public static int Main(string[] args)
     {
