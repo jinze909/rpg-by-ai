@@ -11,11 +11,16 @@ namespace Starfall
         }
         private Rect CombatFocusBounds()
         { return CombatHud ? new Rect(1030, 105, 230, 32) : new Rect(1015, 489, 234, 32); }
+        private bool CombatFocusCycleVisible { get { return CombatFocusVisible && Game.CanCycleCombatFocus; } }
+        private Rect CombatFocusCycleBounds()
+        { Rect r = CombatFocusBounds(); return new Rect(r.x, r.y + r.height + 6, r.width, 32); }
 
         private void ToggleCombatFocusFromInput()
         {
             if (Game.ToggleCombatFocus(InputAim() ?? Game.aim)) Game.sound = "ui";
         }
+        private void CycleCombatFocusFromInput(int step)
+        { if (Game.CycleCombatFocus(step)) Game.sound = "ui"; }
         private void DrawCombatFocusControl()
         {
             if (!CombatFocusVisible) return;
@@ -23,6 +28,12 @@ namespace Starfall
             if (Button(r.x, r.y, r.width, r.height, ControlKey("V", "R3") + " · " +
                 (Game.CombatFocusTarget == null ? Game.L("锁定目标", "Lock target") : Game.L("解除锁定", "Release target")), Game.CombatFocusTarget != null))
                 ToggleCombatFocusFromInput();
+            if (CombatFocusCycleVisible)
+            {
+                Rect next = CombatFocusCycleBounds();
+                if (Button(next.x, next.y, next.width, next.height, ControlKey("X", "L3") + " · " + Game.L("切换目标", "Next target")))
+                    CycleCombatFocusFromInput(1);
+            }
         }
         private void DrawCombatFocusMarker()
         {

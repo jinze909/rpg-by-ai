@@ -64,6 +64,7 @@ namespace Starfall
                 if (Game.save.showGuidance && Game.TutorialStep < 8 && !Game.practicing) rects.Add(new Rect(24,474,298,204));
             }
             if (CombatFocusVisible) rects.Add(CombatFocusBounds());
+            if (CombatFocusCycleVisible) rects.Add(CombatFocusCycleBounds());
             if (SignalRepriseHudVisible) rects.Add(SignalRepriseHudBounds());
             if (FieldcraftCounterVisible) rects.Add(FieldcraftCounterBounds());
             if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
@@ -84,6 +85,7 @@ namespace Starfall
             }
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
             if (CombatHud && CombatFocusVisible) hudPointerRegions.Add(CombatFocusBounds());
+            if (CombatHud && CombatFocusCycleVisible) hudPointerRegions.Add(CombatFocusCycleBounds());
             AddSparringPointerRegions(hudPointerRegions);
             AddRangePointerRegions(hudPointerRegions);
             return hudPointerRegions;

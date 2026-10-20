@@ -23,7 +23,7 @@ namespace Starfall
         private Point camera;
         private Point lastPointer;
         private bool pointerSeen, pointerAimActive;
-        private static readonly KeyCode[] keyboardControls={KeyCode.V,KeyCode.Q,KeyCode.Space,KeyCode.E,KeyCode.F,KeyCode.T,KeyCode.Z,KeyCode.H,KeyCode.R,KeyCode.Escape,KeyCode.Return,KeyCode.Tab,KeyCode.I,KeyCode.K,KeyCode.M,KeyCode.B,KeyCode.C,KeyCode.G,KeyCode.N,KeyCode.F1};
+        private static readonly KeyCode[] keyboardControls={KeyCode.V,KeyCode.X,KeyCode.Q,KeyCode.Space,KeyCode.E,KeyCode.F,KeyCode.T,KeyCode.Z,KeyCode.H,KeyCode.R,KeyCode.Escape,KeyCode.Return,KeyCode.Tab,KeyCode.I,KeyCode.K,KeyCode.M,KeyCode.B,KeyCode.C,KeyCode.G,KeyCode.N,KeyCode.F1};
         private string bootError;
         private sealed class HeroPresentationException : Exception
         {
@@ -85,12 +85,14 @@ namespace Starfall
             if (pointerMoved || Input.GetMouseButton(0)||keyboardMove||keyboardAction) controllerUsed = false;
             lastPointer = pointer; pointerSeen = true;
             bool padInput = false;
-            for (int i = 0; i < 8; i++) if (PadDown(i)) { controllerUsed = true; padInput = true; }
+            for (int i = 0; i < 9; i++) if (PadDown(i)) { controllerUsed = true; padInput = true; }
             if (PadDown(9)) { controllerUsed = true; padInput = true; }
             // Preserve the existing fresh-pad priority when the pointer also
             // changes position during a device handoff (including HUD entry).
             UpdateControllerAim(!padInput && (pointerMoved || Input.GetMouseButton(0) || keyboardMove || keyboardAction));
             if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.V) || PadDown(9))) ToggleCombatFocusFromInput();
+            else if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.X) || PadDown(8)))
+                CycleCombatFocusFromInput(Input.GetKeyDown(KeyCode.X) && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -1 : 1);
             Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {

@@ -63,6 +63,52 @@ namespace Starfall
             combatFocusEnemy = candidate; combatFocusSave = save; combatFocusGeneration = WorldGeneration;
             return true;
         }
+        public bool CanCycleCombatFocus
+        {
+            get
+            {
+                Enemy current = CombatFocusTarget;
+                if (current == null) return false;
+                foreach (Enemy enemy in enemies)
+                    if (!ReferenceEquals(enemy, current) && CombatFocusInSight(enemy)) return true;
+                return false;
+            }
+        }
+        private int CompareCombatFocusOrder(Enemy left, int leftIndex, Enemy right, int rightIndex)
+        {
+            Point a = left.Position - Position, b = right.Position - Position;
+            int angle = Math.Atan2(a.y, a.x).CompareTo(Math.Atan2(b.y, b.x));
+            if (angle != 0) return angle;
+            int distance = ((double)a.x * a.x + (double)a.y * a.y).CompareTo((double)b.x * b.x + (double)b.y * b.y);
+            if (distance != 0) return distance;
+            int identity = left.id.CompareTo(right.id);
+            return identity != 0 ? identity : leftIndex.CompareTo(rightIndex);
+        }
+        // Cycle only an existing live lock. This explicit selection does not
+        // rewrite an accepted action, queued input or a released projectile.
+        public bool CycleCombatFocus(int step = 1)
+        {
+            if (step != 1 && step != -1) return false;
+            Enemy current = CombatFocusTarget;
+            if (current == null) return false;
+            int currentIndex = enemies.IndexOf(current), nextIndex = -1, wrapIndex = -1;
+            Enemy next = null, wrap = null;
+            for (int i = 0; i < enemies.Count; i++)
+            {
+                Enemy enemy = enemies[i];
+                if (ReferenceEquals(enemy, current) || !CombatFocusInSight(enemy)) continue;
+                if (wrap == null || CompareCombatFocusOrder(enemy, i, wrap, wrapIndex) * step < 0)
+                { wrap = enemy; wrapIndex = i; }
+                if (CompareCombatFocusOrder(enemy, i, current, currentIndex) * step > 0 &&
+                    (next == null || CompareCombatFocusOrder(enemy, i, next, nextIndex) * step < 0))
+                { next = enemy; nextIndex = i; }
+            }
+            Enemy selected = next ?? wrap;
+            if (selected == null) return false;
+            combatFocusEnemy = selected;
+            SetAimTarget(null);
+            return true;
+        }
         public void ClearCombatFocus()
         {
             if (combatFocusEnemy != null) SetAimTarget(null);

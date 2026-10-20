@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run the seven production Core focus groups with the shipped campaign and Mono.
+"""Run the eleven production Core focus groups with the shipped campaign and Mono.
 
 These checks exercise real actions and world transitions, not Unity rendering or
 physical input. UnityCoreTests wraps the same checks for native EditMode runs.
@@ -36,7 +36,7 @@ class Harness { static int Main() {
         catch (Exception error) { failed++; Console.WriteLine("FAIL " + method.Name + ": " + (error.InnerException ?? error).Message); }
     }
     Console.WriteLine("Combat focus Core groups: " + count + ", failures: " + failed);
-    return count == 7 && failed == 0 ? 0 : 1;
+    return count == 11 && failed == 0 ? 0 : 1;
 } }
 ''')
         sources = sorted((ROOT / 'Assets/Scripts/Frontier/Core').glob('*.cs'))

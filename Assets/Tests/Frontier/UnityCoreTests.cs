@@ -304,6 +304,10 @@ namespace Starfall.Tests
         [Test] public void SignalRepriseClonesAndLegacySavesNeverResumeOrRepay() { CoreChecks.SignalRepriseClonesAndLegacySavesNeverResumeOrRepay(Data()); }
         [Test] public void SignalRepriseDeathTravelNewAndTrainingClearSession() { CoreChecks.SignalRepriseDeathTravelNewAndTrainingClearSession(Data()); }
         [Test] public void SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward() { CoreChecks.SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward(Data()); }
+        [Test] public void CombatFocusCycleOrdersWrapsAndSkipsInvalidActors() { CoreChecks.CombatFocusCycleOrdersWrapsAndSkipsInvalidActors(Data()); }
+        [Test] public void CombatFocusCycleNeedsAnExistingLiveSession() { CoreChecks.CombatFocusCycleNeedsAnExistingLiveSession(Data()); }
+        [Test] public void CombatFocusCyclePreservesAcceptedQueuedAndFlyingAim() { CoreChecks.CombatFocusCyclePreservesAcceptedQueuedAndFlyingAim(Data()); }
+        [Test] public void CombatFocusCycleQueriesAndSelectionKeepProgressReadOnly() { CoreChecks.CombatFocusCycleQueriesAndSelectionKeepProgressReadOnly(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }
