@@ -119,7 +119,9 @@ public static class RuntimeRootEchoChecks
         for (int floor = 1; floor <= 6; floor++)
         {
             Check(AbyssTopologyBaseline.Describe(topology) == original[floor - 1], "Immutable original room rows/decor/encounters/exit and gate remain exact at floor " + floor);
-            if (floor < 6) { topology.enemies.Clear(); topology.Talk(Object(topology, "abyssGate")); topology.Choose(0); }
+            // Spread topology-only traversal choices across valid boon slots;
+            // the immutable fixture covers seeded rooms, not one boon build.
+            if (floor < 6) { topology.enemies.Clear(); topology.Talk(Object(topology, "abyssGate")); topology.Choose((floor - 1) % 3); }
         }
         Prepare(app, 2, 1, 2); var game = app.Game; int coins = game.save.coins, shards = game.save.shards, xp = game.save.xp, kills = game.save.kills[8];
         Begin(app); EscapeFirst(app, false); WaitStep(app, 3);

@@ -647,6 +647,7 @@ namespace Starfall
             if (action.StartsWith("abyssStart")) { StartAbyss(int.Parse(action.Substring(10))); return true; }
             if (action == "abyssLeave") { EndAbyss(false); Enter(0); return true; }
             if (action.StartsWith("boon")) { TakeBoon(int.Parse(action.Substring(4))); return true; }
+            if (action == "abyssRetain") { RetainAbyssBoons(); return true; }
             if (action == "abyssBank") { if (RootEchoActive) return true; BankFloor(); EndAbyss(true); Enter(0); return true; }
             return false;
         }
@@ -768,9 +769,11 @@ namespace Starfall
             Flag("abyss_clear_" + save.abyssFloor);
             List<Choice> choices = new List<Choice>();
             if (save.abyssFloor < 6)
-            { choices.Add(C("利刃祝福 · 攻击+15%并深入", "Edge boon · +15% damage and descend", "boon0")); choices.Add(C("泉涌祝福 · 耐力回复+4并深入", "Spring boon · +4 energy regen and descend", "boon1")); choices.Add(C("磐石祝福 · 伤害-12%并深入", "Stone boon · -12% damage taken and descend", "boon2")); }
+            { for (int id = 0; id < 3; id++) choices.Add(C(AbyssBoonChoiceLabel(id, false), AbyssBoonChoiceLabel(id, true), "boon" + id)); }
             choices.Add(C(save.abyssFloor == 6 ? "完成远征，结算返回" : "结算本层，安全返回", save.abyssFloor == 6 ? "Complete the expedition and bank" : "Bank this floor and extract", "abyssBank"));
-            Dialog("会记住选择的地脉", "Roots that remember choices", "本层未结算：硬币 " + save.runCoins + "，碎片 " + save.runShards + "，经验 " + save.runXp + "。\n\n祝福只在本次远征有效，可叠加至四层。深入前自动结算当前楼层，回复一半最大生命。第三层与第六层会解锁永久奖励。", "Unbanked: " + save.runCoins + " coins, " + save.runShards + " shards, " + save.runXp + " XP.\n\nBoons last this run and stack four times. Descending banks the floor and heals half your maximum health. Floors three and six unlock permanent rewards.", choices.ToArray());
+            if (AbyssBoonChoiceEnabled("abyssRetain")) choices.Add(C("祝福已全满 · 保持祝福并深入", "All boons full · keep boons and descend", "abyssRetain"));
+            choices.Add(C("继续观察本层", "Stay on this floor", "close"));
+            Dialog("会记住选择的地脉", "Roots that remember choices", AbyssDecisionText(false), AbyssDecisionText(true), choices.ToArray());
         }
         private void BankFloor()
         {
@@ -784,8 +787,12 @@ namespace Starfall
         }
         public void TakeBoon(int id)
         {
-            if (Dying || RootEchoActive || id < 0 || id > 2 || !InAbyss || save.abyssFloor >= 6 || enemies.Count > 0 || !Has("abyss_clear_" + save.abyssFloor)) return;
-            BankFloor(); save.boons[id] = Math.Min(4, save.boons[id] + 1); save.abyssFloor++;
+            if (id < 0 || id > 2 || !AbyssBoonChoiceEnabled("boon" + id)) return;
+            DescendAbyss(id);
+        }
+        private void DescendAbyss(int boon)
+        {
+            BankFloor(); if (boon >= 0) save.boons[boon]++; save.abyssFloor++;
             GenerateAbyss(); save.x = 5; save.y = 14; save.health = Math.Min(save.maxHealth, save.health + save.maxHealth * .5f); save.energy = 100;
             ResetTransient(); SpawnRoom(); mode = "world"; revision++; sound = "travel";
         }

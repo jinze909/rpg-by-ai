@@ -304,6 +304,15 @@ namespace Starfall.Tests
         [Test] public void SignalRepriseClonesAndLegacySavesNeverResumeOrRepay() { CoreChecks.SignalRepriseClonesAndLegacySavesNeverResumeOrRepay(Data()); }
         [Test] public void SignalRepriseDeathTravelNewAndTrainingClearSession() { CoreChecks.SignalRepriseDeathTravelNewAndTrainingClearSession(Data()); }
         [Test] public void SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward() { CoreChecks.SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward(Data()); }
+        [Test] public void AbyssPlanningFourEarnedStacksRejectFifthBeforeBankHealOrDescent() { CoreChecks.AbyssPlanningFourEarnedStacksRejectFifthBeforeBankHealOrDescent(Data()); }
+        [Test] public void AbyssPlanningAllStartersRisksAndBuildPathsPreserveSixFloors() { CoreChecks.AbyssPlanningAllStartersRisksAndBuildPathsPreserveSixFloors(Data()); }
+        [Test] public void AbyssPlanningBoonSummariesMatchLiveDamageAndEnergyWithoutMutation() { CoreChecks.AbyssPlanningBoonSummariesMatchLiveDamageAndEnergyWithoutMutation(Data()); }
+        [Test] public void AbyssPlanningBankPreviewMatchesCovenantAndOnceOnlyMilestones() { CoreChecks.AbyssPlanningBankPreviewMatchesCovenantAndOnceOnlyMilestones(Data()); }
+        [Test] public void AbyssPlanningForecastDescribesActualNextFloorAndNeverRequiresEcho() { CoreChecks.AbyssPlanningForecastDescribesActualNextFloorAndNeverRequiresEcho(Data()); }
+        [Test] public void AbyssPlanningStaleChoicesRejectEnemyClearanceDeathAndActiveEcho() { CoreChecks.AbyssPlanningStaleChoicesRejectEnemyClearanceDeathAndActiveEcho(Data()); }
+        [Test] public void AbyssPlanningLegacyAllCappedRetainsBuildWithoutBlockingExtraction() { CoreChecks.AbyssPlanningLegacyAllCappedRetainsBuildWithoutBlockingExtraction(Data()); }
+        [Test] public void AbyssPlanningCandidateProfilesMatchActuallyEquippedMasteryAndEdge() { CoreChecks.AbyssPlanningCandidateProfilesMatchActuallyEquippedMasteryAndEdge(Data()); }
+
         [Test] public void ReturnLetterEarnedBranchesPreserveOriginalConversations() { CoreChecks.ReturnLetterEarnedBranchesPreserveOriginalConversations(Data()); }
         [Test] public void ReturnLetterTwoRoutesCompleteWithLocalWitnessesAndSingleReward() { CoreChecks.ReturnLetterTwoRoutesCompleteWithLocalWitnessesAndSingleReward(Data()); }
         [Test] public void ReturnLetterCallbacksRecheckLocalWorldAndOriginalRecords() { CoreChecks.ReturnLetterCallbacksRecheckLocalWorldAndOriginalRecords(Data()); }

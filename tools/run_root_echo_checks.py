@@ -28,7 +28,7 @@ foreach(var o in g.Map.objects)if(o.kind!="abyssEcho")b.Append("|O:"+o.id+":"+o.
 foreach(var d in g.Map.decor)b.Append("|D:"+d.kind+":"+N(d.x)+":"+N(d.y));
 foreach(var e in g.enemies)b.Append("|E:"+e.id+":"+e.kind+":"+e.boss+":"+N(e.x)+":"+N(e.y)+":"+N(e.hp)+":"+N(e.maxHp));return b.ToString();}
 public static int Main(){var g=new GameCore(CampaignFixture.Create());g.NewGame(0);g.Close();g.SkipTutorial();g.save.frontierEnding=1;g.StartAbyss(2);
-for(int floor=1;floor<=6;floor++){Console.WriteLine(Describe(g));if(floor<6){g.enemies.Clear();g.Talk(Array.Find(g.Map.objects,o=>o.kind=="abyssGate"));g.Choose(0);}}return 0;}}
+for(int floor=1;floor<=6;floor++){Console.WriteLine(Describe(g));if(floor<6){g.enemies.Clear();g.Talk(Array.Find(g.Map.objects,o=>o.kind=="abyssGate"));g.Choose((floor-1)%3);}}return 0;}}
 '''
 
 

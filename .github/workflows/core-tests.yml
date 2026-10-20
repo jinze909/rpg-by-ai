@@ -63,6 +63,8 @@ jobs:
         run: python3 tools/run_journal_pagination_checks.py
       - name: Check optional Root Echo pulses, real input, unbanked rewards and six-floor preservation
         run: python3 tools/run_root_echo_checks.py
+      - name: Check honest Abyss boon choices, banking previews, actual input and legacy builds
+        run: python3 tools/run_abyss_planning_checks.py
       - name: Check twin-stick aiming with production input, controls and saves
         run: python3 tools/run_controller_aim_checks.py
       - name: Check mentor sparring with production input, results and saves

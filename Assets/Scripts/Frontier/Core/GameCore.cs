@@ -724,7 +724,9 @@ namespace Starfall
         {
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
-            string action = conversation.choices[index].action; Close();
+            string action = conversation.choices[index].action;
+            if (!AbyssBoonChoiceEnabled(action)) { sound = "deny"; return; }
+            Close();
             if (ChooseReturnLetter(action)) return;
             if (ChooseFieldcraft(action)) return;
             if (ChooseRootEcho(action)) return;
