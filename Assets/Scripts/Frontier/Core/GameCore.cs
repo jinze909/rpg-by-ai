@@ -409,6 +409,11 @@ namespace Starfall
             if (SparringActive) SparringHitsTaken++;
             else if (!RangeActive) save.health -= damage * multiplier * armor * RoadMealDamageMultiplier(source); invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;
             OnSignalRepriseHurt(repriseHealthBefore);
+            // Feedback observes the completed health transaction, including all
+            // mitigation and lethal clamping. Safe drills lose no health.
+            float healthLost = Math.Max(0, repriseHealthBefore) - Math.Max(0, save.health);
+            if (healthLost > 0 && Finite(healthLost))
+                effects.Add(new Effect("damageTaken", Position, .7f, "-" + (healthLost < .01f ? "<0.01" : healthLost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))));
             if (!save.reducedMotion) { hitStop = .045f; impactShake = source == "slam" ? .18f : 0; }
             effects.Add(new Effect("hurt", Position, .5f));
             if (save.health <= 0)

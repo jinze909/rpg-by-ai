@@ -138,7 +138,13 @@ namespace Starfall
         {
             if (DrawAuthoredEffect(e)) return;
             Point p = ScreenPoint(e.position); float progress = 1 - e.life / e.maxLife;
-            if (e.kind == "number" || e.kind == "break") { Rect label = CombatTextRect(e); Text(label.x + 1, label.y + 1, label.width, label.height, e.text, 19, ink, TextAnchor.MiddleCenter); Text(label.x, label.y, label.width, label.height, e.text, 19, gold, TextAnchor.MiddleCenter); }
+            if (e.kind == "number" || e.kind == "break" || e.kind == "damageTaken")
+            {
+                Rect label = CombatTextRect(e); Color shadow = ink, foreground = e.kind == "damageTaken" ? PixelArt.C("#f4aaa5") : gold;
+                if (e.kind == "damageTaken") { float alpha = Mathf.Clamp01(e.life / .2f); shadow.a *= alpha; foreground.a *= alpha; }
+                Text(label.x + 1, label.y + 1, label.width, label.height, e.text, 19, shadow, TextAnchor.MiddleCenter);
+                Text(label.x, label.y, label.width, label.height, e.text, 19, foreground, TextAnchor.MiddleCenter);
+            }
             else if (e.kind == "slash") { double angle = Math.Atan2(e.direction.y, e.direction.x); for (int i = 0; i < 18; i++) { double a = angle - 1.1 + i * .13; Box(p.x + (float)Math.Cos(a) * (30 + progress * 32), p.y + (float)Math.Sin(a) * (30 + progress * 32), 4, 3, new Color(1, .85f, .59f, 1 - progress)); } }
             else if (e.kind == "hurt") Ring(e.position, .6f + progress * .5f, PixelArt.C("#ebaa8a"), 16);
             else if (e.kind == "frost") { Ring(e.position, 4, new Color(.6f, .8f, .9f, .7f), 48); if (Game.save.effectsQuality > 0) Light(e.position, 230, new Color(.45f, .75f, .88f, .13f * (1 - progress))); }

@@ -17,7 +17,7 @@ namespace Starfall
         private int combatTextGeneration = -1;
 
         private static bool IsCombatText(Effect effect)
-        { return effect.life > 0 && (effect.kind == "number" || effect.kind == "break"); }
+        { return effect.life > 0 && (effect.kind == "number" || effect.kind == "break" || effect.kind == "damageTaken"); }
 
         private Rect CombatTextEnvelope(Effect effect, Point offset)
         {
@@ -38,7 +38,7 @@ namespace Starfall
             // A remote hit must remain clipped. Packing two invisible labels
             // into the canvas would invent a visible hit at the wrong source.
             if (!Overlap(original, new Rect(0, 0, Width, Height))) return new Point();
-            if (!CombatTextBlocked(original)) return new Point();
+            if (!CombatTextBlocked(original) && (effect.kind != "damageTaken" || !OverlapsRegions(combatTextHudRegions, original))) return new Point();
 
             // Only colliding labels move. Prefer the nearest clear lane inside
             // the canvas; the existing singleton position stays pixel-exact.

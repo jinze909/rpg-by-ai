@@ -148,6 +148,14 @@ namespace Starfall
                 if (OverlapsRegions(regions,PlayerHudBounds())) DrawPlayerActor();
             }
             finally { drawingOutline = false; }
+            // Camera movement can carry a packed loss label under the HUD.
+            // Repeat only this new feedback above it, including a lethal hit.
+            foreach (Effect effect in Game.effects)
+                if (effect.kind == "damageTaken" && effect.life > 0)
+                {
+                    Rect label = CombatTextRect(effect); label.width++; label.height++;
+                    if (OverlapsRegions(regions, label)) DrawCombatEffect(effect);
+                }
             foreach (Enemy enemy in Game.enemies)
                 if (EnemyGuardVisible(enemy) && OverlapsRegions(regions, EnemyGuardBounds(enemy))) DrawEnemyGuard(enemy);
             foreach (Enemy enemy in Game.enemies)
