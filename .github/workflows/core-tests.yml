@@ -93,6 +93,8 @@ jobs:
         run: python3 tools/run_homeward_checks.py
       - name: Check saved battle plans and technique notes with production menus, sparring and saves
         run: python3 tools/run_battle_plan_checks.py
+      - name: Check honest relic forge quotes, actual payments, menu inputs and legacy saves
+        run: python3 tools/run_relic_forge_checks.py
       - name: Check Ivo's commissioning trial with production input, warnings, daily supplies and saves
         run: python3 tools/run_commission_checks.py
       - name: Check Sen's shelter trail with production walking, wind, cold, dialogue and saves

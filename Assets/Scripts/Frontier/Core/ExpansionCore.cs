@@ -406,10 +406,13 @@ namespace Starfall
         }
         public bool RefineRelics()
         {
-            int cost = (save.relicRank + 1) * 8;
-            if (save.room != 0 || save.projects[2] == 0 || save.relicRank >= 3 || save.shards < cost) return false;
-            if (!Spend(0, 2, 0, 0, 0, save.projects[2] == 2 ? 0 : 20)) return false;
-            save.shards -= cost; save.relicRank++; revision++; sound = "reward"; return true;
+            RelicForgeQuote quote = GetRelicForgeQuote();
+            if (!quote.available) { Notify(quote.reasonZh, quote.reasonEn); sound = "deny"; return false; }
+            if (!Spend(0, quote.crystals, 0, 0, 0, quote.coins)) return false;
+            save.shards -= quote.shards; save.relicRank++; revision++; sound = "reward";
+            Notify("记忆锻印 " + save.relicRank + "/3：碎片-" + quote.shards + " / 星晶-" + quote.crystals + " / 硬币-" + quote.coins + "。装备遗物时基础攻击+" + quote.nextBonus + "。",
+                "Memory forging " + save.relicRank + "/3: -" + quote.shards + " memory shards / -" + quote.crystals + " crystals / -" + quote.coins + " coins. Base damage bonus while wearing a relic: +" + quote.nextBonus + ".");
+            return true;
         }
         public void AcceptBounty(int id)
         {

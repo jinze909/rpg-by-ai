@@ -183,8 +183,17 @@ namespace Starfall
                 if (Button(x + 17, y + 120, 268, 27, owned ? Game.L("装备到当前槽", "Equip in selected slot") : Game.L("尚未解锁", "Not discovered"), Game.Relic(i), owned)) Game.EquipRelic(relicSlot, i);
             }
             if (Button(279, 614, 302, 39, Game.L("卸下当前槽", "Clear selected slot"))) Game.EquipRelic(relicSlot, -1);
-            if (Button(597, 614, 620, 39, Game.L("锻印+1 · 碎片", "Refine +1 · shards ") + ((Game.save.relicRank + 1) * 8) + Game.L(" / 星晶2", " / 2 crystals"), true, Game.save.room == 0 && Game.save.projects[2] > 0 && Game.save.relicRank < 3)) Game.RefineRelics();
-            Text(282, 666, 925, 26, Game.L("装备遗物时，每级锻印攻击+2。一级记忆工坊另收20硬币。", "+2 damage per forge tier while wearing a relic. Tier I workshop charges 20 coins."), 13, muted);
+            RelicForgeQuote forge = Game.GetRelicForgeQuote();
+            string price = forge.currentRank >= 3 ? Game.L("记忆锻印 3/3 · 已满级", "Memory forging 3/3 · Maximum tier") :
+                Game.L("锻印 ", "Refine ") + forge.nextRank + "/3 · " + forge.shards + Game.L("记忆碎片 / ", " memory shards / ") + forge.crystals + Game.L("星晶 / ", " crystals / ") + forge.coins + Game.L("硬币", " coins");
+            if (Button(597, 614, 620, 39, price, true, forge.available))
+            {
+                Game.RefineRelics();
+                // The receipt and refreshed quote follow the completed payment.
+                forge = Game.GetRelicForgeQuote();
+            }
+            Text(282, 666, 925, 26, forge.available ? Game.L("材料充足，可以锻印。", "Materials ready; you can refine.") : Game.L(forge.reasonZh, forge.reasonEn), 13, forge.available ? mint : gold);
+            Text(282, 702, 925, 26, Game.L("装备遗物时基础攻击加成：+", "Base damage bonus while wearing a relic: +") + forge.currentBonus + " → +" + forge.nextBonus + Game.L("（两槽不重复加成）。", " (once, across both slots)."), 13, muted);
         }
         private void DrawCamp()
         {

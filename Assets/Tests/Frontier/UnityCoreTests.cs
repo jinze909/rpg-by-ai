@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void ForgeQuotesExposeExactCostsAndImmutableSnapshots(){CoreChecks.ForgeQuotesExposeExactCostsAndImmutableSnapshots(Data());}
+        [Test] public void ForgeShortfallsReportEveryMissingResourceWithoutMutation(){CoreChecks.ForgeShortfallsReportEveryMissingResourceWithoutMutation(Data());}
+        [Test] public void ForgeTransactionsRecheckStaleQuotesBeforeAnySpend(){CoreChecks.ForgeTransactionsRecheckStaleQuotesBeforeAnySpend(Data());}
+        [Test] public void ForgeSuccessfulUpgradesKeepExactTransactionsAndExistingEntryModes(){CoreChecks.ForgeSuccessfulUpgradesKeepExactTransactionsAndExistingEntryModes(Data());}
+        [Test] public void ForgeLegacySavesPreserveRanksAndDamageRequiresAnEquippedRelic(){CoreChecks.ForgeLegacySavesPreserveRanksAndDamageRequiresAnEquippedRelic(Data());}
+
         [Test] public void DodgeLatePressCapturesDirectionAndExecutesOnceAtRealCooldown(){CoreChecks.DodgeLatePressCapturesDirectionAndExecutesOnceAtRealCooldown(Data());}
         [Test] public void DodgeRejectedRequestsNeverWaitForEnergyOrAnUnrelatedCooldown(){CoreChecks.DodgeRejectedRequestsNeverWaitForEnergyOrAnUnrelatedCooldown(Data());}
         [Test] public void DodgeAndSkillHonorTheLastValidDiscreteIntent(){CoreChecks.DodgeAndSkillHonorTheLastValidDiscreteIntent(Data());}
