@@ -87,8 +87,9 @@ namespace Starfall.Tests
                 Check(action.released && receipt != null && receipt.id == id && receipt.bond == bond && game.CompanionFeedbackTime == 2.2f
                     && TacticsNear(game.companionCooldown, (ending == 3 ? 12 : 18) - .2f), "Only the actual contact starts the full 2.2-second feedback witness");
                 Check(game.toast == toast && game.toastTime > 0, "Command feedback does not overwrite the existing story notification");
-                if (id == 0) Check(receipt.actualHeal == 18 + bond * 3 && receipt.actualEnergy == 15 && game.effects.Count == 1
-                    && game.effects[0].kind == "heal" && game.projectiles.Count == 0 && game.guardTime == 3, "Mira keeps exactly its original healing effect and guard");
+                if (id == 0) Check(receipt.actualHeal == 18 + bond * 3 && receipt.actualEnergy == 15 && game.effects.Count == 2
+                    && game.effects[0].kind == "heal" && game.effects[1].kind == "healthGain" && game.effects[1].text == "+" + receipt.actualHeal.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)
+                    && game.projectiles.Count == 0 && game.guardTime == 3, "Mira keeps its original healing ring first and guard, followed by the exact actual recovery label");
                 if (id == 1) Check(receipt.arrowCount == 3 && game.projectiles.Count == 3 && game.projectiles.TrueForAll(p => p.piercing && p.velocity.y > 0
                     && TacticsNear(p.damage, receipt.arrowBaseDamage)) && game.effects.Count == 1 && game.effects[0].kind == "release",
                     "Ivo records real launched arrows without claiming a hit or adding invented effects");

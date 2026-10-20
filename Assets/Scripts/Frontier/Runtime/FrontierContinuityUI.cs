@@ -148,10 +148,10 @@ namespace Starfall
                 if (OverlapsRegions(regions,PlayerHudBounds())) DrawPlayerActor();
             }
             finally { drawingOutline = false; }
-            // Camera movement can carry a packed loss label under the HUD.
-            // Repeat only this new feedback above it, including a lethal hit.
+            // Camera movement can carry packed health feedback under the HUD.
+            // Repeat these deltas above it, including a lethal hit.
             foreach (Effect effect in Game.effects)
-                if (effect.kind == "damageTaken" && effect.life > 0)
+                if (IsPlayerHealthText(effect) && effect.life > 0)
                 {
                     Rect label = CombatTextRect(effect); label.width++; label.height++;
                     if (OverlapsRegions(regions, label)) DrawCombatEffect(effect);

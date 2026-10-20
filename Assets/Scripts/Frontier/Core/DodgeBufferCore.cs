@@ -55,7 +55,7 @@ namespace Starfall
             dashDirection = direction;
             dashTime = .18f; dashCooldown = .75f - save.talents[2] * .06f; invulnerable = .32f; save.energy -= cost;
             perfectDodgeArmed = true;
-            if (Relic(0)) save.health = Math.Min(save.maxHealth, save.health + 3);
+            if (Relic(0)) { float before = save.health; save.health = Math.Min(save.maxHealth, save.health + 3); RecordHealing(before); }
             effects.Add(new Effect("dash", Position, .3f) { direction = dashDirection }); sound = "dash";
         }
         private void ValidateDodgeProfile()

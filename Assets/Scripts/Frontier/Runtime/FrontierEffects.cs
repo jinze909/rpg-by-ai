@@ -73,7 +73,7 @@ namespace Starfall
         }
         private bool DrawAuthoredEffect(Effect effect)
         {
-            if (effectSheet == null || effect.kind == "number" || effect.kind == "break" || effect.kind == "damageTaken") return false;
+            if (effectSheet == null || effect.kind == "number" || effect.kind == "break" || IsPlayerHealthText(effect)) return false;
             Point p = ScreenPoint(effect.position); float progress = Mathf.Clamp01(1 - effect.life / Math.Max(.001f, effect.maxLife));
             if (effect.kind == "loot")
             {

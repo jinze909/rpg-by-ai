@@ -30,7 +30,7 @@ public static class RuntimeCombatTextChecks
     private static bool Overlap(Rect a,Rect b) { return a.x<b.x+b.width-.001f&&b.x<a.x+a.width-.001f&&a.y<b.y+b.height-.001f&&b.y<a.y+a.height-.001f; }
     private static Rect RectOf(Label value) { return new Rect(value.r[0],value.r[1],value.r[2],value.r[3]); }
     private static Color ColorOf(Label value) { return new Color(value.color[0],value.color[1],value.color[2],value.color[3]); }
-    private static bool Critical(Effect effect) { return (effect.kind=="number"||effect.kind=="break")&&effect.life>0; }
+    private static bool Critical(Effect effect) { return (effect.kind=="number"||effect.kind=="break"||effect.kind=="healthGain")&&effect.life>0; }
     private static void Clear() { GUI.commands.Clear();GUI.textureCalls.Clear();GUI.buttonCalls.Clear(); }
     private static void Draw(FrontierRuntime app,string capture=null)
     {
@@ -74,7 +74,9 @@ public static class RuntimeCombatTextChecks
         {
             Label shadow=all[i*2],foreground=all[i*2+1];
             Check(shadow.text==effects[i].text&&foreground.text==effects[i].text&&shadow.center&&foreground.center,"Original complete effect texts, list order and middle-center alignment are retained");
-            Check(Same(ColorOf(shadow),Ink)&&Same(ColorOf(foreground),Gold),"Original ink shadow then gold foreground tints remain exact");
+            Color expectedShadow=Ink,expectedFront=effects[i].kind=="healthGain"?PixelArt.C("#a8e8bc"):Gold;
+            if(effects[i].kind=="healthGain"){float alpha=Math.Min(1,effects[i].life/.2f);expectedShadow.a*=alpha;expectedFront.a*=alpha;}
+            Check(Same(ColorOf(shadow),expectedShadow)&&Same(ColorOf(foreground),expectedFront),"Original gold/ink remain exact; real healing uses its separate green tint and fade");
             Check(Near(shadow.r[0],foreground.r[0]+1)&&Near(shadow.r[1],foreground.r[1]+1),"Original one-pixel shadow remains offset from its own foreground");
             result.Add(foreground);
         }
@@ -108,20 +110,20 @@ public static class RuntimeCombatTextChecks
     private static Effect MiraAutomaticHeal(FrontierRuntime app)
     {
         Prepare(app);var g=app.Game;if(!g.Has("companion_0"))g.save.flags.Add("companion_0");g.SelectCompanion(0);Check(g.save.companion==0,"Existing safe-travel selection accepts unlocked Mira");g.companionPosition=g.Position;Set(g,"companionAttack",0f);g.save.health=g.save.maxHealth*.5f;float before=g.save.health;
-        Update(app);Check(g.companionAction!=null&&g.companionAction.kind=="heal"&&!g.companionAction.released&&Near(g.save.health,before)&&!g.effects.Exists(Critical),"Actual automatic Mira heal prepares before its contact and creates no early +HP label");
+        Update(app);Check(g.companionAction!=null&&g.companionAction.kind=="heal"&&!g.companionAction.released&&Near(g.save.health,before)&&!g.effects.Exists(Critical),"Actual automatic Mira heal prepares before its contact and creates no early healing label");
         int frames=0;while(Near(g.save.health,before)&&frames++<30)Update(app);
-        var labels=g.effects.FindAll(Critical);Check(frames<30&&g.save.health>before&&g.save.health<=g.save.maxHealth&&labels.Count==1&&labels[0].kind=="number"&&labels[0].text=="+HP", "Actual automatic healing contact raises HP and emits its exact existing +HP feedback once");
+        var labels=g.effects.FindAll(Critical);Check(frames<30&&g.save.health>before&&g.save.health<=g.save.maxHealth&&labels.Count==1&&labels[0].kind=="healthGain"&&labels[0].text=="+"+(g.save.health-before).ToString("0.##",CultureInfo.InvariantCulture), "Actual automatic healing contact raises HP and emits its true received amount once");
         Check((labels[0].position-g.Position).Length<.001f&&labels[0].life>0&&labels[0].life<=labels[0].maxLife,"Real heal feedback is anchored to the healed player's current position with its mature effect lifetime");return labels[0];
     }
     private static void RealContactsAndSinglePreservation(FrontierRuntime app)
     {
         GuardBreak(app);Draw(app);Labels(app);GuardBreak(app,true);Draw(app);Labels(app);
         StaffBlast(app);Draw(app);Labels(app);
-        Effect heal=MiraAutomaticHeal(app);SingleOriginal(app,heal);for(int frame=0;frame<40;frame++)Update(app);Draw(app);Labels(app);Check(!app.Game.effects.Contains(heal)&&!GUI.commands.Exists(c=>c.Contains("+HP")),"Actual Update expires and removes the once-emitted healing label without stale draw or cache history");
+        Effect heal=MiraAutomaticHeal(app);SingleOriginal(app,heal);for(int frame=0;frame<40;frame++)Update(app);Draw(app);Labels(app);Check(!app.Game.effects.Contains(heal)&&!GUI.commands.Exists(c=>{if(!c.StartsWith("{\"k\":\"text\"",StringComparison.Ordinal))return false;var label=JsonUtility.FromJson<Label>(c);return label.text==heal.text&&Near(label.r[2],120)&&Near(label.r[3],32);}),"Actual Update expires and removes the once-emitted healing label without stale draw or cache history");
         foreach(bool large in new[]{false,true})foreach(string kind in new[]{"number","break"})foreach(float progress in new[]{0f,.3f,.9f})
         {Prepare(app);app.Game.save.largeText=large;var effect=new Effect(kind,app.Game.Position,.7f,"QA solo");effect.life=effect.maxLife*(1-progress);app.Game.effects.Add(effect);SingleOriginal(app,effect);}
         Prepare(app);foreach(string text in new[]{"! 42","+HP","GUARDED","BREAK"})app.Game.effects.Add(new Effect(text=="BREAK"?"break":"number",app.Game.Position,.7f,text));Draw(app);Labels(app);
-        Console.WriteLine("PASS genuine guarded+break+damage Hit and accepted J, real three-target staff blast, automatic Mira +HP preparation/contact/expiry, every original label/shadow/font/tint and exact isolated age/anchor; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS genuine guarded+break+damage Hit and accepted J, real three-target staff blast, actual Mira healing preparation/contact/expiry, retained gold labels/shadow/font and exact isolated age/anchor; NATIVE_UNVERIFIED");
     }
     private static void StableExpiryPoliciesAndWorldBoundary(FrontierRuntime app)
     {

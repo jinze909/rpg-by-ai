@@ -138,10 +138,10 @@ namespace Starfall
         {
             if (DrawAuthoredEffect(e)) return;
             Point p = ScreenPoint(e.position); float progress = 1 - e.life / e.maxLife;
-            if (e.kind == "number" || e.kind == "break" || e.kind == "damageTaken")
+            if (e.kind == "number" || e.kind == "break" || IsPlayerHealthText(e))
             {
-                Rect label = CombatTextRect(e); Color shadow = ink, foreground = e.kind == "damageTaken" ? PixelArt.C("#f4aaa5") : gold;
-                if (e.kind == "damageTaken") { float alpha = Mathf.Clamp01(e.life / .2f); shadow.a *= alpha; foreground.a *= alpha; }
+                Rect label = CombatTextRect(e); Color shadow = ink, foreground = e.kind == "damageTaken" ? PixelArt.C("#f4aaa5") : e.kind == "healthGain" ? PixelArt.C("#a8e8bc") : gold;
+                if (IsPlayerHealthText(e)) { float alpha = Mathf.Clamp01(e.life / .2f); shadow.a *= alpha; foreground.a *= alpha; }
                 Text(label.x + 1, label.y + 1, label.width, label.height, e.text, 19, shadow, TextAnchor.MiddleCenter);
                 Text(label.x, label.y, label.width, label.height, e.text, 19, foreground, TextAnchor.MiddleCenter);
             }

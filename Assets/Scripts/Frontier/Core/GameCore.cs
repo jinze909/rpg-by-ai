@@ -315,7 +315,7 @@ namespace Starfall
             if (skillCooldown > 0 || save.energy < cost) { ActionUnavailable(skillCooldown, cost); return; }
             SetAim(direction);
             save.energy -= cost; skillCooldown = 3.5f; BeginRangeAttempt();
-            if (Relic(4)) save.health = Math.Min(save.maxHealth, save.health + 8);
+            if (Relic(4)) { float before = save.health; save.health = Math.Min(save.maxHealth, save.health + 8); RecordHealing(before); }
             Point? liveTarget = aimTarget;
             try { aimTarget = target; BeginAction("skill", Damage, .62f, .28f); }
             finally { aimTarget = liveTarget; }
@@ -817,8 +817,10 @@ namespace Starfall
             if (practicing || Dying) return;
             if (mode != "world" && mode != "inventory") return;
             if (save.inventory[6] <= 0) { Notify("没有炖汤了。旅店可以制作或出售。", "No stew left. Visit Ari at the inn."); return; }
+            float healthBefore = save.health;
             save.inventory[6]--; save.health = Clamp(save.health + 55, 0, save.maxHealth); save.energy = 100;
-            save.foodUntil = save.totalTime + 90; revision++; sound = "reward"; Notify("生命 +55，耐力回满，攻击增强 90 秒。", "+55 health, full energy, stronger attacks for 90 seconds.");
+            float restored = RecordHealing(healthBefore);
+            save.foodUntil = save.totalTime + 90; revision++; sound = "reward"; Notify("生命 +" + HealingAmount(restored) + "，耐力回满，攻击增强 90 秒。", "+" + HealingAmount(restored) + " health, full energy, stronger attacks for 90 seconds.");
         }
         public void Equip(int weapon)
         { if (weapon >= 0 && weapon <= 2 && (weapon == 0 || Has("weapon_" + weapon))) { CancelAction(); save.weapon = weapon; revision++; } }

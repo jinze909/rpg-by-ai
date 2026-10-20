@@ -233,7 +233,7 @@ namespace Starfall
                 BeginFrost(Position,action.damage,action.impact??CaptureImpact(2,0,false));
                 foreach (Enemy e in enemies) if ((e.Position - Position).Length < CompanionControlRadius && ClearAttackPath(Position, e.Position)) { e.stun = CompanionControlSeconds; e.state = 0; e.timer = 1.2f; controlCount++; }
             }
-            if (action.weapon == 0) effects.Add(new Effect("heal", Position, .6f));
+            if (action.weapon == 0) { effects.Add(new Effect("heal", Position, .6f)); RecordHealing(healthBefore); }
             else if (action.weapon == 1) effects.Add(new Effect("release", WeaponOrigin(companionPosition, 1, action.direction), .18f) { direction = action.direction, variant = 1, height = WeaponHeight(1, action.direction) });
             RecordCompanionReceipt(new CompanionCommandReceipt(action.weapon, bond,
                 action.weapon == 0 ? Math.Max(0, save.health - healthBefore) : 0,
@@ -261,7 +261,7 @@ namespace Starfall
                     action.released = true;
                     if (action.kind == "command") ReleaseCompanionCommand(action);
                     else if (action.kind == "heal")
-                    { save.health = Math.Min(save.maxHealth, save.health + 6 + action.combo); effects.Add(new Effect("number", Position, .7f, "+HP")); sound = "skill"; }
+                    { float before = save.health; save.health = Math.Min(save.maxHealth, save.health + 6 + action.combo); RecordHealing(before); sound = "skill"; }
                     else
                     {
                         projectiles.Add(FriendlyShot(companionPosition, action.weapon == 1 ? 1 : 2, action.direction, 9, action.damage, action.weapon == 2, action.target, action.impact));

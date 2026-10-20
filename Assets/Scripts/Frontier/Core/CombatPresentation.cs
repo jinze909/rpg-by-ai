@@ -78,6 +78,16 @@ namespace Starfall
         private Point playerHitFacing;
         private int playerHitWeapon = -1;
         public bool Dying { get { return deathTime > 0; } }
+        private static string HealingAmount(float amount)
+        { return amount > 0 && amount < .01f ? "<0.01" : amount.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture); }
+        // Observe an existing recovery transaction; never apply healing here.
+        private float RecordHealing(float healthBefore)
+        {
+            float amount = save.health - healthBefore;
+            if (!Finite(amount) || amount <= 0) return 0;
+            effects.Add(new Effect("healthGain", Position, .7f, "+" + HealingAmount(amount)));
+            return amount;
+        }
         public int AppearanceWeapon
         {
             get

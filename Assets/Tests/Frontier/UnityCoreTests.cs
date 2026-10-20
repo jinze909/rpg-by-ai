@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void HealingFoodReportsActualRecoveryAndKeepsExistingBuffTransactions(){CoreChecks.HealingFoodReportsActualRecoveryAndKeepsExistingBuffTransactions(Data());}
+        [Test] public void HealingSkillRelicWaitsForThePaidCastAndNeverTheQueuedPress(){CoreChecks.HealingSkillRelicWaitsForThePaidCastAndNeverTheQueuedPress(Data());}
+        [Test] public void HealingDodgeRelicLabelsOnlyOneAcceptedImmediateOrBufferedStart(){CoreChecks.HealingDodgeRelicLabelsOnlyOneAcceptedImmediateOrBufferedStart(Data());}
+        [Test] public void HealingMiraCommandKeepsTheOriginalRingAndLabelsItsRealContactDelta(){CoreChecks.HealingMiraCommandKeepsTheOriginalRingAndLabelsItsRealContactDelta(Data());}
+        [Test] public void HealingMiraAutomaticRecoveryUsesActualContactAndExpiresWithoutPhantomLabels(){CoreChecks.HealingMiraAutomaticRecoveryUsesActualContactAndExpiresWithoutPhantomLabels(Data());}
+
         [Test] public void ForgeQuotesExposeExactCostsAndImmutableSnapshots(){CoreChecks.ForgeQuotesExposeExactCostsAndImmutableSnapshots(Data());}
         [Test] public void ForgeShortfallsReportEveryMissingResourceWithoutMutation(){CoreChecks.ForgeShortfallsReportEveryMissingResourceWithoutMutation(Data());}
         [Test] public void ForgeTransactionsRecheckStaleQuotesBeforeAnySpend(){CoreChecks.ForgeTransactionsRecheckStaleQuotesBeforeAnySpend(Data());}
