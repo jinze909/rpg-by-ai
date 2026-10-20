@@ -191,7 +191,7 @@ namespace Starfall.Tests
         public static void FieldcraftJournalLegacyAndQuestPrefixRemainCompatible(Campaign data)
         {
             string[] prefix={"main","shore","ally1","ally2","ally3","personal0","personal1","personal2","bounty","secrets","watch","signal","archive","reach","homeward","commission","shelter"};
-            Check(GameCore.QuestIds.Length==19&&GameCore.QuestIds[17]=="fieldcraft"&&GameCore.QuestIds[18]=="supper","Field notes retain eighteenth place while supper appends afterward");for(int i=0;i<prefix.Length;i++)Check(GameCore.QuestIds[i]==prefix[i],"Every mature quest keeps its saved index "+i);
+            Check(GameCore.QuestIds.Length>=19&&GameCore.QuestIds[17]=="fieldcraft"&&GameCore.QuestIds[18]=="supper","Field notes retain eighteenth place when later stories append after supper");for(int i=0;i<prefix.Length;i++)Check(GameCore.QuestIds[i]==prefix[i],"Every mature quest keeps its saved index "+i);
             foreach(int version in new[]{1,2})
             {
                 var legacy=new SaveData{version=version,presentationVersion=1,coins=91,shards=17,health=62,energy=44,trackedQuest="shelter"};legacy.flags.Add("core_1");legacy.flags.Add("shelter_accepted");

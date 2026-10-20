@@ -57,6 +57,10 @@ jobs:
         run: python3 tools/run_supper_checks.py
       - name: Check Tide Archive with production interactions, maps and saves
         run: python3 tools/run_archive_checks.py
+      - name: Check earned first reply, real light handoff, permanent receipt and legacy saves
+        run: python3 tools/run_return_letter_checks.py
+      - name: Check journal pages while preserving all nineteen mature task rows
+        run: python3 tools/run_journal_pagination_checks.py
       - name: Check optional Root Echo pulses, real input, unbanked rewards and six-floor preservation
         run: python3 tools/run_root_echo_checks.py
       - name: Check twin-stick aiming with production input, controls and saves

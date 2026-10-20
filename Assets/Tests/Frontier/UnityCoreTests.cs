@@ -304,6 +304,14 @@ namespace Starfall.Tests
         [Test] public void SignalRepriseClonesAndLegacySavesNeverResumeOrRepay() { CoreChecks.SignalRepriseClonesAndLegacySavesNeverResumeOrRepay(Data()); }
         [Test] public void SignalRepriseDeathTravelNewAndTrainingClearSession() { CoreChecks.SignalRepriseDeathTravelNewAndTrainingClearSession(Data()); }
         [Test] public void SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward() { CoreChecks.SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward(Data()); }
+        [Test] public void ReturnLetterEarnedBranchesPreserveOriginalConversations() { CoreChecks.ReturnLetterEarnedBranchesPreserveOriginalConversations(Data()); }
+        [Test] public void ReturnLetterTwoRoutesCompleteWithLocalWitnessesAndSingleReward() { CoreChecks.ReturnLetterTwoRoutesCompleteWithLocalWitnessesAndSingleReward(Data()); }
+        [Test] public void ReturnLetterCallbacksRecheckLocalWorldAndOriginalRecords() { CoreChecks.ReturnLetterCallbacksRecheckLocalWorldAndOriginalRecords(Data()); }
+        [Test] public void ReturnLetterHandoffRequiresCanonicalSafeUnobstructedRelay() { CoreChecks.ReturnLetterHandoffRequiresCanonicalSafeUnobstructedRelay(Data()); }
+        [Test] public void ReturnLetterSignalEarlyLateRetryAndDistanceNeverSpendSupplies() { CoreChecks.ReturnLetterSignalEarlyLateRetryAndDistanceNeverSpendSupplies(Data()); }
+        [Test] public void ReturnLetterClockPausesWithActualSimulation() { CoreChecks.ReturnLetterClockPausesWithActualSimulation(Data()); }
+        [Test] public void ReturnLetterTemporarySignalClearsAcrossWorldBoundaries() { CoreChecks.ReturnLetterTemporarySignalClearsAcrossWorldBoundaries(Data()); }
+        [Test] public void ReturnLetterLegacySavesRetainCheckpointsAndNeverRepay() { CoreChecks.ReturnLetterLegacySavesRetainCheckpointsAndNeverRepay(Data()); }
         [Test] public void CombatFocusCycleOrdersWrapsAndSkipsInvalidActors() { CoreChecks.CombatFocusCycleOrdersWrapsAndSkipsInvalidActors(Data()); }
         [Test] public void CombatFocusCycleNeedsAnExistingLiveSession() { CoreChecks.CombatFocusCycleNeedsAnExistingLiveSession(Data()); }
         [Test] public void CombatFocusCyclePreservesAcceptedQueuedAndFlyingAim() { CoreChecks.CombatFocusCyclePreservesAcceptedQueuedAndFlyingAim(Data()); }

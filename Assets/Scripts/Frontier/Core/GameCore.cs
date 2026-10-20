@@ -253,6 +253,7 @@ namespace Starfall
             bool beganInPractice = practicing;
             if (!SafeTrainingActive) save.totalTime += dt;
             TickSignalRepriseClock(dt);
+            TickReturnLetterSignal(dt);
             // Resolve changed world collision before any body, missile or contact advances.
             TickTideTransition(); Point beforeMove = Position;
             attackCooldown -= dt; dashCooldown -= dt; skillCooldown -= dt; invulnerable -= dt; guardTime -= dt;
@@ -600,6 +601,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkReturnLetter(o)) return;
             if (TalkSupper(o)) return;
             if (TalkShelter(o)) return;
             if (TalkCommission(o)) return;
@@ -622,6 +624,7 @@ namespace Starfall
             if (kind == "guild")
             {
                 TalkGuildStory(o);
+                AppendReturnLetterGuildConversation();
                 return;
             }
             if (kind == "rest") { Dialog(o.name, o.en, "旅店的炉火永远为冒险者留着。休息推进 45 秒，回复生命与耐力，田里的作物也会继续长大。", "The inn keeps a fire for travelers. Rest for 45 seconds to restore health and energy; crops keep growing.", C("休息", "Rest", "rest"), C("继续冒险", "Keep adventuring", "close")); return; }
@@ -722,6 +725,7 @@ namespace Starfall
             if (mode != "dialog" || conversation == null || index < 0 || index >= conversation.choices.Length) return;
             if(Dying){Close();return;}
             string action = conversation.choices[index].action; Close();
+            if (ChooseReturnLetter(action)) return;
             if (ChooseFieldcraft(action)) return;
             if (ChooseRootEcho(action)) return;
             if (ChooseSupper(action)) return;

@@ -226,9 +226,13 @@ namespace Starfall
                 return;
             }
             if (journalTab == 2) { for (int i = 0; i < 3; i++) { float y = 229 + i * 100; Card(279, y, 938, 83); Text(303, y + 14, 855, 31, Game.L(GameCore.FactionNames[i], GameCore.FactionNamesEn[i]) + "  " + Game.save.reputation[i] + "/10", 20, gold); Bar(303, y + 59, 888, Game.save.reputation[i] / 10f, mint); } Text(282, 553, 925, 91, Game.L("共同治理条件：三份证词、建设总等级3、两名同伴、三方声望各2。协定影响补给、旅行和同伴指令。", "Shared governance: three reports, three project tiers, two companions, trust 2 with each faction. Covenants affect supplies, travel and commands."), 18, paper); Text(282, 663, 925, 31, Game.L("证词 ", "Reports ") + Game.Proofs + "/3  ·  " + Game.L("建设 ", "Projects ") + Game.ProjectTiers + "/3  ·  " + Game.L("同伴 ", "Companions ") + Game.CompanionCount + "/2", 16, muted); return; }
-            // Keep the mature eighteen rows at their established size. The
-            // nineteenth uses the existing free space above the footer, so
-            // appending this story does not compress the mature hitboxes.
+            // Nineteen rows fit the established list: the last occupies the
+            // free space above the footer. Additional stories use another
+            // page without moving or compressing any mature row.
+            const int questsPerPage = 19;
+            selectedQuest = (int)GameCore.Clamp(selectedQuest, 0, GameCore.QuestIds.Length - 1);
+            int questPage = selectedQuest / questsPerPage;
+            int questPages = Math.Max(1, (GameCore.QuestIds.Length + questsPerPage - 1) / questsPerPage);
             float questSpacing = Math.Min(46, 464f / Math.Min(GameCore.QuestIds.Length, 18));
             // Compact rows keep their existing hitboxes and full-size labels.
             // Ordinary button padding would crop the glyphs as stories append.
@@ -236,13 +240,18 @@ namespace Starfall
             try
             {
                 if (questSpacing < 32) buttonStyle.padding = questRowPadding;
-                for (int i = 0; i < GameCore.QuestIds.Length; i++) { QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); float y = 226 + i * questSpacing - (i == 18 ? 3 : 0); if (Button(279, y, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
+                for (int cell = 0; cell < questsPerPage && questPage * questsPerPage + cell < GameCore.QuestIds.Length; cell++) { int i = questPage * questsPerPage + cell; QuestGuide quest = Game.GetQuest(GameCore.QuestIds[i]); float y = 226 + cell * questSpacing - (cell == 18 ? 3 : 0); if (Button(279, y, 321, questSpacing - 7, (quest.complete ? "✓ " : Game.save.trackedQuest == quest.id ? "◆ " : "") + quest.title, selectedQuest == i)) selectedQuest = i; }
             }
             finally { buttonStyle.padding = rowOriginalPadding; }
             QuestGuide q = Game.GetQuest(GameCore.QuestIds[selectedQuest]); Card(625, 226, 592, 464); Text(650, 244, 541, 27, q.category + (q.complete ? Game.L(" · 已完成", " · COMPLETE") : ""), 12, gold); Text(650, 281, 541, 45, q.title, 26, paper); Text(650, 342, 541, 62, q.description, 17, muted); Text(650, 410, 541, 60, Game.L("下一步：", "Next: ") + q.next, 14, gold);
             float stepSpacing = Math.Min(34, 140f / Math.Max(1, q.steps.Count));
             for (int i = 0; i < q.steps.Count; i++) Text(650, 482 + i * stepSpacing, 542, stepSpacing, (q.steps[i].done ? "✓  " : "○  ") + q.steps[i].text, 15, q.steps[i].done ? mint : paper);
             Text(650, 622, 540, 22, q.reward, 12, gold); if (Button(650, 647, 258, 31, Game.L("追踪任务", "Track quest"), Game.save.trackedQuest == q.id, !q.locked && !q.complete)) Game.TrackQuest(q.id); if (Button(927, 647, 263, 31, Game.L("查看目标地图", "Show destination"), false, !q.locked)) { selectedRegion = q.room; OpenMenu("map"); }
+            if (questPages > 1)
+            {
+                if (Button(650, 699, 258, 26, Game.L("上一页 · ", "Previous · ") + (questPage + 1) + " / " + questPages, false, questPage > 0)) selectedQuest = (questPage - 1) * questsPerPage;
+                if (Button(927, 699, 263, 26, Game.L("下一页", "Next page"), false, questPage < questPages - 1)) selectedQuest = (questPage + 1) * questsPerPage;
+            }
         }
         private void DrawMap()
         {

@@ -213,8 +213,26 @@ public static class RuntimeSupperChecks
             Prepare(app); var game = app.Game; game.save.english = english; game.save.largeText = large; string suffix = (english ? "en" : "zh") + (large ? "-large" : "-normal");
             Accept(app, false, "accept-" + suffix); Help(app, 0, false, "an-" + suffix); Help(app, 1, false, "tide-" + suffix); Help(app, 2, false, "noll-" + suffix);
             game.TrackQuest("supper"); Key(app, KeyCode.Tab); Check(game.mode == "journal", "Actual Tab opens the complete adventure journal"); Draw(app);
-            Check(GameCore.QuestIds.Length == 19 && Array.IndexOf(GameCore.QuestIds, "supper") == 18, "New social story appends without removing or renumbering mature quest rows");
-            foreach (string id in GameCore.QuestIds) { string title = game.GetQuest(id).title; Check(HasText(title) || HasText("◆ " + title) || HasText("✓ " + title), "Actual journal retains the full label for " + id); }
+            Check(GameCore.QuestIds.Length >= 19 && Array.IndexOf(GameCore.QuestIds, "supper") == 18, "Social story keeps its nineteenth position without removing or renumbering mature quest rows as later stories add pages");
+            const int pageSize = 19; int pages = (GameCore.QuestIds.Length + pageSize - 1) / pageSize, checkedRows = 0;
+            while ((int)typeof(FrontierRuntime).GetField("selectedQuest", Private).GetValue(app) / pageSize > 0) { GUI.queuedClick = new Rect(650, 699, 258, 26); Draw(app); Check(!GUI.queuedClick.HasValue, "Actual previous-page control returns to the mature story list"); }
+            for (int page = 0; page < pages; page++)
+            {
+                Draw(app); int count = Math.Min(pageSize, GameCore.QuestIds.Length - page * pageSize);
+                var visibleRows = GUI.buttonCalls.FindAll(b => b.rect.x == 279 && b.rect.width == 321 && b.rect.y >= 226 && b.rect.y < 710);
+                Check(visibleRows.Count == count, "Every page draws exactly its current quests");
+                for (int cell = 0; cell < count; cell++)
+                {
+                    int index = page * pageSize + cell; string id = GameCore.QuestIds[index], title = game.GetQuest(id).title;
+                    Check(HasText(title) || HasText("◆ " + title) || HasText("✓ " + title), "Actual visible journal page retains the full label for " + id);
+                    Check(visibleRows[cell].enabled, "Every visible journal row remains selectable: " + id); GUI.queuedClick = visibleRows[cell].rect; Draw(app);
+                    Check(!GUI.queuedClick.HasValue && (int)typeof(FrontierRuntime).GetField("selectedQuest", Private).GetValue(app) == index, "Actual page row clicks select the correct current quest: " + id); checkedRows++;
+                }
+                if (page + 1 < pages) { GUI.queuedClick = new Rect(927, 699, 263, 26); Draw(app); Check(!GUI.queuedClick.HasValue && (int)typeof(FrontierRuntime).GetField("selectedQuest", Private).GetValue(app) == (page + 1) * pageSize, "Actual next-page control exposes appended quest labels"); }
+            }
+            Check(checkedRows == GameCore.QuestIds.Length, "Every current quest keeps its full label and an actual clickable row across visible pages");
+            while ((int)typeof(FrontierRuntime).GetField("selectedQuest", Private).GetValue(app) / pageSize > 0) { GUI.queuedClick = new Rect(650, 699, 258, 26); Draw(app); Check(!GUI.queuedClick.HasValue, "Return through the actual previous-page control before testing mature geometry"); }
+            Draw(app);
             Check(GUI.buttonCalls.FindAll(b => b.rect.x == 279 && b.rect.width == 321 && b.rect.y >= 226 && b.rect.y < 710).Count == 19, "All nineteen displayed quest rows retain actual clickable button bounds");
             float rowPitch = 464f / 18;
             for (int i = 0; i < 18; i++)
@@ -235,7 +253,7 @@ public static class RuntimeSupperChecks
             for (int i = 0; i < 3; i++) { BowlDrawing(app, i, true); Serve(app, i, false, "table" + i + "-" + suffix); BowlDrawing(app, i, true); }
             Finish(app, "finish-" + suffix); Draw(app, "complete-" + suffix); Check(game.SupperComplete, "All localized narrative/input variants can complete the actual event");
         }
-        Console.WriteLine("PASS zh/en normal/large 960px actual paginated invitation, all resident and table narratives, low-FX world bowls, complete 19-row journal and completion GUI; captures=" + captureCount + "; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS zh/en normal/large 960px actual paginated invitation, all resident and table narratives, low-FX world bowls, complete paginated journal with preserved nineteen mature rows and completion GUI; captures=" + captureCount + "; NATIVE_UNVERIFIED");
     }
     public static int Main(string[] args)
     {

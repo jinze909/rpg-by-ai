@@ -89,12 +89,24 @@ public static class RuntimeSignalWardenChecks
         string[] original = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal" };
         Check(quest == 11 && GameCore.QuestIds.Length >= original.Length, "The Warden remains after all eleven mature quest entries when later optional stories are appended");
         for (int i = 0; i < original.Length; i++) Check(GameCore.QuestIds[i] == original[i], "The existing journal prefix retains its identity and order: " + original[i]);
-        for (int i = 0; i < GameCore.QuestIds.Length; i++)
+        const int pageSize = 19; int pages = (GameCore.QuestIds.Length + pageSize - 1) / pageSize, checkedRows = 0;
+        while (Get<int>(app, "selectedQuest") / pageSize > 0) Click(app, new Rect(650, 699, 258, 26));
+        for (int page = 0; page < pages; page++)
         {
-            float y = 226 + i * spacing - (i == 18 ? 3 : 0);
-            Check(y + spacing - 7 <= (i == 18 ? 706 : 690) && GUI.buttonCalls.Exists(b => Math.Abs(b.rect.y - y) < .01f && Math.Abs(b.rect.height - (spacing - 7)) < .01f),
-                "Every current journal row remains visible and selectable, including the preserved Warden row");
+            Draw(app); int count = Math.Min(pageSize, GameCore.QuestIds.Length - page * pageSize);
+            Check(GUI.buttonCalls.FindAll(b => b.rect.x == 279 && b.rect.width == 321).Count == count, "Each visible page draws exactly its actual quest count");
+            for (int cell = 0; cell < count; cell++)
+            {
+                int i = page * pageSize + cell; float y = 226 + cell * spacing - (cell == 18 ? 3 : 0);
+                Rect current = new Rect(279, y, 321, spacing - 7);
+                Check(y + spacing - 7 <= (cell == 18 ? 706 : 690) && GUI.buttonCalls.Exists(b => b.rect.x == 279 && b.rect.width == 321 && Math.Abs(b.rect.y - y) < .01f && Math.Abs(b.rect.height - (spacing - 7)) < .01f && b.enabled),
+                    "Every current journal row remains visible on its own page, including the preserved Warden row");
+                Click(app, current); Draw(app); Check(Get<int>(app, "selectedQuest") == i, "Every page's actual row selects its correct quest: " + i); checkedRows++;
+            }
+            if (page + 1 < pages) { Click(app, new Rect(927, 699, 263, 26)); Check(Get<int>(app, "selectedQuest") == (page + 1) * pageSize, "Actual next-page control exposes later stories"); }
         }
+        Check(checkedRows == GameCore.QuestIds.Length, "Visible-page checks and clicks cover every current quest without dropping appended stories");
+        while (Get<int>(app, "selectedQuest") / pageSize > 0) Click(app, new Rect(650, 699, 258, 26));
         Rect row = new Rect(279, 226 + quest * spacing, 321, spacing - 7); Click(app, row); Draw(app, "journal" + suffix);
         Check(Get<int>(app, "selectedQuest") == quest && GUI.commands.Exists(c => c.Contains("\"text\":" + GUI.S(g.L("下一步：", "Next: ") + guide.next))),
             "Selecting the actual Warden row displays the current story checkpoint");

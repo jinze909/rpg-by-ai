@@ -238,7 +238,7 @@ namespace Starfall.Tests
         public static void ShelterJournalAppendsAfterAllMatureIdsAndOwnsReachableProgress(Campaign data)
         {
             string[] old={"main","shore","ally1","ally2","ally3","personal0","personal1","personal2","bounty","secrets","watch","signal","archive","reach","homeward","commission"};
-            Check(GameCore.QuestIds.Length==19&&GameCore.QuestIds[16]=="shelter"&&GameCore.QuestIds[17]=="fieldcraft"&&GameCore.QuestIds[18]=="supper","Shelter and field notes retain their saved indices while supper appends afterward");for(int i=0;i<old.Length;i++)Check(GameCore.QuestIds[i]==old[i],"All mature quest identities preserve their exact saved index");
+            Check(GameCore.QuestIds.Length>=19&&GameCore.QuestIds[16]=="shelter"&&GameCore.QuestIds[17]=="fieldcraft"&&GameCore.QuestIds[18]=="supper","Shelter and field notes retain their saved indices when later stories append after supper");for(int i=0;i<old.Length;i++)Check(GameCore.QuestIds[i]==old[i],"All mature quest identities preserve their exact saved index");
             var g=ShelterGame(data);g.TrackQuest("shelter");HashSet<int> reached=ArenaReachable(g);
             for(int leg=0;leg<3;leg++)
             {

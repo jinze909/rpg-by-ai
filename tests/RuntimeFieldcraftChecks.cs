@@ -35,7 +35,7 @@ public static class RuntimeFieldcraftChecks
         {int a=command.IndexOf("\"r\":[",StringComparison.Ordinal)+5,b=command.IndexOf(']',a);string[] p=command.Substring(a,b-a).Split(',');return new Rect(float.Parse(p[0],CultureInfo.InvariantCulture),float.Parse(p[1],CultureInfo.InvariantCulture),float.Parse(p[2],CultureInfo.InvariantCulture),float.Parse(p[3],CultureInfo.InvariantCulture));}
         throw new Exception("Actual GUI lacks text: "+label);
     }
-    private static void RowGlyphRoom(float rowHeight)
+    private static void RowGlyphRoom(float rowHeight,int expectedRows)
     {
         int checkedRows=0;
         foreach(string command in GUI.commands)
@@ -46,7 +46,7 @@ public static class RuntimeFieldcraftChecks
             int padStart=command.IndexOf("\"padding\":[",StringComparison.Ordinal)+11,padEnd=command.IndexOf(']',padStart);string[] pad=command.Substring(padStart,padEnd-padStart).Split(',');int sizeStart=command.IndexOf("\"size\":",StringComparison.Ordinal)+7,sizeEnd=command.IndexOf(',',sizeStart);int size=int.Parse(command.Substring(sizeStart,sizeEnd-sizeStart),CultureInfo.InvariantCulture);
             Check(h-int.Parse(pad[2])-int.Parse(pad[3])>=size,"Every actual journal row reserves a full native-independent glyph height after vertical padding");checkedRows++;
         }
-        Check(checkedRows==GameCore.QuestIds.Length,"Strict glyph-height check covers every actual quest row");
+        Check(checkedRows==expectedRows,"Strict glyph-height check covers every actual quest row on the visible page");
     }
     private static void OrdinaryPadding(string label)
     {
@@ -186,10 +186,19 @@ public static class RuntimeFieldcraftChecks
         foreach(bool english in new[]{false,true})foreach(bool large in new[]{false,true})foreach(bool small in new[]{true,false})
         {
             Prepare(app);var g=app.Game;g.save.english=english;g.save.largeText=large;Screen.width=small?960:1920;Screen.height=small?600:1080;Call(app,"Resize");string suffix=(english?"en":"zh")+(large?"-large":"-normal")+(small?"-960":"-1920");Accept(app,"-"+suffix);
-            Key(app,KeyCode.Tab);Draw(app);int quest=Array.IndexOf(GameCore.QuestIds,"fieldcraft");Check(quest==17&&GameCore.QuestIds.Length==19&&GameCore.QuestIds[18]=="supper","The field quest retains eighteenth position and supper appends without renumbering");float spacing=Math.Min(46,464f/18);
-            for(int i=0;i<GameCore.QuestIds.Length;i++){GUI.queuedClick=new Rect(279,226+i*spacing-(i==18?3:0),321,spacing-7);Draw(app);Check(!GUI.queuedClick.HasValue&&Get<int>(app,"selectedQuest")==i,"All actual journal rows remain clickable: "+i);}
+            Key(app,KeyCode.Tab);Draw(app);int quest=Array.IndexOf(GameCore.QuestIds,"fieldcraft");Check(quest==17&&GameCore.QuestIds.Length>=19&&GameCore.QuestIds[18]=="supper","The field quest retains eighteenth position and supper appends without renumbering when later stories add pages");float spacing=Math.Min(46,464f/18);
+            const int pageSize=19;int pages=(GameCore.QuestIds.Length+pageSize-1)/pageSize,checkedRows=0;
+            while(Get<int>(app,"selectedQuest")/pageSize>0){GUI.queuedClick=new Rect(650,699,258,26);Draw(app);Check(!GUI.queuedClick.HasValue,"Actual previous-page control returns to mature rows");}
+            for(int page=0;page<pages;page++)
+            {
+                Draw(app);int count=Math.Min(pageSize,GameCore.QuestIds.Length-page*pageSize);RowGlyphRoom(spacing-7,count);
+                for(int cell=0;cell<count;cell++){int i=page*pageSize+cell;Rect row=new Rect(279,226+cell*spacing-(cell==18?3:0),321,spacing-7);Check(GUI.buttonCalls.Exists(b=>Same(b.rect,row)&&b.enabled),"Every current quest has a visible enabled row on its own page: "+i);GUI.queuedClick=row;Draw(app);Check(!GUI.queuedClick.HasValue&&Get<int>(app,"selectedQuest")==i,"All actual journal rows remain clickable: "+i);checkedRows++;}
+                if(page+1<pages){GUI.queuedClick=new Rect(927,699,263,26);Draw(app);Check(!GUI.queuedClick.HasValue&&Get<int>(app,"selectedQuest")==((page+1)*pageSize),"Actual next-page control reaches appended quests");}
+            }
+            Check(checkedRows==GameCore.QuestIds.Length,"Strict glyph and actual click checks cover all quests across every page");
+            while(Get<int>(app,"selectedQuest")/pageSize>0){GUI.queuedClick=new Rect(650,699,258,26);Draw(app);Check(!GUI.queuedClick.HasValue,"Return through the real previous-page control");}
             GUI.queuedClick=new Rect(279,226+quest*spacing,321,spacing-7);Draw(app);Check(Get<int>(app,"selectedQuest")==quest,"Return to the original field-notes row after checking all appended rows");
-            Draw(app,"journal-"+suffix);RowGlyphRoom(spacing-7);OrdinaryPadding(g.L("任务","Quests"));OrdinaryPadding(g.L("追踪任务","Track quest"));OrdinaryPadding(g.L("查看目标地图","Show destination"));var guide=g.GetQuest("fieldcraft");Check(Has(g.L("下一步：","Next: ")+guide.next),"Actual eighteenth row shows truthful next step");Rect reward=TextBounds(guide.reward);foreach(var step in guide.steps)Check(!Overlap(TextBounds((step.done?"✓  ":"○  ")+step.text),reward),"Every field objective remains above reward band");Key(app,KeyCode.Escape);
+            Draw(app,"journal-"+suffix);RowGlyphRoom(spacing-7,Math.Min(19,GameCore.QuestIds.Length));OrdinaryPadding(g.L("任务","Quests"));OrdinaryPadding(g.L("追踪任务","Track quest"));OrdinaryPadding(g.L("查看目标地图","Show destination"));var guide=g.GetQuest("fieldcraft");Check(Has(g.L("下一步：","Next: ")+guide.next),"Actual eighteenth row shows truthful next step");Rect reward=TextBounds(guide.reward);foreach(var step in guide.steps)Check(!Overlap(TextBounds((step.done?"✓  ":"○  ")+step.text),reward),"Every field objective remains above reward band");Key(app,KeyCode.Escape);
             // Isolated display fixtures only select which newly authored next-step
             // copy is visible. Actual records are earned in the first group.
             g.save.flags.Add("weapon_1");g.save.flags.Add("weapon_2");
@@ -208,7 +217,7 @@ public static class RuntimeFieldcraftChecks
             app.VisualReviewPaused=true;Draw(app,"counter-review-hidden-"+suffix);Check(!HasPart(L(app,"闪避反击 1.3","COUNTER 1.3")),"Paused visual review hides live counter opportunity");app.VisualReviewPaused=false;
             g.riposteTime=0;Draw(app,"counter-expired-"+suffix);Check(!HasPart(L(app,"闪避反击 1.3","COUNTER 1.3")),"Expired live counter is not advertised");
         }
-        Console.WriteLine("PASS all nineteen real journal rows with strict glyph-height room, complete offer pages, both languages normal/large at 960/1920, exact timer in both HUDs, read-only pointer aiming and menu/application/review/expiry hiding; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS all real journal rows across visible pages with strict glyph-height room and unchanged mature positions, complete offer pages, both languages normal/large at 960/1920, exact timer in both HUDs, read-only pointer aiming and menu/application/review/expiry hiding; NATIVE_UNVERIFIED");
     }
     public static int Main(string[] args)
     {

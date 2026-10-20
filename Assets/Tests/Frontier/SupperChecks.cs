@@ -273,7 +273,7 @@ namespace Starfall.Tests
         public static void SupperGuidanceAppendsReadOnlyAndTargetsPhysicalMissingSteps(Campaign data)
         {
             string[] mature = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward", "commission", "shelter", "fieldcraft" };
-            Check(GameCore.QuestIds.Length == mature.Length + 1 && GameCore.QuestIds[mature.Length] == "supper", "The new task is appended after every mature journal ID");
+            Check(GameCore.QuestIds.Length >= mature.Length + 1 && GameCore.QuestIds[mature.Length] == "supper", "Supper retains its appended index when later stories follow");
             for (int i = 0; i < mature.Length; i++) Check(GameCore.QuestIds[i] == mature[i], "Every mature journal position stays stable: " + i);
             var g = SupperGame(data, 0, true);
             for (int i = 0; i < 3; i++) { SupperGuideTarget(g, 0, supperResidents[i]); SupperPrepare(g, i); }
