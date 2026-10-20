@@ -16,7 +16,8 @@ namespace Starfall
             if (!SignalReady || !NearSignalContact() || practicing || Dying) return;
             if (SignalComplete)
             {
-                Dialog("旧路守望", "The Signal Warden", "旧灯中的守望者收起了武器。它守着的是根系之间的路，不是对森林的征服。巡路队已经不在，回家的人仍会看见他们留下的光。", "The warden in the old light lowers its weapon. It guards a path between the roots, rather than a claim over the forest. The patrol is gone, but travelers still see the light it left behind.", C("让灯继续照路", "Keep the signal burning", "close"));
+                if (SignalRepriseActive) { ShowSignalReprise(); return; }
+                Dialog("旧路守望", "The Signal Warden", "旧灯中的守望者收起了武器。它守着的是根系之间的路，不是对森林的征服。巡路队已经不在，回家的人仍会看见他们留下的光。", "The warden in the old light lowers its weapon. It guards a path between the roots, rather than a claim over the forest. The patrol is gone, but travelers still see the light it left behind.", C("让灯继续照路", "Keep the signal burning", "close"), C("旧路复试 · 无重复报酬", "Warden reprise · no repeat reward", "signal_reprise_menu"));
                 return;
             }
             string zh = "三处旧灯相连，留下了巡路队守望者的回声。它不再伤害森林，只愿试一试下一个守路的人。去密林第三处灯，自愿开始挑战；主线不需要完成这场战斗。\n\n它依次使出三招：直线冲锋锁定方向后，向侧面闪开；两处地面光圈亮起时，中间留有空隙；四发散射留出正面中路，观察弹道再接近。每招之后都有反击空隙。\n\n胜利自动获得碎片6、技能点1，报酬只领取一次。离开密林或倒下会结束本次挑战，可回第三处灯重新开始。";
@@ -36,6 +37,7 @@ namespace Starfall
 
         public bool ChooseSignal(string action)
         {
+            if (ChooseSignalReprise(action)) return true;
             if (action == "signal_menu") { ShowSignalTrial(); return true; }
             if (action != "signal_track" && action != "signal_start") return false;
             if (!SignalReady || SignalComplete || !NearSignalContact() || practicing || Dying) return true;

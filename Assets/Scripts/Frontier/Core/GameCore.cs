@@ -252,6 +252,7 @@ namespace Starfall
             if (Dying) { deathTime -= dt; if (deathTime <= 0) CompleteDeath(); return; }
             bool beganInPractice = practicing;
             if (!SafeTrainingActive) save.totalTime += dt;
+            TickSignalRepriseClock(dt);
             // Resolve changed world collision before any body, missile or contact advances.
             TickTideTransition(); Point beforeMove = Position;
             attackCooldown -= dt; dashCooldown -= dt; skillCooldown -= dt; invulnerable -= dt; guardTime -= dt;
@@ -363,6 +364,7 @@ namespace Starfall
             e.hp -= damage; e.flash = .09f; e.hitTime = .18f; e.recoil = attackDirection ?? (e.Position - Position).Normalized;
             OnFieldcraftContact(e, profile, fieldcraftHealthBefore);
             OnRangeContact(e, profile, fieldcraftHealthBefore, broke, !technique && e.kind == 2 && approach.x * e.facing.x + approach.y * e.facing.y < -.45f);
+            OnSignalRepriseContact(e, profile, fieldcraftHealthBefore, broke);
             effects.Add(new Effect(e.kind == 2 || e.boss ? "spark" : "impact", e.Position, .22f) { direction = e.recoil });
             if (!save.reducedMotion) { hitStop = Math.Max(hitStop, technique ? .05f : .025f); impactShake = Math.Max(impactShake, technique ? .12f : profile.weapon == 0 && profile.combo == 2 ? .07f : 0); }
             effects.Add(new Effect("number", e.Position, .7f, (crit ? "! " : "") + ((int)damage)));
@@ -402,8 +404,10 @@ namespace Starfall
             playerHitFacing=VisualFacing; playerHitWeapon=AppearanceWeapon;
             Point reaction = incoming ?? VisualFacing * -1;
             if (reaction.Length < .001f) reaction = VisualFacing * -1;
+            float repriseHealthBefore = save.health;
             if (SparringActive) SparringHitsTaken++;
             else if (!RangeActive) save.health -= damage * multiplier * armor * RoadMealDamageMultiplier(source); invulnerable = .65f; sound = "hurt"; playerHitTime = .18f; playerFlash = .09f; playerRecoil = reaction.Normalized; recoilSpeed = damage >= 20 ? 1.8f : .75f;
+            OnSignalRepriseHurt(repriseHealthBefore);
             if (!save.reducedMotion) { hitStop = .045f; impactShake = source == "slam" ? .18f : 0; }
             effects.Add(new Effect("hurt", Position, .5f));
             if (save.health <= 0)

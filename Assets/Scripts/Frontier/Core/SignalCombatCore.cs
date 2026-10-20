@@ -130,6 +130,7 @@ namespace Starfall
         {
             foreach (Projectile p in projectiles.ToArray()) if (p.ownerId == SignalWardenId && !p.friendly)
             { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = 10, height = p.height }); }
+            if (TryFinishSignalReprise(enemy)) return;
             if (save.room != 1 || !SignalReady || SignalComplete) return;
             Flag("signal_complete"); save.shards += 6; save.skillPoints++;
             effects.Add(new Effect("discover", enemy.Position, .7f));

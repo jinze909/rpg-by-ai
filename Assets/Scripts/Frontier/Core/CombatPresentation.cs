@@ -90,6 +90,7 @@ namespace Starfall
 
         private void ResetCombatPresentation()
         {
+            ResetSignalReprise();
             ClearCombatFocus();
             dashMovementPresented = false;
             ClearBufferedCombatInputs();
@@ -170,6 +171,7 @@ namespace Starfall
         }
         private void BeginDeath()
         {
+            ResetSignalReprise();
             ClearCombatFocus();
             ResetCompanionTactics(); ClearFieldcraftTransient();
             fallenPlayerWeapon=AppearanceWeapon;fallenPlayerFacing=VisualFacing;

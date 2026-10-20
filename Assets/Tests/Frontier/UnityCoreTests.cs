@@ -296,6 +296,14 @@ namespace Starfall.Tests
         [Test] public void CombatFocusQueuedSkillsAndFlyingMissilesRetainOriginalAim() { CoreChecks.CombatFocusQueuedSkillsAndFlyingMissilesRetainOriginalAim(Data()); }
         [Test] public void CombatFocusMenusWorldDeathAndTrainingClearTransientOwnership() { CoreChecks.CombatFocusMenusWorldDeathAndTrainingClearTransientOwnership(Data()); }
         [Test] public void CombatFocusQueriesLeaveEntireSimulationAndSaveReadOnly() { CoreChecks.CombatFocusQueriesLeaveEntireSimulationAndSaveReadOnly(Data()); }
+        [Test] public void SignalRepriseRequiresCompletedStoryAndPhysicalThirdLamp() { CoreChecks.SignalRepriseRequiresCompletedStoryAndPhysicalThirdLamp(Data()); }
+        [Test] public void SignalRepriseThreeStartersWinThroughNormalPublicActions() { CoreChecks.SignalRepriseThreeStartersWinThroughNormalPublicActions(Data()); }
+        [Test] public void SignalRepriseClockCountsOnlyActiveSimulation() { CoreChecks.SignalRepriseClockCountsOnlyActiveSimulation(Data()); }
+        [Test] public void SignalRepriseRecordsReadOnlyCappedPlayerDamageAndHealthLoss() { CoreChecks.SignalRepriseRecordsReadOnlyCappedPlayerDamageAndHealthLoss(Data()); }
+        [Test] public void SignalRepriseStopRetryRetiresOnlyAttemptActions() { CoreChecks.SignalRepriseStopRetryRetiresOnlyAttemptActions(Data()); }
+        [Test] public void SignalRepriseClonesAndLegacySavesNeverResumeOrRepay() { CoreChecks.SignalRepriseClonesAndLegacySavesNeverResumeOrRepay(Data()); }
+        [Test] public void SignalRepriseDeathTravelNewAndTrainingClearSession() { CoreChecks.SignalRepriseDeathTravelNewAndTrainingClearSession(Data()); }
+        [Test] public void SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward() { CoreChecks.SignalRepriseKeepsOriginalPatternsCompletedStoryAndFirstReward(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }
