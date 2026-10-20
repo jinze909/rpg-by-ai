@@ -21,6 +21,6 @@ python3 tools/run_abyss_planning_checks.py
 python3 tools/run_root_echo_checks.py --verify-baseline
 ```
 
-RootEcho 的拓扑夹具改为轮换选择未满祝福，保留六层不可变地形、场景物件和遭遇比对；不再靠第五次无效祝福进入第六层。原玩法与奖励断言保留。
+RootEcho 的拓扑夹具改为轮换选择未满祝福，保留六层不可变地形、场景物件和遭遇比对；视觉核查入口同样在第五次改选未满祝福，仍通过正式下楼流程生成第六层收割者。原玩法、奖励、碰撞与轮廓断言保留。
 
 **NATIVE_UNVERIFIED**：生产 C# 的离线输入、界面记录、存档测试和真实 Unity DLL 编译不等同于 Editor 导入、GPU、实体手柄或 Player 构建试玩。

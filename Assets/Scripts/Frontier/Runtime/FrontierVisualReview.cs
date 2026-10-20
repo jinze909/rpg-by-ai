@@ -27,7 +27,9 @@ namespace Starfall
                 for (int floor = 1; floor < 6; floor++)
                 {
                     Game.enemies.Clear();
-                    Game.Talk(Array.Find(Game.Map.objects, o => o.kind == "abyssGate")); Game.Choose(0);
+                    Game.Talk(Array.Find(Game.Map.objects, o => o.kind == "abyssGate"));
+                    // The fifth pick must use another boon once Edge has four stacks.
+                    Game.Choose(floor == 5 ? 1 : 0);
                 }
             }
             else Game.Enter((int)GameCore.Clamp(room, 0, Game.data.maps.Length - 1));
