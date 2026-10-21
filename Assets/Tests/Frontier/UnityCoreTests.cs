@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void CompanionSupplyIvoTracksEitherShortfallAndClampsBothCounters(){CoreChecks.CompanionSupplyIvoTracksEitherShortfallAndClampsBothCounters(Data());}
+        [Test] public void CompanionSupplySenFindsTheForestRecordBeforeGatheringHerbs(){CoreChecks.CompanionSupplySenFindsTheForestRecordBeforeGatheringHerbs(Data());}
+        [Test] public void CompanionSupplyActualGatherRecordAndOriginalPaymentsRemainConnected(){CoreChecks.CompanionSupplyActualGatherRecordAndOriginalPaymentsRemainConnected(Data());}
+        [Test] public void CompanionSupplyDepletedSourcesLeadToExistingRestAndRenewOnlyOnRest(){CoreChecks.CompanionSupplyDepletedSourcesLeadToExistingRestAndRenewOnlyOnRest(Data());}
+        [Test] public void CompanionSupplyPreservesLockedCompletedMiraPinsAndLegacyState(){CoreChecks.CompanionSupplyPreservesLockedCompletedMiraPinsAndLegacyState(Data());}
+
         [Test] public void HealingFoodReportsActualRecoveryAndKeepsExistingBuffTransactions(){CoreChecks.HealingFoodReportsActualRecoveryAndKeepsExistingBuffTransactions(Data());}
         [Test] public void HealingSkillRelicWaitsForThePaidCastAndNeverTheQueuedPress(){CoreChecks.HealingSkillRelicWaitsForThePaidCastAndNeverTheQueuedPress(Data());}
         [Test] public void HealingDodgeRelicLabelsOnlyOneAcceptedImmediateOrBufferedStart(){CoreChecks.HealingDodgeRelicLabelsOnlyOneAcceptedImmediateOrBufferedStart(Data());}

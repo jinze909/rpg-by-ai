@@ -128,9 +128,19 @@ namespace Starfall
                 bool ready = n == 0 ? Has("manifest_found") : n == 1 ? save.inventory[4] >= 4 && save.inventory[1] >= 4 : Has("lore_1") && save.inventory[2] >= 4;
                 q.target = ObjectPoint(q.room, n == 0 && !ready ? "manifest" : n == 0 ? "captain" : n == 1 ? "tinker" : "keeper", new Point(18, 14));
                 if (n == 2 && !Has("lore_1")) { q.room = 1; q.target = ObjectPoint(1, "lore", new Point(12, 5)); }
-                q.steps.Add(new QuestStep(new[] { L("找回乘客名册", "Recover the passenger manifest"), L("零件4与星晶4", "4 parts and 4 crystals"), L("密林记录与药草4", "Forest record and 4 herbs") }[n], ready || q.complete));
+                q.steps.Add(new QuestStep(new[] { L("找回乘客名册", "Recover the passenger manifest"),
+                    L("零件 ", "Parts ") + (q.complete ? 4 : Math.Min(4, save.inventory[4])) + "/4 · " + L("星晶 ", "Crystals ") + (q.complete ? 4 : Math.Min(4, save.inventory[1])) + "/4",
+                    L("密林记录与药草 ", "Forest record and herbs ") + (q.complete ? 4 : Math.Min(4, save.inventory[2])) + "/4" }[n], ready || q.complete));
                 q.steps.Add(new QuestStep(L("与同伴交谈并交付", "Talk to your companion and deliver"), q.complete)); q.reward = L("羁绊+2 · 35硬币 · 碎片3 · 技能点1", "+2 bond · 35 coins · 3 shards · 1 point");
-                q.next = q.complete ? L("同伴故事已完成", "Personal story complete") : q.locked ? L("先完成地区调查，招募同伴", "Finish the regional report to recruit them") : q.steps[ready ? 1 : 0].text; return q;
+                q.next = q.complete ? L("同伴故事已完成", "Personal story complete") : q.locked ? L("先完成地区调查，招募同伴", "Finish the regional report to recruit them") : q.steps[ready ? 1 : 0].text;
+                if (!q.locked && !q.complete && !ready)
+                {
+                    // Preserve Sen's record-first story beat; supplies only replace
+                    // the handoff destination while a recruited companion needs them.
+                    if (n == 1) GuideToResource(q, "ore", 1);
+                    else if (n == 2 && Has("lore_1")) GuideToResource(q, "herb", 1);
+                }
+                return q;
             }
             if (id == "bounty")
             {
