@@ -87,7 +87,8 @@ namespace Starfall.Tests
             foreach(bool cooldownFailure in new[]{false,true})
             {
                 var rejected=Quiet(data);rejected.Attack(new Point(1,0));Advance(rejected,.12f);
-                rejected.skillCooldown=cooldownFailure?.01f:0;rejected.save.energy=cooldownFailure?100:39;rejected.toast="";float energy=rejected.save.energy;
+                // Cooldown-tail Q is accepted now; keep this rejection fixture beyond the shared input window.
+                rejected.skillCooldown=cooldownFailure?GameCore.SkillBufferWindow+.001f:0;rejected.save.energy=cooldownFailure?100:39;rejected.toast="";float energy=rejected.save.energy;
                 rejected.Skill();Check(rejected.save.energy==energy&&rejected.toast.Length>0,"Unavailable Q gives feedback and does not spend while an attack blocks it");
                 Advance(rejected,.7f);
                 Check(rejected.skillCooldown<=0&&!rejected.effects.Exists(e=>e.kind=="burst"),"Cooldown expiry or later energy regeneration cannot revive a rejected Q");

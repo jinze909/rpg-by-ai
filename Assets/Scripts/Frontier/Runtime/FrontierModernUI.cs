@@ -90,7 +90,7 @@ namespace Starfall
                 DrawRoadMealHud(false);
                 DrawCombatFocusControl();
                 DrawTutorialPrompt(); Panel(342, 696, 596, 80, new Color(.045f, .08f, .13f, .95f), PixelArt.C("#4d6478"));
-                ActionSlot(354, ControlKey("Q", "Y"), SkillName(), Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff", Game.skillCooldown, Game.save.energy >= (Game.Relic(4) ? 50 : 40), () => Game.Skill(InputAim(true)), 3.5f, Game.L("耐力不足", "Low energy"));
+                ActionSlot(354, ControlKey("Q", "Y"), SkillName(), Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff", Game.skillCooldown, Game.save.energy >= (Game.Relic(4) ? 50 : 40), () => Game.Skill(InputAim(true)), 3.5f, Game.L("耐力不足", "Low energy"), acceptEarly: Game.skillCooldown > 0 && Game.skillCooldown <= GameCore.SkillBufferWindow);
                 ActionSlot(470, ControlKey("F", "LB"), Game.L("炖汤", "Stew") + " " + Game.save.inventory[6], "stew", 0, Game.save.inventory[6] > 0 && !Game.practicing, () => Game.Eat());
                 ActionSlot(586, ControlKey("T", "PACK"), Game.L("凉茶", "Tea") + " " + Game.save.tea, "tea", 0, Game.save.tea > 0 && !Game.practicing, () => Game.DrinkTea());
                 ActionSlot(702, ControlKey("Z", "RB"), CompanionActionLabel, "companion", Game.companionCooldown, Game.save.companion >= 0 && !Game.practicing, () => Game.CommandCompanion(), Game.CompanionCommandCooldownTotal);

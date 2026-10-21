@@ -23,7 +23,7 @@ namespace Starfall
     }
     public sealed partial class GameCore
     {
-        // A single short-lived intent bridges the end of a swing or dodge.
+        // A single short-lived intent bridges the end of a swing, dodge or Q cooldown.
         // It is never saved, and captures combat values only when the cast starts.
         public const float SkillBufferWindow = .20f;
         private sealed class SkillIntent
@@ -41,7 +41,7 @@ namespace Starfall
         public void ClearBufferedSkill() { bufferedSkill = null; }
         private float SkillReadyDelay()
         {
-            float delay = Math.Max(dashTime, playerHitTime);
+            float delay = Math.Max(Math.Max(dashTime, playerHitTime), Math.Max(0, skillCooldown));
             ActorAction action = playerAction;
             if (action != null)
             {
@@ -55,13 +55,22 @@ namespace Starfall
         {
             SkillIntent intent = bufferedSkill;
             if (intent == null) return;
+            if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked || TrainingClearPending
+                || !Finite(skillCooldown) || !Finite(save.energy) || !Finite(readyDelay))
+            { ClearBufferedSkill(); return; }
             // A contact reached during this tick may have started hit stop.
             // Preserve that pose; dispatch before the next held basic attack.
             float remaining = intent.remaining;
             intent.remaining -= dt;
             // Recovery may fall inside the final valid tick. Compare its actual
             // boundary with the old lifetime, rather than losing Q at 30 fps.
-            if (!ActionTransitionBlocked && readyDelay <= remaining + .00001f) StartSkill(intent.direction, intent.target);
+            if (skillCooldown <= .000001f && !ActionTransitionBlocked && readyDelay <= remaining + .00001f)
+            {
+                // The same readiness tolerance as dodge absorbs float residue
+                // at an exact frame boundary, never a still-running cooldown.
+                if (skillCooldown > 0) skillCooldown = 0;
+                StartSkill(intent.direction, intent.target);
+            }
             else if (intent.remaining <= .00001f) ClearBufferedSkill();
         }
         public ActorAction playerAction;

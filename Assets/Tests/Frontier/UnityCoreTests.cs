@@ -360,6 +360,11 @@ namespace Starfall.Tests
         [Test] public void WeaponMasteryBaseBonusMatchesExistingDamageAndEveryProfileMultiplier() { CoreChecks.WeaponMasteryBaseBonusMatchesExistingDamageAndEveryProfileMultiplier(Data()); }
         [Test] public void WeaponMasteryRealRewardsRefreshMilestonesRetainReleasedCreditAndExcludeTraining() { CoreChecks.WeaponMasteryRealRewardsRefreshMilestonesRetainReleasedCreditAndExcludeTraining(Data()); }
         [Test] public void WeaponMasteryV1V2ResumptionPreservesSavedProgressAndOtherFields() { CoreChecks.WeaponMasteryV1V2ResumptionPreservesSavedProgressAndOtherFields(Data()); }
+        [Test] public void SkillCooldownThresholdsAndOverlappingReadiness() { CoreChecks.SkillCooldownThresholdsAndOverlappingReadiness(Data()); }
+        [Test] public void SkillCooldownRetainsReleasedVolleyAndExecutionValues() { CoreChecks.SkillCooldownRetainsReleasedVolleyAndExecutionValues(Data()); }
+        [Test] public void SkillCooldownRejectsInvalidRequestsAndRechecksCosts() { CoreChecks.SkillCooldownRejectsInvalidRequestsAndRechecksCosts(Data()); }
+        [Test] public void SkillCooldownHonorsDiscretePriorityAndHitStop() { CoreChecks.SkillCooldownHonorsDiscretePriorityAndHitStop(Data()); }
+        [Test] public void SkillCooldownClearsAtLifecycleProfilesAndTrainingReview() { CoreChecks.SkillCooldownClearsAtLifecycleProfilesAndTrainingReview(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }

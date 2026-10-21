@@ -296,11 +296,12 @@ namespace Starfall
             if (SparringActionBlocked || RangeActionBlocked) return;
             float cost = Relic(4) ? 50 : 40;
             if (mode != "world" || Dying) return;
-            if (skillCooldown > 0 || save.energy < cost) { ClearBufferedSkill(); ActionUnavailable(skillCooldown, cost); return; }
+            if (!Finite(skillCooldown) || !Finite(save.energy)) { ClearBufferedSkill(); return; }
+            if (skillCooldown > SkillBufferWindow || save.energy < cost) { ClearBufferedSkill(); ActionUnavailable(skillCooldown, cost); return; }
             Point facing = direction.HasValue && Finite(direction.Value.x) && Finite(direction.Value.y) && direction.Value.Length > .05f ? direction.Value.Normalized : aim;
             facing = ResolveCombatFocusDirection(facing);
             ClearBufferedDodge();
-            if (ActionTransitionBlocked)
+            if (skillCooldown > 0 || ActionTransitionBlocked)
             {
                 bufferedSkill = new SkillIntent { remaining = SkillBufferWindow, direction = facing, target = aimTarget,
                     weapon = save.weapon, profession = save.profession, style = Style, technique = save.technique };
