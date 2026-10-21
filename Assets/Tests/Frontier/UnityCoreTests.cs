@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void SupplyPreparationQuotesAreImmutablePureAndExposeExactSharedCosts(){CoreChecks.SupplyPreparationQuotesAreImmutablePureAndExposeExactSharedCosts(Data());}
+        [Test] public void SupplyPreparationTransactionsPayOncePreserveBuffsAndRespectOutputCaps(){CoreChecks.SupplyPreparationTransactionsPayOncePreserveBuffsAndRespectOutputCaps(Data());}
+        [Test] public void SupplyPreparationRejectsStaleInvalidAndUnauthorizedContextsAtomically(){CoreChecks.SupplyPreparationRejectsStaleInvalidAndUnauthorizedContextsAtomically(Data());}
+        [Test] public void SupplyPreparationRealInteractionKeepsOriginalChoicesAndRechecksDisabledSelections(){CoreChecks.SupplyPreparationRealInteractionKeepsOriginalChoicesAndRechecksDisabledSelections(Data());}
+        [Test] public void SupplyPreparationPersistenceAndLegacyRestShopSingleRecipesRemainIntact(){CoreChecks.SupplyPreparationPersistenceAndLegacyRestShopSingleRecipesRemainIntact(Data());}
+
         [Test] public void InteractionRouteGlassSealEndsAtItsOwnRealEApproach(){CoreChecks.InteractionRouteGlassSealEndsAtItsOwnRealEApproach(Data());}
         [Test] public void InteractionRouteAuthoredObjectsNeverAdvertiseAnotherObjectsE(){CoreChecks.InteractionRouteAuthoredObjectsNeverAdvertiseAnotherObjectsE(Data());}
         [Test] public void InteractionRouteRejectsStaleReferencesAndIncludesNeededStartCenterReadOnly(){CoreChecks.InteractionRouteRejectsStaleReferencesAndIncludesNeededStartCenterReadOnly(Data());}

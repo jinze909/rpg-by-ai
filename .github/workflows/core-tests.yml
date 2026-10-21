@@ -59,6 +59,8 @@ jobs:
         run: python3 tools/run_signal_reprise_checks.py
       - name: Check road kitchen with production input, menus and saves
         run: python3 tools/run_kitchen_checks.py
+      - name: Check batch supply quotes, actual preparation inputs, exact payment and legacy saves
+        run: python3 tools/run_supply_preparation_checks.py
       - name: Check earned Hearth supper, real town and inn inputs, serving and persistent choices
         run: python3 tools/run_supper_checks.py
       - name: Check Tide Archive with production interactions, maps and saves

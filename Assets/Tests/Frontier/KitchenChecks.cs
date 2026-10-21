@@ -68,7 +68,8 @@ namespace Starfall.Tests
         {
             var g = KitchenGame(data); WorldObject cook = Object(g, "cook"); g.Talk(cook);
             string[] original = { "cook", "buymeal", "buywood", "tea", "close" };
-            Check(g.conversation.choices.Length == 6, "The cook adds the road kitchen as one sixth choice");
+            Check(g.conversation.choices.Length == 7 && g.conversation.choices[5].action == "kitchen"
+                && g.conversation.choices[6].action == "supply_prepare", "Road kitchen keeps its sixth position, followed by the separate supply preparation entry");
             for (int i = 0; i < original.Length; i++) Check(g.conversation.choices[i].action == original[i], "Existing cook choices retain their original order and action");
             KitchenChoice(g, "kitchen"); Check(g.mode == "dialog" && g.conversation.choices.Length == 4, "The optional kitchen opens its own three-recipe menu");
             KitchenChoice(g, "kitchen_cook_3"); Check(g.ActiveRoadMeal == 3, "Selecting a real recipe conversation cooks its meal");
@@ -88,8 +89,8 @@ namespace Starfall.Tests
             Check(!field.CookRoadMeal(1), "An unbuilt waystation cannot cook meals at field camps");
             field.save.projects[1] = 1; field.enemies.Add(new Enemy(945, 0, field.save.x + 2, field.save.y, 30) { timer = 9999 });
             Check(!field.CookRoadMeal(1), "A nearby live enemy closes field cooking without spending materials"); field.enemies.Clear();
-            field.Talk(camp); Check(field.conversation.choices.Length == 6 && field.conversation.choices[4].action == "close" && field.conversation.choices[5].action == "kitchen",
-                "Safe upgraded camps append cooking while preserving their five mature choices");
+            field.Talk(camp); Check(field.conversation.choices.Length == 7 && field.conversation.choices[4].action == "close" && field.conversation.choices[5].action == "kitchen"
+                && field.conversation.choices[6].action == "supply_prepare", "Safe upgraded camps keep the original kitchen and append supply preparation after all six mature choices");
             KitchenChoice(field, "kitchen"); KitchenChoice(field, "kitchen_cook_1"); Check(field.ActiveRoadMeal == 1,
                 "A built and safe camp cooks through its actual conversation");
         }

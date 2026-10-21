@@ -198,7 +198,8 @@ public static class RuntimeHomewardChecks
     private static void Camp(FrontierRuntime app, bool publicChart, string capture)
     {
         Interact(app, "campfire", false); Original(app.Game, "fieldrest", "tea", "drinktea", "companions", "close", "kitchen");
-        Check(app.Game.conversation.choices.Length == 7 && app.Game.conversation.choices[6].action == "homeward_camp", "The new seventh camp choice preserves all six mature numbers");
+        Check(app.Game.conversation.choices.Length == 8 && app.Game.conversation.choices[6].action == "homeward_camp"
+            && app.Game.conversation.choices[7].action == "supply_prepare", "Mira's seventh camp choice preserves all six mature numbers, with supply preparation appended last");
         Choose(app, "homeward_camp", capture + "-camp-menu");
         if (app.Game.HomewardComplete)
         {

@@ -120,7 +120,8 @@ public static class RuntimeKitchenChecks
             string suffix = (language == 1 ? "-en" : "-zh") + (large == 1 ? "-large" : "");
             Prepare(app, 0, language == 1, large == 1); var g = app.Game; Interact(app, "cook");
             string[] original = { "cook", "buymeal", "buywood", "tea", "close" };
-            Check(g.conversation.choices.Length == 6, "Town cooking exposes the new sixth choice alongside all five existing choices");
+            Check(g.conversation.choices.Length == 7 && g.conversation.choices[5].action == "kitchen"
+                && g.conversation.choices[6].action == "supply_prepare", "Town cooking retains all six mature choices and appends the separate supply preparation entry");
             for (int i = 0; i < original.Length; i++) Check(g.conversation.choices[i].action == original[i], "The original cooking choice and number are preserved: " + original[i]);
             Choose(app, "kitchen", "town-menu" + suffix); Check(g.mode == "dialog", "Actual Alpha6 enters the new recipe menu");
             int herbs = g.save.inventory[2], fish = g.save.inventory[3]; float health = g.save.health, energy = g.save.energy;

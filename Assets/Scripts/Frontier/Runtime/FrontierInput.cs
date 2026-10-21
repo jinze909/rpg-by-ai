@@ -22,7 +22,7 @@ namespace Starfall
             if (first && Game.mode == "dialog" && DialogueChoicesVisible() && Game.conversation.choices.Length > 0)
             {
                 int count = Game.conversation.choices.Length, cols = count > 2 ? 2 : count;
-                int firstChoice = Array.FindIndex(Game.conversation.choices, c => Game.AbyssBoonChoiceEnabled(c.action));
+                int firstChoice = Array.FindIndex(Game.conversation.choices, c => Game.DialogueChoiceEnabled(c.action));
                 if (firstChoice >= 0)
                 {
                     float w = (832 - (cols - 1) * 14) / Math.Max(1, cols);
