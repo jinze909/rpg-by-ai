@@ -583,12 +583,14 @@ namespace Starfall
             return true;
         }
         public WorldObject Nearest()
+        { return NearestAt(Position); }
+        private WorldObject NearestAt(Point position)
         {
             WorldObject best = null; float distance = 1.75f;
             foreach (WorldObject o in Map.objects)
             {
                 if (!IsObjectPresent(o)) continue;
-                float d = (Position - new Point(o.x, o.y)).Length;
+                float d = (position - new Point(o.x, o.y)).Length;
                 if (d < distance) { distance = d; best = o; }
             }
             return best;

@@ -25,7 +25,7 @@ namespace Starfall
 
         private string LandmarkArrivalHint(WorldObject place, bool reachable)
         {
-            if ((new Point(place.x, place.y) - Game.Position).Length < 1.75f)
+            if (ReferenceEquals(Game.Nearest(), place))
                 return Game.L("已在附近。返回地区，按 ", "In reach. Return and press ") + ControlKey("E", "B") + Game.L(" 交互。", " to interact.");
             return reachable
                 ? Game.L("路线通往附近。到达后按 ", "Follow the route, then press ") + ControlKey("E", "B") + Game.L(" 交互。", " to interact.")
@@ -35,7 +35,7 @@ namespace Starfall
         private string LandmarkHudHint(WorldObject place)
         {
             Point destination = new Point(place.x, place.y);
-            if ((destination - Game.Position).Length < 1.75f) return Game.L("已到达附近 · ", "In reach · ") + ControlKey("E", "B") + Game.L(" 交互", " to interact");
+            if (ReferenceEquals(Game.Nearest(), place)) return Game.L("已到达附近 · ", "In reach · ") + ControlKey("E", "B") + Game.L(" 交互", " to interact");
             if (routeGoal.HasValue && SameGoal(routeGoal, destination) && route.Count == 0)
                 return Game.L("当前无步行路线。检查潮水、门或断桥。", "No walking route. Check tides, gates or bridges.");
             return LandmarkDistance(place) + Game.L("\n任务仍在手帐中追踪。", "\nYour quest stays tracked.");
@@ -75,7 +75,7 @@ namespace Starfall
                 float cell = MapCellSize(Game.Map, 8.4f), x = 888 + selected.x * cell, y = 274 + selected.y * cell;
                 Box(x - 5, y - 5, 11, 2, mint); Box(x - 5, y + 4, 11, 2, mint);
                 Box(x - 5, y - 5, 2, 11, mint); Box(x + 4, y - 5, 2, 11, mint);
-                bool reachable = (new Point(selected.x, selected.y) - Game.Position).Length < 1.75f || Game.NavigationPath(new Point(selected.x, selected.y)).Count > 0;
+                bool reachable = ReferenceEquals(Game.Nearest(), selected) || Game.InteractionPath(selected).Count > 0;
                 Text(860, 487, 334, 27, LandmarkDistance(selected), 15, mint);
                 Text(860, 520, 334, 43, LandmarkArrivalHint(selected, reachable), 13, muted);
             }

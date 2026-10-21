@@ -215,6 +215,59 @@ namespace Starfall
             if (save.room == 0 && q.room == 8) return ObjectPoint(0, "abyssEntry", new Point(31, 14));
             if (save.room == 0 && q.room >= 5) return new Point(26, 9); return null;
         }
+        // Guidance to an object must finish where the normal E interaction
+        // selects that exact object. Generic coordinates retain their original
+        // path rules for combat objectives and checkpoint recovery.
+        public List<Point> GuidancePath(Point target)
+        {
+            if (!Finite(target.x) || !Finite(target.y)) return new List<Point>();
+            if (practicing || InAbyss) return NavigationPath(target);
+            WorldObject pin = PinnedLandmark;
+            if (pin != null && (new Point(pin.x, pin.y) - target).Length < .001f) return InteractionPath(pin);
+            if (enemies.Exists(e => (e.Position - target).Length < .001f)) return NavigationPath(target);
+            bool objectCoordinate = false;
+            foreach (WorldObject o in Map.objects)
+                if ((new Point(o.x, o.y) - target).Length < .001f)
+                {
+                    objectCoordinate = true;
+                    if (IsObjectPresent(o)) return InteractionPath(o);
+                }
+            return objectCoordinate ? new List<Point>() : NavigationPath(target);
+        }
+        public List<Point> InteractionPath(WorldObject target)
+        {
+            var path = new List<Point>();
+            if (target == null || !Array.Exists(Map.objects, o => ReferenceEquals(o, target)) || !IsObjectPresent(target)
+                || !Finite(target.x) || !Finite(target.y) || !Finite(Position.x) || !Finite(Position.y)) return path;
+            if (ReferenceEquals(Nearest(), target)) return path;
+            int w = Map.rows[0].Length, h = Map.rows.Length, sx = (int)Position.x, sy = (int)Position.y;
+            if (sx < 0 || sx >= w || sy < 0 || sy >= h) return path;
+            int start = sy * w + sx, end = -1, head = 0, tail = 0;
+            Point destination = new Point(target.x, target.y);
+            PreparePathSearch(w * h, -2);
+            int[] parent = pathParents; pathQueue[tail++] = start; parent[start] = -1;
+            while (head < tail)
+            {
+                int n = pathQueue[head++], x = n % w, y = n / w;
+                Point center = new Point(x + .5f, y + .5f);
+                if ((center - destination).Length < 1.75f && Fits(center) && ReferenceEquals(NearestAt(center), target))
+                { end = n; break; }
+                for (int i = 0; i < 4; i++)
+                {
+                    int xx = x + guidanceSteps[i, 0], yy = y + guidanceSteps[i, 1];
+                    if (xx < 0 || xx >= w || yy < 0 || yy >= h) continue;
+                    int next = yy * w + xx;
+                    if (parent[next] != -2 || !Fits(new Point(xx + .5f, yy + .5f))) continue;
+                    parent[next] = n; pathQueue[tail++] = next;
+                }
+            }
+            if (end < 0) return path;
+            for (int n = end; n != start && n >= 0; n = parent[n]) path.Add(new Point(n % w + .5f, n / w + .5f));
+            path.Reverse();
+            Point startCenter = new Point(sx + .5f, sy + .5f);
+            if (Fits(startCenter) && (startCenter - Position).Length > .001f) path.Insert(0, startCenter);
+            return path;
+        }
         public List<Point> NavigationPath(Point target)
         {
             int w = Map.rows[0].Length, h = Map.rows.Length, sx = (int)Position.x, sy = (int)Position.y, start = sy * w + sx;

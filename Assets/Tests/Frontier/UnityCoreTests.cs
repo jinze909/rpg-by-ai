@@ -6,6 +6,12 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void InteractionRouteGlassSealEndsAtItsOwnRealEApproach(){CoreChecks.InteractionRouteGlassSealEndsAtItsOwnRealEApproach(Data());}
+        [Test] public void InteractionRouteAuthoredObjectsNeverAdvertiseAnotherObjectsE(){CoreChecks.InteractionRouteAuthoredObjectsNeverAdvertiseAnotherObjectsE(Data());}
+        [Test] public void InteractionRouteRejectsStaleReferencesAndIncludesNeededStartCenterReadOnly(){CoreChecks.InteractionRouteRejectsStaleReferencesAndIncludesNeededStartCenterReadOnly(Data());}
+        [Test] public void InteractionRouteUsesLiveRootsBridgeAndTideWithoutOpeningThem(){CoreChecks.InteractionRouteUsesLiveRootsBridgeAndTideWithoutOpeningThem(Data());}
+        [Test] public void InteractionRouteGuidanceKeepsIdentityAndCoordinateNavigationOwnership(){CoreChecks.InteractionRouteGuidanceKeepsIdentityAndCoordinateNavigationOwnership(Data());}
+
         [Test] public void CompanionSupplyIvoTracksEitherShortfallAndClampsBothCounters(){CoreChecks.CompanionSupplyIvoTracksEitherShortfallAndClampsBothCounters(Data());}
         [Test] public void CompanionSupplySenFindsTheForestRecordBeforeGatheringHerbs(){CoreChecks.CompanionSupplySenFindsTheForestRecordBeforeGatheringHerbs(Data());}
         [Test] public void CompanionSupplyActualGatherRecordAndOriginalPaymentsRemainConnected(){CoreChecks.CompanionSupplyActualGatherRecordAndOriginalPaymentsRemainConnected(Data());}

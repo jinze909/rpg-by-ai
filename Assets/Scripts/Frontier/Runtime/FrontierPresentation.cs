@@ -65,7 +65,7 @@ namespace Starfall
             shakeTime = Math.Max(Game.impactShake, Math.Max(0, shakeTime - dt)); shakeX = shakeY = 0;
             if (!Game.save.reducedMotion && Game.save.effectsQuality > 0 && Game.mode == "world") { shakeX = (float)Math.Sin(clock * 91) * shakeTime * 19; shakeY = (float)Math.Cos(clock * 73) * shakeTime * 12; }
             if (previousTutorial != Game.TutorialStep) { int old = previousTutorial; previousTutorial = Game.TutorialStep; if (old >= 0 && old < 8 && Game.mode == "world" && Game.toastTime <= 0) Game.Notify(Game.TutorialStep == 8 ? "入门完成！F1可随时查看指南。" : "教学进度已更新。", Game.TutorialStep == 8 ? "Onboarding complete! F1 opens your field guide." : "Onboarding progress updated."); }
-            routeTimer -= dt; Point? goal = Game.NavigationTarget(); if (Game.mode == "world" && Game.save.showGuidance && (routeTimer <= 0 || !SameGoal(goal, routeGoal))) { routeGoal = goal; route = goal.HasValue ? Game.NavigationPath(goal.Value) : new List<Point>(); routeTimer = .65f; }
+            routeTimer -= dt; Point? goal = Game.NavigationTarget(); if (Game.mode == "world" && Game.save.showGuidance && (routeTimer <= 0 || !SameGoal(goal, routeGoal))) { routeGoal = goal; route = goal.HasValue ? Game.GuidancePath(goal.Value) : new List<Point>(); routeTimer = .65f; }
         }
         private bool SameGoal(Point? a, Point? b) { return a.HasValue == b.HasValue && (!a.HasValue || (a.Value - b.Value).Length < .6f); }
         private bool PointerOverInterface(Point mouse)
