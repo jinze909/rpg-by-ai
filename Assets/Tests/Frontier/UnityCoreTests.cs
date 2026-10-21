@@ -355,6 +355,11 @@ namespace Starfall.Tests
         [Test] public void CombatFocusCycleNeedsAnExistingLiveSession() { CoreChecks.CombatFocusCycleNeedsAnExistingLiveSession(Data()); }
         [Test] public void CombatFocusCyclePreservesAcceptedQueuedAndFlyingAim() { CoreChecks.CombatFocusCyclePreservesAcceptedQueuedAndFlyingAim(Data()); }
         [Test] public void CombatFocusCycleQueriesAndSelectionKeepProgressReadOnly() { CoreChecks.CombatFocusCycleQueriesAndSelectionKeepProgressReadOnly(Data()); }
+        [Test] public void WeaponMasteryThresholdsAndLocalizedReadsArePure() { CoreChecks.WeaponMasteryThresholdsAndLocalizedReadsArePure(Data()); }
+        [Test] public void WeaponMasteryInvalidClampedReadsAndSnapshotsStayIndependent() { CoreChecks.WeaponMasteryInvalidClampedReadsAndSnapshotsStayIndependent(Data()); }
+        [Test] public void WeaponMasteryBaseBonusMatchesExistingDamageAndEveryProfileMultiplier() { CoreChecks.WeaponMasteryBaseBonusMatchesExistingDamageAndEveryProfileMultiplier(Data()); }
+        [Test] public void WeaponMasteryRealRewardsRefreshMilestonesRetainReleasedCreditAndExcludeTraining() { CoreChecks.WeaponMasteryRealRewardsRefreshMilestonesRetainReleasedCreditAndExcludeTraining(Data()); }
+        [Test] public void WeaponMasteryV1V2ResumptionPreservesSavedProgressAndOtherFields() { CoreChecks.WeaponMasteryV1V2ResumptionPreservesSavedProgressAndOtherFields(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }
