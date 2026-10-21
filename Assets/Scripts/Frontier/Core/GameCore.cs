@@ -245,7 +245,7 @@ namespace Starfall
             if (mode != "world") return;
             ValidateCombatFocus();
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
-            float skillReadyDelay = SkillReadyDelay(), dodgeReadyDelay = Math.Max(0, dashCooldown);
+            float skillReadyDelay = ActionReadyDelay(skillCooldown), dodgeReadyDelay = Math.Max(0, dashCooldown), attackReadyDelay = ActionReadyDelay(attackCooldown);
             movementDirection = new Point();
             TickVisuals(dt); if (mode != "world") return; TickGate(dt);
             for (int i = effects.Count - 1; i >= 0; i--) { effects[i].life -= dt; if (effects[i].life <= 0) effects.RemoveAt(i); }
@@ -267,6 +267,7 @@ namespace Starfall
             if (mode != "world" || beganInPractice && !practicing) return;
             TickBufferedDodge(dt, dodgeReadyDelay);
             TickBufferedSkill(dt, skillReadyDelay);
+            TickBufferedAttack(dt, attackReadyDelay);
             UpdateEnemies(dt); if (Dying) return;
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
             TickExpansion(dt);
@@ -280,16 +281,23 @@ namespace Starfall
         }
         public void Attack(Point direction)
         {
-            if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null) return;
-            SetAim(ResolveCombatFocusDirection(direction));
+            if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null || bufferedAttack != null) return;
+            Point facing = ResolveCombatFocusDirection(direction);
+            StartAttack(facing, aimTarget);
+        }
+        private void StartAttack(Point direction, Point? target)
+        {
+            SetAim(direction);
             WeaponProfile profile = Profile(save.weapon, Style);
-            if (save.energy < profile.energy) { ActionUnavailable(0, profile.energy); return; }
+            if (!Finite(save.energy) || save.energy < profile.energy) { ActionUnavailable(0, profile.energy); return; }
             save.energy -= profile.energy; attackCooldown = profile.interval;
             combo = comboTimer > 0 ? (combo + 1) % 3 : 0; comboTimer = 1.1f;
             bool counterAttack = riposteTime > 0;
             float attackDamage = profile.damage * (save.weapon == 0 && combo == 2 ? 1.25f : 1) * (counterAttack ? 1.5f : 1);
             riposteTime = 0; BeginRangeAttempt();
-            BeginAction("attack", attackDamage, profile.interval, profile.interval * (save.weapon == 1 ? .55f : .45f), counterAttack);
+            Point? liveTarget = aimTarget;
+            try { aimTarget = target; BeginAction("attack", attackDamage, profile.interval, profile.interval * (save.weapon == 1 ? .55f : .45f), counterAttack); }
+            finally { aimTarget = liveTarget; }
         }
         public void Skill(Point? direction = null)
         {
@@ -301,6 +309,7 @@ namespace Starfall
             Point facing = direction.HasValue && Finite(direction.Value.x) && Finite(direction.Value.y) && direction.Value.Length > .05f ? direction.Value.Normalized : aim;
             facing = ResolveCombatFocusDirection(facing);
             ClearBufferedDodge();
+            ClearBufferedAttack();
             if (skillCooldown > 0 || ActionTransitionBlocked)
             {
                 bufferedSkill = new SkillIntent { remaining = SkillBufferWindow, direction = facing, target = aimTarget,

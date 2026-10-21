@@ -39,9 +39,9 @@ namespace Starfall
             get { return dashTime > 0 || hitStop > 0 || playerHitTime > 0 || playerAction != null && PlayerPhase != ActionPhase.Recovery; }
         }
         public void ClearBufferedSkill() { bufferedSkill = null; }
-        private float SkillReadyDelay()
+        private float ActionReadyDelay(float cooldown)
         {
-            float delay = Math.Max(Math.Max(dashTime, playerHitTime), Math.Max(0, skillCooldown));
+            float delay = Math.Max(Math.Max(dashTime, playerHitTime), Math.Max(0, cooldown));
             ActorAction action = playerAction;
             if (action != null)
             {
@@ -127,6 +127,7 @@ namespace Starfall
             SkillIntent intent = bufferedSkill;
             if (intent != null && (intent.weapon != save.weapon || intent.profession != save.profession || intent.style != Style || intent.technique != save.technique)) ClearBufferedSkill();
             ValidateDodgeProfile();
+            ValidateAttackProfile();
         }
         private void BeginAction(string kind, float damage, float duration, float contact, bool counter = false)
         {

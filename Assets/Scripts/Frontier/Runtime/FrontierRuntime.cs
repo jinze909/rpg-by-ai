@@ -93,17 +93,24 @@ namespace Starfall
             if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.V) || PadDown(9))) ToggleCombatFocusFromInput();
             else if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.X) || PadDown(8)))
                 CycleCombatFocusFromInput(Input.GetKeyDown(KeyCode.X) && (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) ? -1 : 1);
+            // A fresh deliberate command also wins on the exact readiness
+            // frame, before Tick can spend a previously queued basic attack.
+            // Even an unavailable Q/dodge abandons that old basic press.
+            if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.Q) || PadDown(3) || Input.GetKeyDown(KeyCode.Space) || PadDown(0)))
+                Game.ClearBufferedAttack();
             Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {
                 Point mouse = MouseVirtual();
-                // Discrete actions take priority over continuously held attacks.
+                // Discrete actions take priority over fresh and held attacks.
                 // A fresh Q after a dodge is queued; a dodge clears older intent.
                 if ((Input.GetKeyDown(KeyCode.Space) || PadDown(0))) Game.Dash(movement);
                 if ((Input.GetKeyDown(KeyCode.Q) || PadDown(3))) Game.Skill(InputAim(true));
-                if (Input.GetMouseButton(0) && !PointerOverInterface(mouse))
+                bool mouseInWorld = (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0)) && !PointerOverInterface(mouse);
+                bool attackPressed = Input.GetKeyDown(KeyCode.J) || PadDown(2) || Input.GetMouseButtonDown(0) && mouseInWorld;
+                if (attackPressed) Game.PressAttack(InputAim() ?? Game.aim);
+                else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2) || Input.GetMouseButton(0) && mouseInWorld)
                     Game.Attack(InputAim() ?? Game.aim);
-                if ((Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2))) Game.Attack(InputAim() ?? Game.aim);
                 if ((Input.GetKeyDown(KeyCode.E) || PadDown(1))) Game.Interact();
                 if (Input.GetKeyDown(KeyCode.F)) Game.Eat();
                 if (Input.GetKeyDown(KeyCode.T)) Game.DrinkTea();

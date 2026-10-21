@@ -19,7 +19,7 @@ namespace Starfall
         private bool CanAcceptDodge
         { get { return mode == "world" && !Dying && Finite(save.health) && save.health > 0 && !SparringActionBlocked && !RangeActionBlocked; } }
         private void ClearBufferedDodge() { bufferedDodge = null; }
-        public void ClearBufferedCombatInputs() { ClearBufferedSkill(); ClearBufferedDodge(); }
+        public void ClearBufferedCombatInputs() { ClearBufferedSkill(); ClearBufferedDodge(); ClearBufferedAttack(); }
 
         private bool TryDodgeDirection(Point requested, out Point direction)
         {
@@ -39,6 +39,7 @@ namespace Starfall
             if (dashCooldown > 0)
             {
                 ClearBufferedSkill();
+                ClearBufferedAttack();
                 bufferedDodge = new DodgeIntent { direction = direction, owner = save, room = save.room,
                     weapon = save.weapon, profession = save.profession, style = Style, technique = save.technique,
                     firstRelic = save.relics[0], secondRelic = save.relics[1], dodgeTalent = save.talents[2], practicing = practicing };

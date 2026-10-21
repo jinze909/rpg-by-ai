@@ -365,6 +365,11 @@ namespace Starfall.Tests
         [Test] public void SkillCooldownRejectsInvalidRequestsAndRechecksCosts() { CoreChecks.SkillCooldownRejectsInvalidRequestsAndRechecksCosts(Data()); }
         [Test] public void SkillCooldownHonorsDiscretePriorityAndHitStop() { CoreChecks.SkillCooldownHonorsDiscretePriorityAndHitStop(Data()); }
         [Test] public void SkillCooldownClearsAtLifecycleProfilesAndTrainingReview() { CoreChecks.SkillCooldownClearsAtLifecycleProfilesAndTrainingReview(Data()); }
+        [Test] public void AttackBufferThresholdCadencesOverlapAndSingleDispatch() { CoreChecks.AttackBufferThresholdCadencesOverlapAndSingleDispatch(Data()); }
+        [Test] public void AttackBufferCapturesAimAndUsesExecutionValuesOnce() { CoreChecks.AttackBufferCapturesAimAndUsesExecutionValuesOnce(Data()); }
+        [Test] public void AttackBufferHonorsDiscretePriorityLatestPressAndHitStop() { CoreChecks.AttackBufferHonorsDiscretePriorityLatestPressAndHitStop(Data()); }
+        [Test] public void AttackBufferRejectsInvalidRequestsAndRechecksResources() { CoreChecks.AttackBufferRejectsInvalidRequestsAndRechecksResources(Data()); }
+        [Test] public void AttackBufferClearsLifecycleProfilesAndTrainingReview() { CoreChecks.AttackBufferClearsLifecycleProfilesAndTrainingReview(Data()); }
         private Campaign Data() { return JsonUtility.FromJson<Campaign>(Resources.Load<TextAsset>("Frontier/Campaign").text); }
         [Test] public void ClassesAndPausedMenus() { CoreChecks.ClassesAndPause(Data()); }
         [Test] public void CraftingAndCommissionTransactions() { CoreChecks.Transactions(Data()); }
