@@ -382,6 +382,12 @@ namespace Starfall.Tests
         [Test] public void AlternateSkillsRelicCostsAndDailyGifts() { CoreChecks.TechniquesAndTradeoffs(Data()); }
         [Test] public void ClimateContractsAndRaceRules() { CoreChecks.ClimateAndContracts(Data()); }
         [Test] public void AllShorePrioritiesAndCovenants() { CoreChecks.DistantCampaign(Data()); }
+        [Test] public void CombatLootActualAwardsMatchKindsBossAndLevelRollover() { CoreChecks.CombatLootActualAwardsMatchKindsBossAndLevelRollover(Data()); }
+        [Test] public void CombatLootSharedDefeatsIncludeSkillsProjectilesCompanionsAndFrost() { CoreChecks.CombatLootSharedDefeatsIncludeSkillsProjectilesCompanionsAndFrost(Data()); }
+        [Test] public void CombatLootAggregationSnapshotsAndSimulationClockStayReadOnly() { CoreChecks.CombatLootAggregationSnapshotsAndSimulationClockStayReadOnly(Data()); }
+        [Test] public void CombatLootAbyssMatchesUnbankedPayoutBankingLossAndEcho() { CoreChecks.CombatLootAbyssMatchesUnbankedPayoutBankingLossAndEcho(Data()); }
+        [Test] public void CombatLootSpecialActorsLifecycleAndLegacySavesKeepOwnership() { CoreChecks.CombatLootSpecialActorsLifecycleAndLegacySavesKeepOwnership(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

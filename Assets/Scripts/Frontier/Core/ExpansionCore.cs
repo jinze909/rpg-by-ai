@@ -169,9 +169,10 @@ namespace Starfall
             BountyEvent(0, 1); if (e.boss) BountyEvent(3, 1); if (e.kind == 2) BountyEvent(4, 1);
             if (InAbyss)
             {
-                save.runCoins += e.boss ? 70 : 8 + save.abyssRisk * 3;
-                save.runShards += (e.boss ? 5 : 1) + save.abyssRisk;
-                save.runXp += e.boss ? 100 : 14;
+                int coins = e.boss ? 70 : 8 + save.abyssRisk * 3;
+                int shards = (e.boss ? 5 : 1) + save.abyssRisk, xp = e.boss ? 100 : 14;
+                save.runCoins += coins; save.runShards += shards; save.runXp += xp;
+                RecordCombatLoot(coins, xp, shards: shards, unbanked: true);
                 if (enemies.Count == 0)
                 {
                     Flag("abyss_clear_" + save.abyssFloor);
@@ -783,6 +784,7 @@ namespace Starfall
             if (Dying || RootEchoActive || !InAbyss || enemies.Count > 0 || !Has("abyss_clear_" + save.abyssFloor)) return;
             save.coins += save.runCoins; save.shards += save.runShards + (save.frontierEnding == 3 ? 2 : 0); AddXp(save.runXp);
             save.runCoins = save.runShards = save.runXp = 0; save.bestFloor = Math.Max(save.bestFloor, save.abyssFloor);
+            ClearCombatLoot();
             BountyEvent(5, 1);
             if (save.abyssFloor >= 3) RewardRelic(5);
             if (save.abyssFloor == 6 && !Has("abyss_complete")) { Flag("abyss_complete"); save.skillPoints += 2; save.shards += 12; }

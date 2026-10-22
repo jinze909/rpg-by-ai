@@ -387,11 +387,13 @@ namespace Starfall
             if (e.id == CommissionGuardianId) { OnCommissionDefeated(e); revision++; return; }
             if (IsSignalWarden(e)) { OnSignalDefeated(e); revision++; return; }
             OnHomewardKill(e); OnReachKill(e); OnWatchKill(e); OnArchiveKill(e); save.kills[save.room]++; OnExpansionKill(e, profile.masteryWeapon);
-            effects.Add(new Effect("loot", e.Position, .75f) { variant = e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
+            effects.Add(new Effect("loot", e.Position, .75f) { variant = InAbyss || e.boss ? 5 : e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2 });
             if (!InAbyss)
             {
-                save.coins += e.boss ? 70 : 6; save.xp += e.boss ? 80 : 12;
-                save.inventory[e.boss ? 5 : (e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2)]++;
+                int coins = e.boss ? 70 : 6, xp = e.boss ? 80 : 12;
+                int item = e.boss ? 5 : (e.kind == 2 ? 4 : e.kind == 1 ? 1 : 2);
+                save.coins += coins; save.xp += xp; save.inventory[item]++;
+                RecordCombatLoot(coins, xp, item, 1);
             }
             effects.Add(new Effect("defeat", e.Position, .5f) { variant = e.boss ? 1 : 0 }); sound = "reward";
             while (save.xp >= save.level * 40 && save.level < 30)
