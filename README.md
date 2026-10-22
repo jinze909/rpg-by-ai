@@ -28,6 +28,8 @@
 
 重甲敌人的灰蓝盾弧显示实际正面护甲方向，蓄力和受控时按原规则关闭；玩家可在命中前判断绕后或等待反击。低特效与 HUD 遮挡时继续可见，见 [HEAVY-GUARD.md](docs/HEAVY-GUARD.md)。
 
+近身射手直线后撤被墙挡住时，会尝试沿侧面脱困；仍受原碰撞与速度限制，不会向玩家挤近或在已经拉弓时移动。原箭路、预告、伤害与冷却保留，见 [ARCHER-EVASION.md](docs/ARCHER-EVASION.md)。
+
 ## 启动
 
 1. **升级现有项目**：关闭 Unity，备份项目，覆盖包内 `Assets`、`Packages` 与 `ProjectSettings`；本轮也请更新 `ProjectSettings/ProjectVersion.txt`，清除旧的 C1 和 revision 信息。

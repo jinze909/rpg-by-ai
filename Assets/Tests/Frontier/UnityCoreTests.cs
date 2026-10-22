@@ -6,6 +6,22 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void ArcherEvasionEscapesMirroredWallsAndRejectsClosingCornerSlides(){CoreChecks.ArcherEvasionEscapesMirroredWallsAndRejectsClosingCornerSlides(Data());}
+        [Test] public void ArcherEvasionPreservesStraightRetreatAndExistingPerception(){CoreChecks.ArcherEvasionPreservesStraightRetreatAndExistingPerception(Data());}
+        [Test] public void ArcherEvasionKeepsCommittedShotsAndTrainingExclusions(){CoreChecks.ArcherEvasionKeepsCommittedShotsAndTrainingExclusions(Data());}
+        [Test] public void ArcherEvasionPersistsOnlyExistingCoordinatesAndLoadsBothSaveVersions()
+        {
+            var data = Data(); CoreChecks.ArcherEvasionPersistsOnlyExistingCoordinatesAndLoadsBothSaveVersions(data);
+            foreach(int version in new[]{1,2})
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"room\":1,\"stage\":1,\"coins\":91,\"x\":13.225,\"y\":9.5,\"snapshotRoom\":1,\"flags\":[\"intro\"],\"worldEnemies\":[{\"id\":98601,\"kind\":1,\"x\":11.225,\"y\":9.5,\"hp\":31,\"maxHp\":43}]}");
+                var loaded = new GameCore(data, old); loaded.Start(); var archer = loaded.enemies.Find(e => e.id == 98601);
+                Assert.NotNull(archer); Assert.AreEqual(11.225f, archer.x); Assert.AreEqual(9.5f, archer.y); Assert.AreEqual(31, archer.hp);
+                Assert.AreEqual(91, loaded.save.coins); Assert.IsFalse(archer.backpedaling); Assert.AreEqual(0, archer.state);
+                loaded.PrepareSave(); var resumed = new GameCore(data, JsonUtility.FromJson<SaveData>(JsonUtility.ToJson(loaded.save)));
+                archer = resumed.enemies.Find(e => e.id == 98601); Assert.NotNull(archer); Assert.AreEqual(11.225f, archer.x); Assert.AreEqual(9.5f, archer.y);
+            }
+        }
         [Test] public void SupplyPreparationQuotesAreImmutablePureAndExposeExactSharedCosts(){CoreChecks.SupplyPreparationQuotesAreImmutablePureAndExposeExactSharedCosts(Data());}
         [Test] public void SupplyPreparationTransactionsPayOncePreserveBuffsAndRespectOutputCaps(){CoreChecks.SupplyPreparationTransactionsPayOncePreserveBuffsAndRespectOutputCaps(Data());}
         [Test] public void SupplyPreparationRejectsStaleInvalidAndUnauthorizedContextsAtomically(){CoreChecks.SupplyPreparationRejectsStaleInvalidAndUnauthorizedContextsAtomically(Data());}

@@ -55,6 +55,8 @@ jobs:
         run: python3 tools/run_enemy_stun_checks.py
       - name: Check Heavy frontal armor, real contact states, direction and HUD visibility
         run: python3 tools/run_heavy_guard_checks.py
+      - name: Check archer wall escapes, committed arrows, terrain and save continuity
+        run: python3 tools/run_archer_evasion_checks.py
       - name: Check cached actor contact shadows, retained frames, HUD isolation and real combat
         run: python3 tools/run_contact_shadow_checks.py
       - name: Check continuous Boss cover, depth ordering, companion and HUD silhouettes

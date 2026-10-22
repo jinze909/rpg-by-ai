@@ -505,7 +505,7 @@ namespace Starfall
                 float desired = e.boss ? 3.5f : e.kind == 1 ? 4.5f : 1.05f;
                 bool visible = ClearAttackPath(e.Position, Position);
                 Point before = e.Position;
-                if (visible && e.kind == 1 && !e.boss && distance < 3 && (!practicing || SparringActive)) { Point back = SweepActor(e.Position, delta.Normalized * -dt * 1.6f); e.backpedaling=(back-e.Position).Length>.001f;e.x = back.x; e.y = back.y; }
+                if (visible && e.kind == 1 && !e.boss && distance < 3 && (!practicing || SparringActive)) { Point back = ArcherRetreat(e.Position, delta, dt); e.backpedaling=(back-e.Position).Length>.001f;e.x = back.x; e.y = back.y; }
                 if (distance > desired || !visible)
                 {
                     Point p = e.Position + DirectionTo(e.Position, Position) * dt * (e.boss ? 1.15f + e.BossPhase * .15f : e.kind == 0 ? 2.1f : 1.5f) * (InAbyss && save.abyssFloor % 3 == 2 ? 1.2f : 1);
