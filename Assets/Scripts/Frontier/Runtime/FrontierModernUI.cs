@@ -36,7 +36,7 @@ namespace Starfall
             if (id < 0 || portraits == null) { Icon(id < 0 ? "journal" : "companion", x + w * .2f, y + h * .25f, w * .6f); return; }
             float size = Math.Min(w, h); id = Math.Max(0, Math.Min(7, id)); GUI.DrawTextureWithTexCoords(new Rect(x + (w - size) / 2, y + h - size, size, size), portraits, new Rect(id % 4 / 4f, id < 4 ? .5f : 0, .25f, .5f));
         }
-        private void OpenMenu(string mode) { battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
+        private void OpenMenu(string mode) { ClearTalentResetConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
         private void Dim() { Box(0, 0, Width, Height, new Color(.02f, .035f, .07f, .87f)); }
         private void Bar(float x, float y, float w, float value, Color color, float h = 6)
         { Box(x, y, w, h, PixelArt.C("#0d1c2c")); Box(x, y, w * Mathf.Clamp01(value), h, color); Box(x, y, w * Mathf.Clamp01(value), 1, Color.Lerp(color, paper, .3f)); }
@@ -152,9 +152,10 @@ namespace Starfall
             string[] names = { Game.L("锋芒", "Edge"), Game.L("坚韧", "Resolve"), Game.L("轻盈", "Agility") }, icons = { "sword", "shield", "bow" };
             string[] info = { Game.L("每级攻击+3\n暴击率+2.5%", "+3 damage per rank\n+2.5% critical chance"), Game.L("每级生命+12\n受到伤害-3.5%", "+12 health per rank\n-3.5% incoming damage"), Game.L("提高移动速度\n缩短闪避冷却", "Faster movement\nShorter dodge cooldown") };
             for (int i = 0; i < 3; i++) { float x = 279 + i * 318; Card(x, 178, 302, 338); Icon(icons[i], x + 111, 194, 80); Text(x + 23, 288, 256, 40, names[i], 27, gold, TextAnchor.MiddleCenter); Text(x + 23, 350, 256, 76, info[i], 17, muted, TextAnchor.MiddleCenter); for (int n = 0; n < 5; n++) Box(x + 62 + n * 37, 442, 26, 5, n < Game.save.talents[i] ? gold : PixelArt.C("#43566b")); if (Button(x + 18, 475, 266, 29, Game.L("投入1技能点", "Spend 1 point"), false, Game.save.skillPoints > 0 && Game.save.talents[i] < 5)) Game.Learn(i); }
-            if (Button(279, 704, 938, 25, Game.L("重置三项天赋：20硬币，返还全部投入点数", "Reset talents: 20 coins; refunds all invested points"), false, Game.save.coins >= 20 && Game.save.talents[0] + Game.save.talents[1] + Game.save.talents[2] > 0)) Game.ResetTalents();
+            if (Button(279, 704, 938, 25, Game.L("查看重置：20硬币，确认后付费", "Review talent reset: 20 coins; pay only after confirmation"), false, !Game.Dying)) BeginTalentResetConfirmation();
             Card(279, 540, 938, 150); if(Button(302, 560, 885, 35, Game.L("战技效果与用途", "Technique field notes"))) OpenTechniqueGuide(); Text(302, 603, 883, 28, Game.L("当前 Q：", "Current Q: ") + SkillName() + "  /  " + Game.WeaponMasteryProgressText(Game.save.weapon), 16, paper);
             bool learned = Game.Has("technique_" + Game.save.profession); if (Button(302, 646, 891, 31, learned ? Game.L("切换为另一种职业战技", "Switch to the other class technique") : Game.L("学习第二战技：等级5、技能点1", "Learn alternate technique: level 5, 1 talent point"), Game.save.technique == 1, learned || Game.save.level >= 5 && Game.save.skillPoints > 0)) Game.LearnTechnique();
+            DrawTalentResetConfirmation();
         }
         private void DrawCompanions()
         {

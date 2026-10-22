@@ -6,6 +6,29 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void TalentResetQuotesExposeExactThreeClassCostsRefundsAndHealthWithoutMutation(){CoreChecks.TalentResetQuotesExposeExactThreeClassCostsRefundsAndHealthWithoutMutation(Data());}
+        [Test] public void TalentResetTransactionsPayOnceKeepOriginalWrapperAndTrainingAccess(){CoreChecks.TalentResetTransactionsPayOnceKeepOriginalWrapperAndTrainingAccess(Data());}
+        [Test] public void TalentResetRejectsStaleOwnersDataWorldsAndInvalidRefundsAtomically(){CoreChecks.TalentResetRejectsStaleOwnersDataWorldsAndInvalidRefundsAtomically(Data());}
+        [Test] public void TalentResetRetainsLegacyProgressAndCapturedCombatActions()
+        {
+            var data = Data(); CoreChecks.TalentResetRetainsLegacyProgressAndCapturedCombatActions(data);
+            foreach (int version in new[] { 1, 2 })
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"profession\":0,\"upgrades\":2,\"coins\":73,\"skillPoints\":8,\"health\":42,\"talents\":[2,3,1],\"flags\":[\"intro\",\"core_1\",\"technique_0\",\"relic_1\",\"relic_4\"],\"technique\":1,\"weaponStyles\":[2,1,2],\"mastery\":[23,64,87],\"relics\":[1,4],\"relicRank\":2}");
+                var game = new GameCore(data, old); game.Start(); Assert.IsTrue(game.TryResetTalents(game.GetTalentResetQuote()));
+                game.PrepareSave(); string json = JsonUtility.ToJson(game.save);
+                Assert.IsFalse(json.Contains("TalentResetQuote")); Assert.IsFalse(json.Contains("pointsBefore")); Assert.IsFalse(json.Contains("saveOwner"));
+                var resumed = new GameCore(data, JsonUtility.FromJson<SaveData>(json)); resumed.Start();
+                Assert.AreEqual(53, resumed.save.coins); Assert.AreEqual(14, resumed.save.skillPoints);
+                Assert.AreEqual(160, resumed.save.maxHealth); Assert.AreEqual(42, resumed.save.health);
+                Assert.AreEqual(new[] { 0, 0, 0 }, resumed.save.talents); Assert.AreEqual(1, resumed.save.technique);
+                Assert.AreEqual(new[] { 2, 1, 2 }, resumed.save.weaponStyles); Assert.AreEqual(new[] { 23, 64, 87 }, resumed.save.mastery);
+                // Preserve the existing v1 migration's empty equipment slots;
+                // relic ownership remains independently earned in both versions.
+                Assert.AreEqual(version == 1 ? new[] { -1, -1 } : new[] { 1, 4 }, resumed.save.relics);
+                Assert.IsTrue(resumed.Has("relic_1")); Assert.IsTrue(resumed.Has("relic_4")); Assert.AreEqual(2, resumed.save.relicRank);
+            }
+        }
         [Test] public void CounterHitEarnedSwordAppearsOnlyAtRealContactAndExpires(){CoreChecks.CounterHitEarnedSwordAppearsOnlyAtRealContactAndExpires(Data());}
         [Test] public void CounterHitPreparedBowAndStaffRetainCapturedCounterAcrossFlightAndGear(){CoreChecks.CounterHitPreparedBowAndStaffRetainCapturedCounterAcrossFlightAndGear(Data());}
         [Test] public void CounterHitMissesSkillsCompanionsDummyAndZeroLossStayUnmarked(){CoreChecks.CounterHitMissesSkillsCompanionsDummyAndZeroLossStayUnmarked(Data());}

@@ -48,12 +48,7 @@ namespace Starfall
         public void SetStyle(int style)
         { if (style < 0 || style > 2 || style > 0 && !StylesUnlocked) return; if (Style != style) CancelAction(); save.weaponStyles[save.weapon] = style; revision++; sound = "equip"; }
         public void ResetTalents()
-        {
-            if (save.coins < 20) return; int points = save.talents[0] + save.talents[1] + save.talents[2]; if (points == 0) return;
-            save.coins -= 20; save.skillPoints += points; Array.Clear(save.talents, 0, 3);
-            save.maxHealth = 100 + save.upgrades * 20 + (save.profession == 0 ? 20 : 0); save.health = Math.Min(save.health, save.maxHealth);
-            revision++; RecordMoment("重新分配成长方向：返还 " + points + " 技能点。", "Build reconsidered: refunded " + points + " talent points.");
-        }
+        { TryResetTalents(GetTalentResetQuote()); }
         public void RecordMoment(string zh, string en)
         { save.moments.Add(new JournalMoment { zh = zh, en = en, day = Day }); while (save.moments.Count > 8) save.moments.RemoveAt(0); revision++; sound = "quest"; }
         public string WorldResponse()

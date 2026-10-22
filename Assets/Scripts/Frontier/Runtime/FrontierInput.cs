@@ -13,7 +13,7 @@ namespace Starfall
         private bool focusVisible, controllerUsed, drawingModal;
         private string ControlId(float x, float y, float w, float h) { return x.ToString(CultureInfo.InvariantCulture) + ":" + y.ToString(CultureInfo.InvariantCulture) + ":" + w.ToString(CultureInfo.InvariantCulture) + ":" + h.ToString(CultureInfo.InvariantCulture); }
         private string InputScope()
-        { return Game.mode + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : ""); }
+        { return Game.mode + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : ""); }
         private void BeginControls() { drawnScope = InputScope(); navigation.Scope(drawnScope); drawnControls.Clear(); drawingModal = false; }
         private void EndControls()
         {
@@ -58,7 +58,7 @@ namespace Starfall
             if(Game.mode=="landmarks")menuIndex=Array.IndexOf(menuModes,"map");
             if(Game.mode=="companionnotes")menuIndex=Array.IndexOf(menuModes,"companions");
             if(Game.mode=="techniques")menuIndex=Array.IndexOf(menuModes,techniqueGuideParent=="plans"?"inventory":techniqueGuideParent);
-            if (menuIndex >= 0 && battlePlanConfirmation < 0 && (PadDown(4) || PadDown(5))) { OpenMenu(menuModes[(menuIndex + (PadDown(5) ? 1 : -1) + menuModes.Length) % menuModes.Length]); return; }
+            if (menuIndex >= 0 && battlePlanConfirmation < 0 && talentResetConfirmation == null && (PadDown(4) || PadDown(5))) { OpenMenu(menuModes[(menuIndex + (PadDown(5) ? 1 : -1) + menuModes.Length) % menuModes.Length]); return; }
             Point direction = new Point();
             if (Input.GetKeyDown(KeyCode.LeftArrow)) direction.x = -1;
             if (Input.GetKeyDown(KeyCode.RightArrow)) direction.x = 1;
@@ -75,6 +75,7 @@ namespace Starfall
         private void Back()
         {
             confirmControl = null;
+            if (talentResetConfirmation != null) { ClearTalentResetConfirmation(); return; }
             if (saveConfirmation != null) { saveConfirmation = null; return; }
             if(Game.mode=="plans" && battlePlanConfirmation >= 0) { battlePlanConfirmation = -1; return; }
             if(Game.mode=="plans") { OpenMenu("inventory"); return; }
