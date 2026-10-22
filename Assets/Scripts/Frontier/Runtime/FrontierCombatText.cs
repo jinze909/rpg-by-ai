@@ -18,6 +18,8 @@ namespace Starfall
 
         private static bool IsPlayerHealthText(Effect effect)
         { return effect.kind == "damageTaken" || effect.kind == "healthGain"; }
+        private static bool IsCounterDamageText(Effect effect)
+        { return effect.kind == "number" && effect.variant == 1; }
         private static bool IsCombatText(Effect effect)
         { return effect.life > 0 && (effect.kind == "number" || effect.kind == "break" || IsPlayerHealthText(effect)); }
 
@@ -26,7 +28,10 @@ namespace Starfall
             Point p = ScreenPoint(effect.position) + offset;
             // Reserve the complete existing 22px rise and 1px shadow. A new
             // label cannot enter an older label's path later in its lifetime.
-            return new Rect(p.x - 60, p.y - 77, 121, 55);
+            // Counter contacts keep the original numeric anchor. Reserve their
+            // short caption above it for the complete shared rise and shadow.
+            bool counter = IsCounterDamageText(effect);
+            return new Rect(p.x - 60, p.y - (counter ? 95 : 77), 121, counter ? 73 : 55);
         }
         private bool CombatTextBlocked(Rect candidate)
         {
@@ -40,7 +45,7 @@ namespace Starfall
             // A remote hit must remain clipped. Packing two invisible labels
             // into the canvas would invent a visible hit at the wrong source.
             if (!Overlap(original, new Rect(0, 0, Width, Height))) return new Point();
-            if (!CombatTextBlocked(original) && (!IsPlayerHealthText(effect) || !OverlapsRegions(combatTextHudRegions, original))) return new Point();
+            if (!CombatTextBlocked(original) && (!(IsPlayerHealthText(effect) || IsCounterDamageText(effect)) || !OverlapsRegions(combatTextHudRegions, original))) return new Point();
 
             // Only colliding labels move. Prefer the nearest clear lane inside
             // the canvas; the existing singleton position stays pixel-exact.

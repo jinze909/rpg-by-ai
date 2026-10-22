@@ -379,7 +379,11 @@ namespace Starfall
             OnSignalRepriseContact(e, profile, fieldcraftHealthBefore, broke);
             effects.Add(new Effect(e.kind == 2 || e.boss ? "spark" : "impact", e.Position, .22f) { direction = e.recoil });
             if (!save.reducedMotion) { hitStop = Math.Max(hitStop, technique ? .05f : .025f); impactShake = Math.Max(impactShake, technique ? .12f : profile.weapon == 0 && profile.combo == 2 ? .07f : 0); }
-            effects.Add(new Effect("number", e.Position, .7f, (crit ? "! " : "") + ((int)damage)));
+            // Counter readiness is consumed when the attack starts. Follow the
+            // captured impact to an accepted contact, including arrows/splash.
+            bool counterContact = !technique && profile.playerOwned && profile.counter && Finite(fieldcraftHealthBefore)
+                && Finite(e.hp) && fieldcraftHealthBefore > 0 && e.hp < fieldcraftHealthBefore;
+            effects.Add(new Effect("number", e.Position, .7f, (crit ? "! " : "") + ((int)damage)) { variant = counterContact ? 1 : 0 });
             if (e.hp > 0) return;
             fallen.Add(new FallenActor { actor = e, room = save.room, life = e.boss ? 1.4f : .65f, duration = e.boss ? 1.4f : .65f });
             enemies.Remove(e);

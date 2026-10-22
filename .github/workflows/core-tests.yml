@@ -45,6 +45,8 @@ jobs:
         run: python3 tools/run_starfire_alignment_checks.py
       - name: Check real combat feedback text, stable lanes, clipping and lifetime cleanup
         run: python3 tools/run_combat_text_checks.py
+      - name: Check earned counter contacts, captured projectiles, readable captions and safe lifecycle
+        run: python3 tools/run_counter_hit_checks.py
       - name: Check actual player health loss, mitigated contacts, safe drills and readable loss feedback
         run: python3 tools/run_damage_taken_checks.py
       - name: Check actual combat healing, prepared contacts, honest stew receipts and green health feedback

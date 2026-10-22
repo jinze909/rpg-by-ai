@@ -153,11 +153,14 @@ namespace Starfall
             }
             finally { drawingOutline = false; }
             // Camera movement can carry packed health feedback under the HUD.
-            // Repeat these deltas above it, including a lethal hit.
+            // Repeat these deltas and confirmed counter contacts above it,
+            // including their captions and a lethal hit.
             foreach (Effect effect in Game.effects)
-                if (IsPlayerHealthText(effect) && effect.life > 0)
+                if ((IsPlayerHealthText(effect) || IsCounterDamageText(effect)) && effect.life > 0)
                 {
-                    Rect label = CombatTextRect(effect); label.width++; label.height++;
+                    Rect label = CombatTextRect(effect);
+                    if (IsCounterDamageText(effect)) { label.y -= 18; label.height += 18; }
+                    label.width++; label.height++;
                     if (OverlapsRegions(regions, label)) DrawCombatEffect(effect);
                 }
             foreach (Enemy enemy in Game.enemies)

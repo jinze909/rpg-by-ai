@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void CounterHitEarnedSwordAppearsOnlyAtRealContactAndExpires(){CoreChecks.CounterHitEarnedSwordAppearsOnlyAtRealContactAndExpires(Data());}
+        [Test] public void CounterHitPreparedBowAndStaffRetainCapturedCounterAcrossFlightAndGear(){CoreChecks.CounterHitPreparedBowAndStaffRetainCapturedCounterAcrossFlightAndGear(Data());}
+        [Test] public void CounterHitMissesSkillsCompanionsDummyAndZeroLossStayUnmarked(){CoreChecks.CounterHitMissesSkillsCompanionsDummyAndZeroLossStayUnmarked(Data());}
+        [Test] public void CounterHitPreservesArmorCriticalLethalRewardsAndLegacySaveState(){CoreChecks.CounterHitPreservesArmorCriticalLethalRewardsAndLegacySaveState(Data());}
         [Test] public void EnemyPursuitCrossesShippedWaterDetourAtTwentyAndSixtyFrames(){CoreChecks.EnemyPursuitCrossesShippedWaterDetourAtTwentyAndSixtyFrames(Data());}
         [Test] public void EnemyPursuitUsesExactAcquisitionRetentionAndOriginalTrainingGates(){CoreChecks.EnemyPursuitUsesExactAcquisitionRetentionAndOriginalTrainingGates(Data());}
         [Test] public void EnemyPursuitPreservesCommittedWarningsReleasesStunAndRecoil(){CoreChecks.EnemyPursuitPreservesCommittedWarningsReleasesStunAndRecoil(Data());}
