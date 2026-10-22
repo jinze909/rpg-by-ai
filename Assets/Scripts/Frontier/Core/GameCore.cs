@@ -501,7 +501,7 @@ namespace Starfall
                     }
                     continue;
                 }
-                if (distance > (e.boss ? 18 : 8)) continue;
+                if (EnemyPursuitDormant(e, distance)) continue;
                 e.timer -= dt;
                 float desired = e.boss ? 3.5f : e.kind == 1 ? 4.5f : 1.05f;
                 bool visible = ClearAttackPath(e.Position, Position);

@@ -101,6 +101,8 @@ namespace Starfall
         public float windupDuration, releaseTime, moveTime, hitTime;
         public Point recoil;
         public bool backpedaling;
+        // Per-actor awareness is intentionally absent from EnemyRecord saves.
+        internal bool pursuitAlerted;
         private bool lookLeft;
         public bool VisualFlip { get { return Math.Abs(facing.x)>.25f?facing.x<0:lookLeft; } }
         public void Face(Point direction)

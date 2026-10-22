@@ -6,6 +6,28 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void EnemyPursuitCrossesShippedWaterDetourAtTwentyAndSixtyFrames(){CoreChecks.EnemyPursuitCrossesShippedWaterDetourAtTwentyAndSixtyFrames(Data());}
+        [Test] public void EnemyPursuitUsesExactAcquisitionRetentionAndOriginalTrainingGates(){CoreChecks.EnemyPursuitUsesExactAcquisitionRetentionAndOriginalTrainingGates(Data());}
+        [Test] public void EnemyPursuitPreservesCommittedWarningsReleasesStunAndRecoil(){CoreChecks.EnemyPursuitPreservesCommittedWarningsReleasesStunAndRecoil(Data());}
+        [Test] public void EnemyPursuitKeepsAlertsTransientAcrossSavesActorsTravelAndDiagnostics()
+        {
+            var data = Data(); CoreChecks.EnemyPursuitKeepsAlertsTransientAcrossSavesActorsTravelAndDiagnostics(data);
+            foreach (int version in new[] { 1, 2 })
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"room\":1,\"stage\":1,\"coins\":91,\"x\":21,\"y\":14,\"snapshotRoom\":1,\"flags\":[\"intro\"],\"worldEnemies\":[{\"id\":98701,\"kind\":0,\"x\":12,\"y\":14,\"hp\":31,\"maxHp\":43}]}");
+                var game = new GameCore(data, old); game.Start(); var enemy = game.enemies.Find(e => e.id == 98701);
+                Assert.NotNull(enemy); game.Tick(.02f, new Point()); Assert.AreEqual(12, enemy.x); Assert.AreEqual(31, enemy.hp);
+                game.save.x = 20; game.Tick(.02f, new Point()); Assert.Greater(enemy.x, 12);
+                game.save.x = enemy.x + 9; float acquiredX = enemy.x; game.Tick(.02f, new Point()); Assert.Greater(enemy.x, acquiredX);
+                game.PrepareSave(); string json = JsonUtility.ToJson(game.save);
+                Assert.IsFalse(json.Contains("pursuit")); Assert.IsFalse(json.Contains("alert"));
+                var resumed = new GameCore(data, JsonUtility.FromJson<SaveData>(json)); resumed.Start();
+                var restored = resumed.enemies.Find(e => e.id == 98701); Assert.NotNull(restored);
+                Assert.AreEqual(enemy.x, restored.x); Assert.AreEqual(enemy.y, restored.y); Assert.AreEqual(31, restored.hp); Assert.AreEqual(91, resumed.save.coins);
+                float restoredTimer = restored.timer; resumed.Tick(.02f, new Point());
+                Assert.AreEqual(enemy.x, restored.x); Assert.AreEqual(enemy.y, restored.y); Assert.AreEqual(restoredTimer, restored.timer);
+            }
+        }
         [Test] public void ArcherEvasionEscapesMirroredWallsAndRejectsClosingCornerSlides(){CoreChecks.ArcherEvasionEscapesMirroredWallsAndRejectsClosingCornerSlides(Data());}
         [Test] public void ArcherEvasionPreservesStraightRetreatAndExistingPerception(){CoreChecks.ArcherEvasionPreservesStraightRetreatAndExistingPerception(Data());}
         [Test] public void ArcherEvasionKeepsCommittedShotsAndTrainingExclusions(){CoreChecks.ArcherEvasionKeepsCommittedShotsAndTrainingExclusions(Data());}
