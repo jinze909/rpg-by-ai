@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void SmithQuotesExposeRecipesBenefitsAndReadOnlySnapshots(){CoreChecks.SmithQuotesExposeRecipesBenefitsAndReadOnlySnapshots(Data());}
+        [Test] public void SmithTransactionsKeepFiveUpgradeTiersAndFreeOwnedEquipment(){CoreChecks.SmithTransactionsKeepFiveUpgradeTiersAndFreeOwnedEquipment(Data());}
+        [Test] public void SmithChoicesRecheckLiveMaterialsAndKeepRejectedDialogue(){CoreChecks.SmithChoicesRecheckLiveMaterialsAndKeepRejectedDialogue(Data());}
+        [Test] public void SmithQuotesPreserveLegacyProgressAndCapturedCombat(){CoreChecks.SmithQuotesPreserveLegacyProgressAndCapturedCombat(Data());}
         [Test] public void TalentResetQuotesExposeExactThreeClassCostsRefundsAndHealthWithoutMutation(){CoreChecks.TalentResetQuotesExposeExactThreeClassCostsRefundsAndHealthWithoutMutation(Data());}
         [Test] public void TalentResetTransactionsPayOnceKeepOriginalWrapperAndTrainingAccess(){CoreChecks.TalentResetTransactionsPayOnceKeepOriginalWrapperAndTrainingAccess(Data());}
         [Test] public void TalentResetRejectsStaleOwnersDataWorldsAndInvalidRefundsAtomically(){CoreChecks.TalentResetRejectsStaleOwnersDataWorldsAndInvalidRefundsAtomically(Data());}

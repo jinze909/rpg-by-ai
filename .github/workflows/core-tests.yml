@@ -123,6 +123,8 @@ jobs:
         run: python3 tools/run_battle_plan_checks.py
       - name: Check reviewed talent refunds, deliberate confirmation, stale owners and legacy saves
         run: python3 tools/run_talent_reset_checks.py
+      - name: Check honest blacksmith quotes, free owned weapons, material shortfalls and legacy saves
+        run: python3 tools/run_forge_quote_checks.py
       - name: Check selected weapon mastery, live milestones, read-only menus and legacy saves
         run: python3 tools/run_weapon_mastery_checks.py
       - name: Check honest relic forge quotes, actual payments, menu inputs and legacy saves

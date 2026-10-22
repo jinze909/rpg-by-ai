@@ -674,10 +674,11 @@ namespace Starfall
             }
             if (kind == "forge")
             {
-                List<Choice> list = new List<Choice> { C("强化装备 · 木3 晶2 零件2", "Upgrade · 3 timber / 2 crystal / 2 parts", "upgrade"), C("制作猎弓 · 木4 零件2", "Craft bow · 4 timber / 2 parts", "bow"), C("制作星火杖 · 晶4 零件3", "Craft staff · 4 crystal / 3 parts", "staff") };
+                List<Choice> list = new List<Choice> { ForgeChoice(0), ForgeChoice(1), ForgeChoice(2) };
                 if (!Has("ally_3")) list.Add(C("支线：交付零件 ×5", "Commission: deliver 5 parts", "ally3"));
                 list.Add(C("再见", "Goodbye", "close"));
                 AppendSupperChoice(list, 2);
+                list.Add(C("查看工坊报价", "Review workshop quotes", "forge_quotes"));
                 Dialog(o.name, o.en, "短剑快，猎弓远，法杖能让星火在敌人间爆开。强化装备提升生命与攻击。\n\n我还需要五个零件修好镇里的水泵。堡垒里有那么多机器，小镇却没有一口能用的井。", "Swords are quick, bows reach far, and staves burst starfire between enemies. Upgrades improve health and damage.\n\nI also need five parts to repair our water pump. So many machines in the citadel, and no working well in town.", list.ToArray()); return;
             }
             if (kind == "cook") { Dialog(o.name, o.en, "暖潮炖汤：鱼1、药草2。回复55生命与耐力，增加攻击90秒。F喝汤。\n\n星薄荷凉茶：药草2、星晶1。T喝茶，抗暑抗寒并增加耐力回复180秒。", "Stew: 1 fish, 2 herbs. Heals 55, refills energy and boosts damage for 90 seconds. F drinks it.\n\nTea: 2 herbs, 1 crystal. T drinks it for climate protection and faster energy recovery, 180 seconds.", SupplyPreparationChoices(SupperCookChoices(C("制作炖汤", "Cook stew", "cook"), C("买炖汤 · " + ShopStewCost + " 硬币", "Buy stew · " + ShopStewCost + " coins", "buymeal"), C("买木材 ×4 · " + ShopTimberCost + " 硬币", "Buy timber ×4 · " + ShopTimberCost + " coins", "buywood"), C("制作凉茶", "Brew tea", "tea"), C("再见", "Goodbye", "close"), C("远行厨房", "Road kitchen", "kitchen")))); return; }
@@ -754,6 +755,7 @@ namespace Starfall
             string action = conversation.choices[index].action;
             if (!DialogueChoiceEnabled(action)) { sound = "deny"; return; }
             Close();
+            if (ChooseForgeQuotes(action)) return;
             if (ChooseRiverLesson(action)) return;
             if (ChooseSupplyPreparation(action)) return;
             if (ChooseReturnLetter(action)) return;
@@ -800,13 +802,15 @@ namespace Starfall
             if (action == "upgrade")
             {
                 if (save.upgrades >= 5) { Notify("装备已经满级。", "Your equipment is fully upgraded."); return; }
-                if (Spend(3, 2, 0, 0, 2)) { save.upgrades++; save.maxHealth += 20; save.health = save.maxHealth; Notify("强化：最大生命 +20，攻击 +4。", "Upgraded: +20 maximum health, +4 damage."); sound = "reward"; }
+                ForgeQuote quote = GetForgeQuote(0);
+                if (quote.available && Spend(quote.wood, quote.crystals, 0, 0, quote.parts)) { save.upgrades++; save.maxHealth += 20; save.health = save.maxHealth; Notify("强化：最大生命 +20，攻击 +4。", "Upgraded: +20 maximum health, +4 damage."); sound = "reward"; }
             }
             if (action == "bow" || action == "staff")
             {
                 int w = action == "bow" ? 1 : 2;
                 if (Has("weapon_" + w)) { Equip(w); Notify("已装备。", "Equipped."); return; }
-                if (Spend(w == 1 ? 4 : 0, w == 2 ? 4 : 0, 0, 0, w == 1 ? 2 : 3)) { Flag("weapon_" + w); Equip(w); sound = "reward"; Notify("制作成功！背包 I 可以切换武器。", "Crafted! Switch weapons in your inventory, I."); }
+                ForgeQuote quote = GetForgeQuote(w);
+                if (quote.available && Spend(quote.wood, quote.crystals, 0, 0, quote.parts)) { Flag("weapon_" + w); Equip(w); sound = "reward"; Notify("制作成功！背包 I 可以切换武器。", "Crafted! Switch weapons in your inventory, I."); }
             }
             if (action == "cook" && Spend(0, 0, 2, 1, 0)) { save.inventory[6]++; sound = "reward"; Notify("暖潮炖汤 ×1", "Tide stew ×1"); }
             if (action == "buymeal" && Spend(0, 0, 0, 0, 0, ShopStewCost)) { save.inventory[6]++; Notify("暖潮炖汤 ×1", "Tide stew ×1"); }
