@@ -387,6 +387,11 @@ namespace Starfall.Tests
         [Test] public void CombatLootAggregationSnapshotsAndSimulationClockStayReadOnly() { CoreChecks.CombatLootAggregationSnapshotsAndSimulationClockStayReadOnly(Data()); }
         [Test] public void CombatLootAbyssMatchesUnbankedPayoutBankingLossAndEcho() { CoreChecks.CombatLootAbyssMatchesUnbankedPayoutBankingLossAndEcho(Data()); }
         [Test] public void CombatLootSpecialActorsLifecycleAndLegacySavesKeepOwnership() { CoreChecks.CombatLootSpecialActorsLifecycleAndLegacySavesKeepOwnership(Data()); }
+        [Test] public void InteractionHintResourcesFollowRealGatherAndInnRest() { CoreChecks.InteractionHintResourcesFollowRealGatherAndInnRest(Data()); }
+        [Test] public void InteractionHintGardenKeepsDialogueGrowthHarvestAndRecipes() { CoreChecks.InteractionHintGardenKeepsDialogueGrowthHarvestAndRecipes(Data()); }
+        [Test] public void InteractionHintSealsAndCachesMatchActualPowersAndOnceRewards() { CoreChecks.InteractionHintSealsAndCachesMatchActualPowersAndOnceRewards(Data()); }
+        [Test] public void InteractionHintPreservesNearestAndRejectsForeignOrUnsupportedTargets() { CoreChecks.InteractionHintPreservesNearestAndRejectsForeignOrUnsupportedTargets(Data()); }
+        [Test] public void InteractionHintQueriesAndLegacyReloadsKeepAllStateReadOnly() { CoreChecks.InteractionHintQueriesAndLegacyReloadsKeepAllStateReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }

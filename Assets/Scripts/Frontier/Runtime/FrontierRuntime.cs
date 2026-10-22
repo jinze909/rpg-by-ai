@@ -351,10 +351,7 @@ namespace Starfall
             DrawAtmosphere(); DrawForegroundThreatContours(); DrawPolishWorld();
             WorldObject near = Game.Nearest();
             if (near != null && Game.mode == "world" && Game.SafeTravel)
-            {
-                Point s = ScreenPoint(new Point(near.x, near.y)); string label = ControlKey("E", "B") + "  " + Game.L(near.name, near.en);
-                Panel(s.x - 125, s.y + 14, 250, 35, new Color(.04f, .075f, .12f, .94f), gold); Text(s.x - 117, s.y + 18, 234, 27, label, 14, paper, TextAnchor.MiddleCenter);
-            }
+                DrawInteractionPrompt(near);
         }
         private struct WorldTileRange
         { public int left, top, right, bottom; }

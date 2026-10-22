@@ -99,6 +99,8 @@ jobs:
         run: python3 tools/run_landmark_checks.py
       - name: Check interaction-aware routes, exact E targets, live gates and arrival hints
         run: python3 tools/run_interaction_route_checks.py
+      - name: Check live interaction hints, actual gathering and growth, safe prompt layout and unchanged inputs
+        run: python3 tools/run_interaction_hint_checks.py
       - name: Check continuous scenery cover, companion visibility and real walking
         run: python3 tools/run_scenery_cover_checks.py
       - name: Check regional snow and dust, settings, pause and danger readability
