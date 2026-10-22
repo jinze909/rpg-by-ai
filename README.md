@@ -32,6 +32,8 @@
 
 完成老潮的鱼汤委托并找回第一枚星核后，可接下「河岸练钓」：去旧路河岸两处水边练习等候、择时收线与放松钓线，再带记录回镇领取一次性报酬。原湖畔钓鱼保留，钓成的鱼无需上交，进度随存档恢复。见 [RIVER-LESSON.md](docs/RIVER-LESSON.md)。
 
+试装训练场支持从 Esc／START 暂停菜单进入「训练场控制」，用键盘或手柄换目标、重置记录和结束训练。控制页暂停记录，返回可继续同次尝试；原鼠标按钮和战斗按键保留。见 [RANGE-CONTROLS.md](docs/RANGE-CONTROLS.md)。
+
 ## 启动
 
 1. **升级现有项目**：关闭 Unity，备份项目，覆盖包内 `Assets`、`Packages` 与 `ProjectSettings`；本轮也请更新 `ProjectSettings/ProjectVersion.txt`，清除旧的 C1 和 revision 信息。

@@ -17,6 +17,7 @@ namespace Starfall
             if (!Game.RangeActive || Game.mode != "world" || Game.Dying) return;
             for (int i = 0; i < 3; i++) regions.Add(new Rect(360 + i * 188, 150, 176, 31));
             regions.Add(RangeReset); regions.Add(RangeEnd);
+            regions.Add(RangeControlsEntry);
         }
 
         private void DrawRangePresentation()
@@ -35,6 +36,8 @@ namespace Starfall
                 if (Button(360 + i * 188, 150, 176, 31, labels[i], Game.RangeLayout == i, Game.RangeLayout != i)) Game.ChangeRangeLayout(i);
             if (Button(RangeReset.x, RangeReset.y, RangeReset.width, RangeReset.height, Game.L("重置本次记录", "Reset this attempt"))) Game.ResetRange();
             if (Button(RangeEnd.x, RangeEnd.y, RangeEnd.width, RangeEnd.height, Game.L("结束试装，返回", "Finish and return"))) Game.EndPractice();
+            if (Button(RangeControlsEntry.x, RangeControlsEntry.y, RangeControlsEntry.width, RangeControlsEntry.height,
+                Game.L("训练场控制 · ", "Range controls · ") + ControlKey("ESC", "START"), false, CanOpenRangeControls)) OpenRangeControls();
         }
     }
 }

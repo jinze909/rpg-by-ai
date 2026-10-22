@@ -36,7 +36,7 @@ namespace Starfall
             if (id < 0 || portraits == null) { Icon(id < 0 ? "journal" : "companion", x + w * .2f, y + h * .25f, w * .6f); return; }
             float size = Math.Min(w, h); id = Math.Max(0, Math.Min(7, id)); GUI.DrawTextureWithTexCoords(new Rect(x + (w - size) / 2, y + h - size, size, size), portraits, new Rect(id % 4 / 4f, id < 4 ? .5f : 0, .25f, .5f));
         }
-        private void OpenMenu(string mode) { battlePlanConfirmation = -1; if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
+        private void OpenMenu(string mode) { battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
         private void Dim() { Box(0, 0, Width, Height, new Color(.02f, .035f, .07f, .87f)); }
         private void Bar(float x, float y, float w, float value, Color color, float h = 6)
         { Box(x, y, w, h, PixelArt.C("#0d1c2c")); Box(x, y, w * Mathf.Clamp01(value), h, color); Box(x, y, w * Mathf.Clamp01(value), 1, Color.Lerp(color, paper, .3f)); }
@@ -340,7 +340,9 @@ namespace Starfall
             if (Button(594, 540, 303, 43, Game.L("进入实战练习", "Combat practice"), false, Game.Has("intro") && Game.save.room == 0)) Game.StartPractice();
             if (Button(912, 540, 305, 43, Game.L("查看指南 F1", "Field guide F1"))) OpenMenu("help");
             if (Button(279, 590, 300, 34, Game.L("摇杆瞄准设置", "Controller aiming"))) OpenControllerSettings();
-            Text(594, 589, 623, 43, Game.L("实战练习在余烬镇教官处重复进行，物资与生命不会损失。", "Repeat safe combat practice with Emberfall's mentor; supplies and health are protected."), 14, muted);
+            if (Game.RangeActive && settingsParent != "title")
+            { if (Button(594, 590, 623, 34, Game.L("试装训练场控制", "Loadout range controls"), false, CanOpenRangeControls)) OpenRangeControls(); }
+            else Text(594, 589, 623, 43, Game.L("实战练习在余烬镇教官处重复进行，物资与生命不会损失。", "Repeat safe combat practice with Emberfall's mentor; supplies and health are protected."), 14, muted);
             if (Button(279, 642, 460, 45, Game.L("继续 / 返回", "Resume / back"), true)) Back();
             if (Button(756, 642, 461, 45, Game.L("保存并返回标题", "Save & return to title"))) { if (!Game.Has("intro") || Save()) Game.mode = "title"; }
         }

@@ -54,6 +54,7 @@ namespace Starfall
             if (PadDown(1) || Input.GetKeyDown(KeyCode.Escape)) { Back(); return; }
             int menuIndex=Array.IndexOf(menuModes,Game.mode);
             if(Game.mode=="plans")menuIndex=Array.IndexOf(menuModes,"inventory");
+            if(Game.mode=="rangecontrols")menuIndex=Array.IndexOf(menuModes,"inventory");
             if(Game.mode=="landmarks")menuIndex=Array.IndexOf(menuModes,"map");
             if(Game.mode=="companionnotes")menuIndex=Array.IndexOf(menuModes,"companions");
             if(Game.mode=="techniques")menuIndex=Array.IndexOf(menuModes,techniqueGuideParent=="plans"?"inventory":techniqueGuideParent);
@@ -80,6 +81,7 @@ namespace Starfall
             if(Game.mode=="techniques") { OpenMenu(techniqueGuideParent); return; }
             if (replacePrompt) { replacePrompt = false; return; }
             if (Game.mode == "title") return;
+            if (Game.mode == "rangecontrols") { OpenMenu("pause"); return; }
             if (Game.mode == "landmarks") { OpenMenu("map"); return; }
             if (Game.mode == "companionnotes") { OpenMenu("companions"); return; }
             if (Game.mode == "world") { OpenMenu("pause"); Save(); return; }
