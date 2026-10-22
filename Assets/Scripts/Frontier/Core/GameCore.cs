@@ -23,7 +23,7 @@ namespace Starfall
         public string mode
         {
             get { return currentMode; }
-            set { currentMode = value; if (value != "world") { ClearBufferedCombatInputs(); ClearCombatFocus(); } }
+            set { currentMode = value; if (value != "fish") ResetRiverFishing(); if (value != "world") { ClearBufferedCombatInputs(); ClearCombatFocus(); } }
         }
         public string toast = "";
         public Conversation conversation;
@@ -110,6 +110,7 @@ namespace Starfall
             invulnerable = 1; conversation = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
             ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetRangeTransient(); ResetCommissionTransient(); ResetShelterTransient();
+            ResetRiverFishing();
             ClearFieldcraftTransient(); ResetRootEcho();
         }
         public void NewGame(int profession)
@@ -241,7 +242,7 @@ namespace Starfall
             dt = Finite(dt) ? Clamp(dt, 0, .05f) : 0;
             if (dt <= 0) return;
             toastTime -= dt;
-            if (mode == "fish") { fishTime += dt; fishCursor = .5f + .5f * (float)Math.Sin(fishTime * (2.5f + fishHits * .35f)); return; }
+            if (mode == "fish") { if (!TickRiverFishing(dt)) { fishTime += dt; fishCursor = .5f + .5f * (float)Math.Sin(fishTime * (2.5f + fishHits * .35f)); } return; }
             if (mode != "world") return;
             ValidateCombatFocus();
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
@@ -588,6 +589,7 @@ namespace Starfall
         public bool IsObjectPresent(WorldObject o)
         {
             if (o == null) return false;
+            if (o.kind != null && o.kind.StartsWith("riverFishing", StringComparison.Ordinal)) return save.room == ReachRoom && RiverLessonAccepted;
             if (o.kind != null && o.kind.StartsWith("supperBowl", StringComparison.Ordinal)) return save.room == 9 && SupperReady && SupperCooked;
             if (o.kind != null && o.kind.StartsWith("shelterMark")) return save.room == 7 && ShelterAccepted;
             if (o.kind == "returnscout") return Has("scout_saved");
@@ -620,6 +622,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkRiverLesson(o)) return;
             if (TalkReturnLetter(o)) return;
             if (TalkSupper(o)) return;
             if (TalkShelter(o)) return;
@@ -662,6 +665,7 @@ namespace Starfall
                 if (!Has("ally_2")) list.Add(C("支线：交付银鳍鱼 ×3", "Commission: deliver 3 Silverfin", "ally2"));
                 list.Add(C("再见", "Goodbye", "close"));
                 AppendSupperChoice(list, 1);
+                AppendRiverLessonChoice(list);
                 Dialog(o.name, o.en, "我想给避难的孩子们煮一锅鱼汤，需要三条银鳍鱼。\n\n钓鱼时按 E 或点收线，让浮标停在绿色区，成功三次就能钓到鱼。没有鱼饵消耗，慢慢试。", "Three Silverfin would make soup for the refugee children.\n\nPress E or Reel while the marker is in the green band. Three good pulls catch a fish. No bait cost; take your time.", list.ToArray()); return;
             }
             if (kind == "forge")
@@ -746,6 +750,7 @@ namespace Starfall
             string action = conversation.choices[index].action;
             if (!DialogueChoiceEnabled(action)) { sound = "deny"; return; }
             Close();
+            if (ChooseRiverLesson(action)) return;
             if (ChooseSupplyPreparation(action)) return;
             if (ChooseReturnLetter(action)) return;
             if (ChooseFieldcraft(action)) return;
@@ -848,6 +853,7 @@ namespace Starfall
         }
         public void FishHit()
         {
+            if (ReelRiverFishing()) return;
             if (mode != "fish") return;
             if (Math.Abs(fishCursor - .5f) <= .18f) { fishHits++; sound = "reward"; } else { fishMisses++; sound = "hurt"; }
             if (fishHits >= 3) { save.inventory[3]++; save.coins += 4; BountyEvent(2, 1); Close(); revision++; Notify("钓到银鳍鱼 ×1！", "Caught a Silverfin!"); }

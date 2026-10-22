@@ -382,7 +382,7 @@ namespace Starfall
         {
             if (!Game.IsObjectPresent(o)) return;
             Point p = ScreenPoint(new Point(o.x, o.y)); string kind = o.kind;
-            if (DrawShelterObject(o) || DrawReachObject(o) || DrawPolishObject(o) || DrawExpansionObject(o)) return;
+            if (DrawRiverFishingObject(o) || DrawShelterObject(o) || DrawReachObject(o) || DrawPolishObject(o) || DrawExpansionObject(o)) return;
             if (kind.StartsWith("portal"))
             {
                 int destination = int.Parse(kind.Substring(6)); bool available = Game.CanEnter(destination);

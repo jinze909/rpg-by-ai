@@ -56,11 +56,12 @@ public static class RuntimeJournalPaginationChecks
     }
     private static Rect Row(int cell) { float spacing=464f/18;return new Rect(279,226+cell*spacing-(cell==18?3:0),321,spacing-7); }
     private static List<GUI.ButtonCall> Rows() { return GUI.buttonCalls.FindAll(b=>Near(b.rect.x,279)&&Near(b.rect.width,321)); }
+    private static int SecondPageRowCount() { return Math.Min(19,GameCore.QuestIds.Length-19); }
     private static bool HasText(string text) { return GUI.commands.Exists(c=>c.Contains("\"text\":"+GUI.S(text))); }
     private static void MatureRowsAndLocalizedPages(FrontierRuntime app)
     {
         string[] mature={"main","shore","ally1","ally2","ally3","personal0","personal1","personal2","bounty","secrets","watch","signal","archive","reach","homeward","commission","shelter","fieldcraft","supper"};
-        Check(GameCore.QuestIds.Length==20,"The new return letter appends exactly one complete quest");
+        Check(GameCore.QuestIds.Length>=20,"The return letter and any appended quests preserve the mature journal");
         for(int i=0;i<mature.Length;i++)Check(GameCore.QuestIds[i]==mature[i],"Existing quest ordering is preserved: "+mature[i]);
         Check(GameCore.QuestIds[19]=="returnletter","The return letter occupies the next journal page");
         for(int language=0;language<2;language++)for(int large=0;large<2;large++)
@@ -71,8 +72,16 @@ public static class RuntimeJournalPaginationChecks
             for(int i=0;i<19;i++)Check(Same(rows[i].rect,Row(i)),"The exact mature row rectangle survives pagination: "+i);
             Check(Row(18).y+Row(18).height<730&&GUI.buttonCalls.Exists(b=>Same(b.rect,Next)&&b.enabled)&&GUI.buttonCalls.Exists(b=>Same(b.rect,Previous)&&!b.enabled),"Original last row and separate page controls fit above the unchanged footer");
             Click(app,Row(11));Draw(app);Check(Get<int>(app,"selectedQuest")==11&&HasText(g.GetQuest("signal").title),"The established Warden row stays visible, selectable and correctly bound");
-            Click(app,Next);Draw(app,"second-"+suffix);Check(Get<int>(app,"selectedQuest")==19&&Rows().Count==1&&Same(Rows()[0].rect,Row(0)),"Next page selects its first real quest without compressing rows");
-            Check(HasText(g.GetQuest("returnletter").title)&&GUI.buttonCalls.Exists(b=>Same(b.rect,Previous)&&b.enabled)&&GUI.buttonCalls.Exists(b=>Same(b.rect,Next)&&!b.enabled),"Second-page details and enabled/disabled bounds match the selected quest");
+            Click(app,Next);Draw(app,"second-"+suffix);Check(Get<int>(app,"selectedQuest")==19&&Rows().Count==SecondPageRowCount()&&Same(Rows()[0].rect,Row(0)),"Next page selects its first real quest without compressing rows");
+            Check(HasText(g.GetQuest("returnletter").title)&&GUI.buttonCalls.Exists(b=>Same(b.rect,Previous)&&b.enabled)&&GUI.buttonCalls.Exists(b=>Same(b.rect,Next)&&b.enabled==(GameCore.QuestIds.Length>38)),"Second-page details and enabled/disabled bounds match the selected quest");
+            rows=Rows();
+            for(int cell=0;cell<SecondPageRowCount();cell++)
+            {
+                int index=19+cell;QuestGuide quest=g.GetQuest(GameCore.QuestIds[index]);
+                Check(Same(rows[cell].rect,Row(cell))&&rows[cell].enabled,"Every appended quest keeps its visible, enabled row rectangle: "+index);
+                Click(app,Row(cell));Draw(app);
+                Check(Get<int>(app,"selectedQuest")==index&&GUI.commands.Exists(c=>c.Contains("\"text\":"+GUI.S(quest.title))&&c.Contains("\"r\":[650,281,541,45]")),"Each second-page row selects its real quest index and detail title: "+index);
+            }
             foreach(var b in GUI.buttonCalls)if(Same(b.rect,Previous)||Same(b.rect,Next))
                 Check(b.rect.y>=690&&b.rect.y+b.rect.height<730&&b.rect.x>=625,"Page controls stay below the detail card, beside no quest rows and above Back");
             Click(app,Previous);Draw(app);Check(Get<int>(app,"selectedQuest")==0&&Rows().Count==19,"Previous page restores all mature quests with its first entry selected");
@@ -88,7 +97,7 @@ public static class RuntimeJournalPaginationChecks
         Click(app,new Rect(650,647,258,31));Check(g.save.trackedQuest=="returnletter"&&g.CurrentGuide.id==q.id,"Actual second-page tracking targets the new real quest");
         Click(app,new Rect(927,647,263,31));Check(g.mode=="map"&&Get<int>(app,"selectedRegion")==q.room,"Actual Show destination opens the correct authored region");
         Key(app,KeyCode.Escape);Key(app,KeyCode.Tab);Draw(app);
-        Check(g.mode=="journal"&&Get<int>(app,"selectedQuest")==19&&Rows().Count==1,"Closing and reopening the journal remembers its selected second-page quest");
+        Check(g.mode=="journal"&&Get<int>(app,"selectedQuest")==19&&Rows().Count==SecondPageRowCount(),"Closing and reopening the journal remembers its selected second-page quest");
         Key(app,KeyCode.Escape);Update(app);Point? target=g.NavigationTarget();
         Check(target.HasValue&&(target.Value-q.target).Length<.005f,"World navigation follows the selected follow-up's actual next interaction");
         g.PrepareSave();Check(SaveStore.Write(g.save,2),"Actual checksummed save writes the tracked new quest");string warning;SaveData loaded=SaveStore.Read(2,out warning);
@@ -101,7 +110,7 @@ public static class RuntimeJournalPaginationChecks
     private static void KeyboardAndControllerConfirmVisibleControls(FrontierRuntime app)
     {
         Prepare(app);Focus(app,Next);Key(app,KeyCode.Return);Draw(app);Draw(app);
-        Check(Get<int>(app,"selectedQuest")==19&&Rows().Count==1,"Actual keyboard focus and Enter activate the visible next page");
+        Check(Get<int>(app,"selectedQuest")==19&&Rows().Count==SecondPageRowCount(),"Actual keyboard focus and Enter activate the visible next page");
         Rect track=new Rect(650,647,258,31);Focus(app,track);Key(app,KeyCode.JoystickButton0);Draw(app);
         Check(app.Game.save.trackedQuest=="returnletter"&&Get<bool>(app,"controllerUsed"),"Actual gamepad A confirms the second-page tracking control");
         Focus(app,Previous);Key(app,KeyCode.JoystickButton0);Draw(app);Draw(app);

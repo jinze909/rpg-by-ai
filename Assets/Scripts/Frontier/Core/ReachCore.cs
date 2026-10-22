@@ -31,7 +31,7 @@ namespace Starfall
         private void VisitReach()
         {
             if(save.room!=ReachRoom || !ReachReady || ReachVisited) return;
-            Flag("reach_visit"); TrackQuest("reach");
+            Flag("reach_visit"); if (save.trackedQuest != "riverlesson") TrackQuest("reach");
             RecordMoment("走进旧路河岸：找回三处旧灯的路线，看看回家的人还能走哪条路。", "Entered Reedwater Reach: survey three old lamps and recover a road home.");
         }
         public bool RecordReachPost(int index)

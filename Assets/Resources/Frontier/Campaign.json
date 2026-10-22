@@ -2815,6 +2815,22 @@
           "en": "Starcrystal vein",
           "x": 66,
           "y": 10
+        },
+        {
+          "id": "riverlesson_pond",
+          "name": "西侧水边",
+          "en": "Western pond",
+          "x": 9,
+          "y": 14,
+          "kind": "riverFishing0"
+        },
+        {
+          "id": "riverlesson_river",
+          "name": "河岸流水",
+          "en": "Riverbank current",
+          "x": 29,
+          "y": 25,
+          "kind": "riverFishing1"
         }
       ],
       "decor": [

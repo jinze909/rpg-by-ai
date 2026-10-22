@@ -409,6 +409,13 @@ namespace Starfall.Tests
         [Test] public void InteractionHintPreservesNearestAndRejectsForeignOrUnsupportedTargets() { CoreChecks.InteractionHintPreservesNearestAndRejectsForeignOrUnsupportedTargets(Data()); }
         [Test] public void InteractionHintQueriesAndLegacyReloadsKeepAllStateReadOnly() { CoreChecks.InteractionHintQueriesAndLegacyReloadsKeepAllStateReadOnly(Data()); }
 
+        [Test] public void RiverLessonOriginalCommissionAndLakeChoicesRemain() { CoreChecks.RiverLessonOriginalCommissionAndLakeChoicesRemain(Data()); }
+        [Test] public void RiverLessonLockedForeignStaleAndUnsafeActionsAreRejected() { CoreChecks.RiverLessonLockedForeignStaleAndUnsafeActionsAreRejected(Data()); }
+        [Test] public void RiverLessonBothBanksUseActualPhasesTimeoutsAndSinglePulls() { CoreChecks.RiverLessonBothBanksUseActualPhasesTimeoutsAndSinglePulls(Data()); }
+        [Test] public void RiverLessonReportIsLocalAtomicCappedAndPaidOnlyOnce() { CoreChecks.RiverLessonReportIsLocalAtomicCappedAndPaidOnlyOnce(Data()); }
+        [Test] public void RiverLessonAppendsQuietGuidanceAndKeepsReachTopology() { CoreChecks.RiverLessonAppendsQuietGuidanceAndKeepsReachTopology(Data()); }
+        [Test] public void RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch() { CoreChecks.RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }
