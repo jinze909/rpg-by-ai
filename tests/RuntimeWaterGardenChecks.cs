@@ -167,15 +167,51 @@ public static class RuntimeWaterGardenChecks
         const float cell=6;Check(GUI.textureCalls.Exists(t=>Same(t.rect,new Rect(1024+obj.x*cell-1,42+obj.y*cell-1,3,3))),"Actual town minimap contains the live canonical quest interaction");
         Key(app,KeyCode.M);Draw(app);Check(GUI.textureCalls.Exists(t=>Same(t.rect,new Rect(888+obj.x*8.4f-1,264+obj.y*8.4f-1,3,3))),"Actual town local map contains the discovered live interaction");Key(app,KeyCode.Escape);
     }
+    static List<GUI.TextureCall> StaticGround(FrontierRuntime app)
+    {
+        Draw(app);
+        return GUI.textureCalls.FindAll(t=>t.texture.name=="resource:Frontier/Art/Terrain"
+            ||t.texture.name=="resource:Frontier/Art/TerrainVariants"||t.texture.name=="resource:Frontier/Art/Details");
+    }
+    static bool SameGround(GUI.TextureCall a,GUI.TextureCall b)
+    {
+        return a.texture.name==b.texture.name&&a.rect.x==b.rect.x&&a.rect.y==b.rect.y&&a.rect.width==b.rect.width&&a.rect.height==b.rect.height
+            &&a.uv.x==b.uv.x&&a.uv.y==b.uv.y&&a.uv.width==b.uv.width&&a.uv.height==b.uv.height
+            &&a.color.r==b.color.r&&a.color.g==b.color.g&&a.color.b==b.color.b&&a.color.a==b.color.a
+            &&a.matrix.m00==b.matrix.m00&&a.matrix.m01==b.matrix.m01&&a.matrix.m03==b.matrix.m03
+            &&a.matrix.m10==b.matrix.m10&&a.matrix.m11==b.matrix.m11&&a.matrix.m13==b.matrix.m13;
+    }
+    static void PermanentGroundAtEveryHandoff(FrontierRuntime app)
+    {
+        Prepare(app);var g=app.Game;
+        for(int stage=0;stage<=4;stage++)
+        {
+            if(stage==1)Accept(app);if(stage==2)DrawWater(app);if(stage==3)Water(app);if(stage==4)Report(app);
+            g.Close();Set(app,"camera",new Point(19,8));
+            WorldObject[] authored=g.Map.objects;var actual=StaticGround(app);List<GUI.TextureCall> control;
+            try
+            {
+                // The control keeps every mature object and removes only the
+                // two new overlays. No baseline digest or draw is filtered out.
+                g.Map.objects=Array.FindAll(authored,o=>o.kind!="waterDraw"&&o.kind!="waterBed");
+                control=StaticGround(app);
+            }
+            finally{g.Map.objects=authored;}
+            Check(control.Exists(t=>t.texture.name=="resource:Frontier/Art/Details"),"Ground control includes authored grass/flower detail calls");
+            Check(actual.Count==control.Count,"Quest markers cannot erase permanent ground at handoff stage "+stage);
+            for(int i=0;i<actual.Count;i++)Check(SameGround(actual[i],control[i]),"Full ordered terrain/detail rect, UV, tint, alpha and matrix survives stage "+stage+" call "+i);
+        }
+    }
     static void BilingualLayoutsAndMarkers(FrontierRuntime app)
     {
+        PermanentGroundAtEveryHandoff(app);
         foreach(bool english in new[]{false,true})foreach(bool large in new[]{false,true})foreach(int width in new[]{960,1280})
         {
             Prepare(app,true,english,large,width);var g=app.Game;string suffix=(english?"en":"zh")+(large?"-large":"-normal")+"-"+width;int input=width==960?0:2;Accept(app,input,"offer-"+suffix);Marker(app,"waterDraw","well-"+suffix);DrawWater(app,input,"draw-"+suffix);Marker(app,"waterBed","bed-"+suffix);Water(app,input,"water-"+suffix);Report(app,input,"report-"+suffix);Check(State(g,"Complete"),"Actual mouse/pad report completes both localized accessible layouts");
             g.toastTime=0;Beside(app,"garden");Draw(app,"watered-world-"+suffix);WorldObject bed=Object(g,"waterBed");Point bedPoint=(Point)Call(app,"ScreenPoint",new Point(bed.x,bed.y));Check(!g.IsObjectPresent(bed)&&GUI.textureCalls.Exists(t=>Same(t.rect,new Rect(bedPoint.x-16,bedPoint.y,32,2))),"Retired interaction leaves its exact persistent watered-bed cue in the world");Interact(app,"garden");Choose(app,"watergarden_offer",input);Pages(app,"complete-"+suffix);Check(!Array.Exists(g.conversation.choices,c=>c.action=="watergarden_finish"),"Completed localized review never exposes a payout");Choose(app,"close",input);
             Position(app,new Point(18,11));Draw(app);Check(ReferenceEquals(g.Nearest(),Object(g,"routes")),"Completed rendering retains the mature Wayfinder interaction");
         }
-        Console.WriteLine("PASS actual bilingual normal/large 960/1280 paginated offers/actions/reports, mouse/pad activation, independent world/minimap/local-map markers and persistent watered-world captures; NATIVE_UNVERIFIED");
+        Console.WriteLine("PASS unchanged ordered static ground through all five handoff stages, actual bilingual normal/large 960/1280 paginated offers/actions/reports, mouse/pad activation, independent world/minimap/local-map markers and persistent watered-world captures; NATIVE_UNVERIFIED");
     }
 
     public static int Main(string[] args)

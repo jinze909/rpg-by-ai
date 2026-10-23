@@ -85,7 +85,14 @@ namespace Starfall
             if (seed % 17 != 0) return;
             Point world = new Point(x + .35f + seed % 5 * .07f, y + .65f);
             // Persistent world decoration: approaching actors cannot erase tiles.
-            foreach (WorldObject item in Game.Map.objects) if ((world - new Point(item.x, item.y)).Length < 1.4f) return;
+            foreach (WorldObject item in Game.Map.objects)
+            {
+                // The water-delivery markers sit on existing ground. They
+                // must not erase its details, even while a quest step is live;
+                // otherwise accepting/finishing a handoff would change grass.
+                if (item.kind == "waterDraw" || item.kind == "waterBed") continue;
+                if ((world - new Point(item.x, item.y)).Length < 1.4f) return;
+            }
             int room = Game.ArtRoom;
             int[] options = room == 6 || room == 3 || room == 8 ? dryDetails : room == 7 ? snowDetails : room == 2 || room == 4 ? ruinDetails : greenDetails;
             int id = options[(seed / 17) % options.Length];
