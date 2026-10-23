@@ -492,6 +492,11 @@ namespace Starfall.Tests
         [Test] public void TownProjectStaleInvalidAndForeignReviewsRejectWithoutPayment() { CoreChecks.TownProjectStaleInvalidAndForeignReviewsRejectWithoutPayment(Data()); }
         [Test] public void TownProjectLegacyProgressAndCapturedActionsRemainCompatible() { CoreChecks.TownProjectLegacyProgressAndCapturedActionsRemainCompatible(Data()); }
 
+        [Test] public void ContractHuntLiveTargetsFollowNearestReachableCountingActors() { CoreChecks.ContractHuntLiveTargetsFollowNearestReachableCountingActors(Data()); }
+        [Test] public void ContractHuntRealKillsRewardsAndNonCombatContractsStayOriginal() { CoreChecks.ContractHuntRealKillsRewardsAndNonCombatContractsStayOriginal(Data()); }
+        [Test] public void ContractHuntFallbacksGuardianPrerequisitesAndNavigationOwnership() { CoreChecks.ContractHuntFallbacksGuardianPrerequisitesAndNavigationOwnership(Data()); }
+        [Test] public void ContractHuntQueriesAndLegacySnapshotsRemainReadOnly() { CoreChecks.ContractHuntQueriesAndLegacySnapshotsRemainReadOnly(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

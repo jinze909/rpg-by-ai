@@ -153,6 +153,7 @@ namespace Starfall
                 q.target = ObjectPoint(q.room, done ? "contract" : n == 2 ? "fish" : n == 1 ? "ore" : n == 5 ? "abyssExit" : "altar", new Point(21, 19));
                 q.next = done ? L("打开 N 委托簿领取报酬", "Open N Contracts to claim") : q.locked ? L("在 N 委托簿选择一项悬赏", "Accept a contract in N Contracts") : q.title; q.reward = L("35硬币 · 30经验 · 碎片", "35 coins · 30 XP · shards");
                 if (!q.locked && !done && n == 1) GuideToResource(q, "ore", 1);
+                if (!q.locked && !done && (n == 0 || n == 3 || n == 4)) GuideCombatContract(q, n);
                 return q;
             }
             if (id == "shore")

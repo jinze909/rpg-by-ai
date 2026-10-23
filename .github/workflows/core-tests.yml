@@ -33,6 +33,8 @@ jobs:
         run: python3 tools/run_guard_status_checks.py
       - name: Check companion material routes, actual gathering, handoffs and save restoration
         run: python3 tools/run_companion_supply_checks.py
+      - name: Check live contract targets, guardian prerequisites, unchanged rewards and save continuity
+        run: python3 tools/run_contract_hunt_checks.py
       - name: Check optional combat focus, real input, immutable attacks and safe lifecycle
         run: python3 tools/run_combat_focus_checks.py
       - name: Check explicit target cycling, immutable prepared aim and original focus controls
