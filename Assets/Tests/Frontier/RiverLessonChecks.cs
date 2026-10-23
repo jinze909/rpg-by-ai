@@ -282,7 +282,7 @@ namespace Starfall.Tests
         public static void RiverLessonAppendsQuietGuidanceAndKeepsReachTopology(Campaign data)
         {
             string[] old = { "main", "shore", "ally1", "ally2", "ally3", "personal0", "personal1", "personal2", "bounty", "secrets", "watch", "signal", "archive", "reach", "homeward", "commission", "shelter", "fieldcraft", "supper", "returnletter" };
-            Check(GameCore.QuestIds.Length == 21 && GameCore.QuestIds[20] == "riverlesson", "The optional lesson appends as the twenty-first journal identity");
+            Check(GameCore.QuestIds.Length >= 21 && GameCore.QuestIds[20] == "riverlesson", "The optional lesson retains the twenty-first journal identity when later quests append");
             for (int id = 0; id < old.Length; id++) Check(GameCore.QuestIds[id] == old[id], "Every mature quest retains its saved index: " + old[id]);
             var g = RiverGame(data, true); RiverEnter(g);
             Check(g.Map.rows.Length == 48 && Array.TrueForAll(g.Map.rows, row => row.Length == 72), "Both fishing sites retain the original larger Reach dimensions");

@@ -473,6 +473,11 @@ namespace Starfall.Tests
         [Test] public void RiverLessonAppendsQuietGuidanceAndKeepsReachTopology() { CoreChecks.RiverLessonAppendsQuietGuidanceAndKeepsReachTopology(Data()); }
         [Test] public void RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch() { CoreChecks.RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch(Data()); }
 
+        [Test] public void WaterGardenOrderedPhysicalHandoffs() { CoreChecks.WaterGardenOrderedPhysicalHandoffs(Data()); }
+        [Test] public void WaterGardenRejectsInvalidAndStaleActions() { CoreChecks.WaterGardenRejectsInvalidAndStaleActions(Data()); }
+        [Test] public void WaterGardenRewardsAndOldSaves() { CoreChecks.WaterGardenRewardsAndOldSaves(Data()); }
+        [Test] public void WaterGardenPreservesTownAndNavigation() { CoreChecks.WaterGardenPreservesTownAndNavigation(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

@@ -182,6 +182,22 @@
           "en": "Enter Hearth Inn",
           "x": 7,
           "y": 17.7
+        },
+        {
+          "id": "watergarden_draw",
+          "name": "井东侧 · 取水桶",
+          "en": "Wellside bucket",
+          "x": 20,
+          "y": 11,
+          "kind": "waterDraw"
+        },
+        {
+          "id": "watergarden_bed",
+          "name": "药田东侧 · 试灌苗床",
+          "en": "Garden trial bed",
+          "x": 19,
+          "y": 6,
+          "kind": "waterBed"
         }
       ],
       "decor": [

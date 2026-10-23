@@ -12,6 +12,8 @@ namespace Starfall
             if (target == null || target.kind == null || practicing || Dying
                 || Array.IndexOf(Map.objects, target) < 0 || !IsObjectPresent(target)) return "";
             string kind = target.kind;
+            if (kind == "waterDraw") return english ? "Fill the garden bucket" : "为药田装一桶清水";
+            if (kind == "waterBed") return english ? "Water the trial bed" : "给苗床试灌";
             if (kind == "herb" || kind == "wood" || kind == "ore")
                 return Has("node_" + target.id)
                     ? (english ? "Gathered · rest in town to renew" : "已采集 · 回镇休息后更新")

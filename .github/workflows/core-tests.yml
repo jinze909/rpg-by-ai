@@ -79,6 +79,8 @@ jobs:
         run: python3 tools/run_supper_checks.py
       - name: Check Old Tide's optional river lesson, phased pulls, local routes and legacy saves
         run: python3 tools/run_river_lesson_checks.py
+      - name: Check repaired-well follow-up, real water handoffs, town routes and legacy saves
+        run: python3 tools/run_water_garden_checks.py
       - name: Check Tide Archive with production interactions, maps and saves
         run: python3 tools/run_archive_checks.py
       - name: Check earned first reply, real light handoff, permanent receipt and legacy saves

@@ -385,7 +385,7 @@ namespace Starfall
         {
             if (!Game.IsObjectPresent(o)) return;
             Point p = ScreenPoint(new Point(o.x, o.y)); string kind = o.kind;
-            if (DrawRiverFishingObject(o) || DrawShelterObject(o) || DrawReachObject(o) || DrawPolishObject(o) || DrawExpansionObject(o)) return;
+            if (DrawWaterGardenObject(o) || DrawRiverFishingObject(o) || DrawShelterObject(o) || DrawReachObject(o) || DrawPolishObject(o) || DrawExpansionObject(o)) return;
             if (kind.StartsWith("portal"))
             {
                 int destination = int.Parse(kind.Substring(6)); bool available = Game.CanEnter(destination);
@@ -407,7 +407,7 @@ namespace Starfall
             if (kind == "rest") { if (Game.save.room != 9) PropImage("table", 0, p.x - 27, p.y - 33, 54, 42); return; }
             if (kind == "routes") return; // The sign and well are already scenery.
             DrawNpc(kind, new Point(o.x, o.y));
-            bool quest = kind == "guild" || (kind == "scout" && !Game.Has("scout_saved")) || (kind == "garden" && !Game.Has("ally_1")) || (kind == "fish" && !Game.Has("ally_2")) || (kind == "forge" && !Game.Has("ally_3"));
+            bool quest = kind == "guild" || (kind == "scout" && !Game.Has("scout_saved")) || (kind == "garden" && (!Game.Has("ally_1") || (Game.WaterGardenWatered && !Game.WaterGardenComplete))) || (kind == "fish" && !Game.Has("ally_2")) || (kind == "forge" && (!Game.Has("ally_3") || (Game.WaterGardenReady && !Game.WaterGardenAccepted)));
             if (quest) Text(p.x - 10, p.y - 77, 20, 26, "!", 22, gold, TextAnchor.MiddleCenter);
         }
     }

@@ -587,6 +587,8 @@ namespace Starfall
         public bool IsObjectPresent(WorldObject o)
         {
             if (o == null) return false;
+            if (o.kind == "waterDraw") return save.room == 0 && WaterGardenAccepted && !WaterGardenDrawn;
+            if (o.kind == "waterBed") return save.room == 0 && WaterGardenDrawn && !WaterGardenWatered;
             if (o.kind != null && o.kind.StartsWith("riverFishing", StringComparison.Ordinal)) return save.room == ReachRoom && RiverLessonAccepted;
             if (o.kind != null && o.kind.StartsWith("supperBowl", StringComparison.Ordinal)) return save.room == 9 && SupperReady && SupperCooked;
             if (o.kind != null && o.kind.StartsWith("shelterMark")) return save.room == 7 && ShelterAccepted;
@@ -620,6 +622,7 @@ namespace Starfall
         {
             if (!IsObjectPresent(o)) return;
             if (practicing) { Notify("先完成或结束训练，再与居民交谈。", "Finish or end practice before talking to residents."); return; }
+            if (TalkWaterGarden(o)) return;
             if (TalkRiverLesson(o)) return;
             if (TalkReturnLetter(o)) return;
             if (TalkSupper(o)) return;
@@ -655,7 +658,8 @@ namespace Starfall
                 list.Add(C(save.plantedAt < 0 ? "种植 · 种子 ×1" : "收获 / 查看生长", save.plantedAt < 0 ? "Plant · 1 seed" : "Harvest / check growth", save.plantedAt < 0 ? "plant" : "harvest"));
                 list.Add(C("买种子 · 5 硬币", "Buy seeds · 5 coins", "seeds")); list.Add(C("再见", "Goodbye", "close"));
                 AppendSupperChoice(list, 0);
-                Dialog(o.name, o.en, "我需要六株月光草，为受伤的居民配药。你可以在野外采集，也可以种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。", "I need six Moonherbs for the wounded. Gather them in the wild, or grow your own: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need.", list.ToArray()); return;
+                AppendWaterGardenChoice(list, false);
+                Dialog(o.name, o.en, Has("ally_1") ? "你带来的月光草已经配成药了，谢谢。田里仍能种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。" : "我需要六株月光草，为受伤的居民配药。你可以在野外采集，也可以种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。", Has("ally_1") ? "Your Moonherbs are medicine now. Thank you. The garden is still open: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need." : "I need six Moonherbs for the wounded. Gather them in the wild, or grow your own: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need.", list.ToArray()); return;
             }
             if (kind == "fish")
             {
@@ -673,7 +677,8 @@ namespace Starfall
                 list.Add(C("再见", "Goodbye", "close"));
                 AppendSupperChoice(list, 2);
                 list.Add(C("查看工坊报价", "Review workshop quotes", "forge_quotes"));
-                Dialog(o.name, o.en, "短剑快，猎弓远，法杖能让星火在敌人间爆开。强化装备提升生命与攻击。\n\n我还需要五个零件修好镇里的水泵。堡垒里有那么多机器，小镇却没有一口能用的井。", "Swords are quick, bows reach far, and staves burst starfire between enemies. Upgrades improve health and damage.\n\nI also need five parts to repair our water pump. So many machines in the citadel, and no working well in town.", list.ToArray()); return;
+                AppendWaterGardenChoice(list, true);
+                Dialog(o.name, o.en, Has("ally_3") ? "短剑快，猎弓远，法杖能让星火在敌人间爆开。强化装备提升生命与攻击。\n\n你带来的五个零件已经装好。镇里的水泵又能送出清水了，总算不用只看堡垒里的机器。" : "短剑快，猎弓远，法杖能让星火在敌人间爆开。强化装备提升生命与攻击。\n\n我还需要五个零件修好镇里的水泵。堡垒里有那么多机器，小镇却没有一口能用的井。", Has("ally_3") ? "Swords are quick, bows reach far, and staves burst starfire between enemies. Upgrades improve health and damage.\n\nYour five parts are fitted. Our pump runs clean again. At last, machines can serve our town too." : "Swords are quick, bows reach far, and staves burst starfire between enemies. Upgrades improve health and damage.\n\nI also need five parts to repair our water pump. So many machines in the citadel, and no working well in town.", list.ToArray()); return;
             }
             if (kind == "cook") { Dialog(o.name, o.en, "暖潮炖汤：鱼1、药草2。回复55生命与耐力，增加攻击90秒。F喝汤。\n\n星薄荷凉茶：药草2、星晶1。T喝茶，抗暑抗寒并增加耐力回复180秒。", "Stew: 1 fish, 2 herbs. Heals 55, refills energy and boosts damage for 90 seconds. F drinks it.\n\nTea: 2 herbs, 1 crystal. T drinks it for climate protection and faster energy recovery, 180 seconds.", SupplyPreparationChoices(SupperCookChoices(C("制作炖汤", "Cook stew", "cook"), C("买炖汤 · " + ShopStewCost + " 硬币", "Buy stew · " + ShopStewCost + " coins", "buymeal"), C("买木材 ×4 · " + ShopTimberCost + " 硬币", "Buy timber ×4 · " + ShopTimberCost + " coins", "buywood"), C("制作凉茶", "Brew tea", "tea"), C("再见", "Goodbye", "close"), C("远行厨房", "Road kitchen", "kitchen")))); return; }
             if (kind == "scout")
@@ -749,6 +754,7 @@ namespace Starfall
             string action = conversation.choices[index].action;
             if (!DialogueChoiceEnabled(action)) { sound = "deny"; return; }
             Close();
+            if (ChooseWaterGarden(action)) return;
             if (ChooseForgeQuotes(action)) return;
             if (ChooseRiverLesson(action)) return;
             if (ChooseSupplyPreparation(action)) return;

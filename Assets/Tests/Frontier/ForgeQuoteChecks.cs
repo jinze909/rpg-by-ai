@@ -184,9 +184,11 @@ namespace Starfall.Tests
                 if (supperReady) foreach (string flag in new[] { "ally_1", "ally_2", "ally_3" }) hostGame.save.flags.Add(flag);
                 SmithTalk(hostGame); Conversation original = hostGame.conversation;
                 int review = Array.FindIndex(original.choices, value => value.action == "forge_quotes");
-                Check(review == original.choices.Length - 1 && Array.Exists(original.choices, value => value.action == "close")
+                Check(review == 5 && original.choices.Length == (supperReady ? 7 : 6)
+                    && (!supperReady || original.choices[6].action == "watergarden_offer")
+                    && Array.Exists(original.choices, value => value.action == "close")
                     && Array.Exists(original.choices, value => value.action == (supperReady ? "supper_prep_2" : "ally3")),
-                    "Review is appended after the existing goodbye and current commission or hearth contribution");
+                    "Review retains its numbered slot after goodbye and commission/hearth; the earned water follow-up appends afterward");
                 string before = SmithSaveState(hostGame.save); hostGame.Choose(review);
                 Check(hostGame.mode == "dialog" && hostGame.conversation.choices.Length == 4
                     && hostGame.conversation.choices[3].action == "forge_back" && SmithSaveState(hostGame.save) == before,

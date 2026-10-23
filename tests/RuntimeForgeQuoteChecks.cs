@@ -110,7 +110,9 @@ public static class RuntimeForgeQuoteChecks
             Prepare(app); var g=app.Game;
             if(supper)foreach(string flag in new[]{"ally_1","ally_2","ally_3"})g.save.flags.Add(flag);
             Interact(app,"forge");
-            string[] original=supper?new[]{"upgrade","bow","staff","close","supper_prep_2","forge_quotes"}:new[]{"upgrade","bow","staff","ally3","close","forge_quotes"};
+            // Earned garden-water follow-up appends after the complete mature
+            // workshop/supper prefix; it never takes a recipe's numeric slot.
+            string[] original=supper?new[]{"upgrade","bow","staff","close","supper_prep_2","forge_quotes","watergarden_offer"}:new[]{"upgrade","bow","staff","ally3","close","forge_quotes"};
             Check(g.conversation.choices.Length==original.Length,"Quote entry adds to every original earned host choice");
             for(int i=0;i<original.Length;i++)Check(g.conversation.choices[i].action==original[i],"Original numbered forge/commission/supper action retained: "+i);
             Choose(app,"forge_quotes"); Pages(app); Choose(app,"forge_back"); Pages(app);

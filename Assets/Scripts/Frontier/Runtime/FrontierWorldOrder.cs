@@ -68,6 +68,7 @@ namespace Starfall
             Rect rect=new Rect(p.x-w/2,p.y-h+8,w,h);
             if(canopy)DrawRootedPlant(prop,rect,tint);else PropImage(prop.kind,variant,rect.x,rect.y,rect.width,rect.height,tint);
             if(prop.kind=="well"&&Game.Has("ally_3"))Box(p.x-5,p.y-16,10,5,mint);
+            DrawWaterGardenScenery(prop);
         }
         private float SceneryOpacity(Decoration prop)
         {
