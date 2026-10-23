@@ -103,6 +103,10 @@ namespace Starfall
         public bool backpedaling;
         // Per-actor awareness is intentionally absent from EnemyRecord saves.
         internal bool pursuitAlerted;
+        // Authored home and live return intent are not EnemyRecord fields.
+        internal bool returnEnabled, returningToPost;
+        internal Point returnPost;
+        internal float returnStalledTime;
         private bool lookLeft;
         public bool VisualFlip { get { return Math.Abs(facing.x)>.25f?facing.x<0:lookLeft; } }
         public void Face(Point direction)

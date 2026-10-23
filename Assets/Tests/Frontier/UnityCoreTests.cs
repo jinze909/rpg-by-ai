@@ -41,6 +41,10 @@ namespace Starfall.Tests
         [Test] public void CounterHitPreparedBowAndStaffRetainCapturedCounterAcrossFlightAndGear(){CoreChecks.CounterHitPreparedBowAndStaffRetainCapturedCounterAcrossFlightAndGear(Data());}
         [Test] public void CounterHitMissesSkillsCompanionsDummyAndZeroLossStayUnmarked(){CoreChecks.CounterHitMissesSkillsCompanionsDummyAndZeroLossStayUnmarked(Data());}
         [Test] public void CounterHitPreservesArmorCriticalLethalRewardsAndLegacySaveState(){CoreChecks.CounterHitPreservesArmorCriticalLethalRewardsAndLegacySaveState(Data());}
+        [Test] public void EnemyReturnWalksAuthoredWaterDetoursAtTwentyAndSixtyFrames(){CoreChecks.EnemyReturnWalksAuthoredWaterDetoursAtTwentyAndSixtyFrames(Data());}
+        [Test] public void EnemyReturnRetainsAcquisitionCommittedAttacksAndReactionPriority(){CoreChecks.EnemyReturnRetainsAcquisitionCommittedAttacksAndReactionPriority(Data());}
+        [Test] public void EnemyReturnKeepsOldSnapshotsDamageAndInstanceOwnership(){CoreChecks.EnemyReturnKeepsOldSnapshotsDamageAndInstanceOwnership(Data());}
+        [Test] public void EnemyReturnPreservesSpecialEncountersTrainingAndBlockedHomes(){CoreChecks.EnemyReturnPreservesSpecialEncountersTrainingAndBlockedHomes(Data());}
         [Test] public void EnemyPursuitCrossesShippedWaterDetourAtTwentyAndSixtyFrames(){CoreChecks.EnemyPursuitCrossesShippedWaterDetourAtTwentyAndSixtyFrames(Data());}
         [Test] public void EnemyPursuitUsesExactAcquisitionRetentionAndOriginalTrainingGates(){CoreChecks.EnemyPursuitUsesExactAcquisitionRetentionAndOriginalTrainingGates(Data());}
         [Test] public void EnemyPursuitPreservesCommittedWarningsReleasesStunAndRecoil(){CoreChecks.EnemyPursuitPreservesCommittedWarningsReleasesStunAndRecoil(Data());}

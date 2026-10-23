@@ -109,10 +109,14 @@ public static class RuntimeEnemyPursuitChecks
             int approach=0;while((e.Position-g.Position).Length>7.95f&&approach++<10){Walk(KeyCode.A);Update(app);}Input.Clear();
             Check(approach<10&&e.moving&&(e.Position-initial).Length>.001f,"Real A movement inside eight acquires ordinary kind "+kind);
             int escape=0;while((e.Position-g.Position).Length<=10.2f&&escape++<150){Point before=e.Position,player=g.Position;Walk(KeyCode.D);Update(app);if((before-g.Position).Length<=10)Check((e.Position-before).Length>.001f&&e.moving,"Acquired ordinary kind "+kind+" must keep pursuing throughout the 8-to-10 retain band");Check((e.Position-before).Length<=(kind==0?.0421f:.0301f)&&(g.Position-player).Length<=.0901f&&(bool)Call(g,"Fits",e.Position)&&g.CanStand(g.Position),"Actual D escape retains both original speeds and swept terrain");}Input.Clear();
-            Check(escape<150,"Actual held D can leave the finite ten-unit pursuit band");Point released=e.Position;timer=e.timer;Frames(app,12);Check(Same(e.Position,released)&&Near(e.timer,timer)&&!e.moving,"Beyond ten, awareness releases and idle clocks freeze");Draw(app,"kind-"+kind+"-released");
-            int back=0;while((e.Position-g.Position).Length>9.5f&&back++<30){Walk(KeyCode.A);Update(app);Check(Same(e.Position,released),"Returning from release cannot reacquire while still beyond eight");}Input.Clear();
-            float separation=(e.Position-g.Position).Length;Check(separation>9.3f&&separation<=9.5f,"Real A return stops within the unacquired 8-to-10 band");Frames(app,12);Check(Same(e.Position,released)&&Near(e.timer,timer),"Released ordinary kind "+kind+" stays unaware at 9.5 instead of reactivating inside retain radius");
-            back=0;while((e.Position-g.Position).Length>7.95f&&back++<30){Walk(KeyCode.A);Update(app);}Input.Clear();Check(back<30&&e.moving&&!Same(e.Position,released),"Only a real return inside eight reacquires ordinary kind "+kind);Gait(app,e);
+            Check(escape<150,"Actual held D can leave the finite ten-unit pursuit band");timer=e.timer;float hp=e.hp;
+            for(int frame=0;frame<12;frame++){Point before=e.Position;Update(app);ReleasedActor(g,e,before,timer,hp);}Draw(app,"kind-"+kind+"-released");
+            int back=0;while((e.Position-g.Position).Length>9.5f&&back++<150){Point before=e.Position;Walk(KeyCode.A);Update(app);ReleasedActor(g,e,before,timer,hp);}Input.Clear();
+            float separation=(e.Position-g.Position).Length;Check(back<150&&separation>9.3f&&separation<=9.5f,"Real A return stops within the unacquired 8-to-10 band");
+            for(int frame=0;frame<12;frame++){Point before=e.Position;Update(app);ReleasedActor(g,e,before,timer,hp);}
+            // Natural regional actors may walk home while remaining unaware.
+            // The acquisition boundary and frozen combat clock stay exact.
+            Point reentry=e.Position;back=0;while((e.Position-g.Position).Length>7.95f&&back++<150){Walk(KeyCode.A);Update(app);}Input.Clear();Check(back<150&&e.moving&&!Same(e.Position,reentry)&&(bool)typeof(Enemy).GetField("pursuitAlerted",Private).GetValue(e),"Only a real return inside eight reacquires ordinary kind "+kind);Gait(app,e);
             Draw(app);Check(GUI.commands.Exists(x=>x.Contains("\"text\":\"SPACE\""))&&GUI.commands.Exists(x=>x.Contains("\"text\":\"Q\"")),"Actual existing combat HUD retains Q/SPACE action input labels during reacquired pursuit");
         }
         Enemy archer=Prepare(app,1,1,new Point(12,12),new Point(18.8f,12));var game=app.Game;archer.timer=0;Update(app);
@@ -127,6 +131,15 @@ public static class RuntimeEnemyPursuitChecks
         Check(archer.state==0&&Near(archer.timer,1.4f)&&Near(archer.releaseTime,.24f)&&game.projectiles.Count==1,"Original .65-second boundary releases exactly one committed arrow outside pursuit band");Projectile shot=game.projectiles[0];Point muzzle=GameCore.WeaponOrigin(origin,1,facing);
         Check(!shot.friendly&&shot.visual=="enemyArrow"&&Near(shot.velocity.Length,5)&&Near(shot.damage,10)&&Same(shot.velocity.Normalized,(target-muzzle).Normalized),"Committed arrow retains original captured heading, five speed and ten damage");Draw(app,"archer-committed-release");
         Console.WriteLine("PASS actual A/D acquisition/release/re-entry for all three ordinary kinds, unchanged real Q/SPACE HUD path, and real D/Space crossing ten preserves committed archer warning/release/heading/speed/damage; NATIVE_UNVERIFIED");
+    }
+    private static void ReleasedActor(GameCore game,Enemy enemy,Point before,float timer,float hp)
+    {
+        FieldInfo enabled=typeof(Enemy).GetField("returnEnabled",Private);bool returningAllowed=enabled!=null&&(bool)enabled.GetValue(enemy);
+        Check(!(bool)typeof(Enemy).GetField("pursuitAlerted",Private).GetValue(enemy)&&enemy.state==0&&Near(enemy.timer,timer)&&Near(enemy.hp,hp)&&game.projectiles.Count==0,
+            "Beyond acquisition, an unaware actor cannot prepare attacks, spend recovery, heal or create projectiles");
+        if(!returningAllowed)Check(Same(enemy.Position,before)&&!enemy.moving,"Actors outside natural return policy retain their original idle position");
+        else Check((enemy.Position-before).Length<=(enemy.kind==0?.0421f:.0301f)&&game.CanStand(enemy.Position)&&!enemy.backpedaling,
+            "A released natural actor may only take an original-speed collision-safe forward return step");
     }
     private static void Append(StringBuilder text,object value,HashSet<object> seen)
     {

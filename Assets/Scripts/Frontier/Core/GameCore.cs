@@ -234,7 +234,8 @@ namespace Starfall
             for (int i = 0; i < 6 + (save.room > 2 ? 2 : 0); i++)
             {
                 float x = locations[i, 0], y = locations[i, 1];
-                enemies.Add(CreatePlacedEnemy(++enemyId, i % 3, new Point(x, y), 34 + save.room * 9));
+                Enemy actor = CreatePlacedEnemy(++enemyId, i % 3, new Point(x, y), 34 + save.room * 9);
+                EnableEnemyReturn(actor); enemies.Add(actor);
             }
         }
         public void Tick(float dt, Point movement, Point? explicitAim = null)
@@ -499,7 +500,7 @@ namespace Starfall
                     }
                     continue;
                 }
-                if (EnemyPursuitDormant(e, distance)) continue;
+                if (EnemyPursuitDormant(e, distance)) { TickEnemyReturn(e, dt); continue; }
                 e.timer -= dt;
                 float desired = e.boss ? 3.5f : e.kind == 1 ? 4.5f : 1.05f;
                 bool visible = ClearAttackPath(e.Position, Position);

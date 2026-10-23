@@ -134,7 +134,8 @@ namespace Starfall
             for (int i = 0; i < 7; i++)
             {
                 Point p = new Point(spots[i, 0], spots[i, 1]);
-                enemies.Add(CreatePlacedEnemy(++enemyId, i % 3, p, 42 + (save.room - 5) * 12));
+                Enemy actor = CreatePlacedEnemy(++enemyId, i % 3, p, 42 + (save.room - 5) * 12);
+                EnableEnemyReturn(actor); enemies.Add(actor);
             }
             return true;
         }

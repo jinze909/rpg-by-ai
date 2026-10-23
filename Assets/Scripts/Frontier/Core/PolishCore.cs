@@ -166,6 +166,7 @@ namespace Starfall
         private void RestoreWorld()
         {
             runeProgress = save.savedRunes; if (InAbyss || save.snapshotRoom != save.room || save.worldEnemies == null) return;
+            var placements = new List<Enemy>(enemies);
             enemies.Clear(); var ids = new HashSet<int>();
             foreach (var r in save.worldEnemies)
             {
@@ -181,6 +182,7 @@ namespace Starfall
                 if (r.boss && !signal && Has("boss_" + save.room)) continue;
                 Point p = SafeActorFoot(new Point(r.x, r.y));
                 var e = new Enemy(r.id, (int)Clamp(r.kind, 0, 3), p.x, p.y, Clamp(r.maxHp, 1, 5000), r.boss); e.hp = Clamp(r.hp, .1f, e.maxHp); enemies.Add(e);
+                RestoreEnemyReturn(e, placements);
                 // Optional encounters own reserved IDs. Chapter guardians and
                 // their reinforcements keep the ordinary allocator.
                 if (!IsWatchEnemyId(r.id) && !IsArchiveEnemyId(r.id) && !signal) enemyId = Math.Max(enemyId, r.id);
