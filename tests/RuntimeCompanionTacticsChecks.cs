@@ -111,7 +111,7 @@ public static class RuntimeCompanionTacticsChecks
             }
             else
             {
-                Check(Field<int>(receipt,"controlCount")==1 && Near(controlled.stun,.45f) && g.effects.Exists(e=>e.kind=="frost"),"Sen reports only a genuine nearby controlled enemy; real first frost contact applies original .45s control (count="+Field<int>(receipt,"controlCount")+", stun="+controlled.stun+")");
+                Check(Field<int>(receipt,"controlCount")==1 && Near(controlled.stun,1.4f) && g.effects.Exists(e=>e.kind=="frost"),"Sen reports only a genuine nearby controlled enemy; first .45s frost pulse preserves original 1.4s command control (count="+Field<int>(receipt,"controlCount")+", stun="+controlled.stun+")");
                 Check(Near(Field<float>(receipt,"frostPulseDamage"),damage*.4f) && (Field<Point>(receipt,"center")-center).Length<.001f,"Receipt reports original .4 base damage and player-centered field");
             }
             object before=Receipt(g); float cooldown=g.companionCooldown; Command(app,0);
@@ -122,6 +122,94 @@ public static class RuntimeCompanionTacticsChecks
         Frames(app,1); object partial=Receipt(app.Game);
         Check(Near(Field<float>(partial,"actualHeal"),2) && Near(Field<float>(partial,"actualEnergy"),1.72f),"Mira's actual energy receipt measures the partial cap after the original .28 frame regeneration instead of promising nominal +15");
         Console.WriteLine("PASS real Z/RB/mouse commands for all three companions, .2s contact boundary, actual clamped healing, piercing arrows, frost/control and original 18/12s cooldowns; NATIVE_UNVERIFIED");
+    }
+    private static Enemy ControlFoe(FrontierRuntime app, bool boss=false)
+    {
+        var g=app.Game;
+        // Stage a durable opponent and suppress unrelated autonomous ally fire.
+        // All control, breaks and recovery below come from real Q/Z updates.
+        Set(g,"companionAttack",100f);
+        var e=new Enemy(85002,0,g.save.x+2,g.save.y,9999,boss);e.timer=100;g.enemies.Add(e);
+        Check(g.CanStand(e.Position),"Control/recovery opponent stands on genuine map ground");
+        return e;
+    }
+    private static ActorAction BeginControlSkill(FrontierRuntime app)
+    {
+        Key(app,KeyCode.Q);var g=app.Game;ActorAction action=g.playerAction;
+        Check(action!=null && action.kind=="skill" && !action.released && Near(action.contact,.28f),"Real Q starts unchanged .28s skill preparation");
+        Check(Near(g.save.energy,60) && Near(g.skillCooldown,3.5f),"Real Q charges original 40 energy and 3.5s cooldown once");
+        return action;
+    }
+    private static void HeldEnemy(GameCore g, Enemy e, float timer)
+    {
+        Check(e.stun>0 && !e.moving && e.state==0 && Near(e.timer,timer),"Controlled enemy cannot pursue, advance attack timer or start a warning before expiry");
+        Check(!g.effects.Exists(x=>x.kind=="enemyRelease"),"Controlled enemy cannot release an attack before expiry");
+    }
+    private static void SenCommandPreservesControlAndRecovers(FrontierRuntime app)
+    {
+        Prepare(app,2);var g=app.Game;Enemy e=ControlFoe(app);e.staggerRecovery=100;float damage=g.Damage;
+        object receipt=Release(app);ActorAction command=g.companionAction;
+        Check(Near(e.stun,1.4f),"Real Z's first .45s frost pulse cannot shorten its own 1.4s command control; actual="+e.stun);
+        Check(Near(9999-e.hp,damage*.4f) && Near(g.save.energy,100) && Near(g.companionCooldown,17.8f),"Sen's first contact keeps original .4 damage, no energy charge and once-only 18s cooldown");
+        Check(!command.impact.playerOwned && command.impact.weapon==2 && ReferenceEquals(Field<ImpactProfile>(Get<object>(g,"frost"),"impact"),command.impact),"Real companion release keeps its captured non-player frost impact");
+        Frames(app,10);HeldEnemy(g,e,1.2f);Point settled=e.Position;
+        Frames(app,28);HeldEnemy(g,e,1.2f);
+        Check((e.Position-settled).Length<.001f && Near(e.stun,.64f),"After genuine hit recoil settles, command prevents body pursuit until the next pulse");
+        Update(app);HeldEnemy(g,e,1.2f);
+        Check(Near(e.stun,.62f) && Near(9999-e.hp,damage*.8f),"Second real .8s pulse preserves .62s remaining command control without additive stacking; actual="+e.stun);
+        float stun=e.stun,hp=e.hp,world=g.save.totalTime,cooldown=g.companionCooldown;
+        Call(app,"OnApplicationPause",true);Frames(app,25);
+        Check(Near(e.stun,stun) && Near(e.hp,hp) && Near(g.save.totalTime,world) && Near(g.companionCooldown,cooldown),"Application pause freezes overlapping control, pulse damage, world and command clocks");
+        Call(app,"OnApplicationPause",false);
+        for(int frame=0;frame<29;frame++){Update(app);HeldEnemy(g,e,1.2f);}
+        Check(Near(e.stun,.04f),"Preserved command counts down to its original expiry instead of summing later control");
+        Frames(app,3);
+        Check(e.stun<=0 && e.moving && e.timer<1.2f,"Actual enemy pursuit and attack clock resume immediately after preserved command expires, before the third pulse");
+        bool released=false;for(int frame=0;frame<180;frame++){Update(app);released|=g.effects.Exists(x=>x.kind=="enemyRelease");}
+        Check(Get<object>(g,"frost")==null && Near(9999-e.hp,damage*.4f*5,.02f),"Actual Sen field expires after exactly five original .4-damage contacts");
+        for(int frame=0;!released && frame<180;frame++){Update(app);released=g.effects.Exists(x=>x.kind=="enemyRelease");}
+        Check(released && ReferenceEquals(receipt,Receipt(g)) && Field<int>(receipt,"controlCount")==1,"The same living enemy naturally attacks again and the original single-target contact receipt remains intact");
+        Check(!command.impact.playerOwned && command.impact.weapon==2 && g.projectiles.Count==0,"Control repair creates no extra projectile or player-owned companion impact");
+        Console.WriteLine("PASS actual Sen Z first/second frost overlap, original 1.4s expiry, pause, five damage contacts, captured ally ownership and natural enemy pursuit/attack recovery; NATIVE_UNVERIFIED");
+    }
+    private static void SenPulsePreservesRealPlayerBreak(FrontierRuntime app)
+    {
+        Prepare(app,2);var g=app.Game;g.save.weaponStyles[0]=2;Enemy e=ControlFoe(app);float damage=g.Damage;
+        object receipt=Release(app);ActorAction command=g.companionAction;ImpactProfile allyImpact=command.impact;
+        ActorAction skill=BeginControlSkill(app);Frames(app,13);
+        Check(!skill.released && Near(9999-e.hp,damage*.4f),"Real Vanguard Q adds no early contact during Sen's field");
+        Update(app);
+        Check(skill.released && g.effects.Exists(x=>x.kind=="break") && Near(e.stun,1.68f),"Real Q's captured heavy-sword contact causes original 1.7s stagger break, then one enemy .02s countdown; actual="+e.stun);
+        Check(Near(9999-e.hp,damage*(.4f+1.9f),.02f) && Near(g.save.energy,63.92f) && Near(g.skillCooldown,3.22f),"Overlapping real Q keeps original 1.9 damage, regeneration, one energy charge and original cooldown");
+        Check(skill.impact.playerOwned && skill.impact.weapon==0 && skill.impact.style==2 && !allyImpact.playerOwned && allyImpact.weapon==2,"Q and Sen retain their separate captured player/companion ownership and weapon/style identity");
+        for(int frame=0;frame<24;frame++){Update(app);HeldEnemy(g,e,1);}
+        Check(Near(e.stun,1.2f) && Near(9999-e.hp,damage*(.8f+1.9f),.02f),"Later .45s Sen pulse preserves the real player break's remaining 1.2s instead of shortening it; actual="+e.stun);
+        Check(ReferenceEquals(Field<ImpactProfile>(Get<object>(g,"frost"),"impact"),allyImpact) && ReferenceEquals(receipt,Receipt(g)),"Player Q cannot retag or replace the existing companion field/receipt");
+        int heldFrames=0;
+        while(e.stun>.021f && heldFrames++<100){Update(app);HeldEnemy(g,e,1);}
+        Check(heldFrames<100,"Real overlapping control reaches its natural finite expiry");
+        Frames(app,2);Check(e.stun<=0 && e.moving && e.timer<1,"Enemy pursuit resumes after the longest current deadline, including a later legitimately longer .45s pulse");
+        Frames(app,125);
+        Check(Get<object>(g,"frost")==null && Near(9999-e.hp,damage*(5*.4f+1.9f),.03f),"One actual player Q plus five actual companion pulses keep all original damage and contact counts");
+        Check(skill.impact.playerOwned && !allyImpact.playerOwned && command.released && skill.released,"Completed overlap preserves both original released action identities");
+        Console.WriteLine("PASS real Sen Z plus heavy Vanguard Q break, later shorter frost preservation, finite non-additive expiry/recovery and unchanged damage, cost, cooldown and captured ownership; NATIVE_UNVERIFIED");
+    }
+    private static void AlternateVanguardPreservesSameContactBossBreak(FrontierRuntime app)
+    {
+        Prepare(app,-1);var g=app.Game;g.save.technique=1;Enemy e=ControlFoe(app,true);e.stagger=94;float damage=g.Damage;
+        ActorAction skill=BeginControlSkill(app);Frames(app,13);
+        Check(!skill.released && Near(e.hp,9999),"Actual alternate Q keeps original preparation with no premature boss damage");
+        Update(app);
+        Check(skill.released && Near(e.stun,1.08f) && g.effects.FindAll(x=>x.kind=="break").Count==1,"Same actual alternate-Q boss contact preserves its 1.1s break over shorter 1s skill control, then counts down .02s; actual="+e.stun);
+        Check(Near(9999-e.hp,damage*1.65f,.01f) && Near(g.save.energy,63.92f) && Near(g.skillCooldown,3.22f) && Near(g.guardTime,4),"Alternate Vanguard keeps original 1.65 damage, 40 energy, 3.5s cooldown and four-second guard");
+        Check(skill.impact.playerOwned && skill.impact.weapon==0 && skill.impact.style==0,"Real alternate Q retains captured player sword identity");
+        Frames(app,10);HeldEnemy(g,e,1);Point settled=e.Position;
+        for(int frame=0;frame<42;frame++){Update(app);HeldEnemy(g,e,1);}
+        Check(Near(e.stun,.04f) && (e.Position-settled).Length<.001f,"Boss stays planted after real recoil until original 1.1s break ends, without adding the shorter one-second control");
+        Frames(app,3);Check(e.stun<=0 && e.timer<1,"Actual boss attack clock resumes after preserved same-contact break expires");
+        for(int frame=0;e.cycle==0 && frame<150;frame++)Update(app);
+        Check(e.cycle==1 && g.effects.Exists(x=>x.kind=="enemyRelease") && Near(9999-e.hp,damage*1.65f,.01f),"Living boss naturally completes its next warning and actual attack after recovery; Q contacts exactly once");
+        Console.WriteLine("PASS real alternate Vanguard Q same-contact boss break, preserved 1.1s countdown, original damage/cost/guard, captured player identity and natural boss attack recovery; NATIVE_UNVERIFIED");
     }
     private static string Progress(GameCore g)
     { return JsonUtility.ToJson(g.save)+"/"+g.companionCooldown+"/"+g.projectiles.Count+"/"+g.effects.Count+"/"+(g.companionAction==null?"none":g.companionAction.kind+g.companionAction.elapsed); }
@@ -222,7 +310,7 @@ public static class RuntimeCompanionTacticsChecks
         try
         {
             Call(app,"Awake");if(app.Game==null){Console.WriteLine("FAIL Awake cannot load shipped campaign");return 1;}
-            int failures=0; Action<FrontierRuntime>[] tests={ActualInputsAndReceipts,NotesPreserveExistingCompanionControls,PauseAndSessionBoundaries,FeedbackPointerThreatAndPolicies,BilingualLayoutCapturesAndReadOnlyDraw};
+            int failures=0; Action<FrontierRuntime>[] tests={ActualInputsAndReceipts,SenCommandPreservesControlAndRecovers,SenPulsePreservesRealPlayerBreak,AlternateVanguardPreservesSameContactBossBreak,NotesPreserveExistingCompanionControls,PauseAndSessionBoundaries,FeedbackPointerThreatAndPolicies,BilingualLayoutCapturesAndReadOnlyDraw};
             foreach(var test in tests)try{test(app);}catch(Exception error){failures++;Console.WriteLine("FAIL "+test.Method.Name+": "+(error.InnerException??error).Message);}
             Console.WriteLine("Runtime companion tactics "+(tests.Length-failures)+"/"+tests.Length+"; NATIVE_UNVERIFIED");return failures==0?0:1;
         }

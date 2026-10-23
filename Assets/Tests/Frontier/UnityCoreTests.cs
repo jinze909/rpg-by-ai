@@ -498,6 +498,11 @@ namespace Starfall.Tests
         [Test] public void ContractHuntFallbacksGuardianPrerequisitesAndNavigationOwnership() { CoreChecks.ContractHuntFallbacksGuardianPrerequisitesAndNavigationOwnership(Data()); }
         [Test] public void ContractHuntQueriesAndLegacySnapshotsRemainReadOnly() { CoreChecks.ContractHuntQueriesAndLegacySnapshotsRemainReadOnly(Data()); }
 
+        [Test] public void ControlOverlapFrostRetainsGenuinelyEarnedBreakAcrossPulses(){CoreChecks.ControlOverlapFrostRetainsGenuinelyEarnedBreakAcrossPulses(Data());}
+        [Test] public void ControlOverlapRealSenPrimaryAndAlternateKeepLongerWindows(){CoreChecks.ControlOverlapRealSenPrimaryAndAlternateKeepLongerWindows(Data());}
+        [Test] public void ControlOverlapNeverAddsTimeAndHonorsPauseExpiryWallsAndFivePulses(){CoreChecks.ControlOverlapNeverAddsTimeAndHonorsPauseExpiryWallsAndFivePulses(Data());}
+        [Test] public void ControlOverlapPreservesSaveTransienceDamageCostsAndImpactOwnership(){CoreChecks.ControlOverlapPreservesSaveTransienceDamageCostsAndImpactOwnership(Data());}
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

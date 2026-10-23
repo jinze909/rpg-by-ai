@@ -234,7 +234,7 @@ namespace Starfall
             else
             {
                 BeginFrost(Position,action.damage,action.impact??CaptureImpact(2,0,false));
-                foreach (Enemy e in enemies) if ((e.Position - Position).Length < CompanionControlRadius && ClearAttackPath(Position, e.Position)) { e.stun = CompanionControlSeconds; e.state = 0; e.timer = 1.2f; controlCount++; }
+                foreach (Enemy e in enemies) if ((e.Position - Position).Length < CompanionControlRadius && ClearAttackPath(Position, e.Position)) { e.stun = Math.Max(e.stun, CompanionControlSeconds); e.state = 0; e.timer = 1.2f; controlCount++; }
             }
             if (action.weapon == 0) { effects.Add(new Effect("heal", Position, .6f)); RecordHealing(healthBefore); }
             else if (action.weapon == 1) effects.Add(new Effect("release", WeaponOrigin(companionPosition, 1, action.direction), .18f) { direction = action.direction, variant = 1, height = WeaponHeight(1, action.direction) });
@@ -312,7 +312,7 @@ namespace Starfall
             if (save.profession == 0)
             {
                 guardTime = 4; effects.Add(new Effect("burst", Position, .7f) { variant = 0, radius = 3.8f });
-                foreach (Enemy e in enemies.ToArray()) if ((e.Position - Position).Length < 3.8f && ClearAttackPath(Position, e.Position)) { Hit(e, action.damage * 1.65f, true,null,action.impact); e.stun = e.boss ? 1 : 2.2f; }
+                foreach (Enemy e in enemies.ToArray()) if ((e.Position - Position).Length < 3.8f && ClearAttackPath(Position, e.Position)) { Hit(e, action.damage * 1.65f, true,null,action.impact); e.stun = Math.Max(e.stun, e.boss ? 1 : 2.2f); }
                 RetireHostileProjectiles(Position, 4);
             }
             else if (save.profession == 1)

@@ -50,7 +50,9 @@ namespace Starfall
                 {
                     if(frost!=field||Dying||mode!="world")return;
                     if((e.Position-field.center).Length<FrostField.Radius&&ClearAttackPath(field.center,e.Position))
-                    {e.stun=.45f;Hit(e,field.damage,true,(e.Position-field.center).Normalized,field.impact);}
+                    // A brief pulse refreshes its own control without cutting
+                    // short an earned break or the companion's initial freeze.
+                    {e.stun=Math.Max(e.stun,.45f);Hit(e,field.damage,true,(e.Position-field.center).Normalized,field.impact);}
                 }
             }
             if(frost==field&&field.age>=FrostField.Duration)ClearFrost();

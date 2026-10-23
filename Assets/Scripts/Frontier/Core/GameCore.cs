@@ -353,7 +353,7 @@ namespace Starfall
             float range = save.profession == 2 ? 4.5f : 3.1f;
             effects.Add(new Effect("burst", Position, .6f) { variant = save.profession, radius = range });
             foreach (Enemy e in enemies.ToArray())
-                if ((e.Position - Position).Length < range && ClearAttackPath(Position, e.Position)) { e.stun = e.boss ? .5f : 1.4f; Hit(e, action.damage * (save.profession == 2 ? 2.3f : 1.9f), true,null,action.impact); }
+                if ((e.Position - Position).Length < range && ClearAttackPath(Position, e.Position)) { e.stun = Math.Max(e.stun, e.boss ? .5f : 1.4f); Hit(e, action.damage * (save.profession == 2 ? 2.3f : 1.9f), true,null,action.impact); }
         }
         private float Random()
         {
@@ -373,7 +373,7 @@ namespace Starfall
             if (crit) damage *= 1.7f;
             if (e.staggerRecovery <= 0) e.stagger += damage * (profile.weapon == 0 ? .7f : .45f) * (profile.weapon == 0 && profile.style == 2 ? 1.4f : 1);
             bool broke = e.stagger >= (e.boss ? 95 : 30);
-            if (broke) { e.stagger = 0; e.staggerRecovery = e.boss ? 4 : 2; e.stun = e.boss ? 1.1f : 1.7f; e.state = 0; e.timer = 1; effects.Add(new Effect("break", e.Position, .7f, L("破势", "BREAK"))); }
+            if (broke) { e.stagger = 0; e.staggerRecovery = e.boss ? 4 : 2; e.stun = Math.Max(e.stun, e.boss ? 1.1f : 1.7f); e.state = 0; e.timer = 1; effects.Add(new Effect("break", e.Position, .7f, L("破势", "BREAK"))); }
             OnSparringContact(e, profile, broke, !technique && e.kind == 2 && approach.x * e.facing.x + approach.y * e.facing.y < -.45f);
             float fieldcraftHealthBefore = e.hp;
             e.hp -= damage; e.flash = .09f; e.hitTime = .18f; e.recoil = attackDirection ?? (e.Position - Position).Normalized;

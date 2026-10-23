@@ -146,8 +146,8 @@ namespace Starfall.Tests
             Check(fieldReceipt.controlCount == 2 && (fieldReceipt.center - sen.Position).Length < .0001f
                 && TacticsNear(fieldReceipt.frostPulseDamage, frostAction.damage * .4f) && TacticsNear((float)TacticsField(field, "damage"), fieldReceipt.frostPulseDamage),
                 "Sen counts the actual initial two foes while retaining the immutable field center and pulse base damage");
-            Check(inner.hp < inner.maxHp && inner.stun == .45f && ring.hp == ring.maxHp && ring.stun == 1.4f && outside.stun > 900,
-                "The first real inner pulse retains its .45 stun overwrite; the outer control ring has no invented pulse damage");
+            Check(inner.hp < inner.maxHp && TacticsNear(inner.stun, outside.stun) && ring.hp == ring.maxHp && TacticsNear(ring.stun, outside.stun) && outside.stun > 900,
+                "Initial control and the first inner pulse retain the geometry fixture's longer freeze; the outer ring has no invented pulse damage");
             sen.save.x += 1; inner.stun = ring.stun = outside.stun = 999;
             Advance(sen, 3.3f); Check((int)TacticsField(field, "pulses") == 5,
                 "The existing four-second field still schedules exactly five pulses");
