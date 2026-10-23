@@ -129,6 +129,7 @@ namespace Starfall
             foreach (Hazard hazard in Game.hazards)
             { Point p = ScreenPoint(hazard.position); float size = hazard.radius * Tile; if (Overlap(rect, WarningStrokeBounds(new Rect(p.x-size,p.y-size,size*2,size*2)))) return true; }
             foreach (Enemy enemy in Game.enemies) if (enemy.state == 1 && Overlap(rect,WarningStrokeBounds(EnemyWarningBounds(enemy)))) return true;
+            foreach (Enemy enemy in Game.enemies) if (BossVolleyWarningVisible(enemy) && Overlap(rect, BossVolleyWarningBounds(enemy))) return true;
             if (Game.ShelterWindWarning && Overlap(rect, ShelterWindBounds())) return true;
             return false;
         }
@@ -180,6 +181,8 @@ namespace Starfall
                 { Ring(enemy.target,radius,new Color(.87f,.54f,.41f,.8f),48);break; }
                 DrawEnemyDangerContour(enemy);
             }
+            foreach (Enemy enemy in Game.enemies)
+                if (BossVolleyWarningVisible(enemy) && OverlapsRegions(regions, BossVolleyWarningBounds(enemy))) DrawBossVolleyWarning(enemy);
             foreach (Hazard hazard in Game.hazards)
             {
                 Point p = ScreenPoint(hazard.position); float radius = hazard.radius * Tile;

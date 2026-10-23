@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void VolleyPlansMatchActualEightRegionThreePhaseReleases(){CoreChecks.VolleyPlansMatchActualEightRegionThreePhaseReleases(Data());}
+        [Test] public void VolleyPreparedThresholdsCyclesCancellationAndSpecialActorsStayHonest(){CoreChecks.VolleyPreparedThresholdsCyclesCancellationAndSpecialActorsStayHonest(Data());}
+        [Test] public void VolleyTerrainClipsToActualOrbClearanceWithoutMutatingSimulation(){CoreChecks.VolleyTerrainClipsToActualOrbClearanceWithoutMutatingSimulation(Data());}
+        [Test] public void VolleyQueriesKeepLegacySavesExpansionHazardsAndCapturedPlayerActions(){CoreChecks.VolleyQueriesKeepLegacySavesExpansionHazardsAndCapturedPlayerActions(Data());}
         [Test] public void SmithQuotesExposeRecipesBenefitsAndReadOnlySnapshots(){CoreChecks.SmithQuotesExposeRecipesBenefitsAndReadOnlySnapshots(Data());}
         [Test] public void SmithTransactionsKeepFiveUpgradeTiersAndFreeOwnedEquipment(){CoreChecks.SmithTransactionsKeepFiveUpgradeTiersAndFreeOwnedEquipment(Data());}
         [Test] public void SmithChoicesRecheckLiveMaterialsAndKeepRejectedDialogue(){CoreChecks.SmithChoicesRecheckLiveMaterialsAndKeepRejectedDialogue(Data());}

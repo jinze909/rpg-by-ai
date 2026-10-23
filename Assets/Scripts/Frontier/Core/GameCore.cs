@@ -484,17 +484,11 @@ namespace Starfall
                             if (Dying) break;
                             if (e.boss)
                             {
+                                BossVolleyPlan volley = PendingBossVolley(e, save.room);
                                 e.cycle++;
-                                if (save.room == 3)
-                                {
-                                    // The overseer alternates stomps with an aimed three-shot salvo.
-                                    double heading = Math.Atan2(e.facing.y, e.facing.x);
-                                    for (int shot = -1; shot <= 1; shot++) Fire(e, new Point((float)Math.Cos(heading + shot * .18), (float)Math.Sin(heading + shot * .18)), 6);
-                                }
+                                for (int shot = 0; shot < volley.aimedCount; shot++) Fire(e, volley.Direction(shot), volley.Speed(shot));
                                 BossExpansionAttack(e);
-                                int spokes = 4 + Math.Min(5, save.room) * 2 + e.AttackPhase * 2;
-                                if (save.room >= 2 || e.AttackPhase >= 2)
-                                    for (int k = 0; k < spokes; k++) Fire(e, new Point((float)Math.Cos(k * Math.PI * 2 / spokes + e.cycle * .2), (float)Math.Sin(k * Math.PI * 2 / spokes + e.cycle * .2)), 3.5f + e.AttackPhase * .4f);
+                                for (int shot = volley.aimedCount; shot < volley.Count; shot++) Fire(e, volley.Direction(shot), volley.Speed(shot));
                                 if ((e.AttackPhase == 3 || (save.room == 4 && e.AttackPhase >= 2)) && e.cycle % 3 == 0 && enemies.Count < 9)
                                     enemies.Add(CreatePlacedEnemy(++enemyId, save.room == 4 ? 1 : 0, new Point(e.x - 2, e.y + 1), 38 + save.room * 3));
                             }

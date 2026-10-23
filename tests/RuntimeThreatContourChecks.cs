@@ -73,7 +73,27 @@ public static class RuntimeThreatContourChecks
     {return (Endpoint(a,false)-Endpoint(b,false)).Length<.04f&&(Endpoint(a,true)-Endpoint(b,true)).Length<.04f;}
     private static List<GUI.TextureCall> PairedContour(Color color)
     {
-        var dark=Contour(7,Shadow);var core=Contour(3,color);
+        var allDark=Contour(7,Shadow);var core=Contour(3,color);var dark=new List<GUI.TextureCall>();
+        // Chapter volley lanes share the seven-pixel backing, while their
+        // independently tested amber core has progress opacity. Distinguish
+        // only a real same-center-line core; an unknown/orphan shadow still
+        // fails, and every original opaque circle/cone/bow assertion remains.
+        var bossCore=GUI.textureCalls.FindAll(c=>c.texture==Texture2D.whiteTexture&&Near(c.rect.height,3,.001f)
+            &&Near(c.color.r,.95f,.0001f)&&Near(c.color.g,.72f,.0001f)&&Near(c.color.b,.46f,.0001f)
+            &&c.color.a>=.4199f&&c.color.a<=.9001f);
+        var usedBossCore=new bool[bossCore.Count];
+        foreach(var shadow in allDark)
+        {
+            if(core.Exists(line=>SameSegment(shadow,line))){dark.Add(shadow);continue;}
+            int match=-1;
+            for(int i=0;i<bossCore.Count;i++)if(!usedBossCore[i]&&SameSegment(shadow,bossCore[i])
+                &&GUI.textureCalls.IndexOf(shadow)<GUI.textureCalls.IndexOf(bossCore[i])){match=i;break;}
+            Check(match>=0,"Every additional dark segment must pair with an actual same-geometry 3px amber Boss volley core drawn afterward");
+            usedBossCore[match]=true;
+            Check(Near(shadow.uv.x,0)&&Near(shadow.uv.y,0)&&Near(shadow.uv.width,1)&&Near(shadow.uv.height,1),
+                "Additional Boss lane backings still use the whole plain white texture");
+        }
+        Check(Array.TrueForAll(usedBossCore,used=>used),"Every actual amber Boss core retains its own classified dark backing");
         Check(dark.Count>0,"Actual OnGUI must submit a continuous 7px dark foreground boundary after world scenery");
         Check(core.Count==dark.Count,"Every dark boundary segment has an opaque 3px bright core");
         for(int i=0;i<dark.Count;i++)

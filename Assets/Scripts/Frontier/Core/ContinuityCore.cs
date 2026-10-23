@@ -174,8 +174,10 @@ namespace Starfall
                 { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height }); }
         }
         private bool ShotBlocked(Projectile shot,Point point)
+        { return ShotBlocked(shot.Radius, point); }
+        private bool ShotBlocked(float radius,Point point)
         {
-            float r=shot.Radius,s=r*.7071f;
+            float r=radius,s=r*.7071f;
             return Blocked(point.x,point.y)||Blocked(point.x-r,point.y)||Blocked(point.x+r,point.y)||Blocked(point.x,point.y-r)||Blocked(point.x,point.y+r)||Blocked(point.x-s,point.y-s)||Blocked(point.x+s,point.y-s)||Blocked(point.x-s,point.y+s)||Blocked(point.x+s,point.y+s);
         }
         private Point SweepActor(Point start, Point delta)

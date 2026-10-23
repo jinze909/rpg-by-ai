@@ -27,7 +27,7 @@ namespace Starfall
             if (!DangerContoursVisible) return;
             // The simulation owns warning lifetime. No cached geometry or
             // presentation clock can survive a cancelled or completed attack.
-            foreach (Enemy enemy in Game.enemies) DrawEnemyDangerContour(enemy);
+            foreach (Enemy enemy in Game.enemies) { DrawEnemyDangerContour(enemy); DrawBossVolleyWarning(enemy); }
             foreach (Hazard hazard in Game.hazards) DrawHazardDangerContour(hazard);
         }
         private void DrawEnemyDangerContour(Enemy enemy)
