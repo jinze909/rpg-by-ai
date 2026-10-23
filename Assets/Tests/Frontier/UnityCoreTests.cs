@@ -482,6 +482,11 @@ namespace Starfall.Tests
         [Test] public void WaterGardenRewardsAndOldSaves() { CoreChecks.WaterGardenRewardsAndOldSaves(Data()); }
         [Test] public void WaterGardenPreservesTownAndNavigation() { CoreChecks.WaterGardenPreservesTownAndNavigation(Data()); }
 
+        [Test] public void RaceCoursePhysicalPreviewAndDeliberateLaunchProtectResources() { CoreChecks.RaceCoursePhysicalPreviewAndDeliberateLaunchProtectResources(Data()); }
+        [Test] public void RaceCoursePausedReviewCancellationAndOwnerRevalidation() { CoreChecks.RaceCoursePausedReviewCancellationAndOwnerRevalidation(Data()); }
+        [Test] public void RaceCourseDeadlineBadgesAndPhysicalReplays() { CoreChecks.RaceCourseDeadlineBadgesAndPhysicalReplays(Data()); }
+        [Test] public void RaceCourseOldSavesKeepRecordsWhileTransientSessionsClear() { CoreChecks.RaceCourseOldSavesKeepRecordsWhileTransientSessionsClear(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

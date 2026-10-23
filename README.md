@@ -46,6 +46,8 @@
 
 试装训练场支持从 Esc／START 暂停菜单进入「训练场控制」，用键盘或手柄换目标、重置记录和结束训练。控制页暂停记录，返回可继续同次尝试；原鼠标按钮和战斗按键保留。见 [RANGE-CONTROLS.md](docs/RANGE-CONTROLS.md)。
 
+沙海沙舟的「先看看路线」可预览真实地形上的五旗顺序、最快纪录与一次性奖励。比赛中从 Esc／START 暂停菜单查看路线，返回继续同轮，或再次确认后结束；超过30秒的终点接触不再误发奖励。见 [RACE-COURSE.md](docs/RACE-COURSE.md)。
+
 ## 启动
 
 1. **升级现有项目**：关闭 Unity，备份项目，覆盖包内 `Assets`、`Packages` 与 `ProjectSettings`；本轮也请更新 `ProjectSettings/ProjectVersion.txt`，清除旧的 C1 和 revision 信息。

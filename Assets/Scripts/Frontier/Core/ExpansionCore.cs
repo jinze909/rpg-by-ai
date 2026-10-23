@@ -103,6 +103,7 @@ namespace Starfall
         private void ResetExpansionTransient()
         {
             hazards.Clear(); racing = false; raceTime = 0; raceCheckpoint = 0;
+            raceCourse = null;
             ResetCompanionTactics(); companionAction = null; companionAim = new Point(1, 0); companionMoving = false; companionMoveTime = 0;
             companionPosition = CompanionFollowTarget(); companionAttack = 2; companionCooldown = 0;
             climateTimer = 1; stormTimer = 6; ClearFrost();
@@ -341,16 +342,7 @@ namespace Starfall
             climateTimer -= dt;
             if (climateTimer <= 0) { climateTimer = 1; if (save.heat >= 85 || save.cold >= 90) Hurt(4); }
             if (Dying) return;
-            if (racing)
-            {
-                raceTime += dt;
-                if ((Position - RaceRoute[raceCheckpoint]).Length < 1.35f)
-                {
-                    raceCheckpoint++; sound = "reward";
-                    if (raceCheckpoint == RaceRoute.Length) FinishRace();
-                }
-                if (racing && raceTime > 30) { racing = false; Notify("风向变了，本轮结束。没有损失，回到沙舟重新出发。", "The wind shifted. No loss; return to the skiff to retry."); }
-            }
+            TickRaceCourse(dt);
             if (InAbyss && !Has("abyss_clear_" + save.abyssFloor) && save.abyssFloor >= 3)
             {
                 stormTimer -= dt;
@@ -504,7 +496,7 @@ namespace Starfall
             if (kind == "receiver") { Dialog(o.name, o.en, "让北侧入射光依次连接三面镜子，再送进东侧蓄光池。镜子每按一次 E 顺时针转向。\n\n伊沃写着：第一镜向东，第二镜向南，第三镜向东。真正难的，是决定光要送给谁。", "Route the northern beam through all three mirrors into the eastern reservoir. E rotates a mirror clockwise.\n\nIvo's note: east, south, east. The harder question is who receives the light.", C("继续调试", "Keep adjusting", "close")); AppendCommissionReceiverChoice(); return true; }
             if (kind == "tinker") { TinkerConversation(o); return true; }
             if (kind == "shade") { Notify("绿洲树荫能迅速降温。凉茶可抗暑与抗寒。", "Oasis shade cools you quickly. Tea protects against heat and cold."); if (CommissionReported && Has("commission_oasis") && (new Point(o.x, o.y) - CommissionWaterPoint).Length < .01f && CommissionLocal("shade")) ShowCommissionWater(o); return true; }
-            if (kind == "skiff") { Dialog(o.name, o.en, "沿金色标记依次经过五个风旗，30 秒内返回终点。沙舟竞速时移动和耐力回复更快，热度不再增加。16 秒内完成可获得风行徽章，第一次完成有额外碎片。", "Follow five golden wind flags within 30 seconds. Racing boosts speed and energy recovery, and prevents heat gain. Finish under 16 seconds for a wind badge; the first finish grants extra shards.", C("出发！", "Launch!", "race"), C("先看看路线", "Study the route", "close")); return true; }
+            if (kind == "skiff") { Dialog(o.name, o.en, "沿金色标记依次经过五个风旗，30 秒内返回终点。沙舟竞速时移动和耐力回复更快，热度不再增加。16 秒内完成可获得风行徽章，第一次完成有额外碎片。\n\n先看看路线，不会开始计时。比赛中可从暂停菜单查看路线或结束本轮。", "Follow five golden wind flags within 30 seconds. Racing boosts speed and energy recovery, and prevents heat gain. Finish in 16 seconds or less for a wind badge; the first finish grants extra shards.\n\nStudy the route without starting the clock. During a race, pause to review the course or end the attempt.", C("出发！", "Launch!", "race"), C("先看看路线", "Study the route", "race_course"), C("稍后再来", "Later", "close")); return true; }
             if (kind.StartsWith("bell"))
             {
                 int id = int.Parse(kind.Substring(4)); save.bells[id] = (save.bells[id] + 1) % 4; CheckBells(); revision++;
@@ -636,7 +628,8 @@ namespace Starfall
                 if (save.projects[1] == 2 && !Has("camptea_" + Day)) { Flag("camptea_" + Day); save.tea++; }
                 revision++; Notify("驿站补给已送达，整装再出发。", "Waystation supplies delivered. Ready to set out."); return true;
             }
-            if (action == "race") { if (save.room == 6) { racing = true; raceTime = 0; raceCheckpoint = 0; Notify("竞速开始：沿金色风旗走！", "Race started: follow the golden flags!"); } return true; }
+            if (action == "race") { StartSkiffRace(); return true; }
+            if (action == "race_course") { OpenRaceCourse(); return true; }
             if (action.StartsWith("personal")) { CompletePersonal(int.Parse(action.Substring(8))); return true; }
             if (action.StartsWith("gift"))
             {

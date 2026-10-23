@@ -13,12 +13,17 @@ namespace Starfall
         private bool focusVisible, controllerUsed, drawingModal;
         private string ControlId(float x, float y, float w, float h) { return x.ToString(CultureInfo.InvariantCulture) + ":" + y.ToString(CultureInfo.InvariantCulture) + ":" + w.ToString(CultureInfo.InvariantCulture) + ":" + h.ToString(CultureInfo.InvariantCulture); }
         private string InputScope()
-        { return Game.mode + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : ""); }
+        { return Game.mode + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (Game.mode == "racecourse" ? "/" + Game.RaceCourseVersion + "/" + Game.RaceCourseCancellationPending : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : ""); }
         private void BeginControls() { drawnScope = InputScope(); navigation.Scope(drawnScope); drawnControls.Clear(); drawingModal = false; }
         private void EndControls()
         {
             if (drawnScope != InputScope()) { confirmControl = null; navigation.Scope(InputScope()); return; }
             bool first = navigation.focused == ""; navigation.SetControls(drawnControls);
+            if (first && Game.mode == "racecourse")
+            {
+                Rect safe = RaceCourseSafeBounds;
+                navigation.Select(ControlId(safe.x, safe.y, safe.width, safe.height));
+            }
             if (first && Game.mode == "dialog" && DialogueChoicesVisible() && Game.conversation.choices.Length > 0)
             {
                 int count = Game.conversation.choices.Length, cols = count > 2 ? 2 : count;
@@ -82,6 +87,7 @@ namespace Starfall
             if(Game.mode=="techniques") { OpenMenu(techniqueGuideParent); return; }
             if (replacePrompt) { replacePrompt = false; return; }
             if (Game.mode == "title") return;
+            if (Game.mode == "racecourse" && Game.RaceCourseCancellationPending) { Game.KeepRaceCourse(); return; }
             if (Game.mode == "rangecontrols") { OpenMenu("pause"); return; }
             if (Game.mode == "landmarks") { OpenMenu("map"); return; }
             if (Game.mode == "companionnotes") { OpenMenu("companions"); return; }

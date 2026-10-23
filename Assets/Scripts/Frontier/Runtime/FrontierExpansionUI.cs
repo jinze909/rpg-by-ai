@@ -45,7 +45,7 @@ namespace Starfall
         { return hazard.kind == "archiveTide" ? PixelArt.C("#fff1a6") : hazard.kind == "glass" ? gold : hazard.kind == "rift" ? PixelArt.C("#b9a1d1") : PixelArt.C("#d59583"); }
         private void DrawExpansionWorld()
         {
-            if (Game.racing)
+            if (Game.racing && Game.raceCheckpoint >= 0 && Game.raceCheckpoint < GameCore.RaceRoute.Length)
             {
                 Point target = GameCore.RaceRoute[Game.raceCheckpoint]; Ring(target, .65f, gold, 20); Point p = ScreenPoint(target);
                 Text(p.x - 20, p.y - 44, 40, 35, (Game.raceCheckpoint + 1).ToString(), 23, gold, TextAnchor.MiddleCenter);

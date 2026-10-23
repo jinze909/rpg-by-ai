@@ -343,6 +343,8 @@ namespace Starfall
             if (Button(279, 590, 300, 34, Game.L("摇杆瞄准设置", "Controller aiming"))) OpenControllerSettings();
             if (Game.RangeActive && settingsParent != "title")
             { if (Button(594, 590, 623, 34, Game.L("试装训练场控制", "Loadout range controls"), false, CanOpenRangeControls)) OpenRangeControls(); }
+            else if (Game.racing && Game.save.room == 6 && settingsParent != "title")
+            { if (Button(594, 590, 623, 34, Game.L("沙舟路线与退出", "Race course & exit"), false, !Game.Dying && !applicationPaused && !VisualReviewPaused)) OpenRaceCourseFromPause(); }
             else Text(594, 589, 623, 43, Game.L("实战练习在余烬镇教官处重复进行，物资与生命不会损失。", "Repeat safe combat practice with Emberfall's mentor; supplies and health are protected."), 14, muted);
             if (Button(279, 642, 460, 45, Game.L("继续 / 返回", "Resume / back"), true)) Back();
             if (Button(756, 642, 461, 45, Game.L("保存并返回标题", "Save & return to title"))) { if (!Game.Has("intro") || Save()) Game.mode = "title"; }
