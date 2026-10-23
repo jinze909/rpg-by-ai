@@ -121,6 +121,7 @@ namespace Starfall
             // A cleared drill is a paused review, with no live contact or
             // projectile left. Keep its feedback readable over the resting hero.
             if (TrainingReview) return false;
+            if (LatestHitDirection() != null && Overlap(rect, HitDirectionCueBounds())) return true;
             if (Overlap(rect, PlayerHudBounds())) return true;
             foreach (Enemy enemy in Game.enemies)
                 if (Overlap(rect, EnemyHudBounds(enemy)) || EnemyStunVisible(enemy) && Overlap(rect, EnemyStunBounds(enemy)) || EnemyGuardVisible(enemy) && Overlap(rect, EnemyGuardBounds(enemy))) return true;

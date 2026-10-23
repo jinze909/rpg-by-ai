@@ -503,6 +503,10 @@ namespace Starfall.Tests
         [Test] public void ControlOverlapNeverAddsTimeAndHonorsPauseExpiryWallsAndFivePulses(){CoreChecks.ControlOverlapNeverAddsTimeAndHonorsPauseExpiryWallsAndFivePulses(Data());}
         [Test] public void ControlOverlapPreservesSaveTransienceDamageCostsAndImpactOwnership(){CoreChecks.ControlOverlapPreservesSaveTransienceDamageCostsAndImpactOwnership(Data());}
 
+        [Test] public void HitDirectionRealHostileFlightCapturesEightHeadingsAndActualMitigatedLoss(){CoreChecks.HitDirectionRealHostileFlightCapturesEightHeadingsAndActualMitigatedLoss(Data());}
+        [Test] public void HitDirectionProtectedAndUnlocatedContactsNeverInventCueData(){CoreChecks.HitDirectionProtectedAndUnlocatedContactsNeverInventCueData(Data());}
+        [Test] public void HitDirectionReceiptsStayTransientAndPreservePauseEconomyAndActionCosts(){CoreChecks.HitDirectionReceiptsStayTransientAndPreservePauseEconomyAndActionCosts(Data());}
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

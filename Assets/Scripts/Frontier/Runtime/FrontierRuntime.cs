@@ -231,6 +231,7 @@ namespace Starfall
             DrawControllerAimReticle();
             DrawCombatFocusMarker();
             DrawHudThreatWitness();
+            DrawHitDirectionCue();
             EndControls();
             GUI.matrix = Matrix4x4.identity; GUI.color = Color.white;
         }

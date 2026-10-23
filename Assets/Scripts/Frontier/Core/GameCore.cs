@@ -433,7 +433,14 @@ namespace Starfall
             // mitigation and lethal clamping. Safe drills lose no health.
             float healthLost = Math.Max(0, repriseHealthBefore) - Math.Max(0, save.health);
             if (healthLost > 0 && Finite(healthLost))
-                effects.Add(new Effect("damageTaken", Position, .7f, "-" + (healthLost < .01f ? "<0.01" : healthLost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture))));
+            {
+                // Keep the accepted incoming heading, never the aim-based
+                // recoil fallback used when climate has no directional source.
+                Point heading = incoming ?? new Point(); float length = heading.Length;
+                bool directed = Finite(heading.x) && Finite(heading.y) && Finite(length) && length > .0001f;
+                effects.Add(new Effect("damageTaken", Position, .7f, "-" + (healthLost < .01f ? "<0.01" : healthLost.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture)))
+                    { direction = directed ? heading.Normalized : new Point() });
+            }
             if (!save.reducedMotion) { hitStop = .045f; impactShake = source == "slam" ? .18f : 0; }
             effects.Add(new Effect("hurt", Position, .5f));
             if (save.health <= 0)

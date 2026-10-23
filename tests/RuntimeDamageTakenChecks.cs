@@ -149,12 +149,159 @@ public static class RuntimeDamageTakenChecks
         }
         Console.WriteLine("PASS incoming lifetime/expiry/cache cleanup, real pause and all six FX/motion settings, travel/v1 load/review boundaries with original story/inventory/currency and unchanged save schema; NATIVE_UNVERIFIED");
     }
+    // These checks inspect the actual submitted, rotated white-texture strokes.
+    // Receipt direction is simulation metadata; the rendering oracle is independent
+    // of the new cue's private geometry implementation.
+    private static bool Rgb(Color a,Color b) {return Near(a.r,b.r)&&Near(a.g,b.g)&&Near(a.b,b.b);}
+    private static bool Finite(float value) {return !float.IsNaN(value)&&!float.IsInfinity(value);}
+    private static bool SameRect(Rect a,Rect b) {return Near(a.x,b.x,.05f)&&Near(a.y,b.y,.05f)&&Near(a.width,b.width,.05f)&&Near(a.height,b.height,.05f);}
+    private static List<GUI.TextureCall> CueLines()
+    {return GUI.textureCalls.FindAll(c=>c.texture==Texture2D.whiteTexture&&Near(c.rect.height,2)&&Rgb(c.color,Rose));}
+    private static Point Endpoint(GUI.TextureCall line,bool end)
+    {
+        Vector3 physical=line.matrix.MultiplyPoint3x4(new Vector3(line.rect.x+(end?line.rect.width:0),line.rect.y+line.rect.height/2,0));
+        float scale=Math.Min(Screen.width/1280f,Screen.height/800f);
+        return new Point((physical.x-(Screen.width-1280*scale)/2)/scale,(physical.y-(Screen.height-800*scale)/2)/scale);
+    }
+    private static bool Segment(GUI.TextureCall line,Point a,Point b)
+    {return (Endpoint(line,false)-a).Length<.08f&&(Endpoint(line,true)-b).Length<.08f||(Endpoint(line,false)-b).Length<.08f&&(Endpoint(line,true)-a).Length<.08f;}
+    private static Point[] ExpectedCue(FrontierRuntime app,Point incoming)
+    {
+        Rect body=(Rect)Call(app,"PlayerHudBounds");Point center=new Point(body.x+body.width/2,body.y+body.height/2),source=incoming.Normalized*-1;
+        float tx=Math.Abs(source.x)>.00001f?body.width/2/Math.Abs(source.x):float.MaxValue;
+        float ty=Math.Abs(source.y)>.00001f?body.height/2/Math.Abs(source.y):float.MaxValue;
+        Point tip=center+source*(Math.Min(tx,ty)+18),side=new Point(-source.y,source.x),tail=tip-source*9;
+        Point left=tail+side*5,right=tail-side*5;
+        float dx=Math.Max(0,8-Math.Min(tip.x,Math.Min(left.x,right.x)))-Math.Max(0,Math.Max(tip.x,Math.Max(left.x,right.x))-1272);
+        float dy=Math.Max(0,8-Math.Min(tip.y,Math.Min(left.y,right.y)))-Math.Max(0,Math.Max(tip.y,Math.Max(left.y,right.y))-792);
+        Point clamp=new Point(dx,dy);return new[]{left+clamp,tip+clamp,right+clamp};
+    }
+    private static void RequireCue(FrontierRuntime app,Effect receipt,Point incoming)
+    {
+        var lines=CueLines();Check(lines.Count==2,"Actual OnGUI must submit exactly two rose 2px source-direction arms after a real HP loss (actual="+lines.Count+")");
+        Check((receipt.direction-incoming.Normalized).Length<.002f,"Actual HP-loss receipt preserves normalized committed incoming travel, independently of later aim or recoil");
+        Point[] expected=ExpectedCue(app,incoming);float alpha=Math.Min(1,receipt.life/.2f);
+        foreach(var pair in new[]{new[]{expected[0],expected[1]},new[]{expected[2],expected[1]}})
+        {
+            var arm=lines.Find(c=>Segment(c,pair[0],pair[1]));Check(arm!=null,"Actual rotated cue follows inverse incoming, static player-envelope ray intersection, 18px tip and 9px/5px V arms");
+            Check(Near(arm.color.a,Rose.a*alpha),"Both real rose arms use the damage receipt's final .2-second fade");
+            Check(GUI.textureCalls.Exists(c=>c.texture==Texture2D.whiteTexture&&Near(c.rect.height,5)&&Rgb(c.color,Ink)&&Near(c.color.a,Ink.a*alpha)&&Segment(c,pair[0],pair[1])),"Each rose arm has the matching 5px ink segment with the same final-window fade");
+            Check(Finite(arm.rect.x)&&Finite(arm.rect.y)&&Finite(arm.matrix.m00)&&Finite(arm.matrix.m01)&&Finite(arm.matrix.m03)&&Finite(arm.matrix.m10)&&Finite(arm.matrix.m11)&&Finite(arm.matrix.m13),"All submitted cue geometry and affine transforms remain finite");
+        }
+    }
+    private static Effect DirectionalContact(FrontierRuntime app,Point incoming,float damage=7)
+    {
+        var g=app.Game;float before=g.save.health;var shot=Hostile(app,damage);shot.velocity=incoming.Normalized*3;Update(app);
+        Check(!g.projectiles.Contains(shot),"Real hostile travel resolves the contact and retires its projectile");return One(g,before);
+    }
+    private static void ActualHitDirectionGeometry(FrontierRuntime app)
+    {
+        foreach(Point incoming in new[]{new Point(1,0),new Point(-1,0),new Point(0,1),new Point(0,-1),new Point(1,1),new Point(-1,1),new Point(1,-1),new Point(-1,-1)})
+        {
+            Prepare(app);var g=app.Game;var receipt=DirectionalContact(app,incoming);Draw(app);RequireCue(app,receipt,incoming);
+            g.SetAim(new Point(-incoming.y,incoming.x));g.locomotionFacing=incoming*-1;Set(app,"camera",Get<Point>(app,"camera")+new Point(1.375f,-.625f));
+            Draw(app);RequireCue(app,receipt,incoming);Check((receipt.direction-incoming.Normalized).Length<.002f,"Camera, facing and aim changes cannot rotate the committed receipt");
+            // Real clock/recoil movement changes the anchor, never the captured bearing.
+            Frames(app,11);Draw(app);RequireCue(app,receipt,incoming);
+        }
+        // Extreme presentation cameras exercise common-translation edge clamping.
+        foreach(Point screen in new[]{new Point(-20,400),new Point(1300,400),new Point(640,-20),new Point(640,850)})
+        {
+            Prepare(app);Point incoming=new Point(1,1);var receipt=DirectionalContact(app,incoming);Point feet=(Point)Call(app,"ScreenPoint",app.Game.Position);
+            Set(app,"camera",Get<Point>(app,"camera")+(feet-screen)*(1/36f));Draw(app);RequireCue(app,receipt,incoming);
+            Rect bounds=(Rect)Call(app,"HitDirectionCueBounds");Check(bounds.x>=3.9f&&bounds.y>=3.9f&&bounds.x+bounds.width<=1276.1f&&bounds.y+bounds.height<=796.1f,"Actual external cue bounds retain the complete outlined V within the viewport at every edge");
+        }
+        // Draw representative actual contacts in both languages, text policies and viewports.
+        foreach(bool english in new[]{false,true})foreach(bool large in new[]{false,true})foreach(int width in new[]{960,1280})
+        {
+            Prepare(app);app.Game.save.english=english;app.Game.save.largeText=large;Screen.width=width;Screen.height=width==960?640:800;Call(app,"Resize");
+            Point incoming=new Point(english?-1:1,large?1:-1);var receipt=DirectionalContact(app,incoming);
+            Draw(app,"direction-"+(english?"en":"zh")+"-"+(large?"large":"normal")+"-"+width);RequireCue(app,receipt,incoming);
+        }
+        Console.WriteLine("PASS actual hostile projectiles in all eight directions, exact OnGUI inverse-source V/ink geometry and matrix rotation, receipt-stable bearing through aim/recoil/camera changes, bilingual normal/large 960/1280 captures; NATIVE_UNVERIFIED");
+    }
+    private static void HitDirectionLatestReceiptAndVisibility(FrontierRuntime app)
+    {
+        Prepare(app);var g=app.Game;Point first=new Point(1,0);var receipt=DirectionalContact(app,first);Draw(app);RequireCue(app,receipt,first);
+        g.invulnerable=0;float hp=g.save.health;Call(g,"Hurt",3f,"area",(Point?)new Point(0,-8));var latest=Damage(g)[1];Draw(app);RequireCue(app,latest,new Point(0,-1));
+        Check(Damage(g).Count==2&&g.save.health<hp,"A newer actual contact replaces the cue while both mature numeric receipts remain");
+        g.effects.Add(new Effect("healthGain",g.Position,.7f,"+2"));g.effects.Add(new Effect("number",g.Position,.7f,"BREAK"));Draw(app);RequireCue(app,latest,new Point(0,-1));
+        foreach(Point? invalid in new Point?[]{null,new Point(),new Point(float.NaN,1),new Point(1,float.PositiveInfinity),new Point(float.NegativeInfinity,0)})
+        {
+            Prepare(app);g=app.Game;receipt=DirectionalContact(app,first);g.invulnerable=0;hp=g.save.health;Call(g,"Hurt",2f,"environment",invalid);var nondirectional=Damage(g)[1];
+            Draw(app);Check(g.save.health<hp&&nondirectional.direction.Length==0&&CueLines().Count==0,"Newest actual null/zero/nonfinite contact has its own HP label and hides every older directional cue");
+        }
+        foreach(string protection in new[]{"invulnerable","perfect-dodge","practice","sparring","range","zero"})
+        {
+            Prepare(app);g=app.Game;if(protection=="invulnerable"||protection=="perfect-dodge")g.invulnerable=1;
+            if(protection=="perfect-dodge"){g.dashTime=.18f;g.perfectDodgeArmed=true;}
+            if(protection=="practice")g.StartPractice();
+            if(protection=="sparring"||protection=="range")
+            {g.save.practiceBits=7;var mentor=Array.Find(g.Map.objects,o=>o.kind=="mentor");g.save.x=mentor.x;g.save.y=mentor.y-.7f;Check(protection=="sparring"?g.StartSparring():g.StartRange(0),"Real protected training begins for cue suppression");}
+            hp=g.save.health;Hurt(g,protection=="zero"?0:7,"shot");Draw(app);Check(g.save.health==hp&&Damage(g).Count==0&&CueLines().Count==0,"No actual HP loss produces no source cue at "+protection);
+        }
+        Prepare(app);g=app.Game;receipt=DirectionalContact(app,first);g.invulnerable=0;g.save.heat=100;Set(g,"climateTimer",0f);hp=g.save.health;Update(app);Draw(app);
+        Check(g.save.health<hp&&Damage(g).Count==2&&Damage(g)[1].direction.Length==0&&CueLines().Count==0,"Actual heat damage emits a nondirectional receipt and never invents a source from current facing or an older arrow");
+        foreach(string boundary in new[]{"pause","application-pause","visual-review-pause","practice","training-review"})
+        {
+            Prepare(app);g=app.Game;receipt=DirectionalContact(app,first);Draw(app);RequireCue(app,receipt,first);float life=receipt.life;
+            if(boundary=="pause"){Input.keys.Add(KeyCode.Escape);Update(app);life=receipt.life;}
+            else if(boundary=="application-pause")Set(app,"applicationPaused",true);
+            else if(boundary=="visual-review-pause")app.VisualReviewPaused=true;
+            else if(boundary=="practice")g.practicing=true;
+            else
+            {
+                g.save.practiceBits=7;var mentor=Array.Find(g.Map.objects,o=>o.kind=="mentor");g.save.x=mentor.x;g.save.y=mentor.y-.7f;Check(g.StartRange(0),"Real loadout range starts for review boundary");g.enemies.Clear();Update(app);Check(g.RangeFinished,"Real range clock enters paused review");g.effects.Add(receipt);
+            }
+            Draw(app);Check(CueLines().Count==0,"Actual OnGUI suppresses source cue at "+boundary);
+            if(boundary=="pause"||boundary=="application-pause"||boundary=="visual-review-pause")
+            {Frames(app,5);Check(receipt.life==life,"Paused boundary preserves the receipt's simulation lifetime");g.Close();Set(app,"applicationPaused",false);app.VisualReviewPaused=false;Draw(app);RequireCue(app,receipt,first);}
+        }
+        foreach(string field in new[]{"life","maxLife"})foreach(float invalid in new[]{float.NaN,float.PositiveInfinity,0f,-1f})
+        {Prepare(app);receipt=DirectionalContact(app,first);receipt.GetType().GetField(field).SetValue(receipt,invalid);Draw(app);Check(CueLines().Count==0,"Invalid "+field+" cannot submit stale or nonfinite cue geometry");}
+        Prepare(app);g=app.Game;g.save.health=2;receipt=DirectionalContact(app,new Point(-1,1),99);Check(g.Dying,"Real lethal contact enters death presentation");Draw(app);RequireCue(app,receipt,new Point(-1,1));
+        Console.WriteLine("PASS latest actual receipt wins over unrelated effects, null/zero/nonfinite and real climate damage hide older bearings; world/pause/practice/review and finite-lifetime guards, lethal cue retained; NATIVE_UNVERIFIED");
+    }
+    private static void HitDirectionHudLifetimeAndInput(FrontierRuntime app)
+    {
+        foreach(bool reduced in new[]{false,true})foreach(int quality in new[]{0,1,2})
+        {
+            Prepare(app);var g=app.Game;g.save.reducedMotion=reduced;g.save.effectsQuality=quality;Point incoming=new Point(1,-1);var receipt=DirectionalContact(app,incoming);Draw(app);RequireCue(app,receipt,incoming);
+            string save=JsonUtility.ToJson(g.save);float life=receipt.life;Point feet=g.Position;Set(app,"clock",21f);Draw(app);RequireCue(app,receipt,incoming);
+            Check(save==JsonUtility.ToJson(g.save)&&receipt.life==life&&(g.Position-feet).Length==0,"Repeated cue drawing and presentation clock changes add no saved state, movement or animation in any FX/motion policy");
+            int ageFrames=0;while(receipt.life>.1f&&ageFrames++<50)Update(app);Draw(app);RequireCue(app,receipt,incoming);Check(receipt.life>0&&receipt.life<.12f&&CueLines()[0].color.a<.6f,"Real Update fades actual cue in its last .2 seconds at every FX/motion setting");
+            Frames(app,15);Draw(app);Check(!g.effects.Contains(receipt)&&CueLines().Count==0,"Real simulation expiry removes source cue with its own numeric receipt");
+        }
+        foreach(string boundary in new[]{"travel","load"})
+        {
+            Prepare(app);var g=app.Game;var receipt=DirectionalContact(app,new Point(1,0));Draw(app);RequireCue(app,receipt,new Point(1,0));
+            if(boundary=="travel")g.Enter(1);else {g.PrepareSave();string json=JsonUtility.ToJson(g.save);Check(!json.Contains("damageTaken")&&!json.Contains("direction"),"Transient hit-direction metadata never extends SaveData");g.Load(JsonUtility.FromJson<SaveData>(json));g.Close();}
+            Draw(app);Check(CueLines().Count==0&&!g.effects.Contains(receipt),"Actual "+boundary+" cannot carry a source cue into the new world");
+        }
+        Prepare(app);var game=app.Game;Point heading=new Point(-1,0);var contact=DirectionalContact(app,heading);Draw(app);RequireCue(app,contact,heading);
+        // Put only the source cue under the real top-right HUD, while the static
+        // player envelope remains beyond its edge. Its fading must come from the cue.
+        Rect panel=new Rect(1030,22,230,70);Rect body=(Rect)Call(app,"PlayerHudBounds");Point[] vertices=ExpectedCue(app,heading);Point tip=vertices[1];
+        Point target=new Point(1041,60),shift=tip-target;Set(app,"camera",Get<Point>(app,"camera")+shift*(1/36f));Draw(app,"direction-hud-witness");RequireCue(app,contact,heading);
+        body=(Rect)Call(app,"PlayerHudBounds");Check(!Overlap(body,panel),"HUD overlap fixture isolates the external cue from the player's static art envelope");
+        Check((bool)Call(app,"ThreatOver",panel),"Source cue participates in the mature HUD fading policy independently of player art");
+        int fill=GUI.textureCalls.FindIndex(c=>c.texture==Texture2D.whiteTexture&&SameRect(c.rect,panel));Check(fill>=0&&Near(GUI.textureCalls[fill].color.a,.12f),"Actual affected HUD background fades to the established .12 cap");
+        Check(CueLines().TrueForAll(c=>GUI.textureCalls.IndexOf(c)>fill),"Actual source arms are emitted after the affected HUD background");
+        Clear();Call(app,"DrawHudThreatWitness");Check(CueLines().Count==0,"Shared threat witness does not duplicate the final source cue");
+        Set(app,"camera",game.Position);Draw(app);RequireCue(app,contact,heading);Rect bounds=(Rect)Call(app,"HitDirectionCueBounds");
+        var regions=(List<Rect>)Call(app,"HudPointerRegions");Check(!regions.Exists(r=>SameRect(r,bounds)),"Read-only source cue never registers a pointer-protection region");
+        Point pointer=ExpectedCue(app,heading)[1];Check(!(bool)Call(app,"PointerOverInterface",pointer),"Source cue tip passes the real world-pointer exclusion policy");
+        Check(!GUI.buttonCalls.Exists(b=>Overlap(b.rect,bounds)),"Source cue adds no IMGUI button or focus target");Frames(app,12);Draw(app);pointer=ExpectedCue(app,heading)[1];
+        float scale=Math.Min(Screen.width/1280f,Screen.height/800f);Input.mousePosition=new Vector3(pointer.x*scale+(Screen.width-1280*scale)/2,Screen.height-(pointer.y*scale+(Screen.height-800*scale)/2),0);Input.buttonDown.Add(0);Update(app);Input.Clear();
+        Check(game.playerAction!=null,"A real pointer press through the visible cue still starts the original attack after hit recovery");
+        Console.WriteLine("PASS static cue in all six FX/motion settings, actual fade/expiry/travel/load, cue-only HUD .12 fading and final draw order, no duplicate witness/button/pointer region and actual click-through attack; NATIVE_UNVERIFIED");
+    }
     public static int Main(string[] args)
     {
         string previous=Application.persistentDataPath,directory=Path.Combine(Path.GetTempPath(),"starfall-damage-taken-"+Guid.NewGuid());Application.persistentDataPath=directory;captureFolder=args.Length>0&&args[0]!="-"?args[0]:null;int failed=0;var app=new FrontierRuntime();
         try
-        {Directory.CreateDirectory(directory);Call(app,"Awake");Check(app.Game!=null,"Actual production Awake loads campaign");foreach(Action<FrontierRuntime> test in new Action<FrontierRuntime>[]{MitigatedContactsUseActualDelta,LethalAndProtectedContacts,MixedRenderingAndHudWitness,LifecyclePauseAndSaveBoundaries})try{test(app);}catch(Exception ex){failed++;Console.WriteLine("FAIL "+test.Method.Name+": "+(ex.InnerException??ex));}app.EndVisualReview();Call(app,"OnDestroy");}
+        {Directory.CreateDirectory(directory);Call(app,"Awake");Check(app.Game!=null,"Actual production Awake loads campaign");foreach(Action<FrontierRuntime> test in new Action<FrontierRuntime>[]{MitigatedContactsUseActualDelta,LethalAndProtectedContacts,MixedRenderingAndHudWitness,LifecyclePauseAndSaveBoundaries,ActualHitDirectionGeometry,HitDirectionLatestReceiptAndVisibility,HitDirectionHudLifetimeAndInput})try{test(app);}catch(Exception ex){failed++;Console.WriteLine("FAIL "+test.Method.Name+": "+(ex.InnerException??ex));}app.EndVisualReview();Call(app,"OnDestroy");}
         finally {Application.persistentDataPath=previous;Input.Clear();GUI.queuedClick=null;GUI.matrix=Matrix4x4.identity;GUI.color=Color.white;GUI.enabled=true;Event.current.type=EventType.Repaint;if(Directory.Exists(directory))Directory.Delete(directory,true);}
-        Console.WriteLine("Runtime damage taken: "+(4-failed)+"/4 groups passed; NATIVE_UNVERIFIED");return failed==0?0:1;
+        Console.WriteLine("Runtime damage taken: "+(7-failed)+"/7 groups passed; NATIVE_UNVERIFIED");return failed==0?0:1;
     }
 }
