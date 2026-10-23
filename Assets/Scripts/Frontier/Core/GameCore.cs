@@ -283,7 +283,9 @@ namespace Starfall
         }
         public void Attack(Point direction)
         {
-            if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null || bufferedAttack != null) return;
+            // Held repeats share the deliberate-command priority of PressAttack.
+            // A pending dodge must not lose its energy to a new basic wind-up.
+            if (mode != "world" || Dying || SparringActionBlocked || RangeActionBlocked || ActionTransitionBlocked || attackCooldown > 0 || bufferedSkill != null || bufferedDodge != null || bufferedAttack != null) return;
             Point facing = ResolveCombatFocusDirection(direction);
             StartAttack(facing, aimTarget);
         }

@@ -94,6 +94,64 @@ public static class RuntimeDodgeBufferChecks
     }
 
     private static Rect DodgeSlot(bool compact) { return compact ? new Rect(770, 732, 78, 50) : new Rect(818, 699, 109, 75); }
+    private static void HeldPaidAttacksYieldToQueuedDodge(FrontierRuntime app)
+    {
+        foreach (float dt in new[] { 1f / 60, 1f / 30, .05f })
+        for (int profession = 0; profession < 3; profession++)
+        foreach (int style in new[] { 1, 2 }) foreach (bool compass in new[] { false, true })
+        for (int input = 0; input < 4; input++)
+        {
+            Prepare(app, profession); var g = app.Game; Time.unscaledDeltaTime = dt;
+            g.save.flags.Add("core_1"); g.SetStyle(style); Check(g.Style == style, "The paid style is actually equipped");
+            g.save.relics[0] = compass ? 2 : -1;
+            float cost = compass ? 25 : 20, regeneration = profession == 2 ? 18 : 14;
+            string context = "input " + input + ", class " + profession + ", style " + style + ", compass " + compass + ", dt " + dt;
+            if (input < 2)
+            {
+                // The first real Update regenerates before sampling Space/A.
+                // Supply exactly the accepted cost at that input boundary.
+                g.save.energy = cost - dt * regeneration; g.dashCooldown = .08f + dt;
+                Input.held.Add(input == 0 ? KeyCode.J : KeyCode.JoystickButton2);
+                Input.axes["Horizontal"] = 1;
+                Input.keys.Add(input == 0 ? KeyCode.Space : KeyCode.JoystickButton0); Update(app);
+                Input.axes["Horizontal"] = 0;
+            }
+            else
+            {
+                g.save.energy = cost; g.dashCooldown = .08f; g.SetAim(new Point(1, 0));
+                Set(app, "combatHudTime", input == 3 ? 3f : 0f);
+                Rect slot = DodgeSlot(input == 3); Input.mousePosition = new Vector3(slot.x + 10, Screen.height - slot.y - 10, 0);
+                GUI.queuedClick = slot; Call(app, "OnGUI"); GUI.queuedClick = null;
+                Input.buttons.Add(0);
+            }
+            Check(g.dashTime == 0 && g.playerAction == null && g.invulnerable <= 0
+                && Math.Abs(g.save.energy - cost) < .001f && DashEffects(app) == 0,
+                "The actual early input leaves its full energy unspent, with no held attack preparation: " + context);
+            Point queuedAt = g.Position; Mouse(app, queuedAt + new Point(-4, 0));
+            int ticks = 0;
+            while (g.dashTime <= 0 && ticks++ < 10)
+            {
+                Update(app);
+                if (g.dashTime <= 0)
+                    Check(g.playerAction == null && Math.Abs(g.save.energy - (cost + ticks * dt * regeneration)) < .001f,
+                        "Held paid attack cannot spend during the queued window: " + context);
+            }
+            Check(g.dashTime > 0 && Math.Abs(g.dashTime - .18f) < .001f && g.invulnerable == .32f
+                && g.playerAction == null && DashEffects(app) == 1 && g.VisualFacing.x > .999f
+                && (g.Position - queuedAt).Length < .001f && Math.Abs(g.save.energy - ticks * dt * regeneration) < .001f,
+                "One real captured-direction dodge pays its original cost at readiness before held attack: " + context);
+            for (int frame = 0; frame < 30 && g.playerAction == null; frame++) Update(app);
+            Check(g.dashTime <= 0 && g.playerAction != null && g.playerAction.kind == "attack"
+                && g.playerAction.direction.x < -.999f,
+                "Held paid attack resumes with the later live aim after the dodge: " + context);
+            // Ignore regeneration here: the continued held input must still use
+            // the existing full attack interval and never repeat the old dodge.
+            ActorAction attack = g.playerAction; float cooldown = g.attackCooldown; Update(app);
+            Check(g.playerAction == attack && g.attackCooldown < cooldown && DashEffects(app) <= 1,
+                "Held repeat retains its original cooldown rather than replaying the buffered dodge: " + context);
+        }
+        Console.WriteLine("PASS low-energy paid styles: real held J/X/mouse after Space/A and both HUD queues, 60/30/20 fps, original 20/25 cost, captured dodge then normal attack resumption; NATIVE_UNVERIFIED");
+    }
     private static void HudWindowIsClickableWithoutPretendingReady(FrontierRuntime app)
     {
         foreach (bool compact in new[] { false, true })
@@ -168,7 +226,7 @@ public static class RuntimeDodgeBufferChecks
     {
         var app = new FrontierRuntime(); Call(app, "Awake");
         if (app.Game == null) { Console.WriteLine("FAIL Runtime Awake could not load the shipped campaign"); return 1; }
-        Action<FrontierRuntime>[] cases = { KeyboardAndPadCaptureOneDodgeForEveryClass, RejectedInputsDoNotWaitForReadiness,
+        Action<FrontierRuntime>[] cases = { KeyboardAndPadCaptureOneDodgeForEveryClass, HeldPaidAttacksYieldToQueuedDodge, RejectedInputsDoNotWaitForReadiness,
             HudWindowIsClickableWithoutPretendingReady, LastValidIntentWinsWithoutChangingSameFrameCast, PausesTravelLoadAndRangeBoundariesDiscardDodge };
         int failures = 0;
         foreach (var test in cases) try { test(app); } catch (Exception error) { failures++; Console.WriteLine("FAIL " + test.Method.Name + ": " + (error.InnerException ?? error).Message); }

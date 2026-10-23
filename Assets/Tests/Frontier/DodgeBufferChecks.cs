@@ -78,6 +78,77 @@ namespace Starfall.Tests
             Check(latestDirection.PlayerPose == 8 && latestDirection.VisualFacing.y < -.999f, "The most recent valid dodge press owns the captured direction");
         }
 
+        public static void DodgeHeldAttacksYieldToQueuedDodgeWithoutReservingEnergy(Campaign data)
+        {
+            foreach (float step in new[] { .02f, 1f / 30, .05f }) for (int weapon = 0; weapon < 3; weapon++)
+                foreach (int style in new[] { 1, 2 }) foreach (bool compass in new[] { false, true })
+                    foreach (bool ampleEnergy in new[] { false, true })
+            {
+                GameCore game = DodgeGame(data, weapon); game.save.weaponStyles[weapon] = style;
+                game.save.relics[0] = compass ? 2 : -1;
+                float cost = compass ? 25 : 20, initial = ampleEnergy ? 100 : cost;
+                float regeneration = weapon == 2 ? 18 : 14;
+                game.save.energy = initial; game.dashCooldown = .08f;
+                Point captured = new Point(0, -1), origin = game.Position;
+                string context = "weapon " + weapon + ", style " + style + ", compass " + compass
+                    + ", ample energy " + ampleEnergy + ", timestep " + step;
+                game.Dash(captured);
+                Check(game.dashTime == 0 && game.invulnerable == 0 && game.save.energy == initial
+                    && game.playerAction == null && DodgeEffects(game) == 0,
+                    "Queuing the paid dodge neither reserves energy nor starts an action: " + context);
+                // Production Update samples held attack after the discrete dash,
+                // then after each Tick while the request awaits its real cooldown.
+                game.SetAim(new Point(1, 0)); game.Attack(new Point(1, 0));
+                bool prematureAttack = game.playerAction != null;
+                bool prematurePayment = Math.Abs(game.save.energy - initial) > .001f;
+                int ticks = 0;
+                while (game.dashTime <= 0 && game.dashCooldown > 0 && ticks++ < 8)
+                {
+                    game.Tick(step, new Point(), new Point(1, 0));
+                    game.Attack(new Point(1, 0));
+                    if (game.dashTime <= 0)
+                    {
+                        prematureAttack |= game.playerAction != null;
+                        prematurePayment |= Math.Abs(game.save.energy - Math.Min(100, initial + ticks * step * regeneration)) > .001f;
+                    }
+                }
+                Check(game.dashTime == .18f && game.invulnerable == .32f && game.playerAction == null
+                    && DodgeEffects(game) == 1,
+                    "Held paid attacks cannot swallow the accepted dodge at cooldown readiness: " + context);
+                Check(!prematureAttack && !prematurePayment,
+                    "Held attack waits without starting a preparation or spending the pending dodge's energy: " + context);
+                Check((game.Position - origin).Length < .001f && game.VisualFacing.y < -.999f
+                    && Math.Abs(game.dashCooldown - .75f) < .001f,
+                    "Queued dodge retains its captured direction and complete original duration/cooldown: " + context);
+                float expected = Math.Min(100, initial + ticks * step * regeneration) - cost;
+                Check(Math.Abs(game.save.energy - expected) < .001f,
+                    "The accepted dodge pays exactly its original 20/25 energy once: " + context);
+                // Releasing attack does not repeat the dodge. Once its movement
+                // ends, the held-attack API returns to the mature paid cadence.
+                for (int frame = 0; frame < 8; frame++) game.Tick(.05f, new Point());
+                expected = Math.Min(100, expected + .4f * regeneration);
+                Check(game.dashTime == 0 && Math.Abs(game.dashCooldown - .35f) < .001f
+                    && Math.Abs(game.save.energy - expected) < .001f,
+                    "A released dodge does not repeat or charge again while its ordinary cooldown runs: " + context);
+                game.Attack(new Point(1, 0));
+                Check(game.playerAction != null && game.playerAction.kind == "attack"
+                    && Math.Abs(game.save.energy - (expected - game.Profile(weapon, style).energy)) < .001f,
+                    "Held paid attack resumes normally after the accepted dodge: " + context);
+            }
+            foreach (string boundary in new[] { "rejected", "expired", "menu" })
+            {
+                GameCore game = DodgeGame(data); game.save.weaponStyles[0] = 1;
+                game.dashCooldown = .08f; game.Dash(new Point(0, -1));
+                if (boundary == "rejected") { game.dashCooldown = .5f; game.Dash(new Point(1, 0)); }
+                else if (boundary == "expired") { game.dashCooldown = .5f; Advance(game, .14f); }
+                else { game.mode = "inventory"; game.Close(); }
+                float energy = game.save.energy; game.Attack(new Point(1, 0));
+                Check(game.dashTime == 0 && game.playerAction != null && game.playerAction.kind == "attack"
+                    && Math.Abs(game.save.energy - (energy - game.Profile(0, 1).energy)) < .001f,
+                    "Cleared dodge input cannot leave held attack blocked after " + boundary);
+            }
+        }
+
         public static void DodgeIntentCannotSurviveMenusTravelDeathOrTrainingBoundaries(Campaign data)
         {
             for (int boundary = 0; boundary < 6; boundary++)
