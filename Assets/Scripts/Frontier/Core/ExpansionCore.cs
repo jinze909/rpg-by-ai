@@ -391,9 +391,9 @@ namespace Starfall
         }
         public bool BuildProject(int project)
         {
-            if (save.room != 0 || project < 0 || project > 2 || save.projects[project] >= 2) return false;
-            int tier = save.projects[project];
-            if (!Spend(4 + tier * 2, 2 + tier, 0, 0, 3 + tier, 30 + tier * 20)) return false;
+            TownProjectQuote quote = GetTownProjectQuote(project);
+            if (!quote.available) { Notify(quote.reasonZh, quote.reasonEn); return false; }
+            if (!Spend(quote.wood, quote.crystals, 0, 0, quote.parts, quote.coins)) return false;
             save.projects[project]++; Reputation(2, 1);
             if (project == 0 && save.projects[0] == 2) RewardRelic(1);
             Notify("城镇工程完成！新设施已投入使用。", "Town project complete. The facility is now active."); sound = "reward"; revision++; return true;

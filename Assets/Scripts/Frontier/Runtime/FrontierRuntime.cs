@@ -72,7 +72,7 @@ namespace Starfall
         private void Update()
         {
             if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
-            ValidateTalentResetConfirmation();
+            ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
             clock += Time.unscaledDeltaTime; Resize();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);
             moving = movement.Length > .1f;
@@ -137,7 +137,7 @@ namespace Starfall
         }
         private void Toggle(KeyCode key, string mode)
         {
-            if (replacePrompt || saveConfirmation != null || talentResetConfirmation != null || key == KeyCode.Tab && Game.mode != "world") return;
+            if (replacePrompt || saveConfirmation != null || talentResetConfirmation != null || townProjectConfirmation != null || key == KeyCode.Tab && Game.mode != "world") return;
             if (settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves" || Game.mode == "controls")) return;
             if (!Input.GetKeyDown(key) || Game.mode == "dialog" || Game.mode == "fish" || Game.mode == "title") return;
             if (Game.mode == mode) Game.Close(); else OpenMenu(mode);
@@ -155,13 +155,13 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (talentResetConfirmation != null) confirmControl = null; if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (talentResetConfirmation != null || townProjectConfirmation != null) confirmControl = null; if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
         private void OnApplicationFocus(bool focused)
-        { if (!focused && talentResetConfirmation != null) { ClearTalentResetConfirmation(); confirmControl = null; } if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
+        { if (!focused && (talentResetConfirmation != null || townProjectConfirmation != null)) { ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); confirmControl = null; } if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }
         private void OnDestroy()
         {
-            ClearTalentResetConfirmation();
+            ClearTalentResetConfirmation(); ClearTownProjectConfirmation();
             ResetCombatTextLayout();
 #if UNITY_5_3_OR_NEWER
             if (nativeHero != null) nativeHero.Dispose();
@@ -189,7 +189,7 @@ namespace Starfall
             if (bootError != null || Game == null) { GUI.Label(new Rect(30, 30, 1100, 500), bootError ?? "Loading Starfall Frontier…"); return; }
             // Update handles keyboard navigation; IMGUI must not activate a second focused button.
             if (Event.current.type == EventType.KeyDown || Event.current.type == EventType.KeyUp) Event.current.Use();
-            ValidateTalentResetConfirmation(); BeginControls();
+            ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation(); BeginControls();
             if (textStyle == null)
             {
                 // Fresh styles cannot inherit the editor skin's high-DPI
@@ -245,7 +245,7 @@ namespace Starfall
         }
         private bool Button(float x, float y, float w, float h, string text, bool active = false, bool enabled = true)
         {
-            if ((replacePrompt || saveConfirmation != null || talentResetConfirmation != null || Game.mode == "plans" && battlePlanConfirmation >= 0) && !drawingModal) enabled = false;
+            if ((replacePrompt || saveConfirmation != null || talentResetConfirmation != null || townProjectConfirmation != null || Game.mode == "plans" && battlePlanConfirmation >= 0) && !drawingModal) enabled = false;
             Rect r = new Rect(x, y, w, h); Point mouse = MouseVirtual(); bool hover = mouse.x >= x && mouse.x < x + w && mouse.y >= y && mouse.y < y + h;
             string id = ControlId(x, y, w, h); bool keyboard = focusVisible && navigation.focused == id && enabled;
             bool press = enabled && ((hover && Input.GetMouseButton(0)) || pressedTime > 0 && pressedControl == id);

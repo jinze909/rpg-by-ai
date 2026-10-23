@@ -36,7 +36,7 @@ namespace Starfall
             if (id < 0 || portraits == null) { Icon(id < 0 ? "journal" : "companion", x + w * .2f, y + h * .25f, w * .6f); return; }
             float size = Math.Min(w, h); id = Math.Max(0, Math.Min(7, id)); GUI.DrawTextureWithTexCoords(new Rect(x + (w - size) / 2, y + h - size, size, size), portraits, new Rect(id % 4 / 4f, id < 4 ? .5f : 0, .25f, .5f));
         }
-        private void OpenMenu(string mode) { ClearTalentResetConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
+        private void OpenMenu(string mode) { ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
         private void Dim() { Box(0, 0, Width, Height, new Color(.02f, .035f, .07f, .87f)); }
         private void Bar(float x, float y, float w, float value, Color color, float h = 6)
         { Box(x, y, w, h, PixelArt.C("#0d1c2c")); Box(x, y, w * Mathf.Clamp01(value), h, color); Box(x, y, w * Mathf.Clamp01(value), 1, Color.Lerp(color, paper, .3f)); }
@@ -199,15 +199,17 @@ namespace Starfall
         private void DrawCamp()
         {
             Window(Game.L("城镇建设", "Town projects"), Game.L("在余烬镇施工 · 建设也会提高山野议会声望", "Build in Emberfall · projects also earn Wild Assembly trust"));
-            string[] names = { Game.L("水渠与药田", "Canals & gardens"), Game.L("远行驿站", "Waystation"), Game.L("记忆工坊", "Memory workshop") }, ids = { "seed", "camp", "gear" };
+            string[] ids = { "seed", "camp", "gear" };
             string[] info = { Game.L("每级收成+2药草。\n二级赠送琥珀种遗物。", "+2 harvested herbs per tier.\nTier II grants Amber Seed."), Game.L("一级开放野外营地休整。\n二级每天赠一杯凉茶。", "Tier I enables field-camp rest.\nTier II adds daily camp tea."), Game.L("一级开放遗物锻印。\n二级免除锻印硬币费。", "Tier I enables relic refining.\nTier II removes its coin fee.") };
             for (int i = 0; i < 3; i++)
             {
-                float x = 279 + i * 318; int tier = Game.save.projects[i]; Card(x, 177, 302, 449); Icon(ids[i], x + 109, 199, 84); Text(x + 20, 312, 263, 40, names[i], 23, gold, TextAnchor.MiddleCenter);
-                Text(x + 21, 374, 261, 84, info[i], 16, paper); Text(x + 21, 479, 261, 68, tier == 2 ? Game.L("设施已完全升级", "Fully upgraded") : Game.L("木材 ", "Timber ") + (4 + tier * 2) + " / " + Game.L("星晶 ", "Crystals ") + (2 + tier) + "\n" + Game.L("零件 ", "Parts ") + (3 + tier) + " / " + (30 + tier * 20) + Game.L(" 硬币", " coins"), 14, muted);
-                if (Button(x + 17, 570, 268, 42, Game.L("建设 ", "Build ") + tier + "/2", true, Game.save.room == 0 && tier < 2)) Game.BuildProject(i);
+                TownProjectQuote quote = Game.GetTownProjectQuote(i);
+                float x = 279 + i * 318; int tier = quote.tier; Card(x, 177, 302, 449); Icon(ids[i], x + 109, 199, 84); Text(x + 20, 312, 263, 40, Game.TownProjectName(i), 23, gold, TextAnchor.MiddleCenter);
+                Text(x + 21, 374, 261, 84, info[i], 16, paper); Text(x + 21, 479, 261, 68, quote.capped ? Game.L("设施已完全升级", "Fully upgraded") : Game.L("木材 ", "Timber ") + quote.wood + " / " + Game.L("星晶 ", "Crystals ") + quote.crystals + "\n" + Game.L("零件 ", "Parts ") + quote.parts + " / " + quote.coins + Game.L(" 硬币", " coins"), 14, muted);
+                if (Button(x + 17, 570, 268, 42, Game.L("查看计划 ", "Review plan ") + tier + "/2", true, !Game.Dying && !Game.practicing && !applicationPaused && !VisualReviewPaused)) BeginTownProjectConfirmation(i);
             }
             Text(282, 654, 925, 42, Game.L("野外营地可制作抗暑抗寒的凉茶。建设效果覆盖整个旅程。", "Field camps brew climate-resistant tea. Project benefits travel with you."), 16, muted);
+            DrawTownProjectConfirmation();
         }
         private void DrawBounties()
         {

@@ -487,6 +487,11 @@ namespace Starfall.Tests
         [Test] public void RaceCourseDeadlineBadgesAndPhysicalReplays() { CoreChecks.RaceCourseDeadlineBadgesAndPhysicalReplays(Data()); }
         [Test] public void RaceCourseOldSavesKeepRecordsWhileTransientSessionsClear() { CoreChecks.RaceCourseOldSavesKeepRecordsWhileTransientSessionsClear(Data()); }
 
+        [Test] public void TownProjectQuotesExposeExactCostsBenefitsAndReadOnlySnapshots() { CoreChecks.TownProjectQuotesExposeExactCostsBenefitsAndReadOnlySnapshots(Data()); }
+        [Test] public void TownProjectTransactionsKeepSixTiersAndActualFacilityBenefits() { CoreChecks.TownProjectTransactionsKeepSixTiersAndActualFacilityBenefits(Data()); }
+        [Test] public void TownProjectStaleInvalidAndForeignReviewsRejectWithoutPayment() { CoreChecks.TownProjectStaleInvalidAndForeignReviewsRejectWithoutPayment(Data()); }
+        [Test] public void TownProjectLegacyProgressAndCapturedActionsRemainCompatible() { CoreChecks.TownProjectLegacyProgressAndCapturedActionsRemainCompatible(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }
