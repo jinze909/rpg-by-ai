@@ -99,6 +99,13 @@ namespace Starfall
             // Even an unavailable Q/dodge abandons that old basic press.
             if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.Q) || PadDown(3) || Input.GetKeyDown(KeyCode.Space) || PadDown(0)))
                 Game.ClearBufferedAttack();
+            // Opening a menu abandons an unstarted companion request before
+            // this exact readiness frame can consume its full command cooldown.
+            if (Game.mode == "world" && Game.CompanionCommandQueued && (Input.GetKeyDown(KeyCode.Escape)
+                || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.K)
+                || Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.C)
+                || Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown(KeyCode.F1) || PadDown(6) || PadDown(7)))
+                Game.ClearBufferedCompanionCommand();
             Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {
@@ -155,7 +162,7 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (talentResetConfirmation != null || townProjectConfirmation != null) confirmControl = null; if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (talentResetConfirmation != null || townProjectConfirmation != null) confirmControl = null; if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearBufferedCompanionCommand(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
         private void OnApplicationFocus(bool focused)
         { if (!focused && (talentResetConfirmation != null || townProjectConfirmation != null)) { ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); confirmControl = null; } if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }

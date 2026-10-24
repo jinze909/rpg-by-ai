@@ -208,12 +208,11 @@ namespace Starfall
             if (id < 0 || id > 2 || !Has("companion_" + id)) return;
             PersonalConversation(id, new WorldObject { name = CompanionNames[id], en = CompanionNamesEn[id] });
         }
-        public void CommandCompanion()
+        private void StartCompanionCommand(Point direction, Point? target)
         {
-            if (mode != "world" || Dying || practicing || save.companion < 0 || companionCooldown > 0) return;
             ResetCompanionTactics(); companionCooldown = CompanionCommandCooldownTotal;
             companionAction = new ActorAction { kind = "command", weapon = save.companion, combo = save.relationships[save.companion], damage = Damage,
-                direction = aimTarget.HasValue?(aimTarget.Value-companionPosition).Normalized:aim, target=aimTarget, duration = CompanionCommandDuration, contact = CompanionCommandContact, impact = CaptureImpact(save.companion==1?1:2,0,false) };
+                direction = direction, target = target, duration = CompanionCommandDuration, contact = CompanionCommandContact, impact = CaptureImpact(save.companion==1?1:2,0,false) };
             companionAim = companionAction.direction;
         }
         private void ReleaseCompanionCommand(ActorAction action)

@@ -58,7 +58,7 @@ namespace Starfall
         public CompanionTacticInfo CompanionTactic(int id)
         { return id < 0 || id > 2 ? null : new CompanionTacticInfo(id, save.relationships[id], CompanionCommandCooldownTotal, Damage); }
         private void ResetCompanionTactics()
-        { LastCompanionReceipt = null; CompanionFeedbackTime = 0; }
+        { ClearBufferedCompanionCommand(); LastCompanionReceipt = null; CompanionFeedbackTime = 0; }
         private void TickCompanionReceipt(float dt)
         {
             if (practicing || Dying || save.companion < 0) { ResetCompanionTactics(); return; }

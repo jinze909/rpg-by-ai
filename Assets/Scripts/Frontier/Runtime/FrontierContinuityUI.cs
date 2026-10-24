@@ -222,7 +222,7 @@ namespace Starfall
             ActionSlot(430,ControlKey("Q","Y"),SkillName(),Game.save.profession == 0 ? "sword" : Game.save.profession == 1 ? "bow" : "staff",Game.skillCooldown,Game.save.energy >= (Game.Relic(4)?50:40),()=>Game.Skill(InputAim(true)),3.5f,Game.L("耐力不足","Low energy"),acceptEarly:Game.skillCooldown>0&&Game.skillCooldown<=GameCore.SkillBufferWindow);
             ActionSlot(515,ControlKey("F","LB"),Game.L("汤 ","Stew ")+Game.save.inventory[6],"stew",0,Game.save.inventory[6]>0&&!Game.practicing,()=>Game.Eat());
             ActionSlot(600,ControlKey("T","PACK"),Game.L("茶 ","Tea ")+Game.save.tea,"tea",0,Game.save.tea>0&&!Game.practicing,()=>Game.DrinkTea());
-            ActionSlot(685,ControlKey("Z","RB"),CompanionActionLabel,"companion",Game.companionCooldown,Game.save.companion>=0&&!Game.practicing,()=>Game.CommandCompanion(),Game.CompanionCommandCooldownTotal);
+            ActionSlot(685,ControlKey("Z","RB"),CompanionActionLabel,"companion",Game.companionCooldown,Game.save.companion>=0&&!Game.practicing,()=>Game.CommandCompanion(),Game.CompanionCommandCooldownTotal,acceptEarly:Game.companionCooldown>0&&Game.companionCooldown<=GameCore.CompanionCommandBufferWindow);
             ActionSlot(770,ControlKey("SPACE","A"),Game.L("闪避","Dodge"),"shield",Game.dashCooldown,Game.save.energy>=(Game.Relic(2)?25:20),()=>Game.Dash(Game.aim),.75f-Game.save.talents[2]*.06f,Game.L("耐力不足","Low energy"),acceptEarly:Game.dashCooldown>0&&Game.dashCooldown<=GameCore.DodgeBufferWindow);
             if (Button(1134,746,126,36,Game.L("暂停 ","Pause ")+ControlKey("ESC","START"))) { OpenMenu("pause"); Save(); }
         }

@@ -109,6 +109,7 @@ namespace Starfall
 
         private void ResetCombatPresentation()
         {
+            ClearBufferedCompanionCommand();
             ClearCombatLoot();
             ResetSignalReprise();
             ResetReturnLetterSignal();

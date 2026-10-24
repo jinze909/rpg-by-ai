@@ -39,7 +39,7 @@ namespace Starfall
             {
                 return Game.mode == "world" && !applicationPaused && !VisualReviewPaused && !Game.Dying && !Game.practicing
                     && Game.save.companion >= 0 && Game.save.companion <= 2
-                    && (CompanionPreparing || Game.CompanionFeedbackTime > 0 && Game.LastCompanionReceipt != null && Game.LastCompanionReceipt.id == Game.save.companion);
+                    && (Game.CompanionCommandQueued || CompanionPreparing || Game.CompanionFeedbackTime > 0 && Game.LastCompanionReceipt != null && Game.LastCompanionReceipt.id == Game.save.companion);
             }
         }
         private Rect CompanionFeedbackBounds()
@@ -59,16 +59,18 @@ namespace Starfall
         {
             if (!CompanionFeedbackVisible) return;
             Rect rect = CompanionFeedbackBounds();
-            Panel(rect.x, rect.y, rect.width, rect.height, new Color(.035f, .07f, .10f, .92f), CompanionPreparing ? gold : mint);
+            bool pending = Game.CompanionCommandQueued || CompanionPreparing;
+            Panel(rect.x, rect.y, rect.width, rect.height, new Color(.035f, .07f, .10f, .92f), pending ? gold : mint);
             string name = Game.L(GameCore.CompanionNames[Game.save.companion], GameCore.CompanionNamesEn[Game.save.companion]);
-            string state = CompanionPreparing ? Game.L("准备指令", "Preparing command") : CompanionReceiptText(Game.LastCompanionReceipt);
-            Text(rect.x + 8, rect.y + 3, rect.width - 16, rect.height - 6, name + " · " + state, 13, CompanionPreparing ? gold : mint, TextAnchor.MiddleCenter);
+            string state = Game.CompanionCommandQueued ? Game.L("等待指令", "Command queued") : CompanionPreparing ? Game.L("准备指令", "Preparing command") : CompanionReceiptText(Game.LastCompanionReceipt);
+            Text(rect.x + 8, rect.y + 3, rect.width - 16, rect.height - 6, name + " · " + state, 13, pending ? gold : mint, TextAnchor.MiddleCenter);
         }
         private string CompanionNoteStatus(int id)
         {
             if (!Game.Has("companion_" + id)) return Game.L("尚未招募 · 可先查看指令", "Not recruited · preview only");
             if (Game.save.companion != id) return Game.L("当前未同行", "Not currently travelling with you");
             if (Game.practicing) return Game.L("训练中不出战", "Sits out during training");
+            if (Game.CompanionCommandQueued) return Game.L("等待指令", "Command queued");
             if (CompanionPreparing) return Game.L("准备中，尚未释放", "Preparing; not released yet");
             if (Game.companionCooldown > 0) return Game.L("指令冷却 ", "Command cooldown ") + Game.companionCooldown.ToString("0.0") + "s";
             return Game.L("指令可用 · Z / RB", "Command ready · Z / RB");

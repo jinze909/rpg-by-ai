@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void CompanionCommandBufferThresholdCadencesAndSingleDispatch(){CoreChecks.CompanionCommandBufferThresholdCadencesAndSingleDispatch(Data());}
+        [Test] public void CompanionCommandBufferCapturesAimAndOriginalContactValues(){CoreChecks.CompanionCommandBufferCapturesAimAndOriginalContactValues(Data());}
+        [Test] public void CompanionCommandBufferKeepsHeroQueuesLatestPressAndHitStop(){CoreChecks.CompanionCommandBufferKeepsHeroQueuesLatestPressAndHitStop(Data());}
+        [Test] public void CompanionCommandBufferClearsBoundariesAndStaysOutOfSaves(){CoreChecks.CompanionCommandBufferClearsBoundariesAndStaysOutOfSaves(Data());}
         [Test] public void EnemyFootPathNaturalSevenEnemyHouseRouteClosesCombatAtTwentyAndSixtyFrames(){CoreChecks.EnemyFootPathNaturalSevenEnemyHouseRouteClosesCombatAtTwentyAndSixtyFrames(Data());}
         [Test] public void EnemyFootPathAllOrdinaryKindsSweepTheExactFootAndDriveOnlyRealGait(){CoreChecks.EnemyFootPathAllOrdinaryKindsSweepTheExactFootAndDriveOnlyRealGait(Data());}
         [Test] public void EnemyFootPathKeepsNormalCentersScopeAwarenessAndCommittedAttackOwnership(){CoreChecks.EnemyFootPathKeepsNormalCentersScopeAwarenessAndCommittedAttackOwnership(Data());}

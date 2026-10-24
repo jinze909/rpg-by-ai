@@ -46,7 +46,7 @@ namespace Starfall
         }
         private void RetireSignalRepriseActions()
         {
-            CancelAction(); ClearCombatFocus(); ClearFrost(); companionAction = null;
+            CancelAction(); ClearBufferedCompanionCommand(); ClearCombatFocus(); ClearFrost(); companionAction = null;
             foreach (Projectile shot in projectiles.ToArray())
                 if (shot.friendly || shot.ownerId == SignalWardenId)
                 {

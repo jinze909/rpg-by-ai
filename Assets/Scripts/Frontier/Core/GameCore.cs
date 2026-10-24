@@ -23,7 +23,7 @@ namespace Starfall
         public string mode
         {
             get { return currentMode; }
-            set { currentMode = value; if (value != "fish") ResetRiverFishing(); if (value != "world") { ClearBufferedCombatInputs(); ClearCombatFocus(); } }
+            set { currentMode = value; if (value != "fish") ResetRiverFishing(); if (value != "world") { ClearBufferedCombatInputs(); ClearBufferedCompanionCommand(); ClearCombatFocus(); } }
         }
         public string toast = "";
         public Conversation conversation;
@@ -248,6 +248,7 @@ namespace Starfall
             ValidateCombatFocus();
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
             float skillReadyDelay = ActionReadyDelay(skillCooldown), dodgeReadyDelay = Math.Max(0, dashCooldown), attackReadyDelay = ActionReadyDelay(attackCooldown);
+            float companionReadyDelay = Math.Max(0, companionCooldown);
             movementDirection = new Point();
             TickVisuals(dt); if (mode != "world") return; TickGate(dt);
             for (int i = effects.Count - 1; i >= 0; i--) { effects[i].life -= dt; if (effects[i].life <= 0) effects.RemoveAt(i); }
@@ -280,6 +281,9 @@ namespace Starfall
             TickSparring(dt); TickRange(dt);
             if (!SafeTrainingActive) TickGuidance(beforeMove);
             TickPolish(dt);
+            // Like a fresh Z/RB at the end of Update: dispatch after this frame's
+            // simulation, with the original full preparation still to come.
+            TickBufferedCompanionCommand(dt, companionReadyDelay);
         }
         public void Attack(Point direction)
         {
