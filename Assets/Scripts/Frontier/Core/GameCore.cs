@@ -575,7 +575,7 @@ namespace Starfall
                     // Resolve the first obstruction along flight, not its endpoint.
                     if (ShotBlocked(p,next)) { dead = true; break; }
                     p.position = next;
-                    dead = ProjectileContact(p, false, out impactRadius);
+                    dead = ProjectileContact(p, false, p.velocity.Normalized, out impactRadius);
                 }
                 if (dead && projectiles.Remove(p)) effects.Add(new Effect(p.explosive ? "magicImpact" : "projectileImpact", p.position, .28f) { direction = impactDirection, variant = p.friendly ? 0 : 1, radius = impactRadius, height = p.height });
                 else if (p.life <= 0 && projectiles.Remove(p)) effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height });

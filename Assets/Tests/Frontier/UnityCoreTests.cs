@@ -539,6 +539,10 @@ namespace Starfall.Tests
         [Test] public void HitDirectionProtectedAndUnlocatedContactsNeverInventCueData(){CoreChecks.HitDirectionProtectedAndUnlocatedContactsNeverInventCueData(Data());}
         [Test] public void HitDirectionReceiptsStayTransientAndPreservePauseEconomyAndActionCosts(){CoreChecks.HitDirectionReceiptsStayTransientAndPreservePauseEconomyAndActionCosts(Data());}
 
+        [Test] public void ProjectileOrderOrdinaryBowAndStaffChooseFrontAcrossLaunchAndFlight() { CoreChecks.ProjectileOrderOrdinaryBowAndStaffChooseFrontAcrossLaunchAndFlight(Data()); }
+        [Test] public void ProjectileOrderCircleEntryBossRadiusAndStableIdTies() { CoreChecks.ProjectileOrderCircleEntryBossRadiusAndStableIdTies(Data()); }
+        [Test] public void ProjectileOrderPiercingExplosiveAndWallsKeepOwnership() { CoreChecks.ProjectileOrderPiercingExplosiveAndWallsKeepOwnership(Data()); }
+        [Test] public void ProjectileOrderCapturedActionsLifecycleAndLegacySavesStayUnchanged() { CoreChecks.ProjectileOrderCapturedActionsLifecycleAndLegacySavesStayUnchanged(Data()); }
         [Test] public void MuzzleContactEightHeadingsBowAndStaffRespectRealRelease() { CoreChecks.MuzzleContactEightHeadingsBowAndStaffRespectRealRelease(Data()); }
         [Test] public void MuzzleContactForwardSweepRejectsBehindAndOutsideCorridor() { CoreChecks.MuzzleContactForwardSweepRejectsBehindAndOutsideCorridor(Data()); }
         [Test] public void MuzzleContactWallOrderKeepsEarlierActorAndBlocksLaterActor() { CoreChecks.MuzzleContactWallOrderKeepsEarlierActorAndBlocksLaterActor(Data()); }
