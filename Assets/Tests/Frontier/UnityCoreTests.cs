@@ -6,6 +6,10 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void CompanionFollowWalksAroundAuthoredHouseAfterNaturalDodgeAtTwentyAndSixtyFrames(){CoreChecks.CompanionFollowWalksAroundAuthoredHouseAfterNaturalDodgeAtTwentyAndSixtyFrames(Data());}
+        [Test] public void CompanionFollowKeepsOrdinaryHouseAndAuthoredWaterRoutes(){CoreChecks.CompanionFollowKeepsOrdinaryHouseAndAuthoredWaterRoutes(Data());}
+        [Test] public void CompanionFollowKeepsPreparedAutomaticAndCommandFeetAndAim(){CoreChecks.CompanionFollowKeepsPreparedAutomaticAndCommandFeetAndAim(Data());}
+        [Test] public void CompanionFollowPreservesPauseLegacySavesAndWorldResetOwnership(){CoreChecks.CompanionFollowPreservesPauseLegacySavesAndWorldResetOwnership(Data());}
         [Test] public void CompanionFocusFollowsDeliberateLockAndCycleBeforeAutomaticPreparation(){CoreChecks.CompanionFocusFollowsDeliberateLockAndCycleBeforeAutomaticPreparation(Data());}
         [Test] public void CompanionFocusFallbackChoosesNearestThenIdentityAndStableListPosition(){CoreChecks.CompanionFocusFallbackChoosesNearestThenIdentityAndStableListPosition(Data());}
         [Test] public void CompanionFocusChecksOwnFootRangeSightAndFiniteLivingTargets(){CoreChecks.CompanionFocusChecksOwnFootRangeSightAndFiniteLivingTargets(Data());}
