@@ -207,6 +207,10 @@ namespace Starfall.Tests
         [Test] public void CommissionTravelAndActualDefeatRequireDeliberateUnpaidRetries(){CoreChecks.CommissionTravelAndActualDefeatRequireDeliberateUnpaidRetries(Data());}
         [Test] public void CommissionDailyWaterStaysChosenLocalBoundedAndIndependentOfRest(){CoreChecks.CommissionDailyWaterStaysChosenLocalBoundedAndIndependentOfRest(Data());}
         [Test] public void CommissionJournalPrefixLegacyAndForeignSnapshotBoundaries(){CoreChecks.CommissionJournalPrefixLegacyAndForeignSnapshotBoundaries(Data());}
+        [Test] public void BattlePlanStatsCurrentMatchOpeningContactsAndActualCosts() { CoreChecks.BattlePlanStatsCurrentMatchOpeningContactsAndActualCosts(Data()); }
+        [Test] public void BattlePlanStatsCandidatesMatchAppliedBuildsAndLiveConditions() { CoreChecks.BattlePlanStatsCandidatesMatchAppliedBuildsAndLiveConditions(Data()); }
+        [Test] public void BattlePlanStatsReadsPreserveSnapshotsCombatQueuesAndWholeState() { CoreChecks.BattlePlanStatsReadsPreserveSnapshotsCombatQueuesAndWholeState(Data()); }
+        [Test] public void BattlePlanStatsInvalidLockedAndLegacyRecordsRemainReadOnly() { CoreChecks.BattlePlanStatsInvalidLockedAndLegacyRecordsRemainReadOnly(Data()); }
         [Test] public void BattlePlansOwnedThreeSlotCopies(){CoreChecks.BattlePlansCaptureThreeOwnedBuildsAndReturnCopies(Data());}
         [Test] public void BattlePlansAtomicOwnedEquipment(){CoreChecks.BattlePlansApplyOnlySelectedWeaponStanceAndOwnedChoices(Data());}
         [Test] public void BattlePlansOwnershipRevalidation(){CoreChecks.BattlePlansRecheckAllUnlocksBeforeAtomicApply(Data());}

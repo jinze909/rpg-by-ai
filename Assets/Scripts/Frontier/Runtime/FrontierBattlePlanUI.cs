@@ -6,10 +6,10 @@ namespace Starfall
     public sealed partial class FrontierRuntime
     {
         private int selectedBattlePlan, battlePlanConfirmation = -1, battlePlanGeneration = -1;
-        private bool battlePlanDeleting;
+        private bool battlePlanDeleting, battlePlanComparing;
         private string techniqueGuideParent = "talents";
         private void OpenBattlePlans()
-        { battlePlanConfirmation = -1; battlePlanGeneration = Game.WorldGeneration; OpenMenu("plans"); }
+        { battlePlanConfirmation = -1; battlePlanComparing = false; battlePlanGeneration = Game.WorldGeneration; OpenMenu("plans"); }
         private void OpenTechniqueGuide()
         { techniqueGuideParent = Game.mode == "plans" ? "plans" : "talents"; OpenMenu("techniques"); }
         private string PlanStyle(int style)
@@ -21,7 +21,7 @@ namespace Starfall
         private void DrawBattlePlans()
         {
             if(battlePlanGeneration != Game.WorldGeneration)
-            { battlePlanConfirmation = -1; selectedBattlePlan = 0; battlePlanGeneration = Game.WorldGeneration; }
+            { battlePlanConfirmation = -1; battlePlanComparing = false; selectedBattlePlan = 0; battlePlanGeneration = Game.WorldGeneration; }
             if(battlePlanConfirmation >= 0) { DrawBattlePlanConfirmation(); return; }
             Window(Game.L("装备方案", "Battle plans"), Game.L("三种常用配置 · 在艾妲的对练中试用，再出发", "Three saved setups · try them in Ada's sparring before setting out"));
             if(Game.mode != "plans") return;
@@ -33,8 +33,12 @@ namespace Starfall
                 Text(295, y + 61, 270, 57, plan == null ? Game.L("空位置 · 可记下当前装备", "Empty slot · store your current gear") : PlanGear(plan) + "\n" + (Game.BattlePlanIsCurrent(slot) ? Game.L("当前配置", "Current setup") : Game.BattlePlanAvailable(slot) ? Game.L("可应用", "Ready to apply") : Game.L("暂不可用", "Unavailable")), 14, plan == null ? muted : paper);
             }
             Card(597, 178, 620, 440); BattlePlan selected = Game.BattlePlanAt(selectedBattlePlan);
-            Text(619, 195, 574, 35, Game.L("方案 ", "Plan ") + (selectedBattlePlan + 1), 23, gold);
-            if(selected == null)
+            Text(619, 195, 385, 35, Game.L("方案 ", "Plan ") + (selectedBattlePlan + 1), 23, gold);
+            bool comparing = battlePlanComparing && selected != null;
+            if(Button(1018, 195, 175, 30, comparing ? Game.L("装备详情", "Gear details") : Game.L("数值对比", "Compare stats"), comparing, selected != null))
+                battlePlanComparing = !battlePlanComparing;
+            if(comparing) DrawBattlePlanStats(selectedBattlePlan);
+            else if(selected == null)
             {
                 Text(619, 247, 574, 95, Game.L("选择左侧位置，把当前的武器、打法、战技和两件遗物记下来。换装试用后，可以完整切回这个装备。", "Choose a slot and store your current weapon, style, technique and two relics. After trying other gear, return to this setup in one step."), 18, paper);
                 Text(619, 369, 574, 86, Game.L("方案只记下装备配置。天赋点数、职业与同行者仍由你原来的选择决定。", "Plans store gear choices. Your talents, class and companion keep their separate choices."), 16, muted);
@@ -46,7 +50,7 @@ namespace Starfall
                 Text(619, 370, 574, 53, Game.L("遗物：", "Relics: ") + PlanRelic(selected.relicFirst) + " / " + PlanRelic(selected.relicSecond), 17, paper);
                 Text(619, 435, 574, 77, Game.BattlePlanAvailable(selectedBattlePlan) ? Game.L("应用所有配置，保留其他武器的打法。生命、耐力与冷却继续保持。", "Apply the whole setup; other weapons retain their styles. Health, energy and cooldowns stay as they are.") : Game.BattlePlanUnavailableReason(selectedBattlePlan), 16, muted);
             }
-            Text(619, 525, 574, 30, Game.L("现在：", "Now: ") + WeaponName(Game.save.weapon) + " · " + PlanStyle(Game.Style) + " / " + SkillName(), 13, gold);
+            if(!comparing) Text(619, 525, 574, 30, Game.L("现在：", "Now: ") + WeaponName(Game.save.weapon) + " · " + PlanStyle(Game.Style) + " / " + SkillName(), 13, gold);
             if(Button(619, 572, 175, 34, Game.L("记下当前装备", "Store current gear")))
             {
                 if(selected == null) { if(Game.SaveBattlePlan(selectedBattlePlan)) Save(); }
@@ -59,6 +63,34 @@ namespace Starfall
             if(Button(279, 650, 220, 38, Game.L("返回背包", "Back to inventory"))) OpenMenu("inventory");
             if(Button(515, 650, 300, 38, Game.L("战技效果与用途", "Technique field notes"))) OpenTechniqueGuide();
             if(Button(832, 650, 385, 38, Game.L("选择遗物", "Choose relics"))) OpenMenu("loadout");
+        }
+        private static string PlanStatNumber(float value)
+        { return value.ToString("0.##", System.Globalization.CultureInfo.InvariantCulture); }
+        private void PlanStatRow(int row, string zh, string en, float current, float candidate, string unit = "")
+        {
+            float y = 279 + row * 33, delta = candidate - current;
+            string change = Math.Abs(delta) < .005f ? "" : " (" + (delta > 0 ? "+" : "") + PlanStatNumber(delta) + ")";
+            Text(619, y, 183, 27, Game.L(zh, en), 14, muted);
+            Text(810, y, 156, 27, PlanStatNumber(current) + unit, 16, paper);
+            Text(988, y, 205, 27, PlanStatNumber(candidate) + unit + change, 16, mint);
+        }
+        private void DrawBattlePlanStats(int slot)
+        {
+            BattlePlanCombatStats current = Game.CurrentBattlePlanStats(), candidate = Game.BattlePlanStatsAt(slot);
+            if(current == null || candidate == null) return;
+            Text(619, 245, 183, 24, Game.L("装备效果", "Gear effects"), 14, gold);
+            Text(810, 245, 156, 24, Game.L("当前", "Current"), 14, paper);
+            Text(988, 245, 205, 24, Game.L("所选方案", "Selected"), 14, mint);
+            PlanStatRow(0, "首击 / 每箭", "Opening hit / arrow", current.attackDamage, candidate.attackDamage);
+            PlanStatRow(1, "普攻间隔", "Attack interval", current.attackInterval, candidate.attackInterval, "s");
+            PlanStatRow(2, "普攻耗能", "Attack energy", current.attackEnergy, candidate.attackEnergy);
+            PlanStatRow(3, "战技耗能", "Skill energy", current.skillEnergy, candidate.skillEnergy);
+            PlanStatRow(4, "闪避耗能", "Dodge energy", current.dodgeEnergy, candidate.dodgeEnergy);
+            PlanStatRow(5, "步行速度", "Walk speed", current.walkSpeed, candidate.walkSpeed);
+            Text(619, 482, 574, 45, Game.L("按当前生命、增益与地区计算；连击、反击、暴击、护甲和爆炸余波另计。", "Uses current health, buffs and region. Excludes combos, counters, criticals, armor and splash."), 13, muted);
+            Text(619, 532, 574, 28, Game.BattlePlanAvailable(slot)
+                ? Game.L("只比较，不换装。应用方案后，生命、耐力与冷却保持。", "Preview only. Applying keeps health, energy and cooldowns.")
+                : Game.BattlePlanUnavailableReason(slot), 12, gold);
         }
         private void DrawBattlePlanConfirmation()
         {
@@ -88,7 +120,7 @@ namespace Starfall
                 string label = current ? Game.L("当前战技", "Current technique") : learned ? Game.L("使用这项战技", "Use this technique") : Game.L("学习第二战技", "Learn alternate technique");
                 if(Button(x + 23, 594, 414, 32, label, current, !current && (learned || Game.save.level >= 5 && Game.save.skillPoints > 0))) { Game.LearnTechnique(); Save(); }
             }
-            Text(279, 651, 625, 53, Game.L("耐力 ", "Energy ") + (Game.Relic(4) ? 50 : 40) + Game.L(" · 接触0.28秒 · 冷却3.5秒\n完整动作0.62秒；在对练中试用打法。", " · contact 0.28s · cooldown 3.5s\nFull action 0.62s; test your build in sparring."), 13, muted);
+            Text(279, 651, 625, 53, Game.L("耐力 ", "Energy ") + Game.CurrentSkillEnergyCost + Game.L(" · 接触0.28秒 · 冷却3.5秒\n完整动作0.62秒；在对练中试用打法。", " · contact 0.28s · cooldown 3.5s\nFull action 0.62s; test your build in sparring."), 13, muted);
             if(Button(929, 651, 288, 38, Game.L("返回", "Back"))) OpenMenu(techniqueGuideParent);
         }
     }

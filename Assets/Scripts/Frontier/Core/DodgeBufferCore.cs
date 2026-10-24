@@ -31,7 +31,7 @@ namespace Starfall
         }
         public void Dash(Point requested)
         {
-            Point direction; float cost = Relic(2) ? 25 : 20;
+            Point direction; float cost = CurrentDodgeEnergyCost;
             if (!CanAcceptDodge || !Finite(dashCooldown) || !Finite(save.energy) || !TryDodgeDirection(requested, out direction))
             { ClearBufferedDodge(); return; }
             if (save.energy < cost || dashCooldown > DodgeBufferWindow)
@@ -49,7 +49,7 @@ namespace Starfall
         }
         private void StartDodge(Point direction)
         {
-            float cost = Relic(2) ? 25 : 20;
+            float cost = CurrentDodgeEnergyCost;
             ClearBufferedDodge();
             if (!CanAcceptDodge || !Finite(save.energy) || save.energy < cost) return;
             CancelAction();

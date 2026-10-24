@@ -163,7 +163,7 @@ namespace Starfall
                 int spread = a.weapon == 1 && a.style == 2 ? 1 : 0;
                 for (int i = -spread; i <= spread; i++)
                 {
-                    Projectile shot = FriendlyShot(Position, a.weapon, a.direction, a.weapon == 1 ? 12 : 8, a.damage * (spread > 0 ? .65f : 1), a.weapon == 2, a.target, a.impact);
+                    Projectile shot = FriendlyShot(Position, a.weapon, a.direction, a.weapon == 1 ? 12 : 8, BasicContactDamage(a.weapon, a.style, a.damage), a.weapon == 2, a.target, a.impact);
                     double angle = Math.Atan2(shot.velocity.y, shot.velocity.x) + i * .18;
                     Point direction = new Point((float)Math.Cos(angle), (float)Math.Sin(angle));
                     shot.velocity = direction * (a.weapon == 1 ? 12 : 8); shot.piercing = a.weapon == 1 && a.style == 1; shot.slowing = a.weapon == 2 && a.style == 2;
