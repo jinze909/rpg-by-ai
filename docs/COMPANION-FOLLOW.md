@@ -6,9 +6,9 @@ On Emberfall's unchanged map, start at `(8, 6.5)` and select a companion. Walk e
 
 ## Behavior
 
-The companion retains the original follow anchor, offsets, speed and 0.3-tile stopping distance. Normal legal-center goals continue using the existing direction query. For a legal anchor with an obstructed cell center, a companion-only query finds legal walking cells with a short, swept final approach to the exact anchor. The first and final legs check the full actor footprint. The companion still advances through the existing swept movement and distance-driven gait; it does not warp, gain speed or pass through a wall.
+The companion retains the original follow anchor, offsets, speed and 0.3-tile stopping distance. Normal legal-center goals continue using the existing direction query. For a legal anchor with an obstructed cell center, the exact-foot query finds legal walking cells with a short, swept final approach to the exact anchor. The first and final legs check the full actor footprint. The companion still advances through the existing swept movement and distance-driven gait; it does not warp, gain speed or pass through a wall.
 
-Enemy pursuit and return paths, authored maps, collision geometry, damage, automatic support, active commands and their planted preparation remain unchanged. No new persistent or transient follow cache is introduced, so current gates, tides and house geometry are read afresh. SaveData and its versions are unchanged.
+The original companion fix left enemy paths unchanged. The later [regional enemy chase fix](ENEMY-FOOT-PATH.md) shares this query through `ActorFootPathCore.cs`, retaining the original script GUID and the companion's behavior. Enemy returns, authored maps, collision geometry, damage, automatic support, active commands and their planted preparation remain unchanged. No new persistent or transient follow cache is introduced, so current gates, tides and house geometry are read afresh. SaveData and its versions are unchanged.
 
 ## Verification
 

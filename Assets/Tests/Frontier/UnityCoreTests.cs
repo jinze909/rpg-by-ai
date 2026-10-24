@@ -6,6 +6,24 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void EnemyFootPathNaturalSevenEnemyHouseRouteClosesCombatAtTwentyAndSixtyFrames(){CoreChecks.EnemyFootPathNaturalSevenEnemyHouseRouteClosesCombatAtTwentyAndSixtyFrames(Data());}
+        [Test] public void EnemyFootPathAllOrdinaryKindsSweepTheExactFootAndDriveOnlyRealGait(){CoreChecks.EnemyFootPathAllOrdinaryKindsSweepTheExactFootAndDriveOnlyRealGait(Data());}
+        [Test] public void EnemyFootPathKeepsNormalCentersScopeAwarenessAndCommittedAttackOwnership(){CoreChecks.EnemyFootPathKeepsNormalCentersScopeAwarenessAndCommittedAttackOwnership(Data());}
+        [Test] public void EnemyFootPathLegacySnapshotsAndReplacementTravelKeepFreshActorOwnership()
+        {
+            var data = Data(); CoreChecks.EnemyFootPathLegacySnapshotsAndReplacementTravelKeepFreshActorOwnership(data);
+            foreach (int version in new[] { 1, 2 })
+            {
+                var old = JsonUtility.FromJson<SaveData>("{\"version\":" + version + ",\"room\":5,\"stage\":1,\"coins\":91,\"x\":17,\"y\":5.1,\"snapshotRoom\":5,\"flags\":[\"intro\",\"exp_intro\"],\"worldEnemies\":[{\"id\":1,\"kind\":0,\"x\":17,\"y\":7.5,\"hp\":31,\"maxHp\":43}]}");
+                var game = new GameCore(data, old); game.Start(); game.Close(); var hunter = game.enemies.Find(e => e.id == 1);
+                Assert.NotNull(hunter); Assert.AreEqual(17, hunter.x); Assert.AreEqual(7.5f, hunter.y); Assert.AreEqual(31, hunter.hp); Assert.AreEqual(43, hunter.maxHp);
+                Assert.AreEqual(0, hunter.state); Assert.AreEqual(0, hunter.moveTime); Assert.AreEqual(91, game.save.coins);
+                game.PrepareSave(); string json = JsonUtility.ToJson(game.save);
+                Assert.IsFalse(json.Contains("footPath")); Assert.IsFalse(json.Contains("waypoint"));
+                var resumed = new GameCore(data, JsonUtility.FromJson<SaveData>(json)); resumed.Start(); resumed.Close(); hunter = resumed.enemies.Find(e => e.id == 1);
+                Assert.NotNull(hunter); Assert.AreEqual(17, hunter.x); Assert.AreEqual(7.5f, hunter.y); Assert.AreEqual(31, hunter.hp); Assert.AreEqual(91, resumed.save.coins);
+            }
+        }
         [Test] public void CompanionFollowWalksAroundAuthoredHouseAfterNaturalDodgeAtTwentyAndSixtyFrames(){CoreChecks.CompanionFollowWalksAroundAuthoredHouseAfterNaturalDodgeAtTwentyAndSixtyFrames(Data());}
         [Test] public void CompanionFollowKeepsOrdinaryHouseAndAuthoredWaterRoutes(){CoreChecks.CompanionFollowKeepsOrdinaryHouseAndAuthoredWaterRoutes(Data());}
         [Test] public void CompanionFollowKeepsPreparedAutomaticAndCommandFeetAndAim(){CoreChecks.CompanionFollowKeepsPreparedAutomaticAndCommandFeetAndAim(Data());}

@@ -279,7 +279,7 @@ namespace Starfall
             if (!Fits(companionPosition)) companionPosition = follow; // Recovery only; never teleport to catch up.
             else if (delta.Length > .3f)
             {
-                Point heading = CompanionFollowDirection(companionPosition, follow), before = companionPosition;
+                Point heading = DirectionToActorFoot(companionPosition, follow), before = companionPosition;
                 Point next = SweepActor(before, heading * Math.Min(delta.Length, dt * (Speed + 1)));
                 Point travelled = next - before;
                 if (travelled.Length > .001f) { companionPosition = next; companionMoving = true; companionMoveTime += travelled.Length; companionAim = travelled.Normalized; }
