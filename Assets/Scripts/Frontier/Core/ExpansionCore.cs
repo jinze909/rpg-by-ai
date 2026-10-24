@@ -291,7 +291,7 @@ namespace Starfall
             { kind = "heal"; direction = (Position - companionPosition).Normalized; }
             else
             {
-                Enemy target = enemies.Find(e => (e.Position - companionPosition).Length < 7 && ClearAttackPath(companionPosition, e.Position));
+                Enemy target = CompanionAttackTarget();
                 if (target != null) { kind = "attack"; direction = (target.Position - companionPosition).Normalized;attackTarget=target.Position; }
             }
             if (kind != null)
