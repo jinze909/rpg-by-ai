@@ -507,6 +507,15 @@ namespace Starfall.Tests
         [Test] public void HitDirectionProtectedAndUnlocatedContactsNeverInventCueData(){CoreChecks.HitDirectionProtectedAndUnlocatedContactsNeverInventCueData(Data());}
         [Test] public void HitDirectionReceiptsStayTransientAndPreservePauseEconomyAndActionCosts(){CoreChecks.HitDirectionReceiptsStayTransientAndPreservePauseEconomyAndActionCosts(Data());}
 
+        [Test] public void MuzzleContactEightHeadingsBowAndStaffRespectRealRelease() { CoreChecks.MuzzleContactEightHeadingsBowAndStaffRespectRealRelease(Data()); }
+        [Test] public void MuzzleContactForwardSweepRejectsBehindAndOutsideCorridor() { CoreChecks.MuzzleContactForwardSweepRejectsBehindAndOutsideCorridor(Data()); }
+        [Test] public void MuzzleContactWallOrderKeepsEarlierActorAndBlocksLaterActor() { CoreChecks.MuzzleContactWallOrderKeepsEarlierActorAndBlocksLaterActor(Data()); }
+        [Test] public void MuzzleContactPiercingAndExplosiveKeepDamageAndSingleOwnership() { CoreChecks.MuzzleContactPiercingAndExplosiveKeepDamageAndSingleOwnership(Data()); }
+        [Test] public void MuzzleContactCompletedLaunchAndLegacyFlightsNeverSweepAgain() { CoreChecks.MuzzleContactCompletedLaunchAndLegacyFlightsNeverSweepAgain(Data()); }
+        [Test] public void MuzzleContactCapturedNearAimKeepsPreparedArmorApproach() { CoreChecks.MuzzleContactCapturedNearAimKeepsPreparedArmorApproach(Data()); }
+        [Test] public void MuzzleContactBowSkillsKeepPaidVolleyAndPiercingRelease() { CoreChecks.MuzzleContactBowSkillsKeepPaidVolleyAndPiercingRelease(Data()); }
+        [Test] public void MuzzleContactHostileArcherUsesSamePreparedReleasePath() { CoreChecks.MuzzleContactHostileArcherUsesSamePreparedReleasePath(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

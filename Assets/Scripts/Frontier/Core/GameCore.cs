@@ -556,38 +556,19 @@ namespace Starfall
                 if (p.life <= 0 && flightDt <= 0)
                 { projectiles.Remove(p); effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height }); continue; }
                 int steps = Math.Max(1, (int)Math.Ceiling(p.velocity.Length * flightDt / .1f));
-                bool dead = p.blockedAtSpawn || ShotBlocked(p,p.position); float impactRadius = 0;
+                float impactRadius = 0;
+                bool launching = p.launchPending;
+                bool dead = launching ? SweepProjectileLaunch(p, out impactRadius) : p.blockedAtSpawn || ShotBlocked(p,p.position);
+                Point impactDirection = launching && dead ? p.launchDirection : p.velocity.Normalized;
                 for (int step = 0; step < steps && !dead; step++)
                 {
                     Point next = p.position + p.velocity * (flightDt / steps);
                     // Resolve the first obstruction along flight, not its endpoint.
                     if (ShotBlocked(p,next)) { dead = true; break; }
                     p.position = next;
-                    if (p.friendly)
-                    {
-                        projectileTargets.Clear();projectileTargets.AddRange(enemies);
-                        foreach (Enemy e in projectileTargets)
-                        {
-                            if (p.hits.Contains(e.id) || (e.Position - p.position).Length >= (e.boss ? .9f : .5f) + p.Radius || !ClearAttackPath(p.position, e.Position)) continue;
-                            p.hits.Add(e.id); Hit(e, p.damage, p.technique, p.velocity.Normalized, p.impact);
-                            // Practice completion or another transaction can
-                            // retire the shot. It must not leave an old-room impact.
-                            if (!projectiles.Contains(p)) { dead = true; break; }
-                            if (p.slowing) e.stun = Math.Max(e.stun, .45f); dead = !p.piercing;
-                            if (p.explosive)
-                            {
-                                impactRadius = 1.8f; dead = true;
-                                splashTargets.Clear();splashTargets.AddRange(enemies);
-                                foreach (Enemy other in splashTargets) if (other != e && (other.Position - p.position).Length < impactRadius && ClearAttackPath(p.position, other.Position)) Hit(other, p.damage * .6f, false, (other.Position - p.position).Normalized, p.impact);
-                                splashTargets.Clear();
-                            }
-                            if (!p.piercing || p.explosive) break;
-                        }
-                        projectileTargets.Clear();
-                    }
-                    else if ((Position - p.position).Length < .38f) { Hurt(p.damage, p.source ?? "shot", p.velocity.Normalized); dead = true; }
+                    dead = ProjectileContact(p, false, out impactRadius);
                 }
-                if (dead && projectiles.Remove(p)) effects.Add(new Effect(p.explosive ? "magicImpact" : "projectileImpact", p.position, .28f) { direction = p.velocity.Normalized, variant = p.friendly ? 0 : 1, radius = impactRadius, height = p.height });
+                if (dead && projectiles.Remove(p)) effects.Add(new Effect(p.explosive ? "magicImpact" : "projectileImpact", p.position, .28f) { direction = impactDirection, variant = p.friendly ? 0 : 1, radius = impactRadius, height = p.height });
                 else if (p.life <= 0 && projectiles.Remove(p)) effects.Add(new Effect("projectileFade", p.position, .25f) { direction = p.velocity.Normalized, variant = ProjectileFadeFrame(p), height = p.height });
             }
             tickingProjectiles.Clear();

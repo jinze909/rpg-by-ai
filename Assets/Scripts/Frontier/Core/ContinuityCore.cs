@@ -139,7 +139,8 @@ namespace Starfall
         { Point direction=(target-feet).Normalized;return (target-WeaponOrigin(feet,weapon,direction)).Normalized; }
         private Projectile WeaponShot(Point feet, int weapon, Point direction, float speed, float damage, Point? target=null)
         {
-            var shot = new Projectile { position = feet, velocity = direction.Normalized * speed, damage = damage, height = WeaponHeight(weapon, direction) };
+            var shot = new Projectile { position = feet, velocity = direction.Normalized * speed, damage = damage, height = WeaponHeight(weapon, direction),
+                launchPending = true, launchOrigin = feet, launchDirection = direction.Normalized };
             shot.launchHeight=shot.height;shot.flightHeight=weapon==2?39:shot.height;
             Point attachment = WeaponOrigin(feet, weapon, direction), delta = attachment - feet;
             int steps = Math.Max(1, (int)Math.Ceiling(delta.Length / .04f));

@@ -136,6 +136,10 @@ namespace Starfall
         public float life = 3, damage;
         public bool friendly, explosive, piercing;
         public bool slowing, technique, blockedAtSpawn;
+        // A weapon's visible muzzle stays at its authored attachment. Resolve
+        // the short launch corridor once before its first flying step.
+        public bool launchPending;
+        public Point launchOrigin, launchDirection;
         public string source, visual;
         public float age, height = 32, launchHeight = -1, flightHeight = -1;
         public ImpactProfile impact;
