@@ -6,7 +6,7 @@ namespace Starfall
 {
     public sealed partial class FrontierRuntime
     {
-        private enum WorldDrawKind { Decoration, Object, Enemy, Fallen, Player, Companion }
+        private enum WorldDrawKind { Decoration, Object, Enemy, Fallen, Player, Companion, Project }
         private struct WorldDrawEntry
         {
             public float depth;
@@ -16,6 +16,7 @@ namespace Starfall
             public WorldObject obj;
             public Enemy enemy;
             public FallenActor fallen;
+            public ProjectScenery project;
         }
         private sealed class WorldDepthComparer:IComparer<WorldDrawEntry>
         {
@@ -34,6 +35,7 @@ namespace Starfall
             foreach(LightRay ray in Game.LightRays())DrawRay(ray.from,ray.to,gold);
             foreach(Decoration d in Game.Map.decor)if(WorldSceneryVisible(d))AddWorldEntry(new WorldDrawEntry{depth=d.y,kind=WorldDrawKind.Decoration,decoration=d});
             foreach(WorldObject o in Game.Map.objects)AddWorldEntry(new WorldDrawEntry{depth=o.y+.01f,kind=WorldDrawKind.Object,obj=o});
+            AddProjectSceneryEntries();
             foreach(Enemy e in Game.enemies)
             {DrawEnemyWarning(e);AddWorldEntry(new WorldDrawEntry{depth=e.y,kind=WorldDrawKind.Enemy,enemy=e});}
             foreach(FallenActor f in Game.fallen)AddWorldEntry(new WorldDrawEntry{depth=f.actor.y-.02f,kind=WorldDrawKind.Fallen,fallen=f});
@@ -51,6 +53,7 @@ namespace Starfall
                         case WorldDrawKind.Fallen:DrawFallen(entry.fallen);break;
                         case WorldDrawKind.Player:DrawHero();break;
                         case WorldDrawKind.Companion:DrawCompanionActor();break;
+                        case WorldDrawKind.Project:DrawProjectScenery(entry.project);break;
                     }
             }
             finally{worldDrawEntries.Clear();}
