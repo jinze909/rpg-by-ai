@@ -41,6 +41,18 @@ namespace Starfall
             if (enabled && confirmControl == id && drawnScope == InputScope()) { confirmControl = null; pressedControl = id; pressedTime = .12f; Game.sound = "ui"; return true; } return false;
         }
         private bool PadDown(int id) { return Input.GetKeyDown((KeyCode)((int)KeyCode.JoystickButton0 + id)); }
+        private bool WorldMenuKeyPressed()
+        {
+            if (Game.mode != "world") return false;
+            // View/Start use direct world handlers; keyboard shortcuts and
+            // Escape retain their existing confirmation/prompt guards.
+            if (PadDown(6) || PadDown(7)) return true;
+            if (replacePrompt || saveConfirmation != null || talentResetConfirmation != null || townProjectConfirmation != null) return false;
+            return Input.GetKeyDown(KeyCode.Escape) || Input.GetKeyDown(KeyCode.Tab)
+                || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.K) || Input.GetKeyDown(KeyCode.M)
+                || Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.C) || Input.GetKeyDown(KeyCode.G)
+                || Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown(KeyCode.F1);
+        }
         private void UpdateMenuInput(float dt)
         {
             pressedTime = Math.Max(0, pressedTime - dt); navigationRepeat = Math.Max(0, navigationRepeat - dt); confirmControl = null;

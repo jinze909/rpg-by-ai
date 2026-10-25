@@ -99,33 +99,37 @@ namespace Starfall
             // Even an unavailable Q/dodge abandons that old basic press.
             if (Game.mode == "world" && (Input.GetKeyDown(KeyCode.Q) || PadDown(3) || Input.GetKeyDown(KeyCode.Space) || PadDown(0)))
                 Game.ClearBufferedAttack();
-            // Opening a menu abandons an unstarted companion request before
-            // this exact readiness frame can consume its full command cooldown.
-            if (Game.mode == "world" && Game.CompanionCommandQueued && (Input.GetKeyDown(KeyCode.Escape)
-                || Input.GetKeyDown(KeyCode.Tab) || Input.GetKeyDown(KeyCode.I) || Input.GetKeyDown(KeyCode.K)
-                || Input.GetKeyDown(KeyCode.M) || Input.GetKeyDown(KeyCode.B) || Input.GetKeyDown(KeyCode.C)
-                || Input.GetKeyDown(KeyCode.G) || Input.GetKeyDown(KeyCode.N) || Input.GetKeyDown(KeyCode.F1) || PadDown(6) || PadDown(7)))
+            // A menu key wins before this frame can start a queued transaction.
+            // Already accepted actions still advance and pause on their old clock.
+            bool openingWorldMenu = WorldMenuKeyPressed();
+            if (openingWorldMenu)
+            {
+                Game.ClearBufferedCombatInputs();
                 Game.ClearBufferedCompanionCommand();
+            }
             Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {
-                Point mouse = MouseVirtual();
-                // Discrete actions take priority over fresh and held attacks.
-                // A fresh Q after a dodge is queued; a dodge clears older intent.
-                if ((Input.GetKeyDown(KeyCode.Space) || PadDown(0))) Game.Dash(movement);
-                if ((Input.GetKeyDown(KeyCode.Q) || PadDown(3))) Game.Skill(InputAim(true));
-                bool mouseInWorld = (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0)) && !PointerOverInterface(mouse);
-                bool attackPressed = Input.GetKeyDown(KeyCode.J) || PadDown(2) || Input.GetMouseButtonDown(0) && mouseInWorld;
-                if (attackPressed) Game.PressAttack(InputAim() ?? Game.aim);
-                else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2) || Input.GetMouseButton(0) && mouseInWorld)
-                    Game.Attack(InputAim() ?? Game.aim);
-                if ((Input.GetKeyDown(KeyCode.E) || PadDown(1))) Game.Interact();
-                if (Input.GetKeyDown(KeyCode.F)) Game.Eat();
-                if (Input.GetKeyDown(KeyCode.T)) Game.DrinkTea();
-                if (Input.GetKeyDown(KeyCode.Z)) Game.CommandCompanion();
-                if (Input.GetKeyDown(KeyCode.H)) Game.ReturnToTown();
-                if (Input.GetKeyDown(KeyCode.R)) Game.UseExplorationAbility();
-                if (PadDown(4)) Game.Eat(); if (PadDown(5)) Game.CommandCompanion();
+                if (!openingWorldMenu)
+                {
+                    Point mouse = MouseVirtual();
+                    // Discrete actions take priority over fresh and held attacks.
+                    // A fresh Q after a dodge is queued; a dodge clears older intent.
+                    if ((Input.GetKeyDown(KeyCode.Space) || PadDown(0))) Game.Dash(movement);
+                    if ((Input.GetKeyDown(KeyCode.Q) || PadDown(3))) Game.Skill(InputAim(true));
+                    bool mouseInWorld = (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0)) && !PointerOverInterface(mouse);
+                    bool attackPressed = Input.GetKeyDown(KeyCode.J) || PadDown(2) || Input.GetMouseButtonDown(0) && mouseInWorld;
+                    if (attackPressed) Game.PressAttack(InputAim() ?? Game.aim);
+                    else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2) || Input.GetMouseButton(0) && mouseInWorld)
+                        Game.Attack(InputAim() ?? Game.aim);
+                    if ((Input.GetKeyDown(KeyCode.E) || PadDown(1))) Game.Interact();
+                    if (Input.GetKeyDown(KeyCode.F)) Game.Eat();
+                    if (Input.GetKeyDown(KeyCode.T)) Game.DrinkTea();
+                    if (Input.GetKeyDown(KeyCode.Z)) Game.CommandCompanion();
+                    if (Input.GetKeyDown(KeyCode.H)) Game.ReturnToTown();
+                    if (Input.GetKeyDown(KeyCode.R)) Game.UseExplorationAbility();
+                    if (PadDown(4)) Game.Eat(); if (PadDown(5)) Game.CommandCompanion();
+                }
                 if (PadDown(6)) OpenMenu("journal"); if (PadDown(7)) { OpenMenu("pause"); Save(); }
             }
             else if (Game.mode == "fish" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))) Game.FishHit();

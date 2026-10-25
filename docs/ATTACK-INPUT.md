@@ -8,4 +8,6 @@
 
 命中停顿与模拟一起冻结请求寿命。暂停、菜单、对话、旅行、读取存档、新游戏、死亡恢复、装备／职业／流派／战技切换，以及训练重置／结束／结算，都会清除不再适用的请求。它不写入SaveData，不增加存档字段或迁移要求。
 
-`tools/run_attack_buffer_core_checks.py` 检查窗口、帧率、费用、攻击快照、优先级和生命周期；`tools/run_attack_buffer_checks.py` 通过生产Update验证轻点、按住、界面排除与同帧优先级。相关战斗回归及Unity DLL编译另行执行。离线输入声明和DLL编译不代表原生Editor／PlayMode／实体手柄／GPU／Player构建与手感验收，后者仍为 **NATIVE_UNVERIFIED**。
+在世界中用键盘快捷键或手柄View／Start打开菜单时，菜单输入先于本帧待执行的普攻、战技、闪避和同伴指令：即使恰好冷却结束，也不会先起手扣费。同帧新按或持续按住的世界操作也让位给菜单。已经开始的动作不会被取消或退款，仍在进入菜单后按原规则冻结，返回后继续原接触与收招。对话、钓鱼和只关闭确认框而不打开菜单的按键保留原作用。
+
+`tools/run_attack_buffer_core_checks.py` 检查窗口、帧率、费用、攻击快照、优先级和生命周期；`tools/run_attack_buffer_checks.py` 通过生产Update验证轻点、按住、界面排除与同帧优先级，含十二个菜单入口在不同帧间隔的提前／精确就绪边界及已起手动作连续性。相关战斗回归及Unity DLL编译另行执行。离线输入声明和DLL编译不代表原生Editor／PlayMode／实体手柄／GPU／Player构建与手感验收，后者仍为 **NATIVE_UNVERIFIED**。

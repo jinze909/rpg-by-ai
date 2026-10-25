@@ -211,6 +211,145 @@ public static class RuntimeAttackBufferChecks
         Console.WriteLine("PASS real menu/application/focus pauses, live automatic paused save owner/reload, checksummed save/load, travel, practice/range/drill and replacement-review boundaries discard basic presses; same-review Freeze and hit stop preserve one paused intent; NATIVE_UNVERIFIED");
     }
 
+    private static readonly KeyCode[] OpeningMenuKeys = {
+        KeyCode.Escape, KeyCode.Tab, KeyCode.I, KeyCode.K, KeyCode.M, KeyCode.B,
+        KeyCode.C, KeyCode.G, KeyCode.N, KeyCode.F1, KeyCode.JoystickButton6, KeyCode.JoystickButton7 };
+    private static readonly string[] OpeningMenuModes = {
+        "pause", "journal", "inventory", "talents", "map", "camp", "companions", "loadout", "bounties", "help", "journal", "pause" };
+    private static bool PaidIntentStarted(GameCore game, string action)
+    { return action=="dodge" ? game.dashTime>0 : game.playerAction!=null && game.playerAction.kind==action; }
+    private static float PaidIntentCost(string action) { return action=="attack"?4:action=="skill"?40:20; }
+    private static void ReadyPaidIntent(GameCore game, string action, float remaining)
+    { if(action=="attack")game.attackCooldown=remaining;else if(action=="skill")game.skillCooldown=remaining;else game.dashCooldown=remaining; }
+    private static void QueuePaidIntent(FrontierRuntime app, string action, float dt)
+    {
+        Prepare(app); Time.unscaledDeltaTime=dt; var g=app.Game; g.save.weaponStyles[g.save.weapon]=1;
+        ReadyPaidIntent(g,action,.10f+dt);
+        Key(app,action=="attack"?KeyCode.J:action=="skill"?KeyCode.Q:KeyCode.Space);
+        var field=typeof(GameCore).GetField(action=="attack"?"bufferedAttack":action=="skill"?"bufferedSkill":"bufferedDodge",Private);
+        Check(field!=null && field.GetValue(g)!=null && !PaidIntentStarted(g,action) && Near(g.save.energy,100),
+            "Actual paid "+action+" input is unstarted and queued before the opening-menu boundary");
+    }
+    private static void NoPaidStartAfterMenu(FrontierRuntime app, string reason)
+    {
+        Input.Clear(); app.Game.Close();
+        for(int i=0;i<30;i++)
+        {
+            Update(app); Check(app.Game.playerAction==null && app.Game.dashTime<=0,
+                "Opening a valid menu abandons every unstarted hero intent without delayed "+reason);
+        }
+    }
+    // Actual Update ordering matters: a mode assigned before Tick does not
+    // reproduce a menu key arriving on an intent's exact readiness frame.
+    private static void OpeningMenusOwnUnstartedAndFreshCombatInput(FrontierRuntime app)
+    {
+        int scenarios=0;
+        foreach(float dt in new[]{.01f,.02f,.05f}) foreach(string action in new[]{"attack","skill","dodge"})
+        {
+            for(int index=0;index<OpeningMenuKeys.Length;index++) foreach(bool exact in new[]{false,true})
+            {
+                scenarios++; QueuePaidIntent(app,action,dt); var g=app.Game;
+                if(exact)ReadyPaidIntent(g,action,dt);
+                Key(app,OpeningMenuKeys[index]);
+                Check(g.mode==OpeningMenuModes[index],"Actual menu key opens its existing world destination: "+OpeningMenuKeys[index]);
+                Check(Near(g.save.energy,100) && g.playerAction==null && g.dashTime<=0,
+                    "Menu "+OpeningMenuKeys[index]+" wins before an unstarted paid "+action+" at dt="+dt+" exact="+exact+" can spend or begin");
+                Check(g.skillCooldown<1 && g.attackCooldown<.2f && g.dashCooldown<.2f,
+                    "A canceled request never starts a fresh hero cooldown");
+                NoPaidStartAfterMenu(app,OpeningMenuKeys[index]+" / "+action);
+            }
+            // The same boundary with no opening menu still dispatches normally.
+            scenarios++; QueuePaidIntent(app,action,dt); var normal=app.Game; ReadyPaidIntent(normal,action,dt); Update(app);
+            Check(PaidIntentStarted(normal,action) && Near(normal.save.energy,100-PaidIntentCost(action)),
+                "No-menu exact readiness preserves the original paid "+action+" transaction at dt="+dt);
+            Check(action=="attack"?Near(normal.attackCooldown,normal.Profile(normal.save.weapon,normal.Style).interval)
+                :action=="skill"?Near(normal.skillCooldown,3.5f):Near(normal.dashCooldown,.75f),
+                "Ordinary ready dispatch preserves the original paid cooldown");
+        }
+        foreach(float dt in new[]{.01f,.02f,.05f}) for(int index=0;index<OpeningMenuKeys.Length;index++)
+        foreach(string fresh in new[]{"fresh-attack","held-attack","skill","dodge","all"})
+        {
+            scenarios++; Prepare(app);Time.unscaledDeltaTime=dt;var g=app.Game;g.save.weaponStyles[g.save.weapon]=1;
+            Input.keys.Add(OpeningMenuKeys[index]);
+            if(fresh=="fresh-attack" || fresh=="all")Input.keys.Add(KeyCode.J);
+            if(fresh=="fresh-attack" || fresh=="held-attack" || fresh=="all")Input.held.Add(KeyCode.J);
+            if(fresh=="skill" || fresh=="all")Input.keys.Add(KeyCode.Q);
+            if(fresh=="dodge" || fresh=="all")Input.keys.Add(KeyCode.Space);
+            Update(app);Input.held.Clear();
+            Check(g.mode==OpeningMenuModes[index] && Near(g.save.energy,100) && g.playerAction==null && g.dashTime<=0,
+                "Same-frame "+fresh+" cannot start or spend ahead of actual menu "+OpeningMenuKeys[index]+" at dt="+dt);
+            NoPaidStartAfterMenu(app,OpeningMenuKeys[index]+" / simultaneous "+fresh);
+        }
+        foreach(string action in new[]{"attack","skill","dodge"}) for(int index=0;index<OpeningMenuKeys.Length;index++)
+        {
+            scenarios++; QueuePaidIntent(app,action,.02f);var g=app.Game;ReadyPaidIntent(g,action,.02f);Update(app);
+            Check(PaidIntentStarted(g,action),"Lifecycle fixture has an actually started paid action before the menu key");
+            ActorAction started=g.playerAction;Key(app,OpeningMenuKeys[index]);
+            float elapsed=started==null?0:started.elapsed, dash=g.dashTime, energy=g.save.energy, clock=g.save.totalTime;
+            float attack=g.attackCooldown, skill=g.skillCooldown, dodge=g.dashCooldown;
+            Frames(app,8);
+            Check(g.mode==OpeningMenuModes[index] && Near(g.save.totalTime,clock) && Near(g.save.energy,energy)
+                && ReferenceEquals(g.playerAction,started) && (started==null || Near(started.elapsed,elapsed)) && Near(g.dashTime,dash)
+                && Near(g.attackCooldown,attack) && Near(g.skillCooldown,skill) && Near(g.dashCooldown,dodge),
+                "A real opening menu freezes rather than cancels or repays an already accepted "+action);
+            Key(app,KeyCode.Escape);
+            Check(g.mode=="world" && ReferenceEquals(g.playerAction,started) && Near(g.dashTime,dash),
+                "Returning from the actual menu retains the paid action and its captured preparation");
+            if(started!=null)
+            {
+                int frames=0;while(!started.released && frames++<100)Update(app);
+                Check(started.released && (action=="attack"?g.projectiles.Exists(p=>p.friendly):g.projectiles.Exists(p=>p.friendly && p.technique)),
+                    "Previously accepted "+action+" reaches its original real release after menu return");
+            }
+            else { Update(app); Check(g.dashTime<dash && g.dashTime>0,"Paid dodge resumes the remaining original movement clock"); }
+        }
+        // These two existing Toggle gates can survive while the world owner is
+        // restored. Staging the fields is labelled input-gate coverage, not a
+        // claim that the new-game or save modal normally belongs to the world.
+        foreach(string gate in new[]{"replacePrompt","saveConfirmation"}) foreach(string action in new[]{"attack","skill","dodge"})
+        foreach(KeyCode ignored in new[]{KeyCode.I,KeyCode.F1})
+        {
+            scenarios++; QueuePaidIntent(app,action,.02f);var g=app.Game;ReadyPaidIntent(g,action,.02f);
+            if(gate=="replacePrompt")Set(app,gate,true);else Set(app,gate,"read");
+            Key(app,ignored);
+            Check(g.mode=="world" && PaidIntentStarted(g,action) && Near(g.save.energy,100-PaidIntentCost(action)),
+                "A Toggle-blocked "+ignored+" under "+gate+" is not a menu opening and cannot discard the ready request");
+            if(gate=="replacePrompt")Set(app,gate,false);else Set(app,gate,null);
+        }
+        // Enter real non-world owners: ordinary dialogue and the original
+        // fishing flow retain their keyboard semantics rather than opening I/K.
+        scenarios++; Prepare(app);var dialogGame=app.Game;dialogGame.Talk(new WorldObject { kind="innGuest",name="Guest",en="Guest" });
+        Conversation conversation=dialogGame.conversation;Check(dialogGame.mode=="dialog" && conversation!=null,"Actual NPC handler owns the dialogue fixture");
+        float dialogClock=dialogGame.save.totalTime;Key(app,KeyCode.I);Key(app,KeyCode.K);
+        Check(dialogGame.mode=="dialog" && ReferenceEquals(dialogGame.conversation,conversation) && Near(dialogGame.save.totalTime,dialogClock)
+            && dialogGame.playerAction==null && dialogGame.dashTime<=0,"Dialogue ignores world menu/gameplay shortcuts without simulating a paid action");
+        scenarios++; Prepare(app,1,0);var fishing=app.Game;WorldObject fisher=Array.Find(fishing.Map.objects,o=>o.kind=="fish");
+        Check(fisher!=null,"Mature town fisherman remains present");fishing.Talk(fisher);
+        int fishChoice=Array.FindIndex(fishing.conversation.choices,c=>c.action=="fish");Check(fishChoice>=0,"Original cast-line choice remains present");fishing.Choose(fishChoice);
+        Check(fishing.mode=="fish","Actual dialogue choice starts original fishing");float fishingTime=fishing.fishTime, worldClock=fishing.save.totalTime;
+        Key(app,KeyCode.I);Key(app,KeyCode.K);
+        Check(fishing.mode=="fish" && fishing.fishTime>fishingTime && Near(fishing.save.totalTime,worldClock) && fishing.playerAction==null && fishing.dashTime<=0,
+            "I/K leave the real fishing owner and its own clock intact");
+        // Live paid preparations survive real confirmation modals, whose
+        // parent mode already cleared unstarted requests on entry.
+        foreach(bool town in new[]{false,true})
+        {
+            scenarios++; QueuePaidIntent(app,"attack",.02f);var g=app.Game;ReadyPaidIntent(g,"attack",.02f);Update(app);ActorAction paid=g.playerAction;
+            Key(app,town?KeyCode.B:KeyCode.K);Call(app,"OnGUI");
+            if(town)Call(app,"BeginTownProjectConfirmation",0);else Call(app,"BeginTalentResetConfirmation");
+            object modal=Get<object>(app,town?"townProjectConfirmation":"talentResetConfirmation");Check(modal!=null,"Actual parent menu owns a real confirmation quote");
+            float elapsed=paid.elapsed,energy=g.save.energy;Key(app,KeyCode.I);Key(app,KeyCode.F1);
+            Check(g.mode==(town?"camp":"talents") && ReferenceEquals(Get<object>(app,town?"townProjectConfirmation":"talentResetConfirmation"),modal)
+                && ReferenceEquals(g.playerAction,paid) && Near(paid.elapsed,elapsed) && Near(g.save.energy,energy),
+                "Real confirmation blocks world menu shortcuts without resuming, canceling or paying the existing preparation");
+            Key(app,KeyCode.Escape);Key(app,KeyCode.Escape);Update(app);
+            Check(g.mode=="world" && ReferenceEquals(g.playerAction,paid) && paid.elapsed>elapsed,"Cancel confirmation then return resumes the owned paid preparation");
+        }
+        Check(scenarios==457,"Every one of the 457 menu-boundary scenarios must execute");
+        Input.Clear();Time.unscaledDeltaTime=.02f;
+        Console.WriteLine("PASS 457 actual opening-menu Update scenarios across 12 keyboard/pad destinations, paid J/Q/Space early/exact readiness at 10/20/50ms, fresh/held simultaneous commands, no-menu dispatch, paid action pause/resume and rejected world/non-world/modal shortcut ownership; NATIVE_UNVERIFIED");
+    }
+
     public static int Main()
     {
         string previous=Application.persistentDataPath,directory=Path.Combine(Path.GetTempPath(),"starfall-attack-buffer-"+Guid.NewGuid());
@@ -218,10 +357,10 @@ public static class RuntimeAttackBufferChecks
         try
         {
             Call(app,"Awake");Check(app.Game!=null,"Actual Awake loads the shipped campaign");
-            foreach(Action<FrontierRuntime> test in new Action<FrontierRuntime>[]{FreshKeyboardPadMouseAndMatureHeldRepeat,BothHudLayoutsAndInterfaceMouseGating,QAndDodgeWinBeforeTickAndFreshBasic,PauseSaveAndTrainingBoundaries})
+            foreach(Action<FrontierRuntime> test in new Action<FrontierRuntime>[]{FreshKeyboardPadMouseAndMatureHeldRepeat,BothHudLayoutsAndInterfaceMouseGating,QAndDodgeWinBeforeTickAndFreshBasic,PauseSaveAndTrainingBoundaries,OpeningMenusOwnUnstartedAndFreshCombatInput})
                 try{test(app);}catch(Exception error){failures++;Console.WriteLine("FAIL "+test.Method.Name+": "+(error.InnerException??error).Message);}
         }
         finally{app.EndVisualReview();Call(app,"OnDestroy");Application.persistentDataPath=previous;Input.Clear();GUI.queuedClick=null;if(Directory.Exists(directory))Directory.Delete(directory,true);}
-        Console.WriteLine("Runtime attack buffer: "+(4-failures)+"/4 groups passed; NATIVE_UNVERIFIED");return failures==0?0:1;
+        Console.WriteLine("Runtime attack buffer: "+(5-failures)+"/5 groups passed; NATIVE_UNVERIFIED");return failures==0?0:1;
     }
 }

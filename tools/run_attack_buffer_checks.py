@@ -9,6 +9,7 @@ import argparse
 import hashlib
 import json
 import os
+import re
 import shutil
 import subprocess
 import tempfile
@@ -43,6 +44,7 @@ def main():
 
     before = manifest()
     compile_code = exit_code = None
+    groups_passed = 0
     compile_output = output = ''
     try:
         with tempfile.TemporaryDirectory(prefix='starfall-attack-buffer-') as folder:
@@ -61,6 +63,11 @@ def main():
                                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
                 exit_code, output = run.returncode, run.stdout
                 print(output, end='')
+                summary = re.search(r'Runtime attack buffer: ([0-5])/5 groups passed;', output)
+                groups_passed = int(summary.group(1)) if summary else 0
+                if exit_code == 0 and groups_passed != 5:
+                    exit_code = 1
+                    print('Missing complete 5/5 Runtime group summary; refusing incomplete success.')
             else:
                 exit_code = compile_code
     finally:
@@ -70,6 +77,7 @@ def main():
             args.report.write_text(json.dumps({
                 'source_root': str(production), 'source_unchanged': unchanged,
                 'compile_exit_code': compile_code, 'exit_code': exit_code,
+                'groups_expected': 5, 'groups_passed': groups_passed, 'groups_failed': 5-groups_passed,
                 'hashes': before, 'compile_output': compile_output, 'runtime_output': output,
                 'native': 'NATIVE_UNVERIFIED'}, indent=2) + '\n')
     if not unchanged:
