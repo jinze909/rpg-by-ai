@@ -38,6 +38,8 @@ namespace Starfall.Tests
         [Test] public void CompanionFocusKeepsAcceptedAimAndStraightFlightAcrossLaterCycles(){CoreChecks.CompanionFocusKeepsAcceptedAimAndStraightFlightAcrossLaterCycles(Data());}
         [Test] public void CompanionFocusPreservesMiraHealingPriorityAndExplicitCommands(){CoreChecks.CompanionFocusPreservesMiraHealingPriorityAndExplicitCommands(Data());}
         [Test] public void CompanionFocusKeepsPauseReadOnlySavesAndWorldOwnershipTransient(){CoreChecks.CompanionFocusKeepsPauseReadOnlySavesAndWorldOwnershipTransient(Data());}
+        [Test] public void CompanionFocusIdleReadinessRespondsWhenWalkingIntoRange(){CoreChecks.CompanionFocusIdleReadinessRespondsWhenWalkingIntoRange(Data());}
+        [Test] public void CompanionFocusIdleReadinessKeepsHealingCadenceAndWorldBoundaries(){CoreChecks.CompanionFocusIdleReadinessKeepsHealingCadenceAndWorldBoundaries(Data());}
         [Test] public void VolleyPlansMatchActualEightRegionThreePhaseReleases(){CoreChecks.VolleyPlansMatchActualEightRegionThreePhaseReleases(Data());}
         [Test] public void VolleyPreparedThresholdsCyclesCancellationAndSpecialActorsStayHonest(){CoreChecks.VolleyPreparedThresholdsCyclesCancellationAndSpecialActorsStayHonest(Data());}
         [Test] public void VolleyTerrainClipsToActualOrbClearanceWithoutMutatingSimulation(){CoreChecks.VolleyTerrainClipsToActualOrbClearanceWithoutMutatingSimulation(Data());}

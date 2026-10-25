@@ -21,7 +21,7 @@ from run_core_tests import fixture
 from run_fieldcraft_checks import require_actor_masks
 
 ROOT = Path(__file__).resolve().parents[1]
-GROUPS = 5
+GROUPS = 6
 
 
 def main():
@@ -89,13 +89,13 @@ def main():
                            args.capture_prefix or ('qa-companion-focus-before' if args.baseline_ref else 'qa-companion-focus')]
                 run = subprocess.run(command, cwd=ROOT, text=True,
                                      stdout=subprocess.PIPE, stderr=subprocess.STDOUT)
-                summary = re.search(r'Runtime companion focus: ([0-5])/5 groups passed;', run.stdout)
+                summary = re.search(r'Runtime companion focus: ([0-6])/6 groups passed;', run.stdout)
                 passed = int(summary.group(1)) if summary else 0
                 report.update(execution_exit_code=run.returncode, exit_code=run.returncode,
                               runtime_output=run.stdout, groups_passed=passed, groups_failed=GROUPS-passed)
                 if run.returncode == 0 and passed != GROUPS:
                     report['exit_code'] = 1
-                    print('Missing complete 5/5 Runtime group summary; refusing an incomplete success.')
+                    print('Missing complete 6/6 Runtime group summary; refusing an incomplete success.')
                 print(run.stdout, end='')
             else:
                 report['exit_code'] = compiled.returncode

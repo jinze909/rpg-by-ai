@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
-"""Run the six companion-focus Core groups with Mono, without a Unity Editor.
+"""Run the eight companion-focus Core groups with Mono, without a Unity Editor.
 
 --source-root can compile an archived production baseline against current checks.
-These checks compile on the baseline API; the automatic focus preference must fail semantically.
+These checks compile on the baseline API; missing focus preference or idle readiness fails semantically.
 """
 import argparse
 import hashlib
@@ -23,6 +23,8 @@ GROUPS = (
     'CompanionFocusKeepsAcceptedAimAndStraightFlightAcrossLaterCycles',
     'CompanionFocusPreservesMiraHealingPriorityAndExplicitCommands',
     'CompanionFocusKeepsPauseReadOnlySavesAndWorldOwnershipTransient',
+    'CompanionFocusIdleReadinessRespondsWhenWalkingIntoRange',
+    'CompanionFocusIdleReadinessKeepsHealingCadenceAndWorldBoundaries',
 )
 
 

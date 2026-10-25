@@ -144,6 +144,100 @@ public static class RuntimeCompanionFocusChecks
         }
         Console.WriteLine("PASS unchanged strict-below-80% Mira heal, exact-threshold attack, actual Z three-companion command clocks/captured intent/heal/guard/volley/field and receipts; NATIVE_UNVERIFIED");
     }
+    private static void SelectThroughMenu(FrontierRuntime app, int companion)
+    {
+        // The ordinary menu owns the original one-second readiness clock.
+        // Never manufacture readiness by writing its private countdown here.
+        Key(app,KeyCode.C);Check(app.Game.mode=="companions","Actual C opens the companion menu");
+        Rect invite=new Rect(296+companion*318,536,268,34);Draw(app);
+        Check(GUI.buttonCalls.Exists(b=>b.rect.x==invite.x&&b.rect.y==invite.y&&b.enabled),"Existing invite remains available in safe town");
+        GUI.queuedClick=invite;Draw(app);Check(!GUI.queuedClick.HasValue&&app.Game.save.companion==companion&&Near(Get<float>(app.Game,"companionAttack"),1),"Actual invite selects the companion with the original one-second initial delay");
+        Key(app,KeyCode.Escape);Check(app.Game.mode=="world"&&Near(Get<float>(app.Game,"companionAttack"),1),"Closing the menu does not spend the initial simulation delay");
+    }
+    private static void OriginalAutomaticClock(FrontierRuntime app, ActorAction first, string kind)
+    {
+        var g=app.Game;float interval=g.save.companion==1?2.8f:6,energy=g.save.energy;int frames=0;
+        Check(first!=null&&first.kind==kind&&!first.released&&first.elapsed==0&&Near(first.contact,.16f)&&Near(first.duration,.42f),"New eligibility prepares the original automatic action without early contact");
+        float health=g.save.health;int projectiles=g.projectiles.Count;
+        Frames(app,7);frames+=7;Check(!first.released&&Near(first.elapsed,.14f)&&Near(g.save.health,health)&&g.projectiles.Count==projectiles,"Automatic support cannot release before its original .16-second contact");
+        Update(app);frames++;Check(first.released&&Near(first.elapsed,.16f),"Original eighth .02-second frame releases exactly once");
+        if(kind=="heal")Check(Near(g.save.health,health+9)&&g.projectiles.Count==projectiles,"Mira still restores the original 6 + bond health on actual release");
+        else Check(g.projectiles.Count==projectiles+1&&g.projectiles[g.projectiles.Count-1].friendly&&Near(g.projectiles[g.projectiles.Count-1].damage,15),"Original prepared attack releases one ally projectile at its captured damage");
+        if(kind=="attack")
+        {
+            // The first legitimate hit pushes this boundary-range target just
+            // beyond seven units. Walk farther in while the prepared ally keeps
+            // its captured shot, so the repeated-action clock has a valid target.
+            Input.axes["Horizontal"]=1;Input.held.Add(KeyCode.D);
+            for(int i=0;i<8;i++){Point before=g.Position;Update(app);frames++;Check(g.CanStand(g.Position)&&(g.Position-before).Length<=g.Speed*.0201f+.001f,"Natural follow-through walking keeps the repeat target available without rewriting actor feet");}
+            Input.axes.Clear();Input.held.Clear();
+        }
+        while((g.companionAction==null||ReferenceEquals(g.companionAction,first))&&frames<330)
+        {
+            Update(app);frames++;
+            if(g.companionAction!=null&&!ReferenceEquals(g.companionAction,first))break;
+            Check(frames*.02f<interval+.021f,"An actual action must not consume a second empty-scan interval (frames="+frames+", clock="+Get<float>(g,"companionAttack")+", target distance="+(g.enemies.Count==0?-1:(g.enemies[0].Position-g.companionPosition).Length)+")");
+        }
+        Check(g.companionAction!=null&&!ReferenceEquals(g.companionAction,first)&&frames*.02f>=interval-.001f&&frames*.02f<=interval+.021f,"The next actual preparation retains the original full "+interval+"-second interval from the first real preparation");
+        Check(Near(g.save.energy,energy)&&g.companionCooldown==0&&g.playerAction==null,"Automatic readiness and real repeated actions spend no player energy or command cooldown");
+    }
+    private static void IdleReadinessFollowsRealEligibility(FrontierRuntime app)
+    {
+        var failures=new System.Collections.Generic.List<string>();
+        for(int companion=0;companion<3;companion++)
+        {
+            try
+            {
+                Prepare(app,companion);SelectThroughMenu(app,companion);var g=app.Game;
+                Enemy target=Foe(app,new Point(6,0),98400+companion);
+                Check((target.Position-g.companionPosition).Length>7,"The existing visible target starts outside companion range");
+                Frames(app,60);Check(g.companionAction==null&&g.projectiles.Count==0,"Idle scans have no fake attack, heal or projectile");
+                // Application and review pauses must not spend readiness even when idle.
+                foreach(bool review in new[]{false,true})
+                {
+                    float before=Get<float>(g,"companionAttack"),time=g.save.totalTime;
+                    if(review)app.VisualReviewPaused=true;else Call(app,"OnApplicationPause",true);
+                    Frames(app,8);Draw(app);Check(Get<float>(g,"companionAttack")==before&&g.save.totalTime==time&&g.companionAction==null,"Paused idle readiness and repeated drawing remain simulation-free");
+                    if(review)app.VisualReviewPaused=false;else Call(app,"OnApplicationPause",false);
+                }
+                int walked=0,eligibleFrame=-1,preparedFrame=-1;
+                for(int frame=0;frame<360&&g.companionAction==null;frame++)
+                {
+                    Point before=g.Position;
+                    if(eligibleFrame<0){Input.axes["Horizontal"]=1;Input.held.Add(KeyCode.D);walked++;}
+                    else {Input.axes.Clear();Input.held.Clear();}
+                    Update(app);
+                    Check(g.CanStand(g.Position)&&(g.Position-before).Length<=g.Speed*.0201f+.001f,"Real held D walking preserves legal continuous player feet");
+                    if(eligibleFrame<0&&(target.Position-g.companionPosition).Length<7&&(bool)Call(g,"ClearAttackPath",g.companionPosition,target.Position))eligibleFrame=frame;
+                    if(g.companionAction!=null)preparedFrame=frame;
+                }
+                Input.axes.Clear();Input.held.Clear();
+                Console.WriteLine("TRACE companion "+companion+" naturally walked "+walked+" frames; first eligible frame="+eligibleFrame+", prepared="+preparedFrame+", extra wait="+((preparedFrame-eligibleFrame)*.02f).ToString("0.00",System.Globalization.CultureInfo.InvariantCulture)+"s");
+                Check(walked>0&&eligibleFrame>=0&&preparedFrame>=eligibleFrame&&preparedFrame-eligibleFrame<=1,"A ready companion must prepare within one Update of first actual visible in-range eligibility, not wait through an empty-scan cooldown");
+                ActorAction first=g.companionAction;Check(first.target.HasValue&&(first.target.Value-target.Position).Length<.001f,"Natural approach captures the actual newly eligible actor");OriginalAutomaticClock(app,first,"attack");
+            }
+            catch(Exception error){failures.Add("companion "+companion+": "+(error.InnerException??error).Message);}
+        }
+        try
+        {
+            Prepare(app,0);SelectThroughMenu(app,0);var g=app.Game;Frames(app,60);
+            Check(g.companionAction==null&&g.save.health==g.save.maxHealth,"Healthy Mira idles without a fabricated action");
+            g.invulnerable=0;g.save.difficulty=1;g.save.talents=new int[3];g.guardTime=0;g.save.mealUntil=0;
+            float health=g.save.health;var shot=new Projectile{position=g.Position+new Point(.8f,0),velocity=new Point(-6,0),damage=g.save.maxHealth*.4f,source="shot",visual="enemyArrow"};g.projectiles.Add(shot);
+            int hurtFrame=-1,preparedFrame=-1;
+            for(int frame=0;frame<340&&g.companionAction==null;frame++)
+            {
+                Update(app);if(hurtFrame<0&&g.save.health<health)hurtFrame=frame;if(g.companionAction!=null)preparedFrame=frame;
+            }
+            Console.WriteLine("TRACE Mira real hostile contact frame="+hurtFrame+", prepared="+preparedFrame+", extra wait="+((preparedFrame-hurtFrame)*.02f).ToString("0.00",System.Globalization.CultureInfo.InvariantCulture)+"s");
+            Check(hurtFrame>=0&&!g.projectiles.Contains(shot)&&Near(g.save.health,health-g.save.maxHealth*.4f)&&g.save.health<g.save.maxHealth*.8f,"A genuine incoming projectile, not a direct health write, makes Mira healing eligible");
+            Check(preparedFrame>=hurtFrame&&preparedFrame-hurtFrame<=1,"Idle-ready Mira must prepare within one Update of genuine sub-80% injury rather than an empty six-second scan interval");
+            OriginalAutomaticClock(app,g.companionAction,"heal");
+        }
+        catch(Exception error){failures.Add("Mira injury: "+(error.InnerException??error).Message);}
+        Check(failures.Count==0,string.Join(" | ",failures.ToArray()));
+        Console.WriteLine("PASS actual C/invite/escape one-second initial ownership, three naturally walked in-range preparations, real incoming-arrow Mira heal, original .16-second contacts/full next-action intervals and idle application/review pauses; NATIVE_UNVERIFIED");
+    }
     private static string Simulation(GameCore g)
     {
         return JsonUtility.ToJson(g.save)+"/"+JsonUtility.ToJson(g.companionAction)+"/"+JsonUtility.ToJson(g.projectiles)+"/"+JsonUtility.ToJson(g.companionPosition)+"/"+JsonUtility.ToJson(g.companionAim)+"/"+Get<float>(g,"companionAttack")+"/"+g.companionCooldown+"/"+g.revision;
@@ -196,7 +290,7 @@ public static class RuntimeCompanionFocusChecks
         try
         {
             Call(app,"Awake");if(app.Game==null){Console.WriteLine("FAIL Awake cannot load shipped campaign");return 1;}
-            Action<FrontierRuntime>[] tests={ActualAcquireAndCycleReadiness,PreparedAndFlyingShotsKeepSnapshots,HealingAndManualCommandsKeepTheirRules,PauseAndDrawingStayReadOnly,NotesRemainBilingualAndReadOnly};int failures=0;
+            Action<FrontierRuntime>[] tests={ActualAcquireAndCycleReadiness,PreparedAndFlyingShotsKeepSnapshots,HealingAndManualCommandsKeepTheirRules,PauseAndDrawingStayReadOnly,NotesRemainBilingualAndReadOnly,IdleReadinessFollowsRealEligibility};int failures=0;
             foreach(var test in tests)try{test(app);}catch(Exception error){failures++;Console.WriteLine("FAIL "+test.Method.Name+": "+(error.InnerException??error).Message);}
             Console.WriteLine("Runtime companion focus: "+(tests.Length-failures)+"/"+tests.Length+" groups passed; NATIVE_UNVERIFIED");return failures==0?0:1;
         }
