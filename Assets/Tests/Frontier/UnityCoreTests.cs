@@ -570,6 +570,10 @@ namespace Starfall.Tests
         [Test] public void RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible() { CoreChecks.RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible(Data()); }
         [Test] public void RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions() { CoreChecks.RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions(Data()); }
 
+        [Test] public void MaterialSourcesExposeOnlyEarnedCanonicalMethodsAndLiveQuotes() { CoreChecks.MaterialSourcesExposeOnlyEarnedCanonicalMethodsAndLiveQuotes(Data()); }
+        [Test] public void MaterialSourcesPinsUseRealInteractionsAndPreserveOriginalYields() { CoreChecks.MaterialSourcesPinsUseRealInteractionsAndPreserveOriginalYields(Data()); }
+        [Test] public void MaterialSourcesRejectRemoteStaleDefeatedAndForeignPinIntents() { CoreChecks.MaterialSourcesRejectRemoteStaleDefeatedAndForeignPinIntents(Data()); }
+        [Test] public void MaterialSourcesQueriesPreserveCombatQueuesAndLegacySaves() { CoreChecks.MaterialSourcesQueriesPreserveCombatQueuesAndLegacySaves(Data()); }
         [Test] public void GatheringLandmarksExposeOnlyExploredAvailableCanonicalNodes() { CoreChecks.GatheringLandmarksExposeOnlyExploredAvailableCanonicalNodes(Data()); }
         [Test] public void GatheringLandmarksPinActualNodesAndReachTheirOwnInteraction() { CoreChecks.GatheringLandmarksPinActualNodesAndReachTheirOwnInteraction(Data()); }
         [Test] public void GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin() { CoreChecks.GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin(Data()); }

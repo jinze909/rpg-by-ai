@@ -47,7 +47,7 @@ namespace Starfall
             Box(246, 46, 1, 671, PixelArt.C("#34475a")); Text(276, 48, 735, 52, title, 31, paper); Text(278, 106, 738, 43, subtitle, 14, muted); Box(275, 150, 946, 1, PixelArt.C("#374c60"));
             if (Game.mode == "inventory" || Game.mode == "loadout") DrawPlayerPreview(Game.mode == "inventory" ? inspectedWeapon : Game.save.weapon, 1086, 137, 104);
             bool titleSettings = settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves" || Game.mode == "controls");
-            for (int i = 0; i < menuModes.Length; i++) if (Button(44, 160 + i * 53, 180, 42, Game.L(menuZh[i], menuEn[i]) + "  " + menuKeys[i], Game.mode == menuModes[i] || Game.mode == "relictrail" && menuModes[i] == "loadout", !titleSettings)) OpenMenu(menuModes[i]);
+            for (int i = 0; i < menuModes.Length; i++) if (Button(44, 160 + i * 53, 180, 42, Game.L(menuZh[i], menuEn[i]) + "  " + menuKeys[i], Game.mode == menuModes[i] || Game.mode == "relictrail" && menuModes[i] == "loadout" || Game.mode == "materials" && menuModes[i] == "inventory", !titleSettings)) OpenMenu(menuModes[i]);
             Text(48, 649, 166, 43, "LV " + Game.save.level + "  /  " + Game.save.coins + Game.L(" 硬币", " coins") + "\n" + Game.L("记忆碎片 ", "Shards ") + Game.save.shards, 13, muted);
             if (Button(44, 696, 180, 25, Game.L("存档管理", "Save manager"))) OpenMenu("saves");
             if (Button(44, 726, 180, 32, Game.L("返回  ", "Back  ") + ControlKey("ESC", "B"), true)) Back(); if (Button(1156, 52, 68, 38, ControlKey("ESC", "B"))) Back();
@@ -137,13 +137,13 @@ namespace Starfall
             for (int i = 0; i < 8; i++) { float x = 279 + i % 4 * 158, y = 177 + i / 4 * 126; Card(x, y, 145, 113, selectedItem == i); Icon(ids[i], x + 47, y + 7, 46); if (Button(x + 7, y + 59, 131, 46, Game.L(Game.data.items[i].name, Game.data.items[i].en) + "\n× " + Game.save.inventory[i], selectedItem == i)) selectedItem = i; }
             DrawWeaponComparison();
             Card(924, 177, 295, 552); Icon(ids[selectedItem], 1030, 203, 82); Text(947, 306, 250, 41, Game.L(Game.data.items[selectedItem].name, Game.data.items[selectedItem].en), 23, gold);
-            string[] zh = { "建设与制作的基础材料。探索木堆，或向铁匠购买。", "用于武器、修理与记忆锻印。采集星晶矿获得。", "用于料理、救援与镇民委托。药田种植与野外采集获得。", "镇东湖边钓获。料理与老潮的委托需要它。", "矿点会提供备用零件。修理机关、制作武器与城镇建设需要它。", "冒险背包中的星核碎片。远岸记忆碎片与硬币另有独立余额，可在侧栏查看。", "恢复55生命与全部耐力，攻击增强90秒。按F使用。", "到杏的药田种植。生长60秒，成熟后收获药草与新种子。" };
-            string[] en = { "A building and crafting material. Gather timber or buy it from Noll.", "For weapons, repairs and relic forging. Gather starcrystal veins.", "For cooking, rescues and town requests. Grow or gather Moonherbs.", "Catch these in the eastern lake. Used for cooking and Old Tide's request.", "Ore veins yield spare parts. Used in repairs, weapons and town projects.", "Starcore shards in your pack. Distant-shores memory shards and coins are separate balances in the sidebar.", "Restores 55 health and full energy; boosts damage for 90 seconds. Press F.", "Plant in An's garden. Harvest after 60 seconds for herbs and new seeds." };
+            string[] zh = { "建设与制作的基础材料。探索木堆，或向旅店的阿茴购买。", "用于武器、修理与记忆锻印。采集星晶矿获得。", "用于料理、救援与镇民委托。药田种植与野外采集获得。", "镇东湖边钓获。料理与老潮的委托需要它。", "矿点会提供备用零件。修理机关、制作武器与城镇建设需要它。", "冒险背包中的星核碎片。远岸记忆碎片与硬币另有独立余额，可在侧栏查看。", "恢复55生命与全部耐力，攻击增强90秒。按F使用。", "到杏的药田种植。生长60秒，成熟后收获药草与新种子。" };
+            string[] en = { "A building and crafting material. Gather timber or buy it from Ari at the inn.", "For weapons, repairs and relic forging. Gather starcrystal veins.", "For cooking, rescues and town requests. Grow or gather Moonherbs.", "Catch these in the eastern lake. Used for cooking and Old Tide's request.", "Ore veins yield spare parts. Used in repairs, weapons and town projects.", "Starcore shards in your pack. Distant-shores memory shards and coins are separate balances in the sidebar.", "Restores 55 health and full energy; boosts damage for 90 seconds. Press F.", "Plant in An's garden. Harvest after 60 seconds for herbs and new seeds." };
             Text(947, 369, 246, 152, Game.L(zh[selectedItem], en[selectedItem]), 17, muted);
             if (Button(947, 546, 246, 35, Game.L("使用炖汤 × ", "Use stew × ") + Game.save.inventory[6], false, Game.save.inventory[6] > 0 && !Game.practicing)) Game.Eat();
             if (Button(947, 590, 246, 35, Game.L("使用凉茶 × ", "Use tea × ") + Game.save.tea, false, Game.save.tea > 0 && !Game.practicing)) Game.DrinkTea();
             if(Button(947, 642, 246, 35, Game.L("装备方案", "Battle plans"))) OpenBattlePlans();
-            Text(947, 681, 246, 40, Game.L("旅店休息可更新野外采集点。", "Inn rest renews resource nodes."), 12, muted);
+            if (Button(947, 687, 246, 32, Game.L("材料来源", "Material sources"), false, CanOpenMaterialSources)) OpenMaterialSources(selectedItem);
             DrawRoadMealInventory();
         }
         private void DrawTalents()

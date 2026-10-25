@@ -86,6 +86,13 @@ namespace Starfall
             bool canonical = false;
             foreach (WorldObject candidate in Map.objects) if (ReferenceEquals(candidate, obj)) { canonical = true; break; }
             if (!canonical) return false;
+            return SetLandmarkPinCore(obj);
+        }
+
+        // Both explicit review pages keep their own authority checks before
+        // committing the same existing, persistent personal waypoint.
+        private bool SetLandmarkPinCore(WorldObject obj)
+        {
             string flag = LandmarkPinPrefix + save.room.ToString(CultureInfo.InvariantCulture) + ":" + obj.id;
             if (landmarkPinFlag == flag && HasLandmarkPin) return false;
             save.flags.RemoveAll(value => value != null && value.StartsWith(LandmarkPinPrefix, StringComparison.Ordinal));

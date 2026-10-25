@@ -13,7 +13,7 @@ namespace Starfall
         private bool focusVisible, controllerUsed, drawingModal;
         private string ControlId(float x, float y, float w, float h) { return x.ToString(CultureInfo.InvariantCulture) + ":" + y.ToString(CultureInfo.InvariantCulture) + ":" + w.ToString(CultureInfo.InvariantCulture) + ":" + h.ToString(CultureInfo.InvariantCulture); }
         private string InputScope()
-        { return Game.mode + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (Game.mode == "racecourse" ? "/" + Game.RaceCourseVersion + "/" + Game.RaceCourseCancellationPending : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : "") + (townProjectConfirmation != null ? "/town-project/" + townProjectConfirmation.GetHashCode() : ""); }
+        { return Game.mode + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (Game.mode == "materials" ? "/" + materialItem + "/" + materialPage + "/" + Game.WorldGeneration : "") + (Game.mode == "racecourse" ? "/" + Game.RaceCourseVersion + "/" + Game.RaceCourseCancellationPending : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : "") + (townProjectConfirmation != null ? "/town-project/" + townProjectConfirmation.GetHashCode() : ""); }
         private void BeginControls() { drawnScope = InputScope(); navigation.Scope(drawnScope); drawnControls.Clear(); drawingModal = false; }
         private void EndControls()
         {
@@ -71,6 +71,7 @@ namespace Starfall
             if (PadDown(1) || Input.GetKeyDown(KeyCode.Escape)) { Back(); return; }
             int menuIndex=Array.IndexOf(menuModes,Game.mode);
             if(Game.mode=="plans")menuIndex=Array.IndexOf(menuModes,"inventory");
+            if(Game.mode=="materials")menuIndex=Array.IndexOf(menuModes,"inventory");
             if(Game.mode=="rangecontrols")menuIndex=Array.IndexOf(menuModes,"inventory");
             if(Game.mode=="landmarks")menuIndex=Array.IndexOf(menuModes,"map");
             if(Game.mode=="companionnotes")menuIndex=Array.IndexOf(menuModes,"companions");
@@ -98,6 +99,7 @@ namespace Starfall
             if (saveConfirmation != null) { saveConfirmation = null; return; }
             if(Game.mode=="plans" && battlePlanConfirmation >= 0) { battlePlanConfirmation = -1; return; }
             if(Game.mode=="plans") { OpenMenu("inventory"); return; }
+            if(Game.mode=="materials") { OpenMenu("inventory"); return; }
             if(Game.mode=="techniques") { OpenMenu(techniqueGuideParent); return; }
             if (replacePrompt) { replacePrompt = false; return; }
             if (Game.mode == "title") return;

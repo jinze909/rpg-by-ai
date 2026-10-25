@@ -220,6 +220,7 @@ namespace Starfall
                 if (Game.mode == "dialog") DrawDialogue();
                 if (Game.mode == "fish") DrawFishing();
                 if (Game.mode == "inventory") DrawInventory();
+                if (Game.mode == "materials") DrawMaterialSources();
                 if (Game.mode == "plans") DrawBattlePlans();
                 if (Game.mode == "techniques") DrawTechniqueGuide();
                 if (Game.mode == "talents") DrawTalents();
