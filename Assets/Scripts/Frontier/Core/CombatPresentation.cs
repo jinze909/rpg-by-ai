@@ -111,6 +111,7 @@ namespace Starfall
         {
             ClearBufferedCompanionCommand();
             ClearCombatLoot();
+            ClearBossPhaseCue();
             ResetSignalReprise();
             ResetReturnLetterSignal();
             ClearCombatFocus();
@@ -187,6 +188,7 @@ namespace Starfall
         private void TickVisuals(float dt)
         {
             TickCombatLoot(dt);
+            TickBossPhaseCue(dt);
             playerHitTime = Math.Max(0, playerHitTime - dt); playerFlash = Math.Max(0, playerFlash - dt);
             impactShake = Math.Max(0, impactShake - dt);
             for(int i=fallen.Count-1;i>=0;i--){FallenActor body=fallen[i];body.life-=dt;if(body.life<=0)fallen.RemoveAt(i);}
@@ -196,6 +198,7 @@ namespace Starfall
         private void BeginDeath()
         {
             ClearCombatLoot();
+            ClearBossPhaseCue();
             ResetSignalReprise();
             ResetReturnLetterSignal();
             ClearCombatFocus();

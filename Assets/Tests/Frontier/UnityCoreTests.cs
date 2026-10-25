@@ -556,6 +556,11 @@ namespace Starfall.Tests
         [Test] public void MuzzleContactBowSkillsKeepPaidVolleyAndPiercingRelease() { CoreChecks.MuzzleContactBowSkillsKeepPaidVolleyAndPiercingRelease(Data()); }
         [Test] public void MuzzleContactHostileArcherUsesSamePreparedReleasePath() { CoreChecks.MuzzleContactHostileArcherUsesSamePreparedReleasePath(Data()); }
 
+        [Test] public void PhaseCueActualContactsAndExactBoundariesAcrossEightRooms() { CoreChecks.PhaseCueActualContactsAndExactBoundariesAcrossEightRooms(Data()); }
+        [Test] public void PhaseCueKeepsCommittedWarningReleaseAndBreakOutputs() { CoreChecks.PhaseCueKeepsCommittedWarningReleaseAndBreakOutputs(Data()); }
+        [Test] public void PhaseCueQueriesLifetimeOwnershipAndLegacyLoads() { CoreChecks.PhaseCueQueriesLifetimeOwnershipAndLegacyLoads(Data()); }
+        [Test] public void PhaseCueInvalidSpecialTrainingDeathAndLethalGuards() { CoreChecks.PhaseCueInvalidSpecialTrainingDeathAndLethalGuards(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

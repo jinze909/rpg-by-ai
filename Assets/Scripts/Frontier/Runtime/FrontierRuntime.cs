@@ -235,6 +235,7 @@ namespace Starfall
                 if (Game.mode == "help") DrawHelp();
             }
             if (Game.toastTime > 0 && Game.mode != "title") DrawToast();
+            DrawBossPhaseCue();
             DrawControllerAimReticle();
             DrawCombatFocusMarker();
             DrawHudThreatWitness();

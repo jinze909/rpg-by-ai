@@ -71,6 +71,7 @@ namespace Starfall
             if (GuardStatusVisible) rects.Add(GuardStatusBounds());
             if (CombatLootVisible) rects.Add(CombatLootBounds());
             if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
+            if (BossPhaseCueVisible) rects.Add(BossPhaseCueBounds());
             rects.AddRange(worldOverlayRegions); return rects;
         }
         private List<Rect> HudPointerRegions()
@@ -87,6 +88,7 @@ namespace Starfall
                         && (!CombatLootVisible || !SameCombatLootRegion(regions[i]))
                         && (!SignalRepriseHudVisible || !SameSignalRepriseRegion(regions[i]))
                         && (!ReturnLetterHudVisible || !SameReturnLetterRegion(regions[i]))
+                        && (!BossPhaseCueVisible || !SameBossPhaseCueRegion(regions[i]))
                         && (!CompanionFeedbackVisible || !SameCompanionFeedbackRegion(regions[i]))) hudPointerRegions.Add(regions[i]);
             }
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
@@ -216,6 +218,7 @@ namespace Starfall
                 Panel(380,22,520,65,new Color(.04f,.065f,.11f,.6f),new Color(.6f,.4f,.42f,.45f));
                 Text(396,26,488,27,Game.L(Game.CurrentBoss.name,Game.CurrentBoss.en)+"  /  "+boss.BossPhase,16,gold,TextAnchor.MiddleCenter);
                 Bar(399,58,482,boss.hp/boss.maxHp,PixelArt.C("#d28b86"),6); Bar(399,73,482,boss.stagger/95,mint,3);
+                DrawBossPhaseThresholds(boss,399,58,482,6);
             }
             else if (HasFallenBoss) Text(380,29,520,31,HasFallenSignalReprise ? Game.L("复试完成 · 无重复报酬","Reprise complete · no repeat reward") : Game.fallen.Exists(f=>f.room==Game.save.room&&GameCore.IsCommissionGuardian(f.actor)) ? Game.L("试机成功 · 向伊沃回报","Test complete · report to Ivo") : Game.InAbyss ? Game.L("守护者已倒下 · 战利品未结算","Guardian defeated · loot UNBANKED") : Game.L("守护者已倒下 · 战利品已收取","Guardian defeated · loot secured"),18,gold,TextAnchor.MiddleCenter);
             Panel(426,730,428,54,new Color(.045f,.08f,.13f,.65f),new Color(.3f,.4f,.46f,.4f));

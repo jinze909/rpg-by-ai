@@ -139,6 +139,8 @@ jobs:
         run: python3 tools/run_boss_commitment_checks.py
       - name: Check announced boss volleys, real releases, terrain and HUD witnesses
         run: python3 tools/run_boss_volley_checks.py
+      - name: Check real boss phase crossings, committed warnings, passive threshold marks and legacy saves
+        run: python3 tools/run_boss_phase_cue_checks.py
       - name: Check Mira's homeward route with production input, combat and saves
         run: python3 tools/run_homeward_checks.py
       - name: Check saved battle plans and technique notes with production menus, sparring and saves

@@ -381,6 +381,7 @@ namespace Starfall
             OnSparringContact(e, profile, broke, !technique && e.kind == 2 && approach.x * e.facing.x + approach.y * e.facing.y < -.45f);
             float fieldcraftHealthBefore = e.hp;
             e.hp -= damage; e.flash = .09f; e.hitTime = .18f; e.recoil = attackDirection ?? (e.Position - Position).Normalized;
+            RecordBossPhaseChange(e, fieldcraftHealthBefore);
             OnFieldcraftContact(e, profile, fieldcraftHealthBefore);
             OnRangeContact(e, profile, fieldcraftHealthBefore, broke, !technique && e.kind == 2 && approach.x * e.facing.x + approach.y * e.facing.y < -.45f);
             OnSignalRepriseContact(e, profile, fieldcraftHealthBefore, broke);

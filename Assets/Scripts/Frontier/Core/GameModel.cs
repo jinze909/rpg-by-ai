@@ -114,7 +114,7 @@ namespace Starfall
         public Enemy(int id, int kind, float x, float y, float hp, bool boss = false)
         { this.id = id; this.kind = kind; this.x = x; this.y = y; this.hp = maxHp = hp; this.boss = boss; timer = 1.3f + id * .13f; }
         public Point Position { get { return new Point(x, y); } }
-        public int BossPhase { get { return hp > maxHp * .66f ? 1 : hp > maxHp * .33f ? 2 : 3; } }
+        public int BossPhase { get { return hp > maxHp * GameCore.BossPhaseTwoThreshold ? 1 : hp > maxHp * GameCore.BossPhaseThreeThreshold ? 2 : 3; } }
         // A hit can change HP phase during a warning, but the announced attack
         // keeps its preparation phase. Fresh/restored or staged actors use HP.
         public int AttackPhase { get { return boss && state == 1 && attackPhase >= 1 && attackPhase <= 3 ? attackPhase : BossPhase; } }
