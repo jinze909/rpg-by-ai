@@ -47,7 +47,7 @@ namespace Starfall
             Box(246, 46, 1, 671, PixelArt.C("#34475a")); Text(276, 48, 735, 52, title, 31, paper); Text(278, 106, 738, 43, subtitle, 14, muted); Box(275, 150, 946, 1, PixelArt.C("#374c60"));
             if (Game.mode == "inventory" || Game.mode == "loadout") DrawPlayerPreview(Game.mode == "inventory" ? inspectedWeapon : Game.save.weapon, 1086, 137, 104);
             bool titleSettings = settingsParent == "title" && (Game.mode == "pause" || Game.mode == "saves" || Game.mode == "controls");
-            for (int i = 0; i < menuModes.Length; i++) if (Button(44, 160 + i * 53, 180, 42, Game.L(menuZh[i], menuEn[i]) + "  " + menuKeys[i], Game.mode == menuModes[i], !titleSettings)) OpenMenu(menuModes[i]);
+            for (int i = 0; i < menuModes.Length; i++) if (Button(44, 160 + i * 53, 180, 42, Game.L(menuZh[i], menuEn[i]) + "  " + menuKeys[i], Game.mode == menuModes[i] || Game.mode == "relictrail" && menuModes[i] == "loadout", !titleSettings)) OpenMenu(menuModes[i]);
             Text(48, 649, 166, 43, "LV " + Game.save.level + "  /  " + Game.save.coins + Game.L(" 硬币", " coins") + "\n" + Game.L("记忆碎片 ", "Shards ") + Game.save.shards, 13, muted);
             if (Button(44, 696, 180, 25, Game.L("存档管理", "Save manager"))) OpenMenu("saves");
             if (Button(44, 726, 180, 32, Game.L("返回  ", "Back  ") + ControlKey("ESC", "B"), true)) Back(); if (Button(1156, 52, 68, 38, ControlKey("ESC", "B"))) Back();
@@ -180,7 +180,8 @@ namespace Starfall
             for (int i = 0; i < 6; i++)
             {
                 float x = 279 + i % 3 * 318, y = 244 + i / 3 * 174; bool owned = Game.Has("relic_" + i); Card(x, y, 302, 157, Game.Relic(i)); Icon(i == 0 ? "tea" : i == 1 ? "seed" : i == 2 ? "map" : i == 3 ? "gear" : i == 4 ? "shield" : "relic", x + 17, y + 16, 39);
-                Text(x + 67, y + 21, 218, 32, Game.L(GameCore.RelicNames[i], GameCore.RelicNamesEn[i]), 18, owned ? gold : muted); Text(x + 17, y + 67, 269, 50, Game.L(GameCore.RelicText[i], GameCore.RelicTextEn[i]), 13, muted);
+                Text(x + 67, y + 21, 145, 32, Game.L(GameCore.RelicNames[i], GameCore.RelicNamesEn[i]), 18, owned ? gold : muted); Text(x + 17, y + 67, 269, 50, Game.L(GameCore.RelicText[i], GameCore.RelicTextEn[i]), 13, muted);
+                if (RelicSourceButton(x + 216, y + 22)) { OpenRelicTrail(i); return; }
                 if (Button(x + 17, y + 120, 268, 27, owned ? Game.L("装备到当前槽", "Equip in selected slot") : Game.L("尚未解锁", "Not discovered"), Game.Relic(i), owned)) Game.EquipRelic(relicSlot, i);
             }
             if (Button(279, 614, 302, 39, Game.L("卸下当前槽", "Clear selected slot"))) Game.EquipRelic(relicSlot, -1);

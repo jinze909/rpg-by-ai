@@ -235,6 +235,7 @@ namespace Starfall
                 if (Game.mode == "companions") DrawCompanions();
                 if (Game.mode == "companionnotes") DrawCompanionNotes();
                 if (Game.mode == "loadout") DrawLoadout();
+                if (Game.mode == "relictrail") DrawRelicTrail();
                 if (Game.mode == "bounties") DrawBounties();
                 if (Game.mode == "help") DrawHelp();
             }

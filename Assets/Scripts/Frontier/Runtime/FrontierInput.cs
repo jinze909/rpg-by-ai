@@ -74,6 +74,7 @@ namespace Starfall
             if(Game.mode=="rangecontrols")menuIndex=Array.IndexOf(menuModes,"inventory");
             if(Game.mode=="landmarks")menuIndex=Array.IndexOf(menuModes,"map");
             if(Game.mode=="companionnotes")menuIndex=Array.IndexOf(menuModes,"companions");
+            if(Game.mode=="relictrail")menuIndex=Array.IndexOf(menuModes,"loadout");
             if(Game.mode=="techniques")menuIndex=Array.IndexOf(menuModes,techniqueGuideParent=="plans"?"inventory":techniqueGuideParent);
             if (menuIndex >= 0 && battlePlanConfirmation < 0 && talentResetConfirmation == null && townProjectConfirmation == null && (PadDown(4) || PadDown(5))) { OpenMenu(menuModes[(menuIndex + (PadDown(5) ? 1 : -1) + menuModes.Length) % menuModes.Length]); return; }
             Point direction = new Point();
@@ -104,6 +105,7 @@ namespace Starfall
             if (Game.mode == "rangecontrols") { OpenMenu("pause"); return; }
             if (Game.mode == "landmarks") { OpenMenu("map"); return; }
             if (Game.mode == "companionnotes") { OpenMenu("companions"); return; }
+            if (Game.mode == "relictrail") { OpenMenu("loadout"); return; }
             if (Game.mode == "world") { OpenMenu("pause"); Save(); return; }
             if (Game.mode == "saves" || Game.mode == "controls") { Game.mode = "pause"; ResetControllerAim(); return; }
             if (Game.mode == "pause" && settingsParent == "title") { Game.mode = "title"; settingsParent = "world"; return; }

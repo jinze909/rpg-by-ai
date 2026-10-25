@@ -563,6 +563,11 @@ namespace Starfall.Tests
         [Test] public void PhaseCueQueriesLifetimeOwnershipAndLegacyLoads() { CoreChecks.PhaseCueQueriesLifetimeOwnershipAndLegacyLoads(Data()); }
         [Test] public void PhaseCueInvalidSpecialTrainingDeathAndLethalGuards() { CoreChecks.PhaseCueInvalidSpecialTrainingDeathAndLethalGuards(Data()); }
 
+        [Test] public void RelicTrailsFollowActualPermanentRewardSources() { CoreChecks.RelicTrailsFollowActualPermanentRewardSources(Data()); }
+        [Test] public void RelicTrailsExposeActionablePrerequisitesWithoutLockedTravel() { CoreChecks.RelicTrailsExposeActionablePrerequisitesWithoutLockedTravel(Data()); }
+        [Test] public void RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible() { CoreChecks.RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible(Data()); }
+        [Test] public void RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions() { CoreChecks.RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }
