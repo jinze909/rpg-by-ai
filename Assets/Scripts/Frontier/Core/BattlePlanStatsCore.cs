@@ -37,6 +37,12 @@ namespace Starfall
         private static float BasicContactDamage(int weapon, int style, float damage)
         { return damage * (weapon == 1 && style == 2 ? .65f : 1); }
 
+        public float WeaponContactDamage(int weapon, int style)
+        {
+            if (weapon < 0 || weapon > 2 || style < 0 || style > 2) return 0;
+            return BasicContactDamage(weapon, style, Profile(weapon, style).damage);
+        }
+
         private BattlePlanCombatStats BattlePlanStats(BattlePlan plan)
         {
             if (!ValidBattlePlan(plan)) return null;

@@ -1,4 +1,5 @@
 using System;
+using System.Globalization;
 using UnityEngine;
 namespace Starfall
 {
@@ -51,10 +52,13 @@ namespace Starfall
             for (int i = 0; i < 3; i++) if (Button(294 + i * 199, 539, 187, 28, Game.L(new[] { "均衡", "蓄势", "流转" }[i], new[] { "Balanced", "Focused", "Flow" }[i]), inspectedStyle == i)) inspectedStyle = i;
             WeaponProfile current = Game.Profile(Game.save.weapon, Game.Style), candidate = Game.Profile(inspectedWeapon, inspectedStyle);
             bool owned = inspectedWeapon == 0 || Game.Has("weapon_" + inspectedWeapon), unlocked = inspectedStyle == 0 || Game.Has("core_1") || Game.MasteryRank(inspectedWeapon) >= 1;
-            string stats = Game.L("伤害 / 间隔 / 耗能：", "Damage / interval / energy: ") + candidate.damage.ToString("0") + " / " + candidate.interval.ToString("0.00") + "s / " + candidate.energy + "\n" + Game.L("当前：", "Equipped: ") + current.damage.ToString("0") + " / " + current.interval.ToString("0.00") + "s / " + current.energy;
+            string stats = Game.L("首击/每箭 / 间隔 / 耗能：", "Hit/arrow / gap / energy: ") + Game.WeaponContactDamage(inspectedWeapon, inspectedStyle).ToString("0.##", CultureInfo.InvariantCulture) + " / " + candidate.interval.ToString("0.00", CultureInfo.InvariantCulture) + "s / " + candidate.energy.ToString("0.##", CultureInfo.InvariantCulture) + "\n" + Game.L("当前：", "Equipped: ") + Game.WeaponContactDamage(Game.save.weapon, Game.Style).ToString("0.##", CultureInfo.InvariantCulture) + " / " + current.interval.ToString("0.00", CultureInfo.InvariantCulture) + "s / " + current.energy.ToString("0.##", CultureInfo.InvariantCulture);
             Text(297, 577, 389, 59, stats, 13, paper);
             if (Button(710, 580, 174, 52, Game.L("装备此打法", "Equip style"), true, owned && unlocked)) { Game.Equip(inspectedWeapon); Game.SetStyle(inspectedStyle); }
-            Text(297, 642, 583, 41, !owned ? Game.L("先去铁匠处制作武器。", "Craft this weapon at the blacksmith first.") : !unlocked ? Game.L("第一星核或本武器熟练度1解锁打法。", "First core or weapon mastery rank 1 unlocks styles.") : candidate.benefit + " · " + candidate.cost, 12, muted);
+            string tradeoff = inspectedWeapon == 1 && inspectedStyle == 2
+                ? Game.L("三箭散射 · 伤害按每箭、耗能按整次攻击计算。", "3-arrow spread · damage per arrow, energy per attack.")
+                : candidate.benefit + " · " + candidate.cost;
+            Text(297, 642, 583, 41, !owned ? Game.L("先去铁匠处制作武器。", "Craft this weapon at the blacksmith first.") : !unlocked ? Game.L("第一星核或本武器熟练度1解锁打法。", "First core or weapon mastery rank 1 unlocks styles.") : tradeoff, 12, muted);
             WeaponMasteryProgress mastery = Game.GetWeaponMasteryProgress(inspectedWeapon);
             Text(297, 690, 583, 19, Game.WeaponMasteryProgressText(inspectedWeapon), 12, mint);
             Text(297, 710, 583, 16, Game.L("普通敌人+2 · Boss+10 · 首次旧日补给+8 · 每级基础伤害+2", "Normal foes +2 · Bosses +10 · First caches +8 · +2 base damage/rank"), 10, muted);

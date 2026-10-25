@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Run exactly four battle-plan comparison Core groups with the selected Mono SDK.
+"""Run exactly six battle-plan and weapon-contact Core groups with the selected Mono SDK.
 
 These APIs are new. An archived baseline without them cannot compile these
 checks; a missing-API compile failure is not a semantic regression RED result.
@@ -22,6 +22,8 @@ GROUPS = (
     'BattlePlanStatsCandidatesMatchAppliedBuildsAndLiveConditions',
     'BattlePlanStatsReadsPreserveSnapshotsCombatQueuesAndWholeState',
     'BattlePlanStatsInvalidLockedAndLegacyRecordsRemainReadOnly',
+    'BattlePlanStatsWeaponContactsMatchNineActualReleases',
+    'BattlePlanStatsWeaponContactQueriesPreserveLiveAndLegacyState',
 )
 
 
@@ -69,7 +71,7 @@ class Harness { static int Main() {
     var required = new List<string>(expected); required.Sort(StringComparer.Ordinal); discovered.Sort(StringComparer.Ordinal);
     bool exact = required.Count == discovered.Count;
     if (exact) for (int i = 0; i < required.Count; i++) if (required[i] != discovered[i]) exact = false;
-    if (!exact) { Console.WriteLine("FAIL group discovery: expected exactly the four named BattlePlanStats groups"); return 1; }
+    if (!exact) { Console.WriteLine("FAIL group discovery: expected exactly the six named BattlePlanStats groups"); return 1; }
     foreach (string name in expected) {
         try { typeof(CoreChecks).GetMethod(name).Invoke(null, new object[] { data }); Console.WriteLine("PASS " + name); }
         catch (Exception error) { failed++; Console.WriteLine("FAIL " + name + ": " + (error.InnerException ?? error)); }

@@ -213,6 +213,8 @@ namespace Starfall.Tests
         [Test] public void BattlePlanStatsCandidatesMatchAppliedBuildsAndLiveConditions() { CoreChecks.BattlePlanStatsCandidatesMatchAppliedBuildsAndLiveConditions(Data()); }
         [Test] public void BattlePlanStatsReadsPreserveSnapshotsCombatQueuesAndWholeState() { CoreChecks.BattlePlanStatsReadsPreserveSnapshotsCombatQueuesAndWholeState(Data()); }
         [Test] public void BattlePlanStatsInvalidLockedAndLegacyRecordsRemainReadOnly() { CoreChecks.BattlePlanStatsInvalidLockedAndLegacyRecordsRemainReadOnly(Data()); }
+        [Test] public void BattlePlanStatsWeaponContactsMatchNineActualReleases() { CoreChecks.BattlePlanStatsWeaponContactsMatchNineActualReleases(Data()); }
+        [Test] public void BattlePlanStatsWeaponContactQueriesPreserveLiveAndLegacyState() { CoreChecks.BattlePlanStatsWeaponContactQueriesPreserveLiveAndLegacyState(Data()); }
         [Test] public void BattlePlansOwnedThreeSlotCopies(){CoreChecks.BattlePlansCaptureThreeOwnedBuildsAndReturnCopies(Data());}
         [Test] public void BattlePlansAtomicOwnedEquipment(){CoreChecks.BattlePlansApplyOnlySelectedWeaponStanceAndOwnedChoices(Data());}
         [Test] public void BattlePlansOwnershipRevalidation(){CoreChecks.BattlePlansRecheckAllUnlocksBeforeAtomicApply(Data());}

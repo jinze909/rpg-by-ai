@@ -105,10 +105,13 @@ public static class RuntimeWeaponMasteryChecks
         string shown = Label(new Rect(297, 690, 583, 19)).text;
         Check(shown == Summary(app.Game, weapon), "The actual selection-click draw immediately shows the newly inspected weapon's mastery");
         WeaponProfile candidate = app.Game.Profile(weapon, style), current = app.Game.Profile(app.Game.save.weapon, app.Game.Style);
-        string stats = L(app, "伤害 / 间隔 / 耗能：", "Damage / interval / energy: ") + candidate.damage.ToString("0") + " / " + candidate.interval.ToString("0.00") + "s / " + candidate.energy + "\n"
-            + L(app, "当前：", "Equipped: ") + current.damage.ToString("0") + " / " + current.interval.ToString("0.00") + "s / " + current.energy;
+        // Independent original ReleaseAttack contact rule, rather than reading
+        // the new display helper back into its own expected value.
+        string stats = L(app, "首击/每箭 / 间隔 / 耗能：", "Hit/arrow / gap / energy: ") + Contact(weapon, style, candidate.damage).ToString("0.##", CultureInfo.InvariantCulture) + " / " + candidate.interval.ToString("0.00", CultureInfo.InvariantCulture) + "s / " + candidate.energy.ToString("0.##", CultureInfo.InvariantCulture) + "\n"
+            + L(app, "当前：", "Equipped: ") + Contact(app.Game.save.weapon, app.Game.Style, current.damage).ToString("0.##", CultureInfo.InvariantCulture) + " / " + current.interval.ToString("0.00", CultureInfo.InvariantCulture) + "s / " + current.energy.ToString("0.##", CultureInfo.InvariantCulture);
         Check(Label(new Rect(297, 577, 389, 59)).text == stats, "The same actual selection-click draw updates candidate damage/interval/energy while retaining equipped stats");
     }
+    static float Contact(int weapon, int style, float damage) { return damage * (weapon == 1 && style == 2 ? .65f : 1); }
     static void Strip(FrontierRuntime app, int weapon, int points)
     {
         // This assertion intentionally precedes reflection, so old production
@@ -269,6 +272,99 @@ public static class RuntimeWeaponMasteryChecks
         Console.WriteLine("PASS mastery zh/en normal1280 and large960 at 0/18/20/98/100, first-core zero unlock and unowned MAX, unchanged old controls and actual transformed bar-fill witnesses=" + fillWitnesses + "; NATIVE_UNVERIFIED");
     }
 
+
+    static string CombatSnapshot(GameCore g)
+    {
+        string value = JsonUtility.ToJson(g.save) + "|" + g.revision + "|" + JsonUtility.ToJson(g.playerAction)
+            + "|" + g.attackCooldown + "|" + g.skillCooldown + "|" + g.dashCooldown + "|" + g.companionCooldown;
+        foreach (Projectile shot in g.projectiles) value += "|" + JsonUtility.ToJson(shot);
+        return value;
+    }
+    static void EquipForContact(FrontierRuntime app, int weapon, int style)
+    {
+        Prepare(app, 0, 1); var g = app.Game;
+        g.save.flags.Add("core_1"); g.save.flags.Add("weapon_2"); g.save.mastery = new[] { 20, 20, 20 };
+        Check(app.SetVisualReviewPosition(new Point(12, 14)), "Contact evidence starts on legal authored terrain");
+        Select(app, weapon, style); float hp = g.save.health, energy = g.save.energy;
+        Click(app, L(app, "装备此打法", "Equip style"));
+        Check(g.save.weapon == weapon && g.Style == style && g.save.health == hp && g.save.energy == energy,
+            "Original explicit equipment action changes only the selected owned weapon/style, with no heal or energy grant");
+        Draw(app); ComparedInSameDraw(app, weapon, style);
+        Key(app, KeyCode.Escape); g.save.energy = 100; Mouse(app, g.Position + new Point(4, 0));
+        Input.held.Add(KeyCode.J); Update(app); Input.held.Clear();
+        Check(g.playerAction != null && g.playerAction.kind == "attack" && !g.playerAction.released,
+            "Actual J starts the original unreleased attack preparation");
+    }
+    static void ActualOpeningContactsAndUnchangedCapturedAttacks(FrontierRuntime app)
+    {
+        int releases = 0, arrows = 0;
+        for (int weapon = 0; weapon < 3; weapon++) for (int style = 0; style < 3; style++)
+        {
+            EquipForContact(app, weapon, style); var g = app.Game; ActorAction captured = g.playerAction;
+            WeaponProfile profile = g.Profile(weapon, style); float expected = Contact(weapon, style, profile.damage);
+            Check(captured.weapon == weapon && captured.style == style && captured.combo == 0
+                && Math.Abs(captured.damage - profile.damage) < .0001f && Math.Abs(g.save.energy - (100 - profile.energy)) < .0001f,
+                "The first real attack keeps original captured damage, style, combo zero and exact original energy debit");
+            Check(Math.Abs(g.CurrentBattlePlanStats().attackDamage - expected) < .0001f,
+                "The existing equipment-plan first-hit/per-arrow comparison agrees before any attack releases");
+            if (weapon == 1 && style == 2)
+            {
+                Inventory(app); string prepared = CombatSnapshot(g);
+                for (int candidate = 0; candidate < 3; candidate++) for (int stance = 0; stance < 3; stance++)
+                { Select(app, candidate, stance); Draw(app); ComparedInSameDraw(app, candidate, stance); }
+                Check(CombatSnapshot(g) == prepared && ReferenceEquals(captured, g.playerAction),
+                    "All nine candidate inspections preserve the exact prepared action, costs, aim, impact, save and cooldowns");
+                Key(app, KeyCode.Escape);
+            }
+            for (int frame = 0; frame < 50 && !captured.released; frame++) Update(app);
+            Check(captured.released, "Original contact clock actually releases the captured basic attack"); releases++;
+            if (weapon == 0) Check(g.projectiles.Count == 0, "Sword remains melee with no fabricated projectile");
+            else
+            {
+                int count = weapon == 1 && style == 2 ? 3 : 1;
+                Check(g.projectiles.Count == count, "Actual contact emits the original one shot or three Flow arrows");
+                foreach (Projectile shot in g.projectiles)
+                {
+                    Check(shot.friendly && Math.Abs(shot.damage - expected) < .0001f,
+                        "Every actual projectile carries exactly the independently expected displayed first-contact damage"); arrows++;
+                }
+                if (weapon == 1 && style == 2)
+                {
+                    Check(Math.Abs(expected / g.Profile(1, 0).damage - .52f) < .0001f,
+                        "Flow's 0.8 profile times actual 0.65 release equals 52 percent per arrow, not the old advertised 80 percent");
+                    Inventory(app); string flying = CombatSnapshot(g);
+                    foreach (bool english in new[] { false, true }) foreach (bool large in new[] { false, true }) foreach (int width in new[] { 960, 1920 })
+                    {
+                        g.save.english = english; g.save.largeText = large; Screen.width = width; Screen.height = width * 5 / 8; Call(app, "Resize");
+                        string unchanged = CombatSnapshot(g);
+                        for (int candidate = 0; candidate < 3; candidate++) for (int stance = 0; stance < 3; stance++)
+                        {
+                            Select(app, candidate, stance);
+                            string suffix = (english ? "en" : "zh") + (large ? "-large" : "-normal") + width + "-w" + candidate + "s" + stance;
+                            Draw(app, "contacts-" + suffix); ComparedInSameDraw(app, candidate, stance);
+                            Check(Label(new Rect(297, 577, 389, 59)).size == (large ? 14 : 13),
+                                "Comparison retains its original rectangle and normal/large type size");
+                            if (candidate == 1 && stance == 2)
+                                Check(Label(new Rect(297, 642, 583, 41)).text == L(app,
+                                    "三箭散射 · 伤害按每箭、耗能按整次攻击计算。",
+                                    "3-arrow spread · damage per arrow, energy per attack."),
+                                    "Unlocked owned Flow bow explains three separate arrows with damage per arrow and energy per complete attack");
+                            else Check(Label(new Rect(297, 642, 583, 41)).text == g.Profile(candidate, stance).benefit + " · " + g.Profile(candidate, stance).cost,
+                                "Other eight mature weapon/style descriptions remain unchanged");
+                        }
+                        Check(CombatSnapshot(g) == unchanged, "All actual localized selection and draw paths preserve every flying projectile and prepared action field");
+                    }
+                    // Return deliberate test display preferences before checking the
+                    // exact shot/save snapshot captured before the layout matrix.
+                    g.save.english = true; g.save.largeText = false;
+                    Check(CombatSnapshot(g) == flying, "Layout language/scale matrix changes no combat or persisted gameplay data");
+                }
+            }
+        }
+        Check(releases == 9 && arrows == 8, "All nine real first attacks and original eight emitted projectiles were witnessed");
+        Console.WriteLine("PASS comparison actual I nine owned weapon/styles, explicit equipment, original first releases and eight real projectiles, per-arrow plan agreement, prepared/flying read-only and 72 bilingual/scaled layouts; NATIVE_UNVERIFIED");
+    }
+
     public static int Main(string[] args)
     {
         string previous = Application.persistentDataPath, directory = Path.Combine(Path.GetTempPath(), "starfall-weapon-mastery-save-" + Guid.NewGuid());
@@ -278,11 +374,11 @@ public static class RuntimeWeaponMasteryChecks
         {
             Call(app, "Awake"); Check(app.Game != null, "Actual Awake loads the shipped full campaign");
             foreach (Action<FrontierRuntime> test in new Action<FrontierRuntime>[] { ActualInventorySelectionAndEquippedQ, ReadOnlyPauseAndActualLegacySaves,
-                RealRewardsRefreshWithoutExtraReward, BilingualBoundaryLayoutsAndActualFill })
+                RealRewardsRefreshWithoutExtraReward, BilingualBoundaryLayoutsAndActualFill, ActualOpeningContactsAndUnchangedCapturedAttacks })
                 try { test(app); } catch (Exception error) { failed++; Console.WriteLine("FAIL " + test.Method.Name + ": " + (error.InnerException ?? error).Message); }
             app.EndVisualReview(); Call(app, "OnDestroy");
         }
         finally { Application.persistentDataPath = previous; Input.Clear(); GUI.queuedClick = null; if (Directory.Exists(directory)) Directory.Delete(directory, true); }
-        Console.WriteLine("Runtime weapon mastery: " + (4 - failed) + "/4 groups passed; captures=" + captureCount + "; NATIVE_UNVERIFIED"); return failed == 0 ? 0 : 1;
+        Console.WriteLine("Runtime weapon mastery: " + (5 - failed) + "/5 groups passed; captures=" + captureCount + "; NATIVE_UNVERIFIED"); return failed == 0 ? 0 : 1;
     }
 }

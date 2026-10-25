@@ -266,5 +266,113 @@ namespace Starfall.Tests
                     "Malformed/unrecorded or short live arrays return no comparison without silently repairing the saved record");
             }
         }
+
+        public static void BattlePlanStatsWeaponContactsMatchNineActualReleases(Campaign data)
+        {
+            for (int weapon = 0; weapon < 3; weapon++) for (int style = 0; style < 3; style++)
+            {
+                var game = PlanCombatGame(data, weapon); game.mode = "plans"; PlanGear(game, weapon, style, 0, -1, -1);
+                Check(game.SaveBattlePlan(0), "The opening attack comparison is backed by a genuine saved equipment plan");
+                WeaponProfile original = game.Profile(weapon, style);
+                float displayed = game.WeaponContactDamage(weapon, style);
+                PlanStatsNear(displayed, game.CurrentBattlePlanStats().attackDamage, "Weapon card versus current battle-plan opening contact");
+                PlanStatsNear(displayed, game.BattlePlanStatsAt(0).attackDamage, "Weapon card versus stored battle-plan opening contact");
+                PlanStatsNear(original.interval, (weapon == 0 ? .34f : weapon == 1 ? .44f : .62f) * (style == 1 ? 1.3f : style == 2 ? .8f : 1),
+                    "The original weapon/style cadence remains authoritative");
+                PlanStatsNear(original.energy, style == 1 ? 4 : style == 2 ? 3 : 0, "The original style energy price remains authoritative");
+                Enemy target = null;
+                if (weapon == 0) { target = new Enemy(99812 + style, 0, 13.1f, 14, 500) { stun = 99 }; game.enemies.Add(target); }
+                game.Close(); game.save.energy = 100; game.Attack(new Point(1, 0)); ActorAction action = game.playerAction;
+                Check(action != null && !action.released && action.combo == 0 && action.kind == "attack"
+                    && action.weapon == weapon && action.style == style, "Every one of the nine original attacks genuinely prepares before its contact");
+                PlanStatsNear(action.damage, original.damage, "The comparison does not replace or pre-scale captured combat damage");
+                PlanStatsNear(action.duration, original.interval, "The unchanged original duration is captured");
+                PlanStatsNear(action.contact, original.interval * (weapon == 1 ? .55f : .45f), "The unchanged original contact time is captured");
+                PlanStatsNear(game.attackCooldown, original.interval, "An actual attack pays the original cooldown");
+                PlanStatsNear(100 - game.save.energy, original.energy, "An actual attack pays the original energy cost");
+                int frames = 0;
+                while (action.elapsed + .0011f < action.contact && frames++ < 1000) game.Tick(.001f, new Point());
+                Check(!action.released && game.projectiles.Count == 0 && (target == null || target.hp == target.maxHp),
+                    "No damage or missile is released ahead of the original contact boundary");
+                for (int step = 0; step < 4 && !action.released; step++) game.Tick(.001f, new Point());
+                Check(action.released && action.elapsed + .00001f >= action.contact && action.elapsed <= action.contact + .0011f,
+                    "Substep simulation releases the attack at its original contact boundary");
+                if (weapon == 0)
+                {
+                    Check(target.hp < target.maxHp && game.projectiles.Count == 0, "The real sword release hits the actual unarmored nearby enemy");
+                    PlanStatsNear(target.maxHp - target.hp, displayed, "The sword card matches real noncritical opening HP loss");
+                }
+                else
+                {
+                    Check(game.projectiles.Count == (weapon == 1 && style == 2 ? 3 : 1), "The original bow/starfire emission count is unchanged");
+                    foreach (Projectile shot in game.projectiles)
+                    {
+                        PlanStatsNear(shot.damage, displayed, "The card matches each actual released projectile payload");
+                        Check(ReferenceEquals(shot.impact, action.impact) && shot.friendly && shot.explosive == (weapon == 2)
+                            && shot.piercing == (weapon == 1 && style == 1) && shot.slowing == (weapon == 2 && style == 2),
+                            "Damage presentation preserves captured ownership, original piercing, splash and slowing roles");
+                    }
+                }
+                PlanStatsNear(game.Profile(weapon, style).damage, original.damage, "Reading contact damage never modifies the original profile model");
+            }
+        }
+
+        private static void WeaponContactsRead(GameCore game)
+        {
+            for (int weapon = 0; weapon < 3; weapon++) for (int style = 0; style < 3; style++)
+            {
+                float actual = game.WeaponContactDamage(weapon, style), raw = game.Profile(weapon, style).damage;
+                PlanStatsNear(actual, raw * (weapon == 1 && style == 2 ? .65f : 1), "Only Flow bow's displayed per-arrow contact uses its original release fraction");
+            }
+            foreach (int invalid in new[] { -1, 3, int.MinValue, int.MaxValue }) for (int valid = 0; valid < 3; valid++)
+            {
+                Check(game.WeaponContactDamage(invalid, valid) == 0 && game.WeaponContactDamage(valid, invalid) == 0
+                    && game.WeaponContactDamage(invalid, invalid) == 0, "Illegal weapon/style combinations return zero without silently clamping to another weapon");
+            }
+        }
+
+        public static void BattlePlanStatsWeaponContactQueriesPreserveLiveAndLegacyState(Campaign data)
+        {
+            for (int condition = 0; condition < 7; condition++)
+            {
+                var game = PlanCombatGame(data, condition % 3); game.mode = "plans"; PlanGear(game, 1, 2, 0, condition >= 2 ? 1 : -1, condition >= 4 ? 4 : -1);
+                game.save.level = 5; game.save.upgrades = 2; game.save.talents[0] = 2; game.save.mastery = new[] { 20, 80, 100 };
+                game.save.totalTime = 100; game.save.maxHealth = 200; game.save.health = condition == 3 ? 159.99f : 160;
+                game.save.relicRank = condition >= 4 ? 3 : 0; game.save.foodUntil = condition == 1 || condition == 4 ? 101 : 100;
+                if (condition >= 5) { game.save.room = 8; game.save.abyssFloor = 2; game.save.boons[0] = condition == 5 ? 1 : 3; }
+                string before = PlanStatsState(game); SaveData owner = game.save; int[] relics = owner.relics, mastery = owner.mastery;
+                for (int read = 0; read < 8; read++) WeaponContactsRead(game);
+                Check(PlanStatsState(game) == before && ReferenceEquals(game.save, owner) && ReferenceEquals(game.save.relics, relics)
+                    && ReferenceEquals(game.save.mastery, mastery), "Active/expired food, exact Amber boundary, relic forging and Abyss boons are observed without changing any live state");
+            }
+            var pending = PlanCombatGame(data, 1); pending.mode = "plans"; PlanGear(pending, 1, 2, 0, 1, 4); pending.Close();
+            pending.Attack(new Point(1, 0)); ActorAction action = pending.playerAction; ImpactProfile impact = action.impact;
+            string prepared = PlanStatsState(pending);
+            for (int read = 0; read < 12; read++) WeaponContactsRead(pending);
+            Check(PlanStatsState(pending) == prepared && ReferenceEquals(pending.playerAction, action) && ReferenceEquals(action.impact, impact),
+                "Inspecting any alternative contact keeps the prepared bow's exact aim, damage, owner, timing, energy and RNG");
+            for (int frame = 0; frame < 600 && !action.released; frame++) pending.Tick(.001f, new Point());
+            Check(action.released && pending.projectiles.Count == 3, "The original prepared Flow volley still releases after inspection");
+            Projectile first = pending.projectiles[0]; string flying = PlanStatsState(pending);
+            for (int read = 0; read < 12; read++) WeaponContactsRead(pending);
+            Check(PlanStatsState(pending) == flying && ReferenceEquals(pending.projectiles[0], first) && ReferenceEquals(first.impact, impact),
+                "Inspection cannot advance, redirect, reprice or replace an already flying volley");
+            var queued = PlanCombatGame(data, 1); queued.Close(); queued.attackCooldown = .08f; queued.PressAttack(new Point(0, 1));
+            object intent = PlanStatsIntent(queued, "bufferedAttack"); Check(intent != null, "Queue a real unpaid attack before contact inspection");
+            string unpaid = PlanStatsState(queued); WeaponContactsRead(queued);
+            Check(PlanStatsState(queued) == unpaid && ReferenceEquals(intent, PlanStatsIntent(queued, "bufferedAttack")),
+                "A material-free inspection cannot consume, replace or alter an existing input buffer");
+            for (int version = 1; version <= 2; version++)
+            {
+                var old = new GameCore(data, new SaveData { version = version, coins = 91, health = 51, energy = 37,
+                    flags = new System.Collections.Generic.List<string> { "intro", "legacy_weapon_card" } });
+                string migrated = PlanStatsState(old); WeaponContactsRead(old);
+                Check(PlanStatsState(old) == migrated && old.Has("legacy_weapon_card") && !old.Has("weapon_1") && !old.Has("weapon_2"),
+                    "The new contact query leaves v" + version + " migration, paid balances and locked equipment ownership untouched");
+                old.PrepareSave(); var resumed = new GameCore(data, CloneSave(old.save)); string roundtrip = PlanStatsState(resumed);
+                WeaponContactsRead(resumed); Check(PlanStatsState(resumed) == roundtrip && resumed.save.coins == 91 && resumed.Has("legacy_weapon_card"),
+                    "Existing save preparation and reconstruction require no new contact-damage fields");
+            }
+        }
     }
 }
