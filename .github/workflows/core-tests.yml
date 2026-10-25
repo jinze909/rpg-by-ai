@@ -127,6 +127,8 @@ jobs:
         run: python3 tools/run_map_visibility_checks.py
       - name: Check discovered local waypoints, real map inputs, walking and save compatibility
         run: python3 tools/run_landmark_checks.py
+      - name: Check explored gathering pins, real yields, quest return and legacy saves
+        run: python3 tools/run_gathering_landmark_checks.py
       - name: Check interaction-aware routes, exact E targets, live gates and arrival hints
         run: python3 tools/run_interaction_route_checks.py
       - name: Check live interaction hints, actual gathering and growth, safe prompt layout and unchanged inputs

@@ -568,6 +568,11 @@ namespace Starfall.Tests
         [Test] public void RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible() { CoreChecks.RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible(Data()); }
         [Test] public void RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions() { CoreChecks.RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions(Data()); }
 
+        [Test] public void GatheringLandmarksExposeOnlyExploredAvailableCanonicalNodes() { CoreChecks.GatheringLandmarksExposeOnlyExploredAvailableCanonicalNodes(Data()); }
+        [Test] public void GatheringLandmarksPinActualNodesAndReachTheirOwnInteraction() { CoreChecks.GatheringLandmarksPinActualNodesAndReachTheirOwnInteraction(Data()); }
+        [Test] public void GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin() { CoreChecks.GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin(Data()); }
+        [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
     }
 }

@@ -16,13 +16,15 @@ namespace Starfall
         private bool CanManageLandmarkPin
         { get { return mode == "landmarks" && !Dying && !practicing && !InAbyss && save.room != 8; } }
 
+        private static bool GatheringLandmark(WorldObject obj)
+        { return obj != null && (obj.kind == "wood" || obj.kind == "herb" || obj.kind == "ore"); }
+
         private bool LandmarkEligible(int room, WorldObject obj)
         {
             if (room < 0 || room >= data.maps.Length || room == 8 || obj == null ||
                 string.IsNullOrWhiteSpace(obj.id) || obj.id.IndexOf(':') >= 0 ||
                 string.IsNullOrWhiteSpace(obj.kind) ||
                 string.IsNullOrWhiteSpace(obj.name) && string.IsNullOrWhiteSpace(obj.en) ||
-                obj.kind == "wood" || obj.kind == "herb" || obj.kind == "ore" ||
                 !Finite(obj.x) || !Finite(obj.y)) return false;
             MapData map = data.maps[room];
             if (obj.x < 0 || obj.y < 0 || obj.y >= map.rows.Length || obj.x >= map.rows[(int)obj.y].Length) return false;
@@ -36,7 +38,8 @@ namespace Starfall
         {
             if (room < 0 || room >= data.maps.Length || room == 8 || !CanEnter(room) || string.IsNullOrEmpty(id)) return null;
             foreach (WorldObject obj in data.maps[room].objects)
-                if (obj != null && obj.id == id && LandmarkEligible(room, obj) && Explored(room, obj.x, obj.y)) return obj;
+                if (obj != null && obj.id == id && LandmarkEligible(room, obj) && Explored(room, obj.x, obj.y) &&
+                    (!GatheringLandmark(obj) || !Has("node_" + obj.id) && IsObjectPresent(obj))) return obj;
             return null;
         }
 
@@ -45,7 +48,19 @@ namespace Starfall
             var result = new List<WorldObject>();
             if (Dying || practicing || InAbyss || save.room == 8) return result;
             foreach (WorldObject obj in Map.objects)
-                if (LandmarkEligible(save.room, obj) && IsObjectPresent(obj) && Explored(save.room, obj.x, obj.y)) result.Add(obj);
+                if (!GatheringLandmark(obj) && LandmarkEligible(save.room, obj) && IsObjectPresent(obj) && Explored(save.room, obj.x, obj.y)) result.Add(obj);
+            return result;
+        }
+
+        // Keep the places list intact. Gathering is an explicit second view of
+        // already explored, still available nodes, never an exploration reveal.
+        public List<WorldObject> DiscoveredGatheringNodes()
+        {
+            var result = new List<WorldObject>();
+            if (Dying || practicing || SafeTrainingActive || InAbyss || save.room == 8 || !CanEnter(save.room)) return result;
+            foreach (WorldObject obj in Map.objects)
+                if (GatheringLandmark(obj) && LandmarkEligible(save.room, obj) && IsObjectPresent(obj) &&
+                    Explored(save.room, obj.x, obj.y) && !Has("node_" + obj.id)) result.Add(obj);
             return result;
         }
 
@@ -67,6 +82,7 @@ namespace Starfall
         public bool PinLandmark(WorldObject obj)
         {
             if (!CanManageLandmarkPin || !LandmarkEligible(save.room, obj) || !IsObjectPresent(obj) || !Explored(save.room, obj.x, obj.y)) return false;
+            if (GatheringLandmark(obj) && (!CanEnter(save.room) || Has("node_" + obj.id))) return false;
             bool canonical = false;
             foreach (WorldObject candidate in Map.objects) if (ReferenceEquals(candidate, obj)) { canonical = true; break; }
             if (!canonical) return false;
@@ -75,6 +91,21 @@ namespace Starfall
             save.flags.RemoveAll(value => value != null && value.StartsWith(LandmarkPinPrefix, StringComparison.Ordinal));
             save.flags.Add(flag); landmarkPinRoom = save.room; landmarkPinId = obj.id; landmarkPinFlag = flag;
             revision++; sound = "quest"; return true;
+        }
+
+        private void CompleteGatheringLandmarkPin(WorldObject obj)
+        {
+            // Called only after the original yield and depletion flag. Retire
+            // this destination without disturbing a different personal route.
+            if (!GatheringLandmark(obj) || landmarkPinRoom != save.room || landmarkPinId != obj.id ||
+                landmarkPinFlag == null || !save.flags.Contains(landmarkPinFlag) || !Has("node_" + obj.id) ||
+                !LandmarkEligible(save.room, obj)) return;
+            bool canonical = false;
+            foreach (WorldObject candidate in Map.objects) if (ReferenceEquals(candidate, obj)) { canonical = true; break; }
+            if (!canonical) return;
+            string completed = landmarkPinFlag;
+            save.flags.RemoveAll(value => value == completed);
+            landmarkPinRoom = -1; landmarkPinId = landmarkPinFlag = null;
         }
 
         public bool ClearLandmarkPin()

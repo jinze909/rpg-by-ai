@@ -719,6 +719,7 @@ namespace Starfall
                 Flag("node_" + o.id); int item = kind == "herb" ? 2 : kind == "wood" ? 0 : 1;
                 save.inventory[item] += 3; if (kind == "ore") save.inventory[4] += 3;
                 if (kind == "ore") BountyEvent(1, 1);
+                CompleteGatheringLandmarkPin(o);
                 Notify(o.name + " +3" + (kind == "ore" ? "，零件 +3" : ""), o.en + " +3" + (kind == "ore" ? ", parts +3" : "")); sound = "reward"; return;
             }
             if (kind == "shrine")

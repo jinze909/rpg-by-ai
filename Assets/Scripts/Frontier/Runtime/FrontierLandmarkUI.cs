@@ -6,12 +6,14 @@ namespace Starfall
     public sealed partial class FrontierRuntime
     {
         private int selectedLandmark, landmarkPage;
+        private bool gatheringLandmarks;
         private bool CanOpenLandmarks { get { return selectedRegion == Game.save.room && !Game.practicing && !Game.InAbyss && !Game.Dying; } }
 
         private void OpenLandmarks()
         {
             if (Game.mode != "map" || !CanOpenLandmarks) return;
             var places = Game.DiscoveredLandmarks();
+            gatheringLandmarks = false;
             selectedLandmark = Math.Max(0, places.IndexOf(Game.PinnedLandmark));
             landmarkPage = selectedLandmark / 6;
             OpenMenu("landmarks");
@@ -44,17 +46,22 @@ namespace Starfall
         private void DrawLandmarks()
         {
             if (Game.practicing || Game.InAbyss || Game.Dying) { OpenMenu("map"); return; }
-            var places = Game.DiscoveredLandmarks();
+            var places = gatheringLandmarks ? Game.DiscoveredGatheringNodes() : Game.DiscoveredLandmarks();
             int pages = Math.Max(1, (places.Count + 5) / 6);
             landmarkPage = Math.Max(0, Math.Min(pages - 1, landmarkPage));
             selectedLandmark = Math.Max(0, Math.Min(Math.Max(0, places.Count - 1), selectedLandmark));
             WorldObject selected = places.Count == 0 ? null : places[selectedLandmark];
             WorldObject pin = Game.PinnedLandmark;
-            Window(Game.L("本地路标", "Local landmarks"), Game.L("只显示已探索地点 · 自选路线不改变任务追踪", "Explored places only · a waypoint keeps your quest tracked"));
+            Window(Game.L("本地路标", "Local landmarks"), Game.L(Game.Map.name, Game.Map.en) + " · " + places.Count + Game.L(gatheringLandmarks ? " 个已探索采集点 · 保留任务追踪" : " 个已探索地点 · 保留任务追踪", gatheringLandmarks ? " charted gathering nodes · your quest stays tracked" : " charted places · your quest stays tracked"));
             Card(279, 178, 535, 438);
-            Text(299, 190, 495, 26, Game.L(Game.Map.name, Game.Map.en) + "  ·  " + places.Count, 17, paper);
+            if (Button(279, 178, 253, 34, Game.L("地点", "Places"), !gatheringLandmarks) && gatheringLandmarks)
+            { gatheringLandmarks = false; selectedLandmark = landmarkPage = 0; return; }
+            if (Button(548, 178, 266, 34, Game.L("采集", "Gathering"), gatheringLandmarks) && !gatheringLandmarks)
+            { gatheringLandmarks = true; selectedLandmark = landmarkPage = 0; return; }
             if (places.Count == 0)
-                Text(305, 261, 477, 135, Game.L("这一带还没有已探索的地点。回到地区，沿路调查后再查看地图。", "No landmarks charted here yet. Explore the region, then return to the map."), 19, muted);
+                Text(305, 261, 477, 135, gatheringLandmarks
+                    ? Game.L("没有已探索且可采集的资源。探索地区，或到旅店休息更新资源。", "No charted gathering nodes remain. Explore the region, or rest at the inn to renew gathered nodes.")
+                    : Game.L("这一带还没有已探索的地点。回到地区，沿路调查后再查看地图。", "No landmarks charted here yet. Explore the region, then return to the map."), 19, muted);
             for (int row = 0; row < 6 && landmarkPage * 6 + row < places.Count; row++)
             {
                 int index = landmarkPage * 6 + row;
@@ -65,7 +72,11 @@ namespace Starfall
             if (Button(279, 625, 160, 32, Game.L("上一页", "Previous page"), false, landmarkPage > 0)) { landmarkPage--; selectedLandmark = landmarkPage * 6; }
             Text(453, 628, 188, 26, (landmarkPage + 1) + " / " + pages, 15, muted, TextAnchor.MiddleCenter);
             if (Button(654, 625, 160, 32, Game.L("下一页", "Next page"), false, landmarkPage + 1 < pages)) { landmarkPage++; selectedLandmark = landmarkPage * 6; }
-            Text(291, 670, 511, 28, Game.L("采集点不列入，地点随剧情更新。", "Gathering nodes omitted. Places follow the story."), 14, muted);
+            string gatheringHint = selected == null ? Game.L("探索地区后再查看；旅店休息可更新资源。", "Explore first; inn rest renews gathered nodes.")
+                : selected.kind == "wood" ? Game.L("木材 +3 · 旅店休息可更新资源。", "Timber +3 · inn rest renews gathered nodes.")
+                : selected.kind == "herb" ? Game.L("药草 +3 · 旅店休息可更新资源。", "Herbs +3 · inn rest renews gathered nodes.")
+                : Game.L("星晶 +3 / 零件 +3 · 旅店休息可更新资源。", "Crystals +3 / parts +3 · inn rest renews gathered nodes.");
+            Text(291, 670, 511, 28, gatheringLandmarks ? gatheringHint : Game.L("采集点请切换“采集”查看。", "Switch to Gathering for known resource nodes."), 13, gatheringLandmarks ? mint : muted);
 
             Card(838, 178, 379, 534);
             Text(860, 193, 334, 62, selected == null ? Game.L("选择一个地点", "Choose a place") : Game.L(selected.name, selected.en), 22, paper);
