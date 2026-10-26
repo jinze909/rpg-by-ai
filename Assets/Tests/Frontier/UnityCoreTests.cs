@@ -580,6 +580,10 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
+        [Test] public void ProvisionStatusPreservesOriginalTransactionsAndRefreshRules() { CoreChecks.ProvisionStatusPreservesOriginalTransactionsAndRefreshRules(Data()); }
+        [Test] public void ProvisionStatusTracksRealDamageRecoveryClimateAndExpiry() { CoreChecks.ProvisionStatusTracksRealDamageRecoveryClimateAndExpiry(Data()); }
+        [Test] public void ProvisionStatusUsesExistingPausedTrainingAndRestClocks() { CoreChecks.ProvisionStatusUsesExistingPausedTrainingAndRestClocks(Data()); }
+        [Test] public void ProvisionStatusReadsPreserveAcceptedAttacksQueuesAndLegacySaves() { CoreChecks.ProvisionStatusReadsPreserveAcceptedAttacksQueuesAndLegacySaves(Data()); }
     }
 }
 #endif

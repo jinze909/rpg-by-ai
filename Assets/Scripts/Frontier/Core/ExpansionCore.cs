@@ -386,7 +386,7 @@ namespace Starfall
         {
             if (practicing || Dying) return;
             if (save.tea <= 0 || (mode != "world" && mode != "inventory" && mode != "camp")) return;
-            save.tea--; save.heat = save.cold = 0; save.teaUntil = save.totalTime + 180; save.energy = 100; revision++;
+            save.tea--; save.heat = save.cold = 0; save.teaUntil = save.totalTime + TeaDuration; save.energy = 100; revision++;
             Notify("星薄荷凉茶：耐力回满，免疫暑寒并加快耐力回复 180 秒。", "Star-mint tea: full energy, climate immunity and faster energy recovery for 180 seconds.");
             sound = "reward";
         }

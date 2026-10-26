@@ -17,7 +17,7 @@ namespace Starfall
         private float BaseDamageFor(int weapon, int first, int second)
         {
             return (19 + save.upgrades * 4 + (save.level - 1) * 2 + save.talents[0] * 3 + MasteryRank(weapon) * 2 +
-                (first >= 0 || second >= 0 ? save.relicRank * 2 : 0) + (save.foodUntil > save.totalTime ? 7 : 0) +
+                (first >= 0 || second >= 0 ? save.relicRank * 2 : 0) + (save.foodUntil > save.totalTime ? StewAttackBonus : 0) +
                 (RelicInPair(1, first, second) && save.health >= save.maxHealth * .8f ? 6 : 0)) *
                 (InAbyss ? 1 + save.boons[0] * .15f : 1);
         }

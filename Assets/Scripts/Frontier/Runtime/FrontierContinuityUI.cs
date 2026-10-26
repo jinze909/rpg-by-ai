@@ -69,6 +69,7 @@ namespace Starfall
             if (ReturnLetterHudVisible) rects.Add(ReturnLetterHudBounds());
             if (FieldcraftCounterVisible) rects.Add(FieldcraftCounterBounds());
             if (GuardStatusVisible) rects.Add(GuardStatusBounds());
+            if (ProvisionStatusVisible) rects.Add(ProvisionStatusBounds());
             if (CombatLootVisible) rects.Add(CombatLootBounds());
             if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
             if (BossPhaseCueVisible) rects.Add(BossPhaseCueBounds());
@@ -85,6 +86,7 @@ namespace Starfall
                 for (int i = 0; i < regions.Count - worldOverlayRegions.Count; i++)
                     if ((!FieldcraftCounterVisible || !SameFieldcraftCounterRegion(regions[i]))
                         && (!GuardStatusVisible || !SameGuardStatusRegion(regions[i]))
+                        && (!ProvisionStatusVisible || !SameProvisionStatusRegion(regions[i]))
                         && (!CombatLootVisible || !SameCombatLootRegion(regions[i]))
                         && (!SignalRepriseHudVisible || !SameSignalRepriseRegion(regions[i]))
                         && (!ReturnLetterHudVisible || !SameReturnLetterRegion(regions[i]))
@@ -139,7 +141,7 @@ namespace Starfall
         private void DrawHud()
         {
             drawingHud = true;
-            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawSignalRepriseHud(); DrawReturnLetterHud(); DrawCompanionFeedbackHud(); DrawGuardStatusHud(); DrawCombatLootHud(); }
+            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawSignalRepriseHud(); DrawReturnLetterHud(); DrawCompanionFeedbackHud(); DrawGuardStatusHud(); DrawProvisionStatusHud(); DrawCombatLootHud(); }
             finally { drawingHud = false; }
         }
         private void DrawHudThreatWitness()
@@ -203,7 +205,7 @@ namespace Starfall
             if (CombatClimate)
             {
                 Panel(20,103,260,26,new Color(.045f,.08f,.13f,.45f),new Color(mint.r,mint.g,mint.b,.3f));
-                Text(30,107,240,20,Game.save.teaUntil>Game.save.totalTime?Game.L("凉茶保护 · ","Tea ward · ")+(int)(Game.save.teaUntil-Game.save.totalTime)+"s":Game.save.room==6?Game.L("炎热 ","Heat ")+(int)Game.save.heat+"%":Game.L("寒冷 ","Cold ")+(int)Game.save.cold+"%",12,Game.save.heat>75||Game.save.cold>75?gold:mint);
+                Text(30,107,240,20,Game.save.teaUntil>Game.save.totalTime?Game.L("凉茶保护 · ","Tea ward · ")+Math.Ceiling(Game.TeaBoostRemaining).ToString("0",System.Globalization.CultureInfo.InvariantCulture)+"s":Game.save.room==6?Game.L("炎热 ","Heat ")+(int)Game.save.heat+"%":Game.L("寒冷 ","Cold ")+(int)Game.save.cold+"%",12,Game.save.heat>75||Game.save.cold>75?gold:mint);
             }
             DrawRoadMealHud(true);
             DrawCombatFocusControl();

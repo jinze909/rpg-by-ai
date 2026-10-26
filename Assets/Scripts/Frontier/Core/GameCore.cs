@@ -260,7 +260,7 @@ namespace Starfall
             // Resolve changed world collision before any body, missile or contact advances.
             TickTideTransition(); Point beforeMove = Position;
             attackCooldown -= dt; dashCooldown -= dt; skillCooldown -= dt; invulnerable -= dt; guardTime -= dt;
-            save.energy = Clamp(save.energy + dt * ((save.profession == 2 ? 18 : 14) + (InAbyss ? save.boons[1] * 4 : 0) + (save.teaUntil > save.totalTime ? 6 : 0) + (racing ? 8 : 0) - (save.cold > 70 ? 4 : 0) + RoadMealEnergyBonus), 0, 100);
+            save.energy = Clamp(save.energy + dt * ((save.profession == 2 ? 18 : 14) + (InAbyss ? save.boons[1] * 4 : 0) + (save.teaUntil > save.totalTime ? TeaRecoveryBonus : 0) + (racing ? 8 : 0) - (save.cold > 70 ? 4 : 0) + RoadMealEnergyBonus), 0, 100);
             if (movement.Length > 1) movement = movement.Normalized;
             ValidateActionProfile();
             Enemy focusedEnemy = CombatFocusTarget;
@@ -850,7 +850,7 @@ namespace Starfall
             float healthBefore = save.health;
             save.inventory[6]--; save.health = Clamp(save.health + 55, 0, save.maxHealth); save.energy = 100;
             float restored = RecordHealing(healthBefore);
-            save.foodUntil = save.totalTime + 90; revision++; sound = "reward"; Notify("生命 +" + HealingAmount(restored) + "，耐力回满，攻击增强 90 秒。", "+" + HealingAmount(restored) + " health, full energy, stronger attacks for 90 seconds.");
+            save.foodUntil = save.totalTime + StewDuration; revision++; sound = "reward"; Notify("生命 +" + HealingAmount(restored) + "，耐力回满，攻击增强 90 秒。", "+" + HealingAmount(restored) + " health, full energy, stronger attacks for 90 seconds.");
         }
         public void Equip(int weapon)
         { if (weapon >= 0 && weapon <= 2 && (weapon == 0 || Has("weapon_" + weapon))) { CancelAction(); save.weapon = weapon; revision++; } }

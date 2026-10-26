@@ -37,6 +37,8 @@ jobs:
         run: python3 tools/run_companion_follow_checks.py
       - name: Check live guard countdown, actual skill and companion releases, and HUD input safety
         run: python3 tools/run_guard_status_checks.py
+      - name: Check live stew and tea benefits, original supply use, clocks, saves and passive HUD safety
+        run: python3 tools/run_provision_status_checks.py
       - name: Check companion material routes, actual gathering, handoffs and save restoration
         run: python3 tools/run_companion_supply_checks.py
       - name: Check live contract targets, guardian prerequisites, unchanged rewards and save continuity
