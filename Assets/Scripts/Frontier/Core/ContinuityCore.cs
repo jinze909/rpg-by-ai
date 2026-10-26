@@ -78,7 +78,16 @@ namespace Starfall
             Point start = Position; bool wasDashing = dashTime > 0;
             if (explicitAim.HasValue) SetAim(explicitAim.Value);
             else if (movement.Length > .1f && (playerAction == null || PlayerPhase == ActionPhase.Recovery)) SetAim(movement);
-            if (dashTime > 0) { dashTime = Math.Max(0, dashTime - dt); Move(dashDirection * dt * 15); }
+            if (dashTime > 0)
+            {
+                // Only the remaining part of the authored .18s owns travel.
+                // A partial last frame must not add a full frame of distance;
+                // discard float residue so an exact boundary adds no extra tick.
+                float travelTime = Math.Min(dt, dashTime);
+                dashTime = Math.Max(0, dashTime - dt);
+                if (dashTime <= .000001f) dashTime = 0;
+                Move(dashDirection * travelTime * 15);
+            }
             else if (playerHitTime > 0) Move(playerRecoil * dt * recoilSpeed);
             else
             {

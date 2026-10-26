@@ -5,7 +5,7 @@ namespace Starfall.Tests
     {
         public static void FinalMovingDodgeOwnsPoseAndFacing(Campaign data)
         {
-            float[] steps={.01f,.02f,.033f,.05f};int[] expectedFrames={18,10,6,4};
+            float[] steps={.01f,.02f,.033f,.05f};int[] expectedFrames={18,9,6,4};
             for(int rate=0;rate<steps.Length;rate++)foreach(bool heldMovement in new[]{false,true})
             {
                 var g=Quiet(data);g.Tick(.01f,new Point(-1,0));
@@ -16,11 +16,12 @@ namespace Starfall.Tests
                 {
                     float timer=g.dashTime;Point before=g.Position;
                     g.Tick(step,heldMovement?new Point(1,0):new Point(),new Point(-1,0));frames++;
-                    Check(g.dashTime==Math.Max(0,timer-step)&&Math.Abs((g.Position-before).x-step*15)<.0001f,"Each existing dodge step retains its full displacement and timer decrement");
+                    float remaining=Math.Max(0,timer-step);if(remaining<=.000001f)remaining=0;
+                    Check(g.dashTime==remaining&&Math.Abs((g.Position-before).x-Math.Min(timer,step)*15)<.0001f,"Each dodge sample travels only for its remaining authored duration and discards numerical timer residue");
                     Check(g.PlayerPose==8&&(g.VisualFacing-new Point(1,0)).Length<.001f,"Every moving dodge step keeps the dodge pose and direction, including timer expiry at "+step);
                 }
                 float elapsed=frames*step;
-                Check(frames==expectedFrames[rate]&&g.dashTime==0&&Math.Abs((g.Position-start).x-elapsed*15)<.0002f,"Presentation cannot add or shorten a dodge step, including the existing 20 ms float residue");
+                Check(frames==expectedFrames[rate]&&g.dashTime==0&&Math.Abs((g.Position-start).x-.18f*15)<.0002f,"Presentation preserves the full authored dodge distance at every rate without an extra 20 ms residue step");
                 Check(Math.Abs(g.dashCooldown-(.75f-elapsed))<.00001f&&Math.Abs(g.invulnerable-(.32f-elapsed))<.00001f&&Math.Abs(g.save.energy-(80+14*elapsed))<.0001f,"Final-step presentation cannot extend cooldown, protection or change energy regeneration");
                 Check(g.walkDistance==gait&&g.footContacts==contacts&&g.locomotionFacing.x<-.99f,"Dodge displacement creates neither a gait step nor a replacement locomotion direction");
                 Check(!g.ActionTransitionBlocked&&g.playerAction==null,"An expired dodge remains immediately available for the established combat transition");

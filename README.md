@@ -30,6 +30,8 @@
 
 有效的E／手柄B交互优先于同帧尚未起手的战斗输入，避免开口或采集前先消耗一次攻击耐力；已经付费的动作、无目标时的战斗与训练流程保留。交互范围按实际移动后的位置判定，见 [ATTACK-INPUT.md](docs/ATTACK-INPUT.md)。
 
+闪避在开放地面固定移动2.7格，不再因帧率或末帧浮点余量额外滑出一段距离。方向捕获、原碰撞、耐力费用、无敌和冷却规则保留，见 [DODGE-INPUT.md](docs/DODGE-INPUT.md)。
+
 地脉深渊第2、4层新增可选「地脉回声」：清层后可取一次生命补给，或挑战三轮有明确预告的地脉脉冲，获取本层未结算收益。支持取消重试、暂停和断点存档，六层原地图、敌人、Boss与结算不变，见 [ROOT-ECHO.md](docs/ROOT-ECHO.md)。
 
 主角三种装备外观改为完整 256 图格，取消造成肩甲、弓弦和领口割裂的头身矩形拼接；固定脚底、原金发 Viola、22张图集注册及44张遮罩保留。正式路径使用 SpriteRenderer + Animator，并在原世界排序位置合成。运行中主角绘制失败会显示原始错误并停止模拟/保存；A–E 离线门槛含七项故障负向控制，编译检查覆盖隔离的 Player 分支。原生 Frontier 导入/试玩仍为 `NATIVE_UNVERIFIED`；实现与验收边界见 [HERO-ANIMATION-REBUILD.md](docs/HERO-ANIMATION-REBUILD.md)。历史尺寸、握持记录见 [FRAME-CONTINUITY-POLISH.md](docs/FRAME-CONTINUITY-POLISH.md)。

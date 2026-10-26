@@ -580,6 +580,10 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
+        [Test] public void DodgeDistanceUsesAuthoredTravelAcrossRatesAndCapturedHeadings() { CoreChecks.DodgeDistanceUsesAuthoredTravelAcrossRatesAndCapturedHeadings(Data()); }
+        [Test] public void DodgeDistanceKeepsSweptWallsSlidesAndStoryBarriers() { CoreChecks.DodgeDistanceKeepsSweptWallsSlidesAndStoryBarriers(Data()); }
+        [Test] public void DodgeDistanceRetainsFeesProtectionAndSimulationClocks() { CoreChecks.DodgeDistanceRetainsFeesProtectionAndSimulationClocks(Data()); }
+        [Test] public void DodgeDistanceFinalSamplePreservesPresentationQueuesAndLifecycle() { CoreChecks.DodgeDistanceFinalSamplePreservesPresentationQueuesAndLifecycle(Data()); }
         [Test] public void InteractionPriorityRetiresUnstartedPaidRequestsAtTheirReadiness() { CoreChecks.InteractionPriorityRetiresUnstartedPaidRequestsAtTheirReadiness(Data()); }
         [Test] public void InteractionPriorityPreservesPaidContactsAndWorldSimulation() { CoreChecks.InteractionPriorityPreservesPaidContactsAndWorldSimulation(Data()); }
         [Test] public void InteractionPriorityUsesPostMovementTargetAndDoesNotStealRejectedInputs() { CoreChecks.InteractionPriorityUsesPostMovementTargetAndDoesNotStealRejectedInputs(Data()); }
