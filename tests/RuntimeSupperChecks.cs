@@ -91,8 +91,13 @@ public static class RuntimeSupperChecks
                 : offered == "tea" ? game.save.tea < 999 && game.save.inventory[2] >= 2 && game.save.inventory[1] >= 1
                 : offered == "buymeal" ? game.save.inventory[6] < 9999 && game.save.coins >= (game.save.reputation[1] >= 3 ? 15 : 18)
                 : offered == "buywood" ? game.save.inventory[0] <= 9995 && game.save.coins >= (game.save.reputation[1] >= 3 ? 8 : 10)
-                : offered == "seeds" ? game.save.inventory[7] <= 9996 && game.save.coins >= 5 : true;
-            Check(button.enabled == enabled, "Paid service availability matches the actual fixture stock; every story choice stays clickable: " + offered);
+                : offered == "seeds" ? game.save.inventory[7] <= 9996 && game.save.coins >= 5
+                : offered == "plant" ? game.save.plantedAt < 0 && game.save.inventory[7] >= 1
+                : offered == "ally1" ? !game.Has("ally_1") && game.save.inventory[2] >= 6
+                : offered == "ally2" ? !game.Has("ally_2") && game.save.inventory[3] >= 3
+                : offered == "ally3" ? !game.Has("ally_3") && game.save.inventory[4] >= 5
+                : offered == "engine" ? !game.Has("gate_3") && game.save.inventory[4] >= 3 : true;
+            Check(button.enabled == enabled, "Paid services and material handoffs match actual stock; free story choices stay clickable: " + offered);
             Check(GUI.textureCalls.Exists(t => t.rect.x == 88 && t.rect.y == 180 && t.rect.width == 1104 && t.rect.y + t.rect.height >= button.rect.y + button.rect.height),
                 "The actual dialogue card encloses every original and appended choice, including the fourth row");
         }

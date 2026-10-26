@@ -173,7 +173,9 @@ public static class RuntimeSupplyServiceChecks
             string suffix=(english?"en":"zh")+(large?"-large-":"-normal-")+width+"-"+host+"-"+scenario;
             Draw(app,suffix);foreach(Choice choice in conversation.choices)
             {
-                Rect r=Slot(g,choice.action);int i=Array.IndexOf(conversation.choices,choice);string label=(string)Call(g,"SupplyServiceChoiceLabel",choice);string expected=(Get<bool>(app,"controllerUsed")?"":(i+1)+"  ")+label;
+                Rect r=Slot(g,choice.action);int i=Array.IndexOf(conversation.choices,choice);
+                bool handoff=choice.action=="plant"||choice.action=="ally1"||choice.action=="ally2"||choice.action=="ally3"||choice.action=="engine";
+                string label=(string)Call(g,handoff?"DialogueChoiceLabel":"SupplyServiceChoiceLabel",choice);string expected=(Get<bool>(app,"controllerUsed")?"":(i+1)+"  ")+label;
                 Check(Labels().Exists(l=>l.text==expected&&Same(new Rect(l.r[0],l.r[1],l.r[2],l.r[3]),r)),"Every original action keeps localized full visible label, numbering and original control geometry");
                 object quote=Quote(g,choice.action);if(quote!=null){Control(app,choice.action,Available(quote));Check(Get<string>(quote,"action")==choice.action&&Get<int>(quote,"quantity")==Quantity(choice.action),"Visible live paid label remains bound to exact original action and yield");}
             }

@@ -15,6 +15,20 @@ namespace Starfall
         private string InputScope()
         { return Game.mode + (Game.mode == "map" ? QuestMapInputScope : "") + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (Game.mode == "materials" ? "/" + materialItem + "/" + materialPage + "/" + Game.WorldGeneration : "") + (Game.mode == "racecourse" ? "/" + Game.RaceCourseVersion + "/" + Game.RaceCourseCancellationPending : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : "") + (townProjectConfirmation != null ? "/town-project/" + townProjectConfirmation.GetHashCode() : ""); }
         private void BeginControls() { drawnScope = InputScope(); navigation.Scope(drawnScope); drawnControls.Clear(); drawingModal = false; }
+        private int PreferredDialogueChoice()
+        {
+            if (Game.conversation == null) return -1;
+            Choice[] choices = Game.conversation.choices;
+            // A rejected handoff must not make a different purchase the default
+            // Enter/A action. Keep all original rows and deliberate selection.
+            if (choices.Length > 0 && Game.GetTownHandoffQuote(choices[0].action) != null
+                && !Game.DialogueChoiceEnabled(choices[0].action))
+            {
+                int leave = Array.FindIndex(choices, choice => choice.action == "close" && Game.DialogueChoiceEnabled(choice.action));
+                if (leave >= 0) return leave;
+            }
+            return Array.FindIndex(choices, choice => Game.DialogueChoiceEnabled(choice.action));
+        }
         private void EndControls()
         {
             if (drawnScope != InputScope()) { confirmControl = null; navigation.Scope(InputScope()); return; }
@@ -27,7 +41,7 @@ namespace Starfall
             if (first && Game.mode == "dialog" && DialogueChoicesVisible() && Game.conversation.choices.Length > 0)
             {
                 int count = Game.conversation.choices.Length, cols = count > 2 ? 2 : count;
-                int firstChoice = Array.FindIndex(Game.conversation.choices, c => Game.DialogueChoiceEnabled(c.action));
+                int firstChoice = PreferredDialogueChoice();
                 if (firstChoice >= 0)
                 {
                     float w = (832 - (cols - 1) * 14) / Math.Max(1, cols);

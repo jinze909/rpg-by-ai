@@ -107,6 +107,7 @@ namespace Starfall
             if (!AbyssBoonChoiceEnabled(action)) return false;
             if (!ForgeChoiceEnabled(action)) return false;
             if (!SupplyServiceChoiceEnabled(action)) return false;
+            if (!TownHandoffChoiceEnabled(action)) return false;
             if (action == null || !action.StartsWith("supply_batch_", StringComparison.Ordinal)) return true;
             int recipe, quantity;
             return ParseSupplyBatch(action, out recipe, out quantity) && GetSupplyBatchQuote(recipe, quantity).available;

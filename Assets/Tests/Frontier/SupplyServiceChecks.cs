@@ -165,9 +165,12 @@ namespace Starfall.Tests
                 zero.Choose(index); Check(SmithSaveState(zero.save) == before && ReferenceEquals(zero.conversation, conversation) && zero.mode == "dialog",
                     "Empty materials and purse never create supplies, heal or consume a buff: " + action);
             }
-            Check(zero.DialogueChoiceEnabled("close") && zero.DialogueChoiceEnabled("plant") && zero.DialogueChoiceEnabled("drinktea")
+            Check(zero.DialogueChoiceEnabled("close") && !zero.DialogueChoiceEnabled("plant") && zero.DialogueChoiceEnabled("drinktea")
                 && zero.DialogueChoiceEnabled("boon0") == zero.AbyssBoonChoiceEnabled("boon0"),
-                "The new single-service gate preserves unrelated actions and existing Abyss readiness");
+                "Free story choices and existing Abyss readiness remain intact; planting now requires its actual seed");
+            zero.save.inventory[7] = 1;
+            Check(zero.DialogueChoiceEnabled("plant"), "The original plant action becomes available when a real seed is present");
+            zero.save.inventory[7] = 0;
             string emptySave = SmithSaveState(zero.save); zero.Choose(PreparationChoice(zero, "close"));
             Check(zero.mode == "world" && SmithSaveState(zero.save) == emptySave,
                 "The original goodbye still closes a rejected service without any payment or forced purchase");

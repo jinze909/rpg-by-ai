@@ -580,6 +580,10 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
+        [Test] public void TownHandoffQuotesAndLabelsAreLiveImmutableReads() { CoreChecks.TownHandoffQuotesAndLabelsAreLiveImmutableReads(Data()); }
+        [Test] public void TownHandoffRejectsShortStaleMalformedAndRepeatedChoicesInPlace() { CoreChecks.TownHandoffRejectsShortStaleMalformedAndRepeatedChoicesInPlace(Data()); }
+        [Test] public void TownHandoffPreservesAllFiveOriginalPaymentsAndRewards() { CoreChecks.TownHandoffPreservesAllFiveOriginalPaymentsAndRewards(Data()); }
+        [Test] public void TownHandoffLegacySavesRetainTownFollowupsAndUnrelatedChoices() { CoreChecks.TownHandoffLegacySavesRetainTownFollowupsAndUnrelatedChoices(Data()); }
         [Test] public void DodgeDistanceUsesAuthoredTravelAcrossRatesAndCapturedHeadings() { CoreChecks.DodgeDistanceUsesAuthoredTravelAcrossRatesAndCapturedHeadings(Data()); }
         [Test] public void DodgeDistanceKeepsSweptWallsSlidesAndStoryBarriers() { CoreChecks.DodgeDistanceKeepsSweptWallsSlidesAndStoryBarriers(Data()); }
         [Test] public void DodgeDistanceRetainsFeesProtectionAndSimulationClocks() { CoreChecks.DodgeDistanceRetainsFeesProtectionAndSimulationClocks(Data()); }
