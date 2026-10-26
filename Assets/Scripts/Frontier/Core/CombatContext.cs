@@ -19,6 +19,7 @@ namespace Starfall
         public readonly Point center;
         public readonly float damage;
         public readonly ImpactProfile impact;
+        public FrostField next;
         public float age;
         public int pulses;
         public FrostField(Point center,float damage,ImpactProfile impact)
@@ -27,6 +28,7 @@ namespace Starfall
     public sealed partial class GameCore
     {
         private FrostField frost;
+        private int frostGeneration;
         private ImpactProfile CaptureImpact(int weapon,int attackCombo=0,bool playerOwned=true,bool counter=false)
         {
             weapon=(int)Clamp(weapon,0,2);
@@ -34,28 +36,48 @@ namespace Starfall
                 Clamp(.06f+save.talents[0]*.025f+(Relic(5)?.12f:0),0,1),playerOwned,counter);
         }
         private void BeginFrost(Point center,float baseDamage,ImpactProfile impact)
-        {frost=new FrostField(center,baseDamage*FrostDamageMultiplier,impact);}
-        private void ClearFrost(){frost=null;}
+        {
+            // Every accepted release keeps its own fixed center, contact clock
+            // and captured owner. Sen's command must not cancel a paid Q (or
+            // vice versa). Append so simultaneous contacts resolve by cast order.
+            var field=new FrostField(center,baseDamage*FrostDamageMultiplier,impact);
+            if(frost==null){frost=field;return;}
+            FrostField last=frost;while(last.next!=null)last=last.next;
+            last.next=field;
+        }
+        private void ClearFrost(){frost=null;frostGeneration++;}
         private void TickFrost(float dt)
         {
-            FrostField field=frost;if(field==null)return;
-            field.age=Math.Min(FrostField.Duration,field.age+dt);
-            // Schedule five contacts at 0, .8, 1.6, 2.4 and 3.2. Neither
-            // accumulated float residue nor a long final frame creates a sixth.
-            while(field.pulses<FrostField.PulseCount&&field.pulses*FrostField.Interval<=field.age+.00001f)
+            int generation=frostGeneration;
+            FrostField previous=null,field=frost;
+            while(field!=null)
             {
-                field.pulses++;
-                effects.Add(new Effect("frost",field.center,Math.Min(FrostField.Interval,Math.Max(.001f,FrostField.Duration-field.age))){radius=FrostField.Radius});
-                foreach(Enemy e in enemies.ToArray())
+                field.age=Math.Min(FrostField.Duration,field.age+dt);
+                // Each cast schedules five contacts at 0, .8, 1.6, 2.4 and
+                // 3.2. Float residue or a long final frame cannot add a sixth.
+                while(field.pulses<FrostField.PulseCount&&field.pulses*FrostField.Interval<=field.age+.00001f)
                 {
-                    if(frost!=field||Dying||mode!="world")return;
-                    if((e.Position-field.center).Length<FrostField.Radius&&ClearAttackPath(field.center,e.Position))
-                    // A brief pulse refreshes its own control without cutting
-                    // short an earned break or the companion's initial freeze.
-                    {e.stun=Math.Max(e.stun,.45f);Hit(e,field.damage,true,(e.Position-field.center).Normalized,field.impact);}
+                    if(generation!=frostGeneration||Dying||mode!="world")return;
+                    field.pulses++;
+                    effects.Add(new Effect("frost",field.center,Math.Min(FrostField.Interval,Math.Max(.001f,FrostField.Duration-field.age))){radius=FrostField.Radius});
+                    foreach(Enemy e in enemies.ToArray())
+                    {
+                        if(generation!=frostGeneration||Dying||mode!="world")return;
+                        if((e.Position-field.center).Length<FrostField.Radius&&ClearAttackPath(field.center,e.Position))
+                        // Refresh control by maximum remaining time, not by
+                        // adding durations from overlapping fields.
+                        {e.stun=Math.Max(e.stun,.45f);Hit(e,field.damage,true,(e.Position-field.center).Normalized,field.impact);}
+                    }
                 }
+                // A contact can finish a drill and clear the entire chain.
+                // Never revive old casts or carry them into its replacement.
+                if(generation!=frostGeneration||Dying||mode!="world")return;
+                FrostField next=field.next;
+                if(field.age>=FrostField.Duration)
+                {if(previous==null)frost=next;else previous.next=next;}
+                else previous=field;
+                field=next;
             }
-            if(frost==field&&field.age>=FrostField.Duration)ClearFrost();
         }
     }
 }

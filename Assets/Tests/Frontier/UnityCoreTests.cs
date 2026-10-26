@@ -580,6 +580,10 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
+        [Test] public void FrostOverlapRealQAndZRetainBothCompletePaidFields() { CoreChecks.FrostOverlapRealQAndZRetainBothCompletePaidFields(Data()); }
+        [Test] public void FrostOverlapKeepsFixedCentersWallsAndMaximumControl() { CoreChecks.FrostOverlapKeepsFixedCentersWallsAndMaximumControl(Data()); }
+        [Test] public void FrostOverlapRetainsCastOrderOwnershipRewardsAndLessons() { CoreChecks.FrostOverlapRetainsCastOrderOwnershipRewardsAndLessons(Data()); }
+        [Test] public void FrostOverlapBoundariesRetireAllFieldsAndContactEndCannotReviveThem() { CoreChecks.FrostOverlapBoundariesRetireAllFieldsAndContactEndCannotReviveThem(Data()); }
         [Test] public void SwordChainReportsAcceptedStartsIncludingMissesAndRejections() { CoreChecks.SwordChainReportsAcceptedStartsIncludingMissesAndRejections(Data()); }
         [Test] public void SwordChainRetainsAllWeaponCadencesCostsAndContactDamage() { CoreChecks.SwordChainRetainsAllWeaponCadencesCostsAndContactDamage(Data()); }
         [Test] public void SwordChainExpiryPausesAndCommittedContactKeepOriginalClocks() { CoreChecks.SwordChainExpiryPausesAndCommittedContactKeepOriginalClocks(Data()); }
