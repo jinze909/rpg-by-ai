@@ -580,6 +580,10 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
+        [Test] public void InteractionPriorityRetiresUnstartedPaidRequestsAtTheirReadiness() { CoreChecks.InteractionPriorityRetiresUnstartedPaidRequestsAtTheirReadiness(Data()); }
+        [Test] public void InteractionPriorityPreservesPaidContactsAndWorldSimulation() { CoreChecks.InteractionPriorityPreservesPaidContactsAndWorldSimulation(Data()); }
+        [Test] public void InteractionPriorityUsesPostMovementTargetAndDoesNotStealRejectedInputs() { CoreChecks.InteractionPriorityUsesPostMovementTargetAndDoesNotStealRejectedInputs(Data()); }
+        [Test] public void InteractionPriorityRetainsTrainingHitStopAndLegacyOwnership() { CoreChecks.InteractionPriorityRetainsTrainingHitStopAndLegacyOwnership(Data()); }
         [Test] public void FrostOverlapRealQAndZRetainBothCompletePaidFields() { CoreChecks.FrostOverlapRealQAndZRetainBothCompletePaidFields(Data()); }
         [Test] public void FrostOverlapKeepsFixedCentersWallsAndMaximumControl() { CoreChecks.FrostOverlapKeepsFixedCentersWallsAndMaximumControl(Data()); }
         [Test] public void FrostOverlapRetainsCastOrderOwnershipRewardsAndLessons() { CoreChecks.FrostOverlapRetainsCastOrderOwnershipRewardsAndLessons(Data()); }

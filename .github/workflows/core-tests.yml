@@ -27,6 +27,8 @@ jobs:
         run: python3 tools/run_skill_cooldown_buffer_checks.py
       - name: Check tapped basic attacks, held-repeat cadence, captured aim and deliberate input priority
         run: python3 tools/run_attack_buffer_checks.py
+      - name: Check valid interaction priority, unpaid requests, owned contacts, live movement and legacy saves
+        run: python3 tools/run_interaction_priority_checks.py
       - name: Check accepted sword chains, actual finisher release, original timing and passive HUD safety
         run: python3 tools/run_sword_chain_checks.py
       - name: Check companion command notes, real release receipts and safe HUD feedback

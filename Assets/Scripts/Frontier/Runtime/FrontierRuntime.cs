@@ -107,10 +107,15 @@ namespace Starfall
                 Game.ClearBufferedCombatInputs();
                 Game.ClearBufferedCompanionCommand();
             }
-            Game.Tick(Time.unscaledDeltaTime, movement, InputAim()); UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
+            bool requestingInteraction = !openingWorldMenu && Game.mode == "world" && (Input.GetKeyDown(KeyCode.E) || PadDown(1));
+            if (requestingInteraction) Game.TickForInteraction(Time.unscaledDeltaTime, movement, InputAim());
+            else Game.Tick(Time.unscaledDeltaTime, movement, InputAim());
+            UpdatePresentation(Time.unscaledDeltaTime); UpdateMenuInput(Time.unscaledDeltaTime);
             if (Game.mode == "world" && beganInWorld)
             {
-                if (!openingWorldMenu)
+                if (!openingWorldMenu && requestingInteraction && Game.CanPrioritizeInteraction)
+                    Game.Interact();
+                else if (!openingWorldMenu)
                 {
                     Point mouse = MouseVirtual();
                     // Discrete actions take priority over fresh and held attacks.

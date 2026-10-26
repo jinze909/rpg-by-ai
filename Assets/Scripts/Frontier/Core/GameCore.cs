@@ -268,9 +268,13 @@ namespace Starfall
             TickMovement(dt, movement, explicitAim);
             TickAction(dt);
             if (mode != "world" || beganInPractice && !practicing) return;
-            TickBufferedDodge(dt, dodgeReadyDelay);
-            TickBufferedSkill(dt, skillReadyDelay);
-            TickBufferedAttack(dt, attackReadyDelay);
+            if (interactionInputRequested && CanPrioritizeInteraction) ClearInteractionCombatRequests();
+            else
+            {
+                TickBufferedDodge(dt, dodgeReadyDelay);
+                TickBufferedSkill(dt, skillReadyDelay);
+                TickBufferedAttack(dt, attackReadyDelay);
+            }
             UpdateEnemies(dt); if (Dying) return;
             UpdateProjectiles(dt); if (Dying || beganInPractice && !practicing) return;
             TickExpansion(dt);
@@ -283,7 +287,8 @@ namespace Starfall
             TickPolish(dt);
             // Like a fresh Z/RB at the end of Update: dispatch after this frame's
             // simulation, with the original full preparation still to come.
-            TickBufferedCompanionCommand(dt, companionReadyDelay);
+            if (interactionInputRequested && CanPrioritizeInteraction) ClearInteractionCombatRequests();
+            else TickBufferedCompanionCommand(dt, companionReadyDelay);
         }
         public void Attack(Point direction)
         {
