@@ -299,9 +299,9 @@ namespace Starfall
             WeaponProfile profile = Profile(save.weapon, Style);
             if (!Finite(save.energy) || save.energy < profile.energy) { ActionUnavailable(0, profile.energy); return; }
             save.energy -= profile.energy; attackCooldown = profile.interval;
-            combo = comboTimer > 0 ? (combo + 1) % 3 : 0; comboTimer = 1.1f;
+            combo = comboTimer > 0 ? (combo + 1) % 3 : 0; comboTimer = ComboWindow;
             bool counterAttack = riposteTime > 0;
-            float attackDamage = profile.damage * (save.weapon == 0 && combo == 2 ? 1.25f : 1) * (counterAttack ? 1.5f : 1);
+            float attackDamage = profile.damage * (save.weapon == 0 && combo == 2 ? SwordFinisherMultiplier : 1) * (counterAttack ? 1.5f : 1);
             riposteTime = 0; BeginRangeAttempt();
             Point? liveTarget = aimTarget;
             try { aimTarget = target; BeginAction("attack", attackDamage, profile.interval, profile.interval * (save.weapon == 1 ? .55f : .45f), counterAttack); }

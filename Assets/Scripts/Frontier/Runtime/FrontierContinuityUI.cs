@@ -70,6 +70,7 @@ namespace Starfall
             if (FieldcraftCounterVisible) rects.Add(FieldcraftCounterBounds());
             if (GuardStatusVisible) rects.Add(GuardStatusBounds());
             if (ProvisionStatusVisible) rects.Add(ProvisionStatusBounds());
+            if (SwordChainVisible) rects.Add(SwordChainBounds());
             if (CombatLootVisible) rects.Add(CombatLootBounds());
             if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
             if (BossPhaseCueVisible) rects.Add(BossPhaseCueBounds());
@@ -87,6 +88,7 @@ namespace Starfall
                     if ((!FieldcraftCounterVisible || !SameFieldcraftCounterRegion(regions[i]))
                         && (!GuardStatusVisible || !SameGuardStatusRegion(regions[i]))
                         && (!ProvisionStatusVisible || !SameProvisionStatusRegion(regions[i]))
+                        && (!SwordChainVisible || !SameSwordChainRegion(regions[i]))
                         && (!CombatLootVisible || !SameCombatLootRegion(regions[i]))
                         && (!SignalRepriseHudVisible || !SameSignalRepriseRegion(regions[i]))
                         && (!ReturnLetterHudVisible || !SameReturnLetterRegion(regions[i]))
@@ -141,7 +143,7 @@ namespace Starfall
         private void DrawHud()
         {
             drawingHud = true;
-            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawSignalRepriseHud(); DrawReturnLetterHud(); DrawCompanionFeedbackHud(); DrawGuardStatusHud(); DrawProvisionStatusHud(); DrawCombatLootHud(); }
+            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawSignalRepriseHud(); DrawReturnLetterHud(); DrawCompanionFeedbackHud(); DrawGuardStatusHud(); DrawProvisionStatusHud(); DrawSwordChainHud(); DrawCombatLootHud(); }
             finally { drawingHud = false; }
         }
         private void DrawHudThreatWitness()

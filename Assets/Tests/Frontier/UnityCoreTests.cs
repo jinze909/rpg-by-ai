@@ -580,6 +580,10 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
+        [Test] public void SwordChainReportsAcceptedStartsIncludingMissesAndRejections() { CoreChecks.SwordChainReportsAcceptedStartsIncludingMissesAndRejections(Data()); }
+        [Test] public void SwordChainRetainsAllWeaponCadencesCostsAndContactDamage() { CoreChecks.SwordChainRetainsAllWeaponCadencesCostsAndContactDamage(Data()); }
+        [Test] public void SwordChainExpiryPausesAndCommittedContactKeepOriginalClocks() { CoreChecks.SwordChainExpiryPausesAndCommittedContactKeepOriginalClocks(Data()); }
+        [Test] public void SwordChainQueriesPreservePreparedQueuesProjectilesAndLegacyOwners() { CoreChecks.SwordChainQueriesPreservePreparedQueuesProjectilesAndLegacyOwners(Data()); }
         [Test] public void SupplyServiceQuotesExposeLiveCostsAndCanonicalCapacity() { CoreChecks.SupplyServiceQuotesExposeLiveCostsAndCanonicalCapacity(Data()); }
         [Test] public void SupplyServiceTransactionsPreserveRecipesYieldsAndReputationPrices() { CoreChecks.SupplyServiceTransactionsPreserveRecipesYieldsAndReputationPrices(Data()); }
         [Test] public void SupplyServiceChoicesRetainDialogAndRejectChangedStock() { CoreChecks.SupplyServiceChoicesRetainDialogAndRejectChangedStock(Data()); }
