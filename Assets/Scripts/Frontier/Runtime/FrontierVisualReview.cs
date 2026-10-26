@@ -12,6 +12,7 @@ namespace Starfall
         public bool VisualReviewPaused { get; set; }
         public void BeginVisualReview(int profession, int room, bool encounter = false)
         {
+            ClearQuestMapPreview();
             if (Game == null) return;
             if (!VisualReviewActive) { reviewOriginal = Game; reviewCamera = camera; reviewSaveTimer = saveTimer; }
             Game = new GameCore(reviewOriginal.data);
@@ -96,6 +97,7 @@ namespace Starfall
         }
         public void EndVisualReview()
         {
+            ClearQuestMapPreview();
             if (!VisualReviewActive) return;
             ResetCombatTextLayout();
             Game = reviewOriginal; reviewOriginal = null; VisualReviewPaused = false;

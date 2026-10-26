@@ -111,6 +111,8 @@ jobs:
         run: python3 tools/run_return_letter_checks.py
       - name: Check journal pages while preserving all nineteen mature task rows
         run: python3 tools/run_journal_pagination_checks.py
+      - name: Check selected quest map previews, unchanged tracking, actual controls and session safety
+        run: python3 tools/run_quest_map_preview_checks.py
       - name: Check optional Root Echo pulses, real input, unbanked rewards and six-floor preservation
         run: python3 tools/run_root_echo_checks.py
       - name: Check honest Abyss boon choices, banking previews, actual input and legacy builds

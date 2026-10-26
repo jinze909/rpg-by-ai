@@ -36,7 +36,7 @@ namespace Starfall
             if (id < 0 || portraits == null) { Icon(id < 0 ? "journal" : "companion", x + w * .2f, y + h * .25f, w * .6f); return; }
             float size = Math.Min(w, h); id = Math.Max(0, Math.Min(7, id)); GUI.DrawTextureWithTexCoords(new Rect(x + (w - size) / 2, y + h - size, size, size), portraits, new Rect(id % 4 / 4f, id < 4 ? .5f : 0, .25f, .5f));
         }
-        private void OpenMenu(string mode) { ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
+        private void OpenMenu(string mode) { ClearQuestMapPreview(); ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
         private void Dim() { Box(0, 0, Width, Height, new Color(.02f, .035f, .07f, .87f)); }
         private void Bar(float x, float y, float w, float value, Color color, float h = 6)
         { Box(x, y, w, h, PixelArt.C("#0d1c2c")); Box(x, y, w * Mathf.Clamp01(value), h, color); Box(x, y, w * Mathf.Clamp01(value), 1, Color.Lerp(color, paper, .3f)); }
@@ -119,11 +119,14 @@ namespace Starfall
         }
         private void DrawMinimap() { Panel(1008, 24, 248, 191, new Color(.045f, .08f, .13f, .94f), PixelArt.C("#486073")); MiniTerrain(1024, 42, 6); Text(1024, 191, 166, 21, Game.Night ? Game.L("夜晚", "NIGHT") : Game.L("白昼", "DAY"), 11, gold); if (Button(1190, 184, 48, 25, "M")) OpenMenu("map"); }
         private void MiniTerrain(float x0, float y0, float size)
+        { MapTerrain(x0, y0, size, null); }
+        private void MapTerrain(float x0, float y0, float size, QuestGuide preview)
         {
             size=MapCellSize(Game.Map,size);
             for (int y = 0; y < Game.Map.rows.Length; y++) for (int x = 0; x < Game.Map.rows[y].Length; x++) { char t = Game.PresentationTile(x,y); Color c = t == '~' || t == '%' && !Game.LowTide ? PixelArt.C("#315c76") : t == '#' ? PixelArt.C("#566879") : t == '=' ? PixelArt.C("#a09877") : PixelArt.C(Game.Map.color); Box(x0 + x * size, y0 + y * size, size, size, Game.Explored(Game.save.room, x, y) ? c : Color.Lerp(c, ink, .68f)); }
             foreach (var o in Game.Map.objects) if (Game.IsObjectPresent(o) && (o.kind.StartsWith("portal") || Game.Explored(Game.save.room, o.x, o.y))) Box(x0 + o.x * size - 1, y0 + o.y * size - 1, 3, 3, o.kind.StartsWith("portal") ? mint : gold);
-            Point? goal = Game.NavigationTarget(); if (goal.HasValue && Game.save.showGuidance) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, Game.PinnedLandmark != null ? mint : gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
+            Point? goal = preview == null ? Game.NavigationTarget() : QuestMapTargetVisible(preview, Game.save.room) ? (Point?)preview.target : null;
+            if (goal.HasValue && (preview != null || Game.save.showGuidance)) { Box(x0 + goal.Value.x * size - 3, y0 + goal.Value.y * size - 3, 7, 7, preview == null && Game.PinnedLandmark != null ? mint : gold); Box(x0 + goal.Value.x * size - 1, y0 + goal.Value.y * size - 1, 3, 3, ink); } Box(x0 + Game.save.x * size - 2, y0 + Game.save.y * size - 2, 5, 5, paper);
         }
         private static float MapCellSize(MapData map,float originalSize)
         {
@@ -259,7 +262,7 @@ namespace Starfall
             QuestGuide q = Game.GetQuest(GameCore.QuestIds[selectedQuest]); Card(625, 226, 592, 464); Text(650, 244, 541, 27, q.category + (q.complete ? Game.L(" · 已完成", " · COMPLETE") : ""), 12, gold); Text(650, 281, 541, 45, q.title, 26, paper); Text(650, 342, 541, 62, q.description, 17, muted); Text(650, 410, 541, 60, Game.L("下一步：", "Next: ") + q.next, 14, gold);
             float stepSpacing = Math.Min(34, 140f / Math.Max(1, q.steps.Count));
             for (int i = 0; i < q.steps.Count; i++) Text(650, 482 + i * stepSpacing, 542, stepSpacing, (q.steps[i].done ? "✓  " : "○  ") + q.steps[i].text, 15, q.steps[i].done ? mint : paper);
-            Text(650, 622, 540, 22, q.reward, 12, gold); if (Button(650, 647, 258, 31, Game.L("追踪任务", "Track quest"), Game.save.trackedQuest == q.id, !q.locked && !q.complete)) Game.TrackQuest(q.id); if (Button(927, 647, 263, 31, Game.L("查看目标地图", "Show destination"), false, !q.locked)) { selectedRegion = q.room; OpenMenu("map"); }
+            Text(650, 622, 540, 22, q.reward, 12, gold); if (Button(650, 647, 258, 31, Game.L("追踪任务", "Track quest"), Game.save.trackedQuest == q.id, !q.locked && !q.complete)) Game.TrackQuest(q.id); if (Button(927, 647, 263, 31, Game.L("查看目标地图", "Show destination"), false, !q.locked)) OpenQuestDestination(q.id);
             if (questPages > 1)
             {
                 if (Button(650, 699, 258, 26, Game.L("上一页 · ", "Previous · ") + (questPage + 1) + " / " + questPages, false, questPage > 0)) selectedQuest = (questPage - 1) * questsPerPage;
@@ -269,6 +272,8 @@ namespace Starfall
         private void DrawMap()
         {
             Window(Game.L("边境与远岸", "Frontier & distant shores"), Game.L("世界路线与本地地图 · 金色为任务目标，白色为你的位置", "World routes and local terrain · gold: objective · ivory: you"));
+            if (Game.mode != "map") return;
+            QuestGuide preview = MapPreviewQuest;
             if (selectedRegion < 0 || selectedRegion >= Game.data.maps.Length) selectedRegion = Game.save.room;
             if (selectedRegion != lastMapRegion) { mapPage = selectedRegion / 9; lastMapRegion = selectedRegion; }
             int pages = Math.Max(1,(Game.data.maps.Length+8)/9); mapPage = (int)GameCore.Clamp(mapPage,0,pages-1);
@@ -289,7 +294,7 @@ namespace Starfall
             }
             if (Game.save.room == 9 && Button(279,657,555,31,Game.L("查看当前位置：炉火旅店", "Current room: Hearth Inn"),selectedRegion == 9)) selectedRegion = 9;
             Card(866,178,351,510); MapData m = Game.data.maps[selectedRegion]; Text(888,197,306,46,Game.L(m.name,m.en),25,gold);
-            if (selectedRegion == Game.save.room) MiniTerrain(888,264,8.4f);
+            if (selectedRegion == Game.save.room) MapTerrain(888,264,8.4f,preview);
             else
             {
                 float cell=MapCellSize(m,8.4f);
@@ -298,13 +303,18 @@ namespace Starfall
                     char t = Game.MapPresentationTile(selectedRegion,x,y);
                     Box(888+x*cell,264+y*cell,cell,cell,t == '~' ? PixelArt.C("#365f78") : t == '#' ? PixelArt.C("#586d79") : t == '=' ? PixelArt.C("#aaa17e") : PixelArt.C(m.color));
                 }
-                QuestGuide q = Game.CurrentGuide; if (q.room == selectedRegion && !q.complete) Box(888+q.target.x*cell-3,264+q.target.y*cell-3,7,7,gold);
+                QuestGuide q = preview ?? Game.CurrentGuide;
+                if (preview != null ? QuestMapTargetVisible(q,selectedRegion) : q.room == selectedRegion && !q.complete) Box(888+q.target.x*cell-3,264+q.target.y*cell-3,7,7,gold);
             }
-            Text(888,492,306,101,Game.CanEnter(selectedRegion) ? (selectedRegion == GameCore.ArchiveRoom ? Game.GetQuest("archive").next : Game.L(m.subtitle,m.suben)) : Game.RouteHint(selectedRegion,Game.save.english),16,muted);
+            if (preview != null && preview.room == selectedRegion)
+            { Text(888,489,306,48,preview.title,16,paper); Text(888,541,306,66,preview.next,13,gold); }
+            else Text(888,492,306,101,Game.CanEnter(selectedRegion) ? (selectedRegion == GameCore.ArchiveRoom ? Game.GetQuest("archive").next : Game.L(m.subtitle,m.suben)) : Game.RouteHint(selectedRegion,Game.save.english),16,muted);
             if (Button(888,616,306,47,selectedRegion == Game.save.room ? Game.L("返回本地区", "Return to region") : Game.L("快速旅行", "Fast travel"),true,selectedRegion == Game.save.room || Game.CanEnter(selectedRegion) && Game.SafeTravel))
-            { if (selectedRegion == Game.save.room) Game.Close(); else { Game.Enter(selectedRegion); camera = CameraTarget(); } }
+            { ClearQuestMapPreview(); if (selectedRegion == Game.save.room) Game.Close(); else { Game.Enter(selectedRegion); camera = CameraTarget(); } return; }
             if (Button(913,692,304,30,Game.L("本地路标", "Local landmarks"),false,CanOpenLandmarks)) OpenLandmarks();
-            Text(282,690,554,28,Game.SafeTravel ? Game.L("选择地区查看路线与目标。", "Select a region to inspect its route and target.") : Game.L("附近有敌人，快速旅行暂不可用。", "Enemies nearby; fast travel unavailable."),14,muted);
+            if (Game.mode != "map") return;
+            if (preview != null) DrawQuestMapReturn(preview);
+            else Text(282,690,554,28,Game.SafeTravel ? Game.L("选择地区查看路线与目标。", "Select a region to inspect its route and target.") : Game.L("附近有敌人，快速旅行暂不可用。", "Enemies nearby; fast travel unavailable."),14,muted);
         }
         private void DrawDialogue()
         {
