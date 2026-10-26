@@ -85,10 +85,18 @@ public static class RuntimeSupperChecks
         {
             float x = 320 + i % columns * ((832 - (columns - 1) * 14) / columns + 14), y = 539 + i / columns * 45;
             var button = GUI.buttonCalls.Find(b => Math.Abs(b.rect.x - x) < .01f && Math.Abs(b.rect.y - y) < .01f);
-            Check(button != null && button.enabled, "Every original and appended numbered choice is actually clickable");
+            Check(button != null, "Every original and appended numbered choice retains its actual control");
+            string offered = game.conversation.choices[i].action;
+            bool enabled = offered == "cook" ? game.save.inventory[6] < 9999 && game.save.inventory[2] >= 2 && game.save.inventory[3] >= 1
+                : offered == "tea" ? game.save.tea < 999 && game.save.inventory[2] >= 2 && game.save.inventory[1] >= 1
+                : offered == "buymeal" ? game.save.inventory[6] < 9999 && game.save.coins >= (game.save.reputation[1] >= 3 ? 15 : 18)
+                : offered == "buywood" ? game.save.inventory[0] <= 9995 && game.save.coins >= (game.save.reputation[1] >= 3 ? 8 : 10)
+                : offered == "seeds" ? game.save.inventory[7] <= 9996 && game.save.coins >= 5 : true;
+            Check(button.enabled == enabled, "Paid service availability matches the actual fixture stock; every story choice stays clickable: " + offered);
             Check(GUI.textureCalls.Exists(t => t.rect.x == 88 && t.rect.y == 180 && t.rect.width == 1104 && t.rect.y + t.rect.height >= button.rect.y + button.rect.height),
                 "The actual dialogue card encloses every original and appended choice, including the fourth row");
         }
+        Check(game.DialogueChoiceEnabled(action), "The intended mature narrative action remains available: " + action);
         Key(app, (KeyCode)((int)KeyCode.Alpha1 + index));
     }
     static void Prepare(FrontierRuntime app, int room = 0, bool ready = true)

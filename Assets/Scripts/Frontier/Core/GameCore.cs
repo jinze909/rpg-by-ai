@@ -68,7 +68,7 @@ namespace Starfall
             if (save.talents == null || save.talents.Length != 3) save.talents = new int[3];
             if (save.kills == null) save.kills = new int[data.maps.Length];
             if (save.kills.Length != data.maps.Length) Array.Resize(ref save.kills, data.maps.Length);
-            for (int i = 0; i < 8; i++) save.inventory[i] = Math.Max(0, Math.Min(9999, save.inventory[i]));
+            for (int i = 0; i < 8; i++) save.inventory[i] = Math.Max(0, Math.Min(SupplyInventoryLimit, save.inventory[i]));
             for (int i = 0; i < 3; i++) save.talents[i] = Math.Max(0, Math.Min(5, save.talents[i]));
             for (int i = 0; i < save.kills.Length; i++) save.kills[i] = Math.Max(0, Math.Min(99999, save.kills[i]));
             save.stage = (int)Clamp(save.stage, 0, 3); save.room = save.room < 0 || save.room >= data.maps.Length ? 0 : save.room;
@@ -756,6 +756,7 @@ namespace Starfall
             string action = conversation.choices[index].action;
             if (!DialogueChoiceEnabled(action)) { sound = "deny"; return; }
             Close();
+            if (ChooseSupplyService(action)) return;
             if (ChooseWaterGarden(action)) return;
             if (ChooseForgeQuotes(action)) return;
             if (ChooseRiverLesson(action)) return;
@@ -800,7 +801,6 @@ namespace Starfall
                 int harvest = 5 + save.projects[0] * 2 + (save.frontierEnding == 1 ? 2 : 0);
                 save.inventory[2] += harvest; save.inventory[7] += 2; save.plantedAt = -1; save.coins += 8; revision++; sound = "reward"; Notify("收获：月光草 ×" + harvest + "，种子 ×2，硬币 +8。", "Harvest: " + harvest + " Moonherbs, 2 seeds, 8 coins."); return;
             }
-            if (action == "seeds" && Spend(0, 0, 0, 0, 0, 5)) { save.inventory[7] += 3; Notify("种子 ×3", "Seeds ×3"); }
             if (action == "upgrade")
             {
                 if (save.upgrades >= 5) { Notify("装备已经满级。", "Your equipment is fully upgraded."); return; }
@@ -814,9 +814,6 @@ namespace Starfall
                 ForgeQuote quote = GetForgeQuote(w);
                 if (quote.available && Spend(quote.wood, quote.crystals, 0, 0, quote.parts)) { Flag("weapon_" + w); Equip(w); sound = "reward"; Notify("制作成功！背包 I 可以切换武器。", "Crafted! Switch weapons in your inventory, I."); }
             }
-            if (action == "cook" && Spend(0, 0, 2, 1, 0)) { save.inventory[6]++; sound = "reward"; Notify("暖潮炖汤 ×1", "Tide stew ×1"); }
-            if (action == "buymeal" && Spend(0, 0, 0, 0, 0, ShopStewCost)) { save.inventory[6]++; Notify("暖潮炖汤 ×1", "Tide stew ×1"); }
-            if (action == "buywood" && Spend(0, 0, 0, 0, 0, ShopTimberCost)) { save.inventory[0] += 4; Notify("木材 ×4", "Timber ×4"); }
             if (action == "fish") { fishTime = fishCursor = 0; fishHits = fishMisses = 0; mode = "fish"; }
             if (action == "deliver" && save.stage < 3 && Has("core_" + (save.stage + 1)))
             { save.stage++; save.coins += 40; save.inventory[6]++; save.inventory[0] += 3; save.inventory[1] += 2; revision++; sound = "reward"; OnGuildDelivery(save.stage); }

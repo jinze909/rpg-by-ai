@@ -82,7 +82,7 @@ namespace Starfall
             if (save.companion >= 0 && !Has("companion_" + save.companion)) save.companion = -1;
             save.harborPledge = (int)Clamp(save.harborPledge, 0, 3); save.desertChoice = (int)Clamp(save.desertChoice, 0, 2);
             save.mountainChoice = (int)Clamp(save.mountainChoice, 0, 2); save.frontierEnding = (int)Clamp(save.frontierEnding, 0, 3);
-            save.shards = (int)Clamp(save.shards, 0, 99999); save.tea = (int)Clamp(save.tea, 0, 999);
+            save.shards = (int)Clamp(save.shards, 0, 99999); save.tea = (int)Clamp(save.tea, 0, SupplyTeaLimit);
             save.relicRank = (int)Clamp(save.relicRank, 0, 3);
             save.technique = (int)Clamp(save.technique, 0, 1); if (!Has("technique_" + save.profession)) save.technique = 0;
             save.bounty = (int)Clamp(save.bounty, -1, 5); save.bountyProgress = (int)Clamp(save.bountyProgress, 0, save.bounty < 0 ? 0 : BountyTargets[save.bounty]);
@@ -619,7 +619,6 @@ namespace Starfall
                 enemies.Add(CreatePlacedEnemy(++enemyId, 3, new Point(29, 9), CurrentBoss.hp, true)); save.health = save.maxHealth; save.energy = 100; revision++; return true;
             }
             if (action.StartsWith("warm:")) { string id = action.Substring(5); if (save.room == 7 && !Has("warm_" + id) && Spend(2, 0, 0, 0, 0)) Flag("warm_" + id); return true; }
-            if (action == "tea") { if (Spend(0, 1, 2, 0, 0)) { save.tea++; revision++; Notify("星薄荷凉茶 ×1", "Star-mint tea ×1"); } return true; }
             if (action == "drinktea") { DrinkTea(); return true; }
             if (action == "fieldrest")
             {

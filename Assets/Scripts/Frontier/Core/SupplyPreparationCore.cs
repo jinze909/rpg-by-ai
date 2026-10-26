@@ -22,14 +22,14 @@ namespace Starfall
         public int MaximumSupplyBatch(int recipe)
         {
             if (recipe != 0 && recipe != 1) return 0;
-            int stock = recipe == 0 ? save.inventory[6] : save.tea, limit = recipe == 0 ? 9999 : 999;
+            int stock = recipe == 0 ? save.inventory[6] : save.tea, limit = recipe == 0 ? SupplyInventoryLimit : SupplyTeaLimit;
             int capacity = Math.Max(0, limit - Math.Max(0, stock));
             return Math.Min(capacity, Math.Min(Math.Max(0, save.inventory[2]) / 2,
                 Math.Max(0, recipe == 0 ? save.inventory[3] : save.inventory[1])));
         }
         public SupplyBatchQuote GetSupplyBatchQuote(int recipe, int quantity)
         {
-            bool valid = (recipe == 0 || recipe == 1) && quantity > 0 && quantity <= 9999;
+            bool valid = (recipe == 0 || recipe == 1) && quantity > 0 && quantity <= SupplyInventoryLimit;
             int herbs = valid ? quantity * 2 : 0, fish = valid && recipe == 0 ? quantity : 0, crystals = valid && recipe == 1 ? quantity : 0;
             string zh = "", en = ""; WorldObject host = Nearest();
             if (!valid) { zh = "请选择有效的补给与制作数量。"; en = "Choose a valid supply and quantity."; }
@@ -37,7 +37,7 @@ namespace Starfall
             { zh = "现在不能备制补给。"; en = "Cannot prepare supplies right now."; }
             else if (host == null || host.kind != "cook" && (recipe != 1 || host.kind != "campfire"))
             { zh = recipe == 0 ? "在阿茴处制作炖汤。" : "在阿茴或营地处制作凉茶。"; en = recipe == 0 ? "Visit Ari to cook stew." : "Visit Ari or a field camp to brew tea."; }
-            else if ((recipe == 0 ? save.inventory[6] : save.tea) > (recipe == 0 ? 9999 : 999) - quantity)
+            else if ((recipe == 0 ? save.inventory[6] : save.tea) > (recipe == 0 ? SupplyInventoryLimit : SupplyTeaLimit) - quantity)
             { zh = "补给存放空间不足。"; en = "Not enough pantry capacity."; }
             else
             {
@@ -106,6 +106,7 @@ namespace Starfall
         {
             if (!AbyssBoonChoiceEnabled(action)) return false;
             if (!ForgeChoiceEnabled(action)) return false;
+            if (!SupplyServiceChoiceEnabled(action)) return false;
             if (action == null || !action.StartsWith("supply_batch_", StringComparison.Ordinal)) return true;
             int recipe, quantity;
             return ParseSupplyBatch(action, out recipe, out quantity) && GetSupplyBatchQuote(recipe, quantity).available;

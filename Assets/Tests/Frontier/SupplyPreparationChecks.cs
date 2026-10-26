@@ -240,9 +240,12 @@ namespace Starfall.Tests
             stale.Choose(disabled);
             Check(stale.mode == "dialog" && System.Object.ReferenceEquals(stale.conversation, conversation) && PreparationState(stale) == beforeState,
                 "A disabled numeric selection is rejected before closing its real conversation");
-            Check(PreparationEnabled(stale, "close") && PreparationEnabled(stale, "cook")
+            Check(PreparationEnabled(stale, "close") && PreparationEnabled(stale, "fish") && !PreparationEnabled(stale, "cook")
                 && PreparationEnabled(stale, "boon0") == stale.AbyssBoonChoiceEnabled("boon0"),
-                "Combined dialogue availability preserves unrelated mature actions and existing Abyss gates");
+                "Combined availability retains Close and Abyss gates while refusing single stew with no fish");
+            stale.save.inventory[3] = 1;
+            Check(PreparationEnabled(stale, "cook"), "Restoring the original single-stew ingredient re-enables its existing action");
+            stale.save.inventory[3] = 0;
             foreach (string malformed in new[] { "supply_batch_", "supply_batch_0_0", "supply_batch_0_-1", "supply_batch_2_1",
                 "supply_batch_0_2147483648", "supply_batch_0_1_extra", "supply_batch_0_+1" })
             {

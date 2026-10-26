@@ -93,6 +93,8 @@ jobs:
         run: python3 tools/run_kitchen_checks.py
       - name: Check batch supply quotes, actual preparation inputs, exact payment and legacy saves
         run: python3 tools/run_supply_preparation_checks.py
+      - name: Check original paid supply services, honest capacity and costs, retained dialogues and saved products
+        run: python3 tools/run_supply_service_checks.py
       - name: Check earned Hearth supper, real town and inn inputs, serving and persistent choices
         run: python3 tools/run_supper_checks.py
       - name: Check Old Tide's optional river lesson, phased pulls, local routes and legacy saves
