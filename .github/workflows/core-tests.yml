@@ -111,6 +111,8 @@ jobs:
         run: python3 tools/run_river_lesson_checks.py
       - name: Check repaired-well follow-up, real water handoffs, town routes and legacy saves
         run: python3 tools/run_water_garden_checks.py
+      - name: Check real first harvest, safe soup handoffs, exact town rewards and legacy saves
+        run: python3 tools/run_first_harvest_checks.py
       - name: Check Tide Archive with production interactions, maps and saves
         run: python3 tools/run_archive_checks.py
       - name: Check earned first reply, real light handoff, permanent receipt and legacy saves

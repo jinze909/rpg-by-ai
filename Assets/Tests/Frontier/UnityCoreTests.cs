@@ -518,6 +518,10 @@ namespace Starfall.Tests
         [Test] public void RiverLessonAppendsQuietGuidanceAndKeepsReachTopology() { CoreChecks.RiverLessonAppendsQuietGuidanceAndKeepsReachTopology(Data()); }
         [Test] public void RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch() { CoreChecks.RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch(Data()); }
 
+        [Test] public void FirstHarvestRequiresSavedTownPrerequisitesAndPhysicalHandoffs() { CoreChecks.FirstHarvestRequiresSavedTownPrerequisitesAndPhysicalHandoffs(Data()); }
+        [Test] public void FirstHarvestUsesRealCropAndPreservesTownYields() { CoreChecks.FirstHarvestUsesRealCropAndPreservesTownYields(Data()); }
+        [Test] public void FirstHarvestPaysExactRouteAndRejectsStaleOrFullRewards() { CoreChecks.FirstHarvestPaysExactRouteAndRejectsStaleOrFullRewards(Data()); }
+        [Test] public void FirstHarvestRestoresEachPhaseAndKeepsGuidanceReadOnly() { CoreChecks.FirstHarvestRestoresEachPhaseAndKeepsGuidanceReadOnly(Data()); }
         [Test] public void WaterGardenOrderedPhysicalHandoffs() { CoreChecks.WaterGardenOrderedPhysicalHandoffs(Data()); }
         [Test] public void WaterGardenRejectsInvalidAndStaleActions() { CoreChecks.WaterGardenRejectsInvalidAndStaleActions(Data()); }
         [Test] public void WaterGardenRewardsAndOldSaves() { CoreChecks.WaterGardenRewardsAndOldSaves(Data()); }

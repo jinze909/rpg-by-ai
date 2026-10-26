@@ -236,8 +236,8 @@ namespace Starfall.Tests
         public static void WaterGardenPreservesTownAndNavigation(Campaign data)
         {
             var g = WaterGardenGame(data); int oldQuests = Array.IndexOf(GameCore.QuestIds, "riverlesson");
-            Check(Array.IndexOf(GameCore.QuestIds, "watergarden") == GameCore.QuestIds.Length - 1 && oldQuests >= 0,
-                "Water-garden appends a new journal row without removing or moving the latest mature story");
+            Check(Array.IndexOf(GameCore.QuestIds, "watergarden") == 21 && oldQuests == 20,
+                "The water-garden and river-lesson journal identities keep their original indices as later stories append");
             WaterGardenGuide(g, "smith"); WaterGardenAccept(g); WaterGardenGuide(g, "watergarden_draw");
             WaterGardenStand(g, "routes"); g.Interact(); Check(g.mode == "map", "The original center-town wayfinder remains the actual E target while the nearby pump is active");
             WaterGardenDraw(g); WaterGardenGuide(g, "watergarden_bed");
