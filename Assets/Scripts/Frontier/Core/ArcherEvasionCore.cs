@@ -4,9 +4,18 @@ namespace Starfall
 {
     public sealed partial class GameCore
     {
-        private Point ArcherRetreat(Point origin, Point towardPlayer, float dt)
+        private Point ArcherRetreat(Point origin, Point towardPlayer, float dt, Point fallbackFacing)
         {
             Point direction = towardPlayer.Normalized;
+            if (direction.x == 0 && direction.y == 0)
+            {
+                // Actors can share legal feet while a shot/release holds the
+                // archer still. Keep a real tiny separation's away direction;
+                // only exact coincidence needs its last facing as a fallback.
+                float length = towardPlayer.Length;
+                direction = length > 0 ? new Point(towardPlayer.x / length, towardPlayer.y / length) : fallbackFacing.Normalized;
+                if (!Finite(direction.x) || !Finite(direction.y) || direction.Length < .0001f) direction = new Point(1, 0);
+            }
             Point away = direction * -1;
             float budget = dt * 1.6f;
             Point requested = direction * -dt * 1.6f;

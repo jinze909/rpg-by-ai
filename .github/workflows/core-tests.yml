@@ -81,6 +81,8 @@ jobs:
         run: python3 tools/run_heavy_guard_checks.py
       - name: Check archer wall escapes, committed arrows, terrain and save continuity
         run: python3 tools/run_archer_evasion_checks.py
+      - name: Check real shared-foot archer escape, captured shots, swept terrain and legacy saves
+        run: python3 tools/run_archer_overlap_checks.py
       - name: Check bounded enemy pursuit detours, original attacks and transient awareness
         run: python3 tools/run_enemy_pursuit_checks.py
       - name: Check natural enemy returns, retained damage, committed attacks and saved positions

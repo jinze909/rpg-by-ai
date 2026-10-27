@@ -11,3 +11,11 @@
 `tools/run_archer_evasion_core_checks.py` 检查实际地图的贴墙脱困、角落拒绝、原直线后撤与攻击承诺、生命周期和旧存档。`tools/run_archer_evasion_checks.py` 通过生产 Update／OnGUI 检查移动、攻击、动画选帧与 SaveStore 接线。
 
 原生 Editor、PlayMode、GPU、手柄与玩家手感验收仍为 **NATIVE_UNVERIFIED**；离线检查和 Unity DLL 编译不能替代原生试玩。
+
+## 完全贴身与极小间距
+
+玩家可能在射手拉弓或释放期间走到同一落脚点。回到原本可后撤的空闲阶段后，射手会沿当前朝向向后尝试；如果还有非零间距，即使小于通用方向向量的静止阈值，也优先沿玩家的真实反方向退让。墙边仍走原来的扫掠与侧移候选，只有安全落脚才移动。
+
+普通间距的后撤、共享方向向量阈值、每帧1.6×dt预算、攻击承诺、预告、箭速、伤害、受击与控制暂停、Boss及基础练习／试装靶排除保持。没有新增存档字段；旧档中与玩家重合的射手在恢复后的空闲帧也能继续后撤。
+
+`tools/run_archer_overlap_core_checks.py` 与 `tools/run_archer_overlap_checks.py` 覆盖真实移动造成的重合、极小非零间距、镜像地形、实际后撤步态、已起手射击、暂停／受控边界与v1/v2存档。离线逻辑、选帧和DLL编译不构成Unity原生试玩，仍为 **NATIVE_UNVERIFIED**。

@@ -101,6 +101,10 @@ namespace Starfall.Tests
                 Assert.AreEqual(enemy.x, restored.x); Assert.AreEqual(enemy.y, restored.y); Assert.AreEqual(restoredTimer, restored.timer);
             }
         }
+        [Test] public void ArcherOverlapMovementEscapeHandlesExactAndTinySeparation() { CoreChecks.ArcherOverlapMovementEscapeHandlesExactAndTinySeparation(Data()); }
+        [Test] public void ArcherOverlapTerrainSweepKeepsDeterministicFacingAndGait() { CoreChecks.ArcherOverlapTerrainSweepKeepsDeterministicFacingAndGait(Data()); }
+        [Test] public void ArcherOverlapPreservesCommittedAttacksAndExistingExclusions() { CoreChecks.ArcherOverlapPreservesCommittedAttacksAndExistingExclusions(Data()); }
+        [Test] public void ArcherOverlapRestoreUsesExistingEnemySnapshotsAndSchema() { CoreChecks.ArcherOverlapRestoreUsesExistingEnemySnapshotsAndSchema(Data()); }
         [Test] public void ArcherEvasionEscapesMirroredWallsAndRejectsClosingCornerSlides(){CoreChecks.ArcherEvasionEscapesMirroredWallsAndRejectsClosingCornerSlides(Data());}
         [Test] public void ArcherEvasionPreservesStraightRetreatAndExistingPerception(){CoreChecks.ArcherEvasionPreservesStraightRetreatAndExistingPerception(Data());}
         [Test] public void ArcherEvasionKeepsCommittedShotsAndTrainingExclusions(){CoreChecks.ArcherEvasionKeepsCommittedShotsAndTrainingExclusions(Data());}
