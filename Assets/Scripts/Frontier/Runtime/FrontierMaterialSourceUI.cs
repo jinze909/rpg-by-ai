@@ -77,7 +77,7 @@ namespace Starfall
                 Text(860, 346, 334, 24, selected.method, 15, mint);
                 Text(860, 377, 334, 100, selected.detail, 14, paper);
                 string hint = selected.room != Game.save.room
-                    ? Game.L("查看地区地图，沿原有路线前往。到达后可设本地路标；任务追踪保留。", "View its region map and use existing travel routes. Set a local waypoint after arriving; your quest stays tracked.")
+                    ? Game.L("在地区地图查看来源，也可确认前往并设路标；任务追踪保留。", "Preview this source on its region map, or confirm travel and a waypoint. Your quest stays tracked.")
                     : selected.depleted ? Game.L("这一处已采完。到旅店休息后，再回来查看。", "This node is gathered. Rest at the inn, then check again.")
                     : LandmarkArrivalHint(selected.target, ReferenceEquals(Game.Nearest(), selected.target) || Game.InteractionPath(selected.target).Count > 0);
                 Text(860, 487, 334, 72, hint, 13, muted);
@@ -87,7 +87,7 @@ namespace Starfall
             if (Button(866, 572, 351, 38, pinned ? Game.L("当前路标", "Current waypoint") : Game.L("设为路标", "Set waypoint"), pinned, selected != null && Game.CanPinMaterialSource(selected)))
                 Game.PinMaterialSource(selected);
             if (Button(866, 622, 351, 36, Game.L("查看地区地图", "Show region map"), false, selected != null))
-            { selectedRegion = selected.room; OpenMenu("map"); }
+            { OpenMaterialDestination(selected); }
             if (Button(866, 670, 351, 28, Game.L("返回背包", "Back to inventory"))) OpenMenu("inventory");
         }
     }

@@ -574,6 +574,10 @@ namespace Starfall.Tests
         [Test] public void RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible() { CoreChecks.RelicTrailQueriesRemainFreshReadOnlyAndLegacyCompatible(Data()); }
         [Test] public void RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions() { CoreChecks.RelicTrailTrackingOnlyOpensExistingSourcePagesWithoutTransactions(Data()); }
 
+        [Test] public void MaterialRoutePreviewsRemainPureAndRefreshCanonicalDescriptions() { CoreChecks.MaterialRoutePreviewsRemainPureAndRefreshCanonicalDescriptions(Data()); }
+        [Test] public void MaterialRouteConfirmationUsesOriginalTravelAndInteractionPayments() { CoreChecks.MaterialRouteConfirmationUsesOriginalTravelAndInteractionPayments(Data()); }
+        [Test] public void MaterialRouteRejectsStaleForeignUnsafeAndUnavailableChoices() { CoreChecks.MaterialRouteRejectsStaleForeignUnsafeAndUnavailableChoices(Data()); }
+        [Test] public void MaterialRoutePreservesPreparedActionsSnapshotsAndLegacyPins() { CoreChecks.MaterialRoutePreservesPreparedActionsSnapshotsAndLegacyPins(Data()); }
         [Test] public void MaterialSourcesExposeOnlyEarnedCanonicalMethodsAndLiveQuotes() { CoreChecks.MaterialSourcesExposeOnlyEarnedCanonicalMethodsAndLiveQuotes(Data()); }
         [Test] public void MaterialSourcesPinsUseRealInteractionsAndPreserveOriginalYields() { CoreChecks.MaterialSourcesPinsUseRealInteractionsAndPreserveOriginalYields(Data()); }
         [Test] public void MaterialSourcesRejectRemoteStaleDefeatedAndForeignPinIntents() { CoreChecks.MaterialSourcesRejectRemoteStaleDefeatedAndForeignPinIntents(Data()); }
