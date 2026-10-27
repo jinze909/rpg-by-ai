@@ -72,7 +72,7 @@ namespace Starfall
         private void Update()
         {
             if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
-            ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
+            ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
             clock += Time.unscaledDeltaTime; Resize();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);
             moving = movement.Length > .1f;
@@ -205,7 +205,7 @@ namespace Starfall
             if (bootError != null || Game == null) { GUI.Label(new Rect(30, 30, 1100, 500), bootError ?? "Loading Starfall Frontier…"); return; }
             // Update handles keyboard navigation; IMGUI must not activate a second focused button.
             if (Event.current.type == EventType.KeyDown || Event.current.type == EventType.KeyUp) Event.current.Use();
-            ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation(); BeginControls();
+            ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation(); BeginControls();
             if (textStyle == null)
             {
                 // Fresh styles cannot inherit the editor skin's high-DPI

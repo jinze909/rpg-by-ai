@@ -55,7 +55,9 @@ public static class RuntimeJournalPaginationChecks
         Check(g.mode=="journal","Actual world Tab opens the mature journal");
     }
     private static Rect Row(int cell) { float spacing=464f/18;return new Rect(279,226+cell*spacing-(cell==18?3:0),321,spacing-7); }
-    private static List<GUI.ButtonCall> Rows() { return GUI.buttonCalls.FindAll(b=>Near(b.rect.x,279)&&Near(b.rect.width,321)); }
+    // The tracked-task toolbar shares the list width; count only the original
+    // task-list area while retaining every exact row/order/page assertion.
+    private static List<GUI.ButtonCall> Rows() { return GUI.buttonCalls.FindAll(b=>Near(b.rect.x,279)&&Near(b.rect.width,321)&&b.rect.y>=226&&b.rect.y<=690); }
     private static int SecondPageRowCount() { return Math.Min(19,GameCore.QuestIds.Length-19); }
     private static bool HasText(string text) { return GUI.commands.Exists(c=>c.Contains("\"text\":"+GUI.S(text))); }
     private static void MatureRowsAndLocalizedPages(FrontierRuntime app)

@@ -591,6 +591,11 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin() { CoreChecks.GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin(Data()); }
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
+        [Test] public void QuestJournalRowsRetainCanonicalOrderAndFilterSemantics() { CoreChecks.QuestJournalRowsRetainCanonicalOrderAndFilterSemantics(Data()); }
+        [Test] public void QuestJournalRefreshesAfterOriginalStoryTransitions() { CoreChecks.QuestJournalRefreshesAfterOriginalStoryTransitions(Data()); }
+        [Test] public void QuestJournalQueriesPreserveCombatTrackingPinsAndSimulation() { CoreChecks.QuestJournalQueriesPreserveCombatTrackingPinsAndSimulation(Data()); }
+        [Test] public void QuestJournalReconstructsLegacyStatusesWithoutNewSaveState() { CoreChecks.QuestJournalReconstructsLegacyStatusesWithoutNewSaveState(Data()); }
+
         [Test] public void SixFloorExpeditionAndBanking() { CoreChecks.AbyssExpeditions(Data()); }
         [Test] public void TownHandoffQuotesAndLabelsAreLiveImmutableReads() { CoreChecks.TownHandoffQuotesAndLabelsAreLiveImmutableReads(Data()); }
         [Test] public void TownHandoffRejectsShortStaleMalformedAndRepeatedChoicesInPlace() { CoreChecks.TownHandoffRejectsShortStaleMalformedAndRepeatedChoicesInPlace(Data()); }
