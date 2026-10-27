@@ -94,7 +94,10 @@ public static class RuntimeSignalWardenChecks
         for (int page = 0; page < pages; page++)
         {
             Draw(app); int count = Math.Min(pageSize, GameCore.QuestIds.Length - page * pageSize);
-            Check(GUI.buttonCalls.FindAll(b => b.rect.x == 279 && b.rect.width == 321).Count == count, "Each visible page draws exactly its actual quest count");
+            // The tracked-task toolbar shares the list width. Count only
+            // task-list controls; all exact row and story assertions remain.
+            var questRows = GUI.buttonCalls.FindAll(b => b.rect.x == 279 && b.rect.width == 321 && b.rect.y >= 226 && b.rect.y < 710);
+            Check(questRows.Count == count, "Each visible page draws exactly its actual quest count");
             for (int cell = 0; cell < count; cell++)
             {
                 int i = page * pageSize + cell; float y = 226 + cell * spacing - (cell == 18 ? 3 : 0);
