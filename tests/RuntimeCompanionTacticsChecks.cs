@@ -234,6 +234,54 @@ public static class RuntimeCompanionTacticsChecks
         Check(g.Has("companion_tactics_mature_story") && !g.Has("companion_2"),"Existing story state and locked recruitment stay unchanged through navigation");
         Console.WriteLine("PASS original C/invite/story/travel-alone geometry, new command/back rows retain 18px Chinese ink, read-only locked preview/tabs, Escape/B parent and LB/RB navigation; NATIVE_UNVERIFIED");
     }
+    private static string SupportState(GameCore g)
+    {
+        return Progress(g)+"/"+g.mode+"/"+g.revision+"/"+JsonUtility.ToJson(g.companionAction)+"/"+JsonUtility.ToJson(Receipt(g))+"/"+Feedback(g)
+            +"/"+g.companionPosition.x+"/"+g.companionPosition.y+"/"+g.companionAim.x+"/"+g.companionAim.y
+            +"/"+g.companionMoving+"/"+g.companionMoveTime+"/"+Get<float>(g,"companionAttack");
+    }
+    private static void CurrentInvitePreservesSupport(FrontierRuntime app)
+    {
+        for(int id=0;id<3;id++)for(int confirm=0;confirm<3;confirm++)
+        {
+            Prepare(app,id);Command(app,0);Frames(app,4);Key(app,KeyCode.C);var g=app.Game;ActorAction command=g.companionAction;
+            Check(command!=null&&!command.released,"A real command is paused before contact");
+            for(int phase=0;phase<2;phase++)
+            {
+                string before=SupportState(g);object receipt=Receipt(g);Rect invite=new Rect(296+318*id,536,268,34);
+                if(confirm==0)Click(app,invite);
+                else
+                {
+                    Draw(app);string control=(296+318*id)+":536:268:34";var navigation=Get<MenuNavigation>(app,"navigation");navigation.Select(control);
+                    Check(navigation.CanActivate(control)&&navigation.focused==control,"Actual current-companion invite owns keyboard/controller focus");
+                    Key(app,confirm==1?KeyCode.Return:KeyCode.JoystickButton0);
+                    Draw(app);
+                    Check(Get<string>(app,"pressedControl")==control,"The real invite consumes the keyboard/controller confirmation");
+                }
+                Check(SupportState(g)==before&&ReferenceEquals(command,g.companionAction)&&ReferenceEquals(receipt,Receipt(g)),
+                    "Mouse, Enter and pad A re-invites preserve accepted/released support, receipt, clocks, foot position and automatic readiness");
+                if(phase==0)
+                {
+                    Key(app,KeyCode.Escape);for(int frame=0;frame<20&&!command.released;frame++)Update(app);
+                    Check(command.released&&Receipt(g)!=null&&Field<int>(Receipt(g),"id")==id,
+                        "The original command resumes and releases once for its original companion");
+                    Key(app,KeyCode.C);
+                }
+            }
+        }
+        for(int id=0;id<3;id++)foreach(bool alone in new[]{false,true})
+        {
+            Prepare(app,id);Command(app,0);Key(app,KeyCode.C);var g=app.Game;ActorAction old=g.companionAction;
+            float cooldown=g.companionCooldown,energy=g.save.energy,health=g.save.health;
+            int next=(id+1)%3;Click(app,alone?new Rect(279,652,938,38):new Rect(296+318*next,536,268,34));
+            Check(g.save.companion==(alone?-1:next)&&g.companionAction==null&&Receipt(g)==null&&Feedback(g)==0,
+                "Actual companion changes and travel alone still clear old command and feedback");
+            Check(g.companionCooldown==cooldown&&g.save.energy==energy&&g.save.health==health,
+                "Real selection changes preserve the consumed cooldown without refunds or healing");
+            Key(app,KeyCode.Escape);Frames(app,15);
+            Check(!old.released&&Receipt(g)==null,"A genuinely canceled companion command cannot release after leaving the menu");
+        }
+    }
     private static void PauseAndSessionBoundaries(FrontierRuntime app)
     {
         Prepare(app); var g=app.Game; Release(app); float left=Feedback(g); Key(app,KeyCode.C); left=Feedback(g); float cooldown=g.companionCooldown; float world=g.save.totalTime;
@@ -257,7 +305,14 @@ public static class RuntimeCompanionTacticsChecks
             Check(!(bool)typeof(FrontierRuntime).GetProperty("CompanionFeedbackVisible",Private).GetValue(app,null),"No stale world ribbon crosses actual "+boundary+" boundary");
         }
         Prepare(app,1); Command(app,0); Frames(app,4); Key(app,KeyCode.C); Frames(app,30); Check(Receipt(app.Game)==null,"Pausing a .08s preparation invents no early receipt");
+        ActorAction pending=app.Game.companionAction;float elapsed=pending.elapsed,cooldownBefore=app.Game.companionCooldown;
+        Point feetBefore=app.Game.companionPosition;int revisionBefore=app.Game.revision;
+        Click(app,new Rect(614,536,268,34));
+        Check(ReferenceEquals(pending,app.Game.companionAction)&&pending.elapsed==elapsed&&app.Game.companionCooldown==cooldownBefore
+            &&app.Game.companionPosition.x==feetBefore.x&&app.Game.companionPosition.y==feetBefore.y&&app.Game.revision==revisionBefore,
+            "Re-inviting the current companion must preserve its accepted command, paid cooldown and planted feet");
         Key(app,KeyCode.Escape); Frames(app,6); Check(Receipt(app.Game)!=null,"The same unchanged preparation releases at its resumed real contact");
+        CurrentInvitePreservesSupport(app);
         Console.WriteLine("PASS notes/application pause freeze contact and receipt clocks, real travel/checksummed load/death/basic-practice/companion change clear transient state, no SaveData expansion; NATIVE_UNVERIFIED");
     }
     private static Rect Ribbon(bool combat) { return combat?new Rect(430,690,420,32):new Rect(342,653,596,33); }

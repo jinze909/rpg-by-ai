@@ -149,6 +149,14 @@ public static class RuntimeCompanionFocusChecks
         // The ordinary menu owns the original one-second readiness clock.
         // Never manufacture readiness by writing its private countdown here.
         Key(app,KeyCode.C);Check(app.Game.mode=="companions","Actual C opens the companion menu");
+        // A fresh invitation starts from no active companion; reconfirming the
+        // current companion deliberately preserves its existing readiness now.
+        if(app.Game.save.companion==companion)
+        {
+            Rect alone=new Rect(279,652,938,38);Draw(app);
+            Check(GUI.buttonCalls.Exists(b=>b.rect.x==alone.x&&b.rect.y==alone.y&&b.enabled),"Original travel-alone control starts a genuine fresh invitation");
+            GUI.queuedClick=alone;Draw(app);Check(!GUI.queuedClick.HasValue&&app.Game.save.companion==-1,"Actual travel-alone selection clears the previous companion");
+        }
         Rect invite=new Rect(296+companion*318,536,268,34);Draw(app);
         Check(GUI.buttonCalls.Exists(b=>b.rect.x==invite.x&&b.rect.y==invite.y&&b.enabled),"Existing invite remains available in safe town");
         GUI.queuedClick=invite;Draw(app);Check(!GUI.queuedClick.HasValue&&app.Game.save.companion==companion&&Near(Get<float>(app.Game,"companionAttack"),1),"Actual invite selects the companion with the original one-second initial delay");

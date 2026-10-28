@@ -168,7 +168,8 @@ namespace Starfall
                 float x = 279 + i * 318; bool owned = Game.Has("companion_" + i); Card(x, 177, 302, 449, Game.save.companion == i); Portrait(i + 3, x + 57, 192, 188, 182);
                 Text(x + 20, 385, 262, 35, Game.L(GameCore.CompanionNames[i], GameCore.CompanionNamesEn[i]), 25, gold, TextAnchor.MiddleCenter); Text(x + 20, 430, 262, 62, owned ? info[i] : Game.L("完成所在地区调查后加入。", "Joins after the regional report."), 15, muted, TextAnchor.MiddleCenter);
                 for (int n = 0; n < 5; n++) Box(x + 72 + n * 34, 510, 20, 4, n < Game.save.relationships[i] ? mint : PixelArt.C("#43566b"));
-                if (Button(x + 17, 536, 268, 34, Game.L("邀请同行", "Travel together"), Game.save.companion == i, owned && Game.SafeTravel)) Game.SelectCompanion(i);
+                if (Button(x + 17, 536, 268, 34, Game.L("邀请同行", "Travel together"), Game.save.companion == i, owned && Game.SafeTravel)
+                    && Game.save.companion != i) Game.SelectCompanion(i);
                 if (Button(x + 17, 583, 268, 32, Game.L("个人故事与赠礼", "Story & shared meal"), false, owned)) { dialogParent = "companions"; Game.CompanionStory(i); }
             }
             if (Button(279, 652, 938, 38, Game.L("独自旅行", "Travel alone"), Game.save.companion < 0, Game.SafeTravel)) Game.SelectCompanion(-1);
