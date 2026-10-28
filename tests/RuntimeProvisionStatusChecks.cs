@@ -73,6 +73,13 @@ public static class RuntimeProvisionStatusChecks
     { Draw(app);Check(GUI.buttonCalls.Exists(b=>b.enabled&&Same(b.rect,rect)),"Actual original provision control is enabled");GUI.queuedClick=rect;Draw(app);Check(!GUI.queuedClick.HasValue,"Original provision button consumes the intended click"); }
     private static void ActualConsumptionAndBenefits(FrontierRuntime app)
     {
+        Prepare(app);var shared=app.Game;shared.save.health=5;shared.save.energy=12;
+        Input.keys.Add(KeyCode.F);Input.keys.Add(KeyCode.JoystickButton4);Update(app);
+        Check(shared.save.inventory[6]==7&&Near(shared.save.health,60)&&Near(shared.save.energy,100),
+            "One simultaneous F/LB intent consumes one stew and applies exactly the original 55 healing");
+        Key(app,KeyCode.F);
+        Check(shared.save.inventory[6]==6&&Near(shared.save.health,115),
+            "A fresh press on the next frame remains a separate original stew use");
         Prepare(app);var g=app.Game;float unboosted=g.Damage;g.save.health-=9;g.save.energy=12;int stock=g.save.inventory[6];
         Key(app,KeyCode.F);Draw(app,"real-f");AssertStew(app);
         Check(g.save.inventory[6]==stock-1&&Near(g.save.health,g.save.maxHealth)&&Near(g.save.energy,100)&&Near(g.save.foodUntil-g.save.totalTime,90),"Real F keeps one stew, actual capped healing, full energy and original 90 seconds");

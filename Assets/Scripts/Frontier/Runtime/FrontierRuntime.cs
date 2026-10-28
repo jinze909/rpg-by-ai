@@ -128,12 +128,13 @@ namespace Starfall
                     else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2) || Input.GetMouseButton(0) && mouseInWorld)
                         Game.Attack(InputAim() ?? Game.aim);
                     if ((Input.GetKeyDown(KeyCode.E) || PadDown(1))) Game.Interact();
-                    if (Input.GetKeyDown(KeyCode.F)) Game.Eat();
+                    // Keyboard and pad aliases are one provision intent per frame.
+                    if (Input.GetKeyDown(KeyCode.F) || PadDown(4)) Game.Eat();
                     if (Input.GetKeyDown(KeyCode.T)) Game.DrinkTea();
                     if (Input.GetKeyDown(KeyCode.Z)) Game.CommandCompanion();
                     if (Input.GetKeyDown(KeyCode.H)) Game.ReturnToTown();
                     if (Input.GetKeyDown(KeyCode.R)) Game.UseExplorationAbility();
-                    if (PadDown(4)) Game.Eat(); if (PadDown(5)) Game.CommandCompanion();
+                    if (PadDown(5)) Game.CommandCompanion();
                 }
                 if (PadDown(6)) OpenMenu("journal"); if (PadDown(7)) { OpenMenu("pause"); Save(); }
             }
