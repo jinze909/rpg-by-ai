@@ -634,6 +634,11 @@ namespace Starfall.Tests
         [Test] public void SupplyServiceTransactionsPreserveRecipesYieldsAndReputationPrices() { CoreChecks.SupplyServiceTransactionsPreserveRecipesYieldsAndReputationPrices(Data()); }
         [Test] public void SupplyServiceChoicesRetainDialogAndRejectChangedStock() { CoreChecks.SupplyServiceChoicesRetainDialogAndRejectChangedStock(Data()); }
         [Test] public void SupplyServiceQuotesPreserveCapturedCombatAndLegacySaves() { CoreChecks.SupplyServiceQuotesPreserveCapturedCombatAndLegacySaves(Data()); }
+        [Test] public void ClimateStatusReportsExactThresholdsAndRegionalOwnership() { CoreChecks.ClimateStatusReportsExactThresholdsAndRegionalOwnership(Data()); }
+        [Test] public void ClimateStatusProtectionSourcesMatchStrictAuthoredRanges() { CoreChecks.ClimateStatusProtectionSourcesMatchStrictAuthoredRanges(Data()); }
+        [Test] public void ClimateStatusMatchesActualRatesDamageAndColdPenalties() { CoreChecks.ClimateStatusMatchesActualRatesDamageAndColdPenalties(Data()); }
+        [Test] public void ClimateStatusReadsPreserveActionsPauseAndLegacySaves() { CoreChecks.ClimateStatusReadsPreserveActionsPauseAndLegacySaves(Data()); }
+
         [Test] public void ProvisionStatusPreservesOriginalTransactionsAndRefreshRules() { CoreChecks.ProvisionStatusPreservesOriginalTransactionsAndRefreshRules(Data()); }
         [Test] public void ProvisionStatusTracksRealDamageRecoveryClimateAndExpiry() { CoreChecks.ProvisionStatusTracksRealDamageRecoveryClimateAndExpiry(Data()); }
         [Test] public void ProvisionStatusUsesExistingPausedTrainingAndRestClocks() { CoreChecks.ProvisionStatusUsesExistingPausedTrainingAndRestClocks(Data()); }

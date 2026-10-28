@@ -347,11 +347,8 @@ namespace Starfall
             TickCompanionReceipt(dt); TickCompanion(dt);
             TickFrost(dt);
             if(Dying||mode!="world")return;
-            bool tea = save.teaUntil > save.totalTime;
-            save.heat = Clamp(save.heat + dt * (save.room == 6 && !tea && !NearKind("shade", 3) && !racing ? 1.3f : -10), 0, 100);
-            bool warm = false;
-            if (save.room == 7) foreach (WorldObject o in Map.objects) if (o.kind == "brazier" && Has("warm_" + o.id) && (new Point(o.x, o.y) - Position).Length < 3.5f) warm = true;
-            save.cold = Clamp(save.cold + dt * (save.room == 7 && !tea && !warm ? ShelterColdProtected ? 0 : 1.1f : -8), 0, 100);
+            save.heat = Clamp(save.heat + dt * HeatChangeRate, 0, 100);
+            save.cold = Clamp(save.cold + dt * ColdChangeRate, 0, 100);
             climateTimer -= dt;
             if (climateTimer <= 0) { climateTimer = 1; if (save.heat >= 85 || save.cold >= 90) Hurt(4); }
             if (Dying) return;
@@ -397,8 +394,7 @@ namespace Starfall
                 return LowTide ? L("低潮 · 距涨潮 ", "LOW TIDE · rises in ") + seconds + L("秒\n潮滩可通行", "s\nShoals open")
                     : L("高潮 · 距退潮 ", "HIGH TIDE · ebb in ") + seconds + L("秒\n等待或使用闸门", "s\nWait or use sluice");
             }
-            if (save.room == 6) return L("热度 ", "HEAT ") + (int)save.heat + "/100 · " + L("绿洲降温 / 凉茶免疫", "shade cools / tea protects");
-            if (save.room == 7) return L("寒意 ", "COLD ") + (int)save.cold + "/100 · " + L("点燃火盆 / 凉茶抗寒", "light braziers / tea protects");
+            if (save.room == 6 || save.room == 7) return ClimateConditions();
             return L("第 ", "DAY ") + Day + L(" 日 · ", " · ") + (Night ? L("星夜", "STARLIT NIGHT") : L("日照", "DAYLIGHT"));
         }
         public void DrinkTea()
