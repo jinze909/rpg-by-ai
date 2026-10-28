@@ -591,6 +591,11 @@ namespace Starfall.Tests
         [Test] public void GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin() { CoreChecks.GatheringLandmarksConsumeOriginalRewardsAndRetireOnlyMatchingPin(Data()); }
         [Test] public void GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly() { CoreChecks.GatheringLandmarksQueriesAndLegacyLoadsRemainReadOnly(Data()); }
 
+        [Test] public void TalentGrowthEdgeMatchesRealLearnContactsAndCapturedCriticals() { CoreChecks.TalentGrowthEdgeMatchesRealLearnContactsAndCapturedCriticals(Data()); }
+        [Test] public void TalentGrowthResolveAndAgilityMatchActualHealthMovementAndDodge() { CoreChecks.TalentGrowthResolveAndAgilityMatchActualHealthMovementAndDodge(Data()); }
+        [Test] public void TalentGrowthQueriesPreservePaidActionsFieldsQueuesAndSimulation() { CoreChecks.TalentGrowthQueriesPreservePaidActionsFieldsQueuesAndSimulation(Data()); }
+        [Test] public void TalentGrowthRetainsLegacySavesCapsAndHarmlessRejections() { CoreChecks.TalentGrowthRetainsLegacySavesCapsAndHarmlessRejections(Data()); }
+
         [Test] public void QuestJournalRowsRetainCanonicalOrderAndFilterSemantics() { CoreChecks.QuestJournalRowsRetainCanonicalOrderAndFilterSemantics(Data()); }
         [Test] public void QuestJournalRefreshesAfterOriginalStoryTransitions() { CoreChecks.QuestJournalRefreshesAfterOriginalStoryTransitions(Data()); }
         [Test] public void QuestJournalQueriesPreserveCombatTrackingPinsAndSimulation() { CoreChecks.QuestJournalQueriesPreserveCombatTrackingPinsAndSimulation(Data()); }

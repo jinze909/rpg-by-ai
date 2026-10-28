@@ -431,7 +431,7 @@ namespace Starfall
             if (invulnerable > 0) { if (dashTime > 0 && perfectDodgeArmed) { perfectDodgeArmed = false; if (!RangeActive) { TutorialAction(4); PracticeDodge(); } riposteTime = Relic(3) ? 3 : 1.5f; save.energy = Math.Min(100, save.energy + 8); effects.Add(new Effect("number", Position, .7f, L("闪避反击", "COUNTER"))); sound = "counter"; } return; }
             if (practicing && !SafeTrainingActive) { Notify("观察红圈：在命中前闪避，或闪到圈外。练习不会受伤。", "Read the red circle: dodge before impact or leave its area. Practice cannot hurt you."); return; }
             float multiplier = save.difficulty == 0 ? .45f : save.difficulty == 2 ? 1.4f : 1;
-            float armor = (guardTime > 0 ? GuardIncomingMultiplier : 1) * (1 - save.talents[1] * .035f) * (InAbyss ? 1 - save.boons[2] * .12f : 1) * (Relic(5) ? 1.15f : 1);
+            float armor = (guardTime > 0 ? GuardIncomingMultiplier : 1) * ResolveIncomingFactor(save.talents[1]) * (InAbyss ? 1 - save.boons[2] * .12f : 1) * (Relic(5) ? 1.15f : 1);
             playerHitFacing=VisualFacing; playerHitWeapon=AppearanceWeapon;
             Point reaction = incoming ?? VisualFacing * -1;
             if (reaction.Length < .001f) reaction = VisualFacing * -1;

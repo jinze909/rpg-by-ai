@@ -54,7 +54,7 @@ namespace Starfall
             if (!CanAcceptDodge || !Finite(save.energy) || save.energy < cost) return;
             CancelAction();
             dashDirection = direction;
-            dashTime = .18f; dashCooldown = .75f - save.talents[2] * .06f; invulnerable = .32f; save.energy -= cost;
+            dashTime = .18f; dashCooldown = DodgeCooldownFor(save.talents[2]); invulnerable = .32f; save.energy -= cost;
             perfectDodgeArmed = true;
             if (Relic(0)) { float before = save.health; save.health = Math.Min(save.maxHealth, save.health + 3); RecordHealing(before); }
             effects.Add(new Effect("dash", Position, .3f) { direction = dashDirection }); sound = "dash";

@@ -37,9 +37,11 @@ namespace Starfall
         public WeaponProfile Profile(int weapon, int style)
         { return ProfileFor(weapon, style, save.relics[0], save.relics[1]); }
         private WeaponProfile ProfileFor(int weapon, int style, int first, int second)
+        { return ProfileFor(weapon, style, first, second, save.talents[0]); }
+        private WeaponProfile ProfileFor(int weapon, int style, int first, int second, int edge)
         {
             weapon = (int)Clamp(weapon, 0, 2); style = (int)Clamp(style, 0, 2);
-            float damage = BaseDamageFor(weapon, first, second);
+            float damage = BaseDamageFor(weapon, first, second, edge);
             var p = new WeaponProfile { damage = damage * (weapon == 1 ? .9f : weapon == 2 ? 1.25f : 1), interval = weapon == 0 ? .34f : weapon == 1 ? .44f : .62f, range = weapon == 0 ? 1.85f : weapon == 1 ? 12 : 8 };
             p.benefit = L(weapon == 0 ? "第三击伤害与范围增加" : weapon == 1 ? "远射，无普通攻击耗能" : "星火命中后范围爆炸", weapon == 0 ? "Third hit gains damage and reach" : weapon == 1 ? "Long reach; no attack energy cost" : "Starfire explodes on impact");
             p.cost = L(weapon == 0 ? "需要靠近敌人" : weapon == 1 ? "单体伤害，注意射线遮挡" : "出手较慢，适合敌人聚集", weapon == 0 ? "Fight within melee reach" : weapon == 1 ? "Single target; walls block shots" : "Slower attacks; excels against groups");

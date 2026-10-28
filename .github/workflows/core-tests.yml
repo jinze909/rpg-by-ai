@@ -175,6 +175,8 @@ jobs:
         run: python3 tools/run_battle_plan_checks.py
       - name: Check read-only battle plan stats, actual contacts and costs, menu comparison and legacy saves
         run: python3 tools/run_battle_plan_stats_checks.py
+      - name: Check live talent growth comparisons, original point spending, actual combat values and legacy saves
+        run: python3 tools/run_talent_growth_checks.py
       - name: Check reviewed talent refunds, deliberate confirmation, stale owners and legacy saves
         run: python3 tools/run_talent_reset_checks.py
       - name: Check reviewed town projects, exact costs, original facility benefits and safe confirmation

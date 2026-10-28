@@ -33,7 +33,7 @@ namespace Starfall
         {
             weapon=(int)Clamp(weapon,0,2);
             return new ImpactProfile(weapon,save.weaponStyles[weapon],save.weapon,attackCombo,
-                Clamp(.06f+save.talents[0]*.025f+(Relic(5)?.12f:0),0,1),playerOwned,counter);
+                CriticalChanceFor(save.talents[0]),playerOwned,counter);
         }
         private void BeginFrost(Point center,float baseDamage,ImpactProfile impact)
         {
