@@ -51,6 +51,8 @@ jobs:
         run: python3 tools/run_companion_supply_checks.py
       - name: Check live contract targets, guardian prerequisites, unchanged rewards and save continuity
         run: python3 tools/run_contract_hunt_checks.py
+      - name: Check exact bounty rewards, real claim inputs, capacity retention and save continuity
+        run: python3 tools/run_bounty_reward_checks.py
       - name: Check optional combat focus, real input, immutable attacks and safe lifecycle
         run: python3 tools/run_combat_focus_checks.py
       - name: Check explicit target cycling, immutable prepared aim and original focus controls

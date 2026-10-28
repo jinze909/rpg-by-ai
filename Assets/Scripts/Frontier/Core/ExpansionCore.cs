@@ -437,8 +437,10 @@ namespace Starfall
         { if (save.bounty == id) { save.bountyProgress = Math.Min(BountyTargets[id], save.bountyProgress + count); revision++; } }
         public bool ClaimBounty()
         {
-            if (save.bounty < 0 || save.bountyProgress < BountyTargets[save.bounty]) return false;
-            save.coins += 35; save.shards += 3 + (save.frontierEnding == 3 ? 1 : 0); AddXp(30); save.bounty = -1; save.bountyProgress = 0; save.bountyCycle++; revision++; sound = "reward"; return true;
+            BountyRewardQuote quote = GetBountyRewardQuote();
+            if (quote == null || !quote.complete) return false;
+            if (!quote.canClaim) { Notify(quote.reasonZh, quote.reasonEn); return false; }
+            save.coins += quote.coinReward; save.shards += quote.shardReward; AddXp(quote.experienceReward); save.bounty = -1; save.bountyProgress = 0; save.bountyCycle++; revision++; sound = "reward"; return true;
         }
         public void AbandonBounty() { save.bounty = -1; save.bountyProgress = 0; revision++; }
         private int RescueCount { get { int n = 0; for (int i = 0; i < 3; i++) if (Has("rescue_" + i)) n++; return n; } }

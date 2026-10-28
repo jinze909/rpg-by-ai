@@ -221,11 +221,27 @@ namespace Starfall
             if (Game.save.bounty >= 0)
             {
                 int id = Game.save.bounty; Card(279, 177, 938, 361); Icon("sword", 310, 206, 64); Text(396, 216, 772, 72, Game.L(GameCore.BountyNames[id], GameCore.BountyNamesEn[id]), 26, gold); Text(310, 333, 873, 36, Game.save.bountyProgress + " / " + GameCore.BountyTargets[id], 26, paper); Bar(310, 391, 873, Game.save.bountyProgress / (float)GameCore.BountyTargets[id], mint, 8);
-                if (Button(310, 458, 271, 46, Game.L("领取报酬", "Claim reward"), true, Game.save.bountyProgress >= GameCore.BountyTargets[id])) Game.ClaimBounty();
+                BountyRewardQuote reward = Game.GetBountyRewardQuote();
+                DrawBountyRewardPreview(reward);
+                if (Button(310, 458, 271, 46, Game.L("领取报酬", "Claim reward"), true, reward != null && reward.canClaim)) Game.ClaimBounty();
                 if (Button(602, 458, 271, 46, Game.L("追踪悬赏", "Track contract"))) Game.TrackQuest("bounty"); if (Button(895, 458, 288, 46, Game.L("放弃委托", "Abandon"))) Game.AbandonBounty();
             }
-            else for (int i = 0; i < 3; i++) { int id = (Game.save.bountyCycle + i) % 6; float y = 179 + i * 118; Card(279, y, 938, 101); Icon(id == 1 ? "crystal" : id == 2 ? "fish" : "sword", 298, y + 24, 45); Text(366, y + 15, 609, 41, Game.L(GameCore.BountyNames[id], GameCore.BountyNamesEn[id]), 18, paper); Text(366, y + 60, 585, 27, Game.L("目标 ", "Target ") + GameCore.BountyTargets[id] + "  ·  " + Game.L("35硬币 / 30经验 / 碎片", "35 coins / 30 XP / shards"), 13, muted); if (Button(999, y + 28, 192, 43, Game.L("接取悬赏", "Accept"), false, id != 5 || Game.CanEnter(8))) Game.AcceptBounty(id); }
+            else for (int i = 0; i < 3; i++) { int id = (Game.save.bountyCycle + i) % 6; float y = 179 + i * 118; Card(279, y, 938, 101); Icon(id == 1 ? "crystal" : id == 2 ? "fish" : "sword", 298, y + 24, 45); Text(366, y + 15, 609, 41, Game.L(GameCore.BountyNames[id], GameCore.BountyNamesEn[id]), 18, paper); Text(366, y + 60, 585, 27, Game.L("目标 ", "Target ") + GameCore.BountyTargets[id] + "  ·  " + BountyRewardLabel(GameCore.BountyCoinReward, GameCore.BountyExperienceReward, Game.BountyShardReward), 13, muted); if (Button(999, y + 28, 192, 43, Game.L("接取悬赏", "Accept"), false, id != 5 || Game.CanEnter(8))) Game.AcceptBounty(id); }
             Card(279, 572, 938, 118); Text(302, 590, 889, 32, Game.L("旅途纪录", "Journey records"), 20, gold); Text(302, 641, 889, 32, Game.L("最深结算层数 ", "Deepest banked floor ") + Game.save.bestFloor + "/6  ·  " + Game.L("沙舟纪录 ", "Sand-skiff record ") + (Game.save.bestRace == 0 ? "—" : (Game.save.bestRace / 10f).ToString("0.0") + "s"), 17, muted);
+        }
+        private string BountyRewardLabel(int coins, int xp, int shards)
+        { return Game.L("硬币", "Coins ") + coins + " / " + Game.L("经验", "XP ") + xp + " / " + Game.L("碎片", "Shards ") + shards; }
+        private void DrawBountyRewardPreview(BountyRewardQuote reward)
+        {
+            if (reward == null) return;
+            Text(310, 292, 873, 22, BountyRewardLabel(reward.coinReward, reward.experienceReward, reward.shardReward), 15, gold);
+            Text(310, 410, 873, 35, Game.L("领取后：硬币 ", "After claim: coins ") + reward.coinsBefore + " → " + reward.coinsAfter
+                + Game.L(" · 碎片 ", " · shards ") + reward.shardsBefore + " → " + reward.shardsAfter, 15, reward.canClaim ? mint : muted);
+            string status = reward.reasonZh.Length > 0 ? Game.L(reward.reasonZh, reward.reasonEn)
+                : reward.levelAfter > reward.levelBefore ? Game.L("等级 ", "Level ") + reward.levelBefore + " → " + reward.levelAfter
+                    + Game.L(" · 技能点 ", " · points ") + reward.skillPointsBefore + " → " + reward.skillPointsAfter + Game.L(" · 生命回满", " · full health")
+                : Game.L("经验 ", "XP ") + reward.experienceBefore + " → " + reward.experienceAfter;
+            Text(310, 511, 873, 20, status, 13, reward.complete && !reward.canClaim ? gold : muted);
         }
         private void DrawJournal()
         {

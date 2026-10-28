@@ -6,6 +6,11 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void BountyRewardQuotesAreImmutableExactAndFresh() { CoreChecks.BountyRewardQuotesAreImmutableExactAndFresh(Data()); }
+        [Test] public void BountyRewardPaymentsMatchCapsLevelUpsAndCurrentState() { CoreChecks.BountyRewardPaymentsMatchCapsLevelUpsAndCurrentState(Data()); }
+        [Test] public void BountyRewardCapacityBlocksRetainCompletedContractsAcrossSaves() { CoreChecks.BountyRewardCapacityBlocksRetainCompletedContractsAcrossSaves(Data()); }
+        [Test] public void BountyRewardLegacyMigrationAndAbandonStayOriginal() { CoreChecks.BountyRewardLegacyMigrationAndAbandonStayOriginal(Data()); }
+
         [Test] public void TideForecastMatchesNaturalAndHeldBoundaries(){CoreChecks.TideForecastMatchesNaturalAndHeldBoundaries(Data());}
         [Test] public void TideForecastPredictsFirstActualLowTideChange(){CoreChecks.TideForecastPredictsFirstActualLowTideChange(Data());}
         [Test] public void TideForecastPreservesTransactionsPauseLegacyAndReadOnlyState(){CoreChecks.TideForecastPreservesTransactionsPauseLegacyAndReadOnlyState(Data());}
