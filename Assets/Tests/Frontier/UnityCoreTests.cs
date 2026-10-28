@@ -6,6 +6,9 @@ namespace Starfall.Tests
 {
     public sealed class UnityCoreTests
     {
+        [Test] public void TideForecastMatchesNaturalAndHeldBoundaries(){CoreChecks.TideForecastMatchesNaturalAndHeldBoundaries(Data());}
+        [Test] public void TideForecastPredictsFirstActualLowTideChange(){CoreChecks.TideForecastPredictsFirstActualLowTideChange(Data());}
+        [Test] public void TideForecastPreservesTransactionsPauseLegacyAndReadOnlyState(){CoreChecks.TideForecastPreservesTransactionsPauseLegacyAndReadOnlyState(Data());}
         [Test] public void CompanionCommandBufferThresholdCadencesAndSingleDispatch(){CoreChecks.CompanionCommandBufferThresholdCadencesAndSingleDispatch(Data());}
         [Test] public void CompanionCommandBufferCapturesAimAndOriginalContactValues(){CoreChecks.CompanionCommandBufferCapturesAimAndOriginalContactValues(Data());}
         [Test] public void CompanionCommandBufferKeepsHeroQueuesLatestPressAndHitStop(){CoreChecks.CompanionCommandBufferKeepsHeroQueuesLatestPressAndHitStop(Data());}

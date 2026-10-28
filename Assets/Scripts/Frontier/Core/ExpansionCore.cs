@@ -29,6 +29,18 @@ namespace Starfall
         public int Day { get { return 1 + (int)(save.totalTime / 240); } }
         public bool Night { get { return save.totalTime % 240 >= 150; } }
         public bool LowTide { get { return save.totalTime < save.tideHeldUntil || save.totalTime % 36 < 22; } }
+        public float TideChangeRemaining
+        {
+            get
+            {
+                if (save.room != 5 || !Finite(save.totalTime) || save.totalTime < 0 || !Finite(save.tideHeldUntil) || save.tideHeldUntil < 0) return 0;
+                float phase = save.totalTime % 36;
+                if (!LowTide) return 36 - phase;
+                // A sluice ending during natural low tide does not close the shoal.
+                float deadline = Math.Max(save.totalTime, save.tideHeldUntil), endPhase = deadline % 36;
+                return deadline - save.totalTime + (endPhase < 22 ? 22 - endPhase : 0);
+            }
+        }
         public int Proofs { get { return (Has("harbor_report") ? 1 : 0) + (Has("desert_report") ? 1 : 0) + (Has("mountain_report") ? 1 : 0); } }
         public int ProjectTiers { get { return save.projects[0] + save.projects[1] + save.projects[2]; } }
         public int CompanionCount { get { int n = 0; for (int i = 0; i < 3; i++) if (Has("companion_" + i)) n++; return n; } }
@@ -377,7 +389,14 @@ namespace Starfall
         {
             if (RootEchoActive) return RootEchoStatus;
             if (InAbyss) return L("地脉 ", "ABYSS ") + save.abyssFloor + "/6  ·  " + L("未结算碎片 ", "UNBANKED SHARDS ") + save.runShards;
-            if (save.room == 5) return LowTide ? L("低潮 · 潮滩可通行", "LOW TIDE · shoals open") : L("高潮 · 等待退潮或使用闸门", "HIGH TIDE · wait or use the sluice");
+            if (save.room == 5)
+            {
+                float remaining = TideChangeRemaining;
+                if (remaining <= 0) return LowTide ? L("低潮 · 潮滩可通行", "LOW TIDE · shoals open") : L("高潮 · 等待退潮或使用闸门", "HIGH TIDE · wait or use the sluice");
+                string seconds = Math.Ceiling(remaining).ToString("0", System.Globalization.CultureInfo.InvariantCulture);
+                return LowTide ? L("低潮 · 距涨潮 ", "LOW TIDE · rises in ") + seconds + L("秒\n潮滩可通行", "s\nShoals open")
+                    : L("高潮 · 距退潮 ", "HIGH TIDE · ebb in ") + seconds + L("秒\n等待或使用闸门", "s\nWait or use sluice");
+            }
             if (save.room == 6) return L("热度 ", "HEAT ") + (int)save.heat + "/100 · " + L("绿洲降温 / 凉茶免疫", "shade cools / tea protects");
             if (save.room == 7) return L("寒意 ", "COLD ") + (int)save.cold + "/100 · " + L("点燃火盆 / 凉茶抗寒", "light braziers / tea protects");
             return L("第 ", "DAY ") + Day + L(" 日 · ", " · ") + (Night ? L("星夜", "STARLIT NIGHT") : L("日照", "DAYLIGHT"));

@@ -157,6 +157,8 @@ jobs:
         run: python3 tools/run_material_route_checks.py
       - name: Check interaction-aware routes, exact E targets, live gates and arrival hints
         run: python3 tools/run_interaction_route_checks.py
+      - name: Check harbor tide countdowns, real sluice timing, unchanged crossings and legacy saves
+        run: python3 tools/run_tide_forecast_checks.py
       - name: Check live interaction hints, actual gathering and growth, safe prompt layout and unchanged inputs
         run: python3 tools/run_interaction_hint_checks.py
       - name: Check continuous scenery cover, companion visibility and real walking
