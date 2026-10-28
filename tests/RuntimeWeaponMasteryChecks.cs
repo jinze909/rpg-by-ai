@@ -307,6 +307,17 @@ public static class RuntimeWeaponMasteryChecks
                 "The first real attack keeps original captured damage, style, combo zero and exact original energy debit");
             Check(Math.Abs(g.CurrentBattlePlanStats().attackDamage - expected) < .0001f,
                 "The existing equipment-plan first-hit/per-arrow comparison agrees before any attack releases");
+            Select(app, weapon, style); string alreadyEquipped = CombatSnapshot(g);
+            Click(app, L(app, "装备此打法", "Equip style"));
+            Check(ReferenceEquals(captured, g.playerAction) && CombatSnapshot(g) == alreadyEquipped,
+                "Re-equipping the identical build through the real inventory preserves paid preparation, impact, costs and clocks");
+            foreach (KeyCode confirm in new[] { KeyCode.Return, KeyCode.JoystickButton0 })
+            {
+                Get<MenuNavigation>(app, "navigation").Select("710:580:174:52"); Key(app, confirm);
+                Check(ReferenceEquals(captured, g.playerAction) && CombatSnapshot(g) == alreadyEquipped,
+                    "Keyboard and controller reconfirmation retain the same paid action and unchanged build");
+            }
+            Key(app, KeyCode.Escape);
             if (weapon == 1 && style == 2)
             {
                 Inventory(app); string prepared = CombatSnapshot(g);
@@ -362,6 +373,19 @@ public static class RuntimeWeaponMasteryChecks
             }
         }
         Check(releases == 9 && arrows == 8, "All nine real first attacks and original eight emitted projectiles were witnessed");
+        for (int weapon = 0; weapon < 3; weapon++) foreach (bool changeWeapon in new[] { false, true })
+        {
+            EquipForContact(app, weapon, 1); var g = app.Game; ActorAction old = g.playerAction;
+            int candidate = changeWeapon ? (weapon + 1) % 3 : weapon, style = changeWeapon ? 1 : 2;
+            Select(app, candidate, style); float energy = g.save.energy, health = g.save.health, cooldown = g.attackCooldown, clock = g.save.totalTime;
+            Click(app, L(app, "装备此打法", "Equip style"));
+            Check(g.playerAction == null && g.save.weapon == candidate && g.Style == style && !old.released,
+                "A real weapon or style change still cancels the old preparation through the mature equipment operation");
+            Check(g.save.energy == energy && g.save.health == health && g.attackCooldown == cooldown && g.save.totalTime == clock,
+                "Actual changes retain paid energy, health and attack clocks without refunds or simulation");
+            Key(app, KeyCode.Escape); Frames(app, 50);
+            Check(!old.released && g.projectiles.Count == 0, "A canceled preparation cannot later emit a stale shot");
+        }
         Console.WriteLine("PASS comparison actual I nine owned weapon/styles, explicit equipment, original first releases and eight real projectiles, per-arrow plan agreement, prepared/flying read-only and 72 bilingual/scaled layouts; NATIVE_UNVERIFIED");
     }
 

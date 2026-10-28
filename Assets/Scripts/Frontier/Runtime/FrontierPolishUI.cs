@@ -54,7 +54,9 @@ namespace Starfall
             bool owned = inspectedWeapon == 0 || Game.Has("weapon_" + inspectedWeapon), unlocked = inspectedStyle == 0 || Game.Has("core_1") || Game.MasteryRank(inspectedWeapon) >= 1;
             string stats = Game.L("首击/每箭 / 间隔 / 耗能：", "Hit/arrow / gap / energy: ") + Game.WeaponContactDamage(inspectedWeapon, inspectedStyle).ToString("0.##", CultureInfo.InvariantCulture) + " / " + candidate.interval.ToString("0.00", CultureInfo.InvariantCulture) + "s / " + candidate.energy.ToString("0.##", CultureInfo.InvariantCulture) + "\n" + Game.L("当前：", "Equipped: ") + Game.WeaponContactDamage(Game.save.weapon, Game.Style).ToString("0.##", CultureInfo.InvariantCulture) + " / " + current.interval.ToString("0.00", CultureInfo.InvariantCulture) + "s / " + current.energy.ToString("0.##", CultureInfo.InvariantCulture);
             Text(297, 577, 389, 59, stats, 13, paper);
-            if (Button(710, 580, 174, 52, Game.L("装备此打法", "Equip style"), true, owned && unlocked)) { Game.Equip(inspectedWeapon); Game.SetStyle(inspectedStyle); }
+            // Reconfirming the equipped build must not discard a paid action.
+            if (Button(710, 580, 174, 52, Game.L("装备此打法", "Equip style"), true, owned && unlocked)
+                && (Game.save.weapon != inspectedWeapon || Game.Style != inspectedStyle)) { Game.Equip(inspectedWeapon); Game.SetStyle(inspectedStyle); }
             string tradeoff = inspectedWeapon == 1 && inspectedStyle == 2
                 ? Game.L("三箭散射 · 伤害按每箭、耗能按整次攻击计算。", "3-arrow spread · damage per arrow, energy per attack.")
                 : candidate.benefit + " · " + candidate.cost;
