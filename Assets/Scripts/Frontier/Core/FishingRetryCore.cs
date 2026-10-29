@@ -53,7 +53,7 @@ namespace Starfall
         public FishingRetryOffer RecentFishingRetry
         { get { return FishingRetryValid(fishingRetry) ? fishingRetry : null; } }
         public bool CanRetryFishing
-        { get { return RecentFishingRetry != null && save.inventory[3] >= 0 && save.inventory[3] < SupplyInventoryLimit; } }
+        { get { return RecentFishingRetry != null && LakeFishingHasSpace; } }
 
         private void ClearFishingRetry()
         { fishingRetry = null; fishingRetryRemaining = 0; }
@@ -76,9 +76,12 @@ namespace Starfall
             if (fishingRetryRemaining <= .00001f) ClearFishingRetry();
         }
 
-        private void BeginLakeFishing()
+        private bool BeginLakeFishing()
         {
+            if (!LakeFishingHasSpace)
+            { Notify("鱼的存放空间不足，先交鱼或制作炖汤。", "Make room for a fish: deliver fish or cook stew first."); return false; }
             ResetFishingPullFeedback(); fishTime = fishCursor = 0; fishHits = fishMisses = 0; mode = "fish";
+            return true;
         }
 
         public bool TryRetryFishing()
@@ -89,7 +92,7 @@ namespace Starfall
             // activation cannot reuse the settled attempt as another restart.
             ClearFishingRetry();
             if (offer.river) return StartRiverFishing(offer.site);
-            BeginLakeFishing(); return true;
+            return BeginLakeFishing();
         }
     }
 }

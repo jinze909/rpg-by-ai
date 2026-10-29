@@ -535,6 +535,11 @@ namespace Starfall.Tests
         [Test] public void FishingFeedbackReadsExpiryAndOwnershipStayTransient() { CoreChecks.FishingFeedbackReadsExpiryAndOwnershipStayTransient(Data()); }
         [Test] public void FishingFeedbackRetainsCatchRewardsBountiesAndStory() { CoreChecks.FishingFeedbackRetainsCatchRewardsBountiesAndStory(Data()); }
 
+        [Test] public void LakeCapacityOriginalFullBasketRetainsDialogueAndCommissionRecovery() { CoreChecks.LakeCapacityOriginalFullBasketRetainsDialogueAndCommissionRecovery(Data()); }
+        [Test] public void LakeCapacityNearLimitCatchAndLegacyReloadKeepExactRewards() { CoreChecks.LakeCapacityNearLimitCatchAndLegacyReloadKeepExactRewards(Data()); }
+        [Test] public void LakeCapacityStaleChoiceAndChangedCastStockNeverMintUnstoredCatch() { CoreChecks.LakeCapacityStaleChoiceAndChangedCastStockNeverMintUnstoredCatch(Data()); }
+        [Test] public void LakeCapacityNormalMissCancelAndReadonlyGuidanceKeepOriginalRules() { CoreChecks.LakeCapacityNormalMissCancelAndReadonlyGuidanceKeepOriginalRules(Data()); }
+
         [Test] public void FishingRetryTerminalOutcomesPreserveRewardsAndRestartZeroed() { CoreChecks.FishingRetryTerminalOutcomesPreserveRewardsAndRestartZeroed(Data()); }
         [Test] public void FishingRetryWorldLifetimeAndCanonicalLocalityRejectStaleOffers() { CoreChecks.FishingRetryWorldLifetimeAndCanonicalLocalityRejectStaleOffers(Data()); }
         [Test] public void FishingRetryRefusalsPreservePaidActionsAndQueuedRequests() { CoreChecks.FishingRetryRefusalsPreservePaidActionsAndQueuedRequests(Data()); }

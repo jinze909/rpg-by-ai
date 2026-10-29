@@ -678,7 +678,8 @@ namespace Starfall
                 list.Add(C("再见", "Goodbye", "close"));
                 AppendSupperChoice(list, 1);
                 AppendRiverLessonChoice(list);
-                Dialog(o.name, o.en, "我想给避难的孩子们煮一锅鱼汤，需要三条银鳍鱼。\n\n钓鱼时按 E 或点收线，让浮标停在绿色区，成功三次就能钓到鱼。没有鱼饵消耗，慢慢试。", "Three Silverfin would make soup for the refugee children.\n\nPress E or Reel while the marker is in the green band. Three good pulls catch a fish. No bait cost; take your time.", list.ToArray()); return;
+                Dialog(o.name, o.en, "我想给避难的孩子们煮一锅鱼汤，需要三条银鳍鱼。\n\n钓鱼时按 E 或点收线，让浮标停在绿色区，成功三次就能钓到鱼。没有鱼饵消耗，慢慢试。\n\n持有鱼：" + save.inventory[3] + "/9999。成功：银鳍鱼×1，硬币+" + LakeFishingCoinGain + "（最多4，上限999999）。满时请先交鱼或制作炖汤。",
+                    "Three Silverfin would make soup for the refugee children.\n\nPress E or Reel while the marker is in the green band. Three good pulls catch a fish. No bait cost; take your time.\n\nFish basket: " + save.inventory[3] + "/9999. Success: 1 Silverfin; coins +" + LakeFishingCoinGain + " (up to 4; limit 999999). When full, deliver fish or cook stew first.", list.ToArray()); return;
             }
             if (kind == "forge")
             {
@@ -871,6 +872,10 @@ namespace Starfall
             if (talent == 1) { save.maxHealth += 12; save.health = Math.Min(save.maxHealth, save.health + 12); }
             revision++; sound = "reward";
         }
+        private bool LakeFishingHasSpace
+        { get { return save.inventory[3] >= 0 && save.inventory[3] < SupplyInventoryLimit; } }
+        private int LakeFishingCoinGain
+        { get { return (int)Math.Max(0L, Math.Min(4L, 999999L - save.coins)); } }
         public void FishHit()
         {
             if (ReelRiverFishing()) return;
@@ -882,7 +887,15 @@ namespace Starfall
                 fishMisses++; sound = "hurt";
                 RecordFishingPull(fishCursor < .5f - .18f ? FishingPullOutcome.Left : FishingPullOutcome.Right, .5f - .18f, .5f + .18f, false);
             }
-            if (fishHits >= 3) { save.inventory[3]++; save.coins += 4; BountyEvent(2, 1); Close(); revision++; Notify("钓到银鳍鱼 ×1！", "Caught a Silverfin!"); RecordFishingRetry(false, true, -1, LakeFishingHost); }
+            if (fishHits >= 3)
+            {
+                if (!LakeFishingHasSpace)
+                { Close(); Notify("鱼的存放空间不足，这次没有结算。先交鱼或制作炖汤。", "No room for this catch; nothing was paid out. Deliver fish or cook stew first."); return; }
+                // Bound this catch's gain without consuming any pre-existing
+                // overflow from another reward path in the current session.
+                save.inventory[3]++; save.coins += LakeFishingCoinGain; BountyEvent(2, 1);
+                Close(); revision++; Notify("钓到银鳍鱼 ×1！", "Caught a Silverfin!"); RecordFishingRetry(false, true, -1, LakeFishingHost);
+            }
             else if (fishMisses >= 3) { Close(); Notify("鱼游走了。没有损失，再试一次吧。", "The fish slipped away. Nothing lost; try again."); RecordFishingRetry(false, false, -1, LakeFishingHost); }
         }
         private void FinalConversation()

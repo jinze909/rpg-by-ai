@@ -79,7 +79,7 @@ namespace Starfall
             else
             {
                 method = L("钓鱼", "Fish");
-                detail = L("成功收线3次：银鳍鱼+1、硬币+4，不耗鱼饵。", "Three good pulls: Silverfin +1 and coins +4; no bait cost.");
+                detail = L("成功收线3次：银鳍鱼+1、硬币最多+4，不耗鱼饵。", "Three good pulls: Silverfin +1, coins +4 at most; no bait cost.");
             }
             return new MaterialSource(item, room, target, depleted, method, detail, save, WorldGeneration);
         }
