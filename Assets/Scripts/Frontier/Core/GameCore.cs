@@ -107,7 +107,7 @@ namespace Starfall
             WorldGeneration++;
             projectiles.Clear(); effects.Clear();
             attackCooldown = dashCooldown = dashTime = skillCooldown = guardTime = 0;
-            invulnerable = 1; conversation = null; runeProgress = 0;
+            invulnerable = 1; conversation = null; gardenSeedReview = null; runeProgress = 0;
             ResetExpansionTransient(); ResetCombatPresentation();
             ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetRangeTransient(); ResetCommissionTransient(); ResetShelterTransient();
             ResetRiverFishing();
@@ -132,7 +132,7 @@ namespace Starfall
         public void Notify(string zh, string en) { toast = L(zh, en); toastTime = 4; }
         private void Dialog(string speaker, string en, string text, string textEn, params Choice[] choices)
         { conversation = new Conversation(speaker, en, text, textEn, choices); mode = "dialog"; }
-        public void Close() { conversation = null; mode = "world"; }
+        public void Close() { conversation = null; gardenSeedReview = null; mode = "world"; }
         public bool Blocked(float x, float y)
         {
             int tx = (int)Math.Floor(x), ty = (int)Math.Floor(y);
@@ -665,7 +665,7 @@ namespace Starfall
                 list.Add(C("买种子 · 5 硬币", "Buy seeds · 5 coins", "seeds")); list.Add(C("再见", "Goodbye", "close"));
                 AppendSupperChoice(list, 0);
                 AppendWaterGardenChoice(list, false);
-                Dialog(o.name, o.en, Has("ally_1") ? "你带来的月光草已经配成药了，谢谢。田里仍能种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。" : "我需要六株月光草，为受伤的居民配药。你可以在野外采集，也可以种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。", Has("ally_1") ? "Your Moonherbs are medicine now. Thank you. The garden is still open: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need." : "I need six Moonherbs for the wounded. Gather them in the wild, or grow your own: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need.", list.ToArray()); AppendFirstHarvestChoice(0); return;
+                Dialog(o.name, o.en, Has("ally_1") ? "你带来的月光草已经配成药了，谢谢。田里仍能种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。" : "我需要六株月光草，为受伤的居民配药。你可以在野外采集，也可以种植：一粒种子，60 秒后收获。\n\n人们受伤的时候，最需要的从来不是一面更高的墙。", Has("ally_1") ? "Your Moonherbs are medicine now. Thank you. The garden is still open: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need." : "I need six Moonherbs for the wounded. Gather them in the wild, or grow your own: one seed, sixty seconds.\n\nWhen people are hurt, a higher wall is rarely what they need.", list.ToArray()); AppendFirstHarvestChoice(0); AppendGardenHarvestConversation(); return;
             }
             if (kind == "fish")
             {
@@ -760,7 +760,13 @@ namespace Starfall
             if(Dying){Close();return;}
             string action = conversation.choices[index].action;
             if (!DialogueChoiceEnabled(action)) { sound = "deny"; return; }
+            if (action == "garden_return3")
+            {
+                if (ReturnGardenSeeds()) { Close(); WorldObject garden = GardenSeedHost; if (garden != null && AtGardenSeedHost) Talk(garden); }
+                return;
+            }
             Close();
+            if (ChooseGardenHarvest(action)) return;
             if (ChooseSupplyService(action)) return;
             if (ChooseWaterGarden(action)) return;
             if (ChooseFirstHarvest(action)) return;
@@ -802,10 +808,7 @@ namespace Starfall
             }
             if (action == "harvest")
             {
-                if (save.plantedAt < 0) return;
-                if (save.totalTime - save.plantedAt < 60) { Notify("还需 " + (int)Math.Ceiling(60 - (save.totalTime - save.plantedAt)) + " 秒。", "Ready in " + (int)Math.Ceiling(60 - (save.totalTime - save.plantedAt)) + " seconds."); return; }
-                int harvest = 5 + save.projects[0] * 2 + (save.frontierEnding == 1 ? 2 : 0);
-                save.inventory[2] += harvest; save.inventory[7] += 2; save.plantedAt = -1; save.coins += 8; revision++; sound = "reward"; Notify("收获：月光草 ×" + harvest + "，种子 ×2，硬币 +8。", "Harvest: " + harvest + " Moonherbs, 2 seeds, 8 coins."); OnFirstHarvestCrop(); return;
+                HarvestGarden(); return;
             }
             if (action == "upgrade")
             {

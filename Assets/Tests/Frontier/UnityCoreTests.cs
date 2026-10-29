@@ -634,6 +634,11 @@ namespace Starfall.Tests
         [Test] public void SupplyServiceTransactionsPreserveRecipesYieldsAndReputationPrices() { CoreChecks.SupplyServiceTransactionsPreserveRecipesYieldsAndReputationPrices(Data()); }
         [Test] public void SupplyServiceChoicesRetainDialogAndRejectChangedStock() { CoreChecks.SupplyServiceChoicesRetainDialogAndRejectChangedStock(Data()); }
         [Test] public void SupplyServiceQuotesPreserveCapturedCombatAndLegacySaves() { CoreChecks.SupplyServiceQuotesPreserveCapturedCombatAndLegacySaves(Data()); }
+        [Test] public void GardenHarvestFullStockRetainsRipeCropAndPaysAfterRoom() { CoreChecks.GardenHarvestFullStockRetainsRipeCropAndPaysAfterRoom(Data()); }
+        [Test] public void GardenHarvestQuotesMatchEveryYieldAndExactCapacity() { CoreChecks.GardenHarvestQuotesMatchEveryYieldAndExactCapacity(Data()); }
+        [Test] public void GardenHarvestGrowthClockAndReadOnlyQuotesPreservePaidActions() { CoreChecks.GardenHarvestGrowthClockAndReadOnlyQuotesPreservePaidActions(Data()); }
+        [Test] public void GardenHarvestLegacyCropsAndFirstHarvestWitnessStaySafe() { CoreChecks.GardenHarvestLegacyCropsAndFirstHarvestWitnessStaySafe(Data()); }
+
         [Test] public void ClimateStatusReportsExactThresholdsAndRegionalOwnership() { CoreChecks.ClimateStatusReportsExactThresholdsAndRegionalOwnership(Data()); }
         [Test] public void ClimateStatusProtectionSourcesMatchStrictAuthoredRanges() { CoreChecks.ClimateStatusProtectionSourcesMatchStrictAuthoredRanges(Data()); }
         [Test] public void ClimateStatusMatchesActualRatesDamageAndColdPenalties() { CoreChecks.ClimateStatusMatchesActualRatesDamageAndColdPenalties(Data()); }

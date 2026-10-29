@@ -236,7 +236,20 @@ namespace Starfall.Tests
                 foreach (string action in new[] { "close", "harvest", "fish", "supper_menu", "watergarden_offer", "drinktea", "rest", "routes" })
                 {
                     Choice choice = new Choice("原选项", "Original choice", action); string before = PlanStatsState(resumed);
-                    Check(resumed.DialogueChoiceEnabled(action) && TownHandoffQuote(resumed, action) == null
+                    if (action == "harvest")
+                    {
+                        // Harvest now owns its live growth/reward presentation;
+                        // the material-handoff service must still leave it alone.
+                        object crop = GardenHarvestRead(resumed);
+                        bool ready = GardenHarvestValue<bool>(crop, "ready");
+                        string expected = ready
+                            ? resumed.L("收获 · 药草" + GardenHarvestValue<int>(crop, "herbs") + " / 种子2 / 硬币8", "Harvest · " + GardenHarvestValue<int>(crop, "herbs") + " herbs / 2 seeds / 8 coins")
+                            : resumed.L("查看生长 · " + (int)Math.Ceiling(GardenHarvestValue<float>(crop, "remaining")) + "秒", "Check growth · " + (int)Math.Ceiling(GardenHarvestValue<float>(crop, "remaining")) + "s");
+                        Check(resumed.DialogueChoiceEnabled(action) == (!ready || GardenHarvestValue<bool>(crop, "canHarvest"))
+                            && TownHandoffQuote(resumed, action) == null && TownHandoffLabel(resumed, choice) == expected
+                            && PlanStatsState(resumed) == before, "Legacy garden harvest delegates live growth, exact reward and capacity to its own read-only service");
+                    }
+                    else Check(resumed.DialogueChoiceEnabled(action) && TownHandoffQuote(resumed, action) == null
                         && TownHandoffLabel(resumed, choice) == resumed.SupplyServiceChoiceLabel(choice)
                         && PlanStatsState(resumed) == before, "Unrelated story and free actions retain their exact original label/readiness: " + action);
                 }

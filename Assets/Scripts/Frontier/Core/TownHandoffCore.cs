@@ -56,6 +56,7 @@ namespace Starfall
         public string DialogueChoiceLabel(Choice choice)
         {
             if (choice == null) return "";
+            if (choice.action == "harvest") return GardenHarvestChoiceLabel(choice);
             TownHandoffQuote quote = GetTownHandoffQuote(choice.action);
             if (quote == null) return SupplyServiceChoiceLabel(choice);
             string zh = choice.action == "plant" ? "种植 · 种子" : choice.action == "engine" ? "修复 · 零件"

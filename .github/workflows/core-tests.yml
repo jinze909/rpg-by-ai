@@ -163,6 +163,8 @@ jobs:
         run: python3 tools/run_tide_forecast_checks.py
       - name: Check current climate protection, real heat and cold rates, danger thresholds and passive HUD
         run: python3 tools/run_climate_status_checks.py
+      - name: Check accurate garden harvests, retained ripe crops, explicit spare seed returns and original stories
+        run: python3 tools/run_garden_harvest_checks.py
       - name: Check live interaction hints, actual gathering and growth, safe prompt layout and unchanged inputs
         run: python3 tools/run_interaction_hint_checks.py
       - name: Check continuous scenery cover, companion visibility and real walking

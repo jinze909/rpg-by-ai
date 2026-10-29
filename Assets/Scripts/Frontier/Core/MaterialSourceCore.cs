@@ -44,7 +44,7 @@ namespace Starfall
 
         private string MaterialGardenDetails(int item)
         {
-            int herbs = 5 + save.projects[0] * 2 + (save.frontierEnding == 1 ? 2 : 0);
+            int herbs = GardenHerbYield;
             string result = L("种植耗种子1，60秒后：药草+" + herbs + "、种子+2、硬币+8。",
                 "Plant 1 seed; after 60s: herbs +" + herbs + ", seeds +2, coins +8.");
             if (item == 7) result = L("5硬币买种子3。", "Buy 3 seeds for 5 coins. ") + result;

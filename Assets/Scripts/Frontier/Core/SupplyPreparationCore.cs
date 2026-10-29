@@ -104,6 +104,7 @@ namespace Starfall
         }
         public bool DialogueChoiceEnabled(string action)
         {
+            if (!GardenHarvestChoiceEnabled(action)) return false;
             if (!AbyssBoonChoiceEnabled(action)) return false;
             if (!ForgeChoiceEnabled(action)) return false;
             if (!SupplyServiceChoiceEnabled(action)) return false;
