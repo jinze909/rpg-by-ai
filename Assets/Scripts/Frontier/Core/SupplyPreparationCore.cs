@@ -9,11 +9,13 @@ namespace Starfall
     {
         public readonly int recipe, quantity, herbs, fish, crystals, maxQuantity;
         public readonly string reasonZh, reasonEn;
+        internal readonly bool ingredientShortage;
         public bool available { get { return reasonZh.Length == 0; } }
-        internal SupplyBatchQuote(int recipe, int quantity, int herbs, int fish, int crystals, int maximum, string zh, string en)
+        internal SupplyBatchQuote(int recipe, int quantity, int herbs, int fish, int crystals, int maximum, string zh, string en, bool ingredientShortage)
         {
             this.recipe = recipe; this.quantity = quantity; this.herbs = herbs;
             this.fish = fish; this.crystals = crystals; maxQuantity = maximum; reasonZh = zh; reasonEn = en;
+            this.ingredientShortage = ingredientShortage;
         }
     }
 
@@ -31,7 +33,7 @@ namespace Starfall
         {
             bool valid = (recipe == 0 || recipe == 1) && quantity > 0 && quantity <= SupplyInventoryLimit;
             int herbs = valid ? quantity * 2 : 0, fish = valid && recipe == 0 ? quantity : 0, crystals = valid && recipe == 1 ? quantity : 0;
-            string zh = "", en = ""; WorldObject host = Nearest();
+            string zh = "", en = ""; WorldObject host = Nearest(); bool ingredientShortage = false;
             if (!valid) { zh = "请选择有效的补给与制作数量。"; en = "Choose a valid supply and quantity."; }
             else if (Dying || practicing || InAbyss || (mode != "world" && mode != "dialog"))
             { zh = "现在不能备制补给。"; en = "Cannot prepare supplies right now."; }
@@ -45,9 +47,9 @@ namespace Starfall
                 if (save.inventory[2] < herbs) { missingZh.Add("药草" + (herbs - save.inventory[2])); missingEn.Add((herbs - save.inventory[2]) + " herbs"); }
                 if (save.inventory[3] < fish) { missingZh.Add("鱼" + (fish - save.inventory[3])); missingEn.Add((fish - save.inventory[3]) + " fish"); }
                 if (save.inventory[1] < crystals) { missingZh.Add("星晶" + (crystals - save.inventory[1])); missingEn.Add((crystals - save.inventory[1]) + " crystals"); }
-                if (missingZh.Count > 0) { zh = "还需：" + string.Join(" / ", missingZh.ToArray()); en = "Need: " + string.Join(" / ", missingEn.ToArray()); }
+                if (missingZh.Count > 0) { ingredientShortage = true; zh = "还需：" + string.Join(" / ", missingZh.ToArray()); en = "Need: " + string.Join(" / ", missingEn.ToArray()); }
             }
-            return new SupplyBatchQuote(recipe, quantity, herbs, fish, crystals, MaximumSupplyBatch(recipe), zh, en);
+            return new SupplyBatchQuote(recipe, quantity, herbs, fish, crystals, MaximumSupplyBatch(recipe), zh, en, ingredientShortage);
         }
         public bool CraftSupplyBatch(int recipe, int quantity)
         {

@@ -73,7 +73,7 @@ namespace Starfall
         {
             if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
             fishingInputConsumed = false;
-            ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
+            ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation(); ValidateSupplySourceReturn();
             clock += Time.unscaledDeltaTime; Resize();
             UpdateFishingRetryInput();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);

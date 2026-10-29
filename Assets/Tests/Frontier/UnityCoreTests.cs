@@ -663,6 +663,11 @@ namespace Starfall.Tests
         [Test] public void ProvisionStatusTracksRealDamageRecoveryClimateAndExpiry() { CoreChecks.ProvisionStatusTracksRealDamageRecoveryClimateAndExpiry(Data()); }
         [Test] public void ProvisionStatusUsesExistingPausedTrainingAndRestClocks() { CoreChecks.ProvisionStatusUsesExistingPausedTrainingAndRestClocks(Data()); }
         [Test] public void ProvisionStatusReadsPreserveAcceptedAttacksQueuesAndLegacySaves() { CoreChecks.ProvisionStatusReadsPreserveAcceptedAttacksQueuesAndLegacySaves(Data()); }
+
+        [Test] public void SupplyIngredientsMatchFirstBlockedRecipeAndCapturedBatchQuantities() { CoreChecks.SupplyIngredientsMatchFirstBlockedRecipeAndCapturedBatchQuantities(Data()); }
+        [Test] public void SupplyIngredientsExcludeCapacityCoinsInvalidAndUnauthorizedOffers() { CoreChecks.SupplyIngredientsExcludeCapacityCoinsInvalidAndUnauthorizedOffers(Data()); }
+        [Test] public void SupplyIngredientsPreserveOriginalPaymentsAndDisabledDialogues() { CoreChecks.SupplyIngredientsPreserveOriginalPaymentsAndDisabledDialogues(Data()); }
+        [Test] public void SupplyIngredientsStayPureAcrossCapturedActionsAndLegacyReloads() { CoreChecks.SupplyIngredientsStayPureAcrossCapturedActionsAndLegacyReloads(Data()); }
     }
 }
 #endif

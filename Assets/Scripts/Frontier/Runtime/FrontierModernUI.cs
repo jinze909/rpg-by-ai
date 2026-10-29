@@ -36,7 +36,8 @@ namespace Starfall
             if (id < 0 || portraits == null) { Icon(id < 0 ? "journal" : "companion", x + w * .2f, y + h * .25f, w * .6f); return; }
             float size = Math.Min(w, h); id = Math.Max(0, Math.Min(7, id)); GUI.DrawTextureWithTexCoords(new Rect(x + (w - size) / 2, y + h - size, size, size), portraits, new Rect(id % 4 / 4f, id < 4 ? .5f : 0, .25f, .5f));
         }
-        private void OpenMenu(string mode) { ClearQuestMapPreview(); ClearMaterialMapPreview(); ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
+        private void OpenMenu(string mode) { ClearSupplySourceReturn(); EnterMenu(mode); }
+        private void EnterMenu(string mode) { ClearQuestMapPreview(); ClearMaterialMapPreview(); ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); battlePlanConfirmation = -1; if (mode != "rangecontrols") ClearRangeControlOwner(); if (mode == "pause" && Game.mode != "title") settingsParent = "world"; if (mode == "saves") RefreshSlots(); Game.mode = mode; if (mode == "inventory") Game.TutorialAction(6); }
         private void Dim() { Box(0, 0, Width, Height, new Color(.02f, .035f, .07f, .87f)); }
         private void Bar(float x, float y, float w, float value, Color color, float h = 6)
         { Box(x, y, w, h, PixelArt.C("#0d1c2c")); Box(x, y, w * Mathf.Clamp01(value), h, color); Box(x, y, w * Mathf.Clamp01(value), 1, Color.Lerp(color, paper, .3f)); }
@@ -337,6 +338,7 @@ namespace Starfall
             if (pages.Count > 1) { Text(320, 497, 535, 26, Game.L("对话页 ", "Page ") + (dialoguePage + 1) + "/" + pages.Count + "  ·  " + ControlKey("SPACE / ENTER", "A"), 12, muted); if (Button(879, 494, 272, 34, dialoguePage < pages.Count - 1 ? Game.L("继续阅读", "Read more") : Game.L("重新阅读", "Read again"))) { if (dialoguePage < pages.Count - 1) AdvanceDialogue(); else dialoguePage = 0; } }
             if (dialoguePage == pages.Count - 1) { int count = c.choices.Length, preferred = PreferredDialogueChoice(); for (int i = 0; i < count; i++) { int cols = count > 2 ? 2 : count; float w = (832 - (cols - 1) * 14) / Math.Max(1, cols), y = 539 + i / cols * 45; if (Button(320 + i % cols * (w + 14), y, w, 37, (controllerUsed ? "" : (i + 1) + "  ") + Game.DialogueChoiceLabel(c.choices[i]), i == preferred, Game.DialogueChoiceEnabled(c.choices[i].action))) { ChooseDialogue(i); break; } } }
             else Text(320, 552, 832, 50, Game.L("读完这一段，再作出你的选择。", "Finish reading before making your choice."), 15, muted);
+            DrawSupplyIngredientShortcut();
         }
         private int SpeakerPortrait(string name) { if (name == "你" || name == "主角" || name == "Player" || name == "Hero") return Game.AppearanceWeapon; return name.Contains("米拉") ? 3 : name.Contains("伊沃") ? 4 : name.Contains("森") || name.Contains("老潮") ? 5 : name.Contains("厄洛") ? 7 : name.Contains("莉雅") || name.Contains("露恩") ? 6 : -1; }
         private void DrawFishing()

@@ -48,7 +48,7 @@ namespace Starfall
             if (Game.mode != "materials") return;
             MaterialSource current = Game.GetMaterialRouteSource(source);
             if (current == null) return;
-            OpenMenu("map"); selectedRegion = current.room;
+            EnterMenu("map"); selectedRegion = current.room;
             materialMapSource = current; materialMapOwner = Game; materialMapSave = Game.save;
             materialMapGeneration = Game.WorldGeneration;
         }
@@ -70,7 +70,7 @@ namespace Starfall
             // The list is current-region-first; restore by authored identity,
             // never by an old row index or a stale pre-travel quote.
             int item = source.item, room = source.room; WorldObject target = source.target;
-            OpenMenu("materials"); materialItem = item; materialGeneration = Game.WorldGeneration;
+            EnterMenu("materials"); materialItem = item; materialGeneration = Game.WorldGeneration;
             var sources = Game.MaterialSources(item);
             selectedMaterialSource = Math.Max(0, sources.FindIndex(s => s.room == room && ReferenceEquals(s.target, target)));
             materialPage = selectedMaterialSource / 5;

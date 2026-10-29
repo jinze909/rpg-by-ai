@@ -88,7 +88,7 @@ namespace Starfall
                 Game.PinMaterialSource(selected);
             if (Button(866, 622, 351, 36, Game.L("查看地区地图", "Show region map"), false, selected != null))
             { OpenMaterialDestination(selected); }
-            if (Button(866, 670, 351, 28, Game.L("返回背包", "Back to inventory"))) OpenMenu("inventory");
+            if (Button(866, 670, 351, 28, CanReturnToSupplyDialogue ? Game.L("返回对话", "Back to dialogue") : Game.L("返回背包", "Back to inventory"))) ReturnFromMaterialSources();
         }
     }
 }

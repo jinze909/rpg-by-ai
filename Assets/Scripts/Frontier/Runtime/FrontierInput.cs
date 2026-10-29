@@ -117,6 +117,8 @@ namespace Starfall
         }
         private void Back()
         {
+            if (Game.mode == "map" && CanReturnToSupplyDialogue)
+            { MaterialSource source = MapPreviewMaterialSource; if (source != null) ReturnToMaterialSource(source); else EnterMenu("materials"); return; }
             ClearQuestMapPreview(); ClearMaterialMapPreview();
             confirmControl = null;
             if (townProjectConfirmation != null) { ClearTownProjectConfirmation(); return; }
@@ -124,7 +126,7 @@ namespace Starfall
             if (saveConfirmation != null) { saveConfirmation = null; return; }
             if(Game.mode=="plans" && battlePlanConfirmation >= 0) { battlePlanConfirmation = -1; return; }
             if(Game.mode=="plans") { OpenMenu("inventory"); return; }
-            if(Game.mode=="materials") { OpenMenu("inventory"); return; }
+            if(Game.mode=="materials") { ReturnFromMaterialSources(); return; }
             if(Game.mode=="techniques") { OpenMenu(techniqueGuideParent); return; }
             if (replacePrompt) { replacePrompt = false; return; }
             if (Game.mode == "title") return;
