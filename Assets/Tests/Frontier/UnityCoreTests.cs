@@ -530,6 +530,11 @@ namespace Starfall.Tests
         [Test] public void RiverLessonAppendsQuietGuidanceAndKeepsReachTopology() { CoreChecks.RiverLessonAppendsQuietGuidanceAndKeepsReachTopology(Data()); }
         [Test] public void RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch() { CoreChecks.RiverLessonLegacyCheckpointsAndLiveOwnershipNeverMintCatch(Data()); }
 
+        [Test] public void FishingFeedbackLakePullsUseActualClockAndPreserveInclusiveBand() { CoreChecks.FishingFeedbackLakePullsUseActualClockAndPreserveInclusiveBand(Data()); }
+        [Test] public void FishingFeedbackRiverPullsDistinguishBothSidesAndExpiredWindows() { CoreChecks.FishingFeedbackRiverPullsDistinguishBothSidesAndExpiredWindows(Data()); }
+        [Test] public void FishingFeedbackReadsExpiryAndOwnershipStayTransient() { CoreChecks.FishingFeedbackReadsExpiryAndOwnershipStayTransient(Data()); }
+        [Test] public void FishingFeedbackRetainsCatchRewardsBountiesAndStory() { CoreChecks.FishingFeedbackRetainsCatchRewardsBountiesAndStory(Data()); }
+
         [Test] public void FirstHarvestRequiresSavedTownPrerequisitesAndPhysicalHandoffs() { CoreChecks.FirstHarvestRequiresSavedTownPrerequisitesAndPhysicalHandoffs(Data()); }
         [Test] public void FirstHarvestUsesRealCropAndPreservesTownYields() { CoreChecks.FirstHarvestUsesRealCropAndPreservesTownYields(Data()); }
         [Test] public void FirstHarvestPaysExactRouteAndRejectsStaleOrFullRewards() { CoreChecks.FirstHarvestPaysExactRouteAndRejectsStaleOrFullRewards(Data()); }

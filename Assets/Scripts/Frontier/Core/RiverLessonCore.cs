@@ -73,7 +73,7 @@ namespace Starfall
             riverFishing = null;
             // A load/travel must not turn an interrupted river attempt into an
             // ordinary lake catch. Other mode transitions keep their new mode.
-            if (currentMode == "fish") currentMode = "world";
+            if (currentMode == "fish") { currentMode = "world"; ResetFishingPullFeedback(); }
         }
         public bool AcceptRiverLesson()
         {
@@ -97,7 +97,7 @@ namespace Starfall
             if (save.room != ReachRoom || !RiverLessonAccepted || !RiverNear(spot, "world")) return false;
             if (save.inventory[3] >= 9999)
             { Notify("鱼的存放空间不足，先用一些再来。", "Make room for a fish, then return."); return false; }
-            fishTime = fishCursor = 0; fishHits = fishMisses = 0;
+            ResetFishingPullFeedback(); fishTime = fishCursor = 0; fishHits = fishMisses = 0;
             riverFishing = new RiverFishingSession { owner = save, generation = WorldGeneration, site = site, spot = spot, position = new Point(spot.x, spot.y),
                 phase = RiverFishingPhase.Waiting, remaining = RiverFishingWaitSeconds };
             mode = "fish"; return true;
@@ -116,16 +116,19 @@ namespace Starfall
                 if (session.remaining > 0) break;
                 if (session.phase == RiverFishingPhase.Waiting)
                 { session.phase = RiverFishingPhase.Reeling; session.remaining = RiverFishingReelSeconds; fishCursor = 0; }
-                else if (session.phase == RiverFishingPhase.Reeling) MissRiverPull(session);
+                else if (session.phase == RiverFishingPhase.Reeling) MissRiverPull(session, true);
                 else { session.phase = RiverFishingPhase.Waiting; session.remaining = RiverFishingWaitSeconds; fishCursor = 0; }
             }
             return true;
         }
         private void RestRiverLine(RiverFishingSession session)
         { session.phase = RiverFishingPhase.Resting; session.remaining = RiverFishingRestSeconds; }
-        private void MissRiverPull(RiverFishingSession session)
+        private void MissRiverPull(RiverFishingSession session, bool timeout = false)
         {
             fishMisses++; sound = "hurt";
+            float lower = RiverFishingTarget - RiverFishingHalfWidth, upper = RiverFishingTarget + RiverFishingHalfWidth;
+            RecordFishingPull(timeout ? FishingPullOutcome.Timeout : fishCursor < lower ? FishingPullOutcome.Left : FishingPullOutcome.Right,
+                lower, upper, true);
             if (fishMisses >= 3)
             { Close(); Notify("鱼游走了。记录与物资没有损失，再试一次吧。", "The fish slipped away. Notes and supplies are safe; try again."); }
             else RestRiverLine(session);
@@ -140,6 +143,7 @@ namespace Starfall
             // residue; the tolerance is under one thousandth of a screen pixel.
             if (Math.Abs(fishCursor - RiverFishingTarget) > RiverFishingHalfWidth + .000001f) { MissRiverPull(session); return true; }
             fishHits++; sound = "reward";
+            RecordFishingPull(FishingPullOutcome.Good, RiverFishingTarget - RiverFishingHalfWidth, RiverFishingTarget + RiverFishingHalfWidth, true);
             if (fishHits < 3) { RestRiverLine(session); return true; }
             if (save.inventory[3] >= 9999)
             { Close(); Notify("鱼的存放空间不足，这次没有结算。", "No room for this catch; nothing was paid out."); return true; }

@@ -84,6 +84,8 @@
 
 完成老潮的鱼汤委托并找回第一枚星核后，可接下「河岸练钓」：去旧路河岸两处水边练习等候、择时收线与放松钓线，再带记录回镇领取一次性报酬。原湖畔钓鱼保留，钓成的鱼无需上交，进度随存档恢复。见 [RIVER-LESSON.md](docs/RIVER-LESSON.md)。
 
+湖畔与河岸的有效收线现在会显示成功、收线在左侧／右侧或错过窗口，并短暂保留收线时的位置；原节奏、判定区和奖励保留。见 [FISHING-FEEDBACK.md](docs/FISHING-FEEDBACK.md)，原生试玩为 `NATIVE_UNVERIFIED`。
+
 试装训练场支持从 Esc／START 暂停菜单进入「训练场控制」，用键盘或手柄换目标、重置记录和结束训练。控制页暂停记录，返回可继续同次尝试；原鼠标按钮和战斗按键保留。见 [RANGE-CONTROLS.md](docs/RANGE-CONTROLS.md)。
 
 沙海沙舟的「先看看路线」可预览真实地形上的五旗顺序、最快纪录与一次性奖励。比赛中从 Esc／START 暂停菜单查看路线，返回继续同轮，或再次确认后结束；超过30秒的终点接触不再误发奖励。见 [RACE-COURSE.md](docs/RACE-COURSE.md)。
