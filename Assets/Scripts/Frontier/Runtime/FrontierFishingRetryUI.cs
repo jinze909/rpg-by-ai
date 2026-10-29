@@ -7,6 +7,7 @@ namespace Starfall
     {
         private FishingRetryOffer drawnFishingRetry, armedFishingRetry;
         private bool fishingRetryPointerFrame;
+        private bool fishingRetryMousePress;
         private bool FishingRetryVisible
         {
             get { return Game != null && Game.CanRetryFishing && !applicationPaused
@@ -16,12 +17,16 @@ namespace Starfall
         private bool FishingRetryPointerProtected
         { get { return Game != null && Game.mode == "world" && !applicationPaused && !VisualReviewPaused
                 && (FishingRetryVisible || fishingRetryPointerFrame); } }
+        // Hiding resets activation, while a mouse press stays owned until release.
         private void ClearFishingRetryInput() { drawnFishingRetry = armedFishingRetry = null; fishingRetryPointerFrame = false; }
         private void UpdateFishingRetryInput()
         {
             // Keep the last visible card's mouse region for this input frame
             // even if Tick expires or invalidates its offer before the click.
             fishingRetryPointerFrame = drawnFishingRetry != null && Game.mode == "world";
+            if (!Input.GetMouseButton(0) && !Input.GetMouseButtonDown(0)) fishingRetryMousePress = false;
+            if (Input.GetMouseButtonDown(0)) fishingRetryMousePress = FishingRetryPointerProtected
+                && Contains(FishingRetryBounds(), MouseVirtual());
             FishingRetryOffer offer = FishingRetryVisible ? Game.RecentFishingRetry : null;
             // The first draw is disabled. Only a later valid Update can arm
             // that exact offer, never the input which just ended the cast.

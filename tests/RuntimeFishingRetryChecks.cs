@@ -180,6 +180,12 @@ public static class RuntimeFishingRetryChecks
             Check(g.playerAction==null&&Near(g.save.energy,energy)&&CanRetry(g),"Mouse press/hold over retry header/button never starts a world attack");
             if(y>638){ClickRetry(app);Check(g.mode=="fish"&&g.fishHits==0,"Protected pointer click still activates the armed retry");}
         }
+        Finish(app,false,true);Arm(app,true,false);var rapid=app.Game;
+        Input.mousePosition=new Vector3(640,800-653,0);Input.buttonDown.Add(0);Input.buttons.Add(0);Update(app);Draw(app);
+        Check(rapid.playerAction==null,"A fresh retry press belongs to the interface");
+        float rapidEnergy=rapid.save.energy,rapidCost=rapid.Profile(rapid.save.weapon,rapid.Style).energy;
+        Input.mousePosition=new Vector3(940,800-600,0);Input.buttonDown.Add(0);Input.buttons.Add(0);Update(app);Draw(app);
+        Check(rapid.playerAction!=null&&Near(rapid.save.energy,rapidEnergy-rapidCost),"A fresh world MouseDown after a between-frame release starts its own original attack");
         foreach(var key in new[]{KeyCode.E,KeyCode.JoystickButton1})
         { Finish(app,false,true);Arm(app,true,false);Update(app,key);Draw(app);Check(app.Game.mode=="dialog"&&Offer(app.Game)==null,"Original "+key+" interaction opens the canonical host dialogue");NoCard(); }
         foreach(var key in new[]{KeyCode.Space,KeyCode.JoystickButton0})
@@ -220,6 +226,13 @@ public static class RuntimeFishingRetryChecks
         Draw(app);AssertCard(app,true,false,true);float expiryEnergy=expiryGame.save.energy;
         Time.unscaledDeltaTime=.05f;Input.mousePosition=new Vector3(640,800-653,0);Input.buttonDown.Add(0);Input.buttons.Add(0);Update(app);Draw(app);Time.unscaledDeltaTime=.02f;
         Check(Offer(expiryGame)==null&&expiryGame.mode=="world"&&expiryGame.playerAction==null&&Near(expiryGame.save.energy,expiryEnergy),"Clicking the last visible retry on its expiry frame must not pay for a world attack");NoCard();
+        Input.buttons.Add(0);Update(app);Draw(app);
+        Check(expiryGame.playerAction==null&&Near(expiryGame.save.energy,expiryEnergy),"Holding the same retry press beyond expiry must remain owned by the interface until release");
+        Input.mousePosition=new Vector3(940,800-600,0);Input.buttons.Add(0);Update(app);Draw(app);
+        Check(expiryGame.playerAction==null&&Near(expiryGame.save.energy,expiryEnergy),"Dragging the owned retry press into the world cannot turn it into an attack");
+        Update(app);Draw(app);float clickCost=expiryGame.Profile(expiryGame.save.weapon,expiryGame.Style).energy;
+        Input.buttonDown.Add(0);Input.buttons.Add(0);Update(app);Draw(app);
+        Check(expiryGame.playerAction!=null&&expiryGame.attackCooldown>0&&Near(expiryGame.save.energy,expiryEnergy-clickCost),"After release, a fresh world click retains the original attack and its actual weapon energy cost");
         Finish(app,false,false);Arm(app,false,false);var game=app.Game;float duration=(float)game.GetType().GetField("FishingRetryDuration",BindingFlags.Public|BindingFlags.Static).GetValue(null);
         Check(Near(duration,8),"Offer has the bounded eight-second world lifetime");float world=game.save.totalTime;
         for(int frame=0;frame<390;frame++)Update(app);Draw(app);AssertCard(app,false,false,true);

@@ -73,9 +73,9 @@ namespace Starfall
         {
             if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
             fishingInputConsumed = false;
-            UpdateFishingRetryInput();
             ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
             clock += Time.unscaledDeltaTime; Resize();
+            UpdateFishingRetryInput();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);
             moving = movement.Length > .1f;
             bool beganInWorld = Game.mode == "world";
@@ -124,7 +124,7 @@ namespace Starfall
                     // A fresh Q after a dodge is queued; a dodge clears older intent.
                     if ((Input.GetKeyDown(KeyCode.Space) || PadDown(0))) Game.Dash(movement);
                     if ((Input.GetKeyDown(KeyCode.Q) || PadDown(3))) Game.Skill(InputAim(true));
-                    bool mouseInWorld = (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0)) && !PointerOverInterface(mouse);
+                    bool mouseInWorld = (Input.GetMouseButton(0) || Input.GetMouseButtonDown(0)) && !fishingRetryMousePress && !PointerOverInterface(mouse);
                     bool attackPressed = Input.GetKeyDown(KeyCode.J) || PadDown(2) || Input.GetMouseButtonDown(0) && mouseInWorld;
                     if (attackPressed) Game.PressAttack(InputAim() ?? Game.aim);
                     else if (Input.GetKey(KeyCode.J) || Input.GetKey(KeyCode.JoystickButton2) || Input.GetMouseButton(0) && mouseInWorld)
