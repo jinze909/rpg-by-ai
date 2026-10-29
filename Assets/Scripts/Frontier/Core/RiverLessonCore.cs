@@ -130,7 +130,7 @@ namespace Starfall
             RecordFishingPull(timeout ? FishingPullOutcome.Timeout : fishCursor < lower ? FishingPullOutcome.Left : FishingPullOutcome.Right,
                 lower, upper, true);
             if (fishMisses >= 3)
-            { Close(); Notify("鱼游走了。记录与物资没有损失，再试一次吧。", "The fish slipped away. Notes and supplies are safe; try again."); }
+            { Close(); Notify("鱼游走了。记录与物资没有损失，再试一次吧。", "The fish slipped away. Notes and supplies are safe; try again."); RecordFishingRetry(true, false, session.site, session.spot); }
             else RestRiverLine(session);
         }
         private bool ReelRiverFishing()
@@ -149,7 +149,7 @@ namespace Starfall
             { Close(); Notify("鱼的存放空间不足，这次没有结算。", "No room for this catch; nothing was paid out."); return true; }
             save.inventory[3]++; save.coins = Math.Min(999999, save.coins + 4); BountyEvent(2, 1);
             Flag("riverlesson_site_" + session.site); revision++; Close();
-            Notify("河岸银鳍鱼 ×1！这一处已记录。", "River Silverfin x1! This site is recorded."); return true;
+            Notify("河岸银鳍鱼 ×1！这一处已记录。", "River Silverfin x1! This site is recorded."); RecordFishingRetry(true, true, session.site, session.spot); return true;
         }
         private void AppendRiverLessonChoice(List<Choice> choices)
         { if (RiverLessonReady) choices.Add(C(RiverLessonComplete ? "重读河岸记录" : "河岸练钓", RiverLessonComplete ? "Reread river notes" : "River fishing lesson", "river_offer")); }

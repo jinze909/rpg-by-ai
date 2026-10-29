@@ -117,6 +117,8 @@ jobs:
         run: python3 tools/run_fishing_input_checks.py
       - name: Check accepted fishing pull feedback, captured markers, pause, layouts and save ownership
         run: python3 tools/run_fishing_feedback_checks.py
+      - name: Check deliberate fishing retries, fresh-frame arming, world pointer safety and original settlements
+        run: python3 tools/run_fishing_retry_checks.py
       - name: Check repaired-well follow-up, real water handoffs, town routes and legacy saves
         run: python3 tools/run_water_garden_checks.py
       - name: Check real first harvest, safe soup handoffs, exact town rewards and legacy saves

@@ -535,6 +535,11 @@ namespace Starfall.Tests
         [Test] public void FishingFeedbackReadsExpiryAndOwnershipStayTransient() { CoreChecks.FishingFeedbackReadsExpiryAndOwnershipStayTransient(Data()); }
         [Test] public void FishingFeedbackRetainsCatchRewardsBountiesAndStory() { CoreChecks.FishingFeedbackRetainsCatchRewardsBountiesAndStory(Data()); }
 
+        [Test] public void FishingRetryTerminalOutcomesPreserveRewardsAndRestartZeroed() { CoreChecks.FishingRetryTerminalOutcomesPreserveRewardsAndRestartZeroed(Data()); }
+        [Test] public void FishingRetryWorldLifetimeAndCanonicalLocalityRejectStaleOffers() { CoreChecks.FishingRetryWorldLifetimeAndCanonicalLocalityRejectStaleOffers(Data()); }
+        [Test] public void FishingRetryRefusalsPreservePaidActionsAndQueuedRequests() { CoreChecks.FishingRetryRefusalsPreservePaidActionsAndQueuedRequests(Data()); }
+        [Test] public void FishingRetryReadsAndLegacySavesRemainImmutableAndTransient() { CoreChecks.FishingRetryReadsAndLegacySavesRemainImmutableAndTransient(Data()); }
+
         [Test] public void FirstHarvestRequiresSavedTownPrerequisitesAndPhysicalHandoffs() { CoreChecks.FirstHarvestRequiresSavedTownPrerequisitesAndPhysicalHandoffs(Data()); }
         [Test] public void FirstHarvestUsesRealCropAndPreservesTownYields() { CoreChecks.FirstHarvestUsesRealCropAndPreservesTownYields(Data()); }
         [Test] public void FirstHarvestPaysExactRouteAndRejectsStaleOrFullRewards() { CoreChecks.FirstHarvestPaysExactRouteAndRejectsStaleOrFullRewards(Data()); }

@@ -73,6 +73,7 @@ namespace Starfall
         {
             if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
             fishingInputConsumed = false;
+            UpdateFishingRetryInput();
             ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
             clock += Time.unscaledDeltaTime; Resize();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);
@@ -173,9 +174,9 @@ namespace Starfall
             if (SaveStore.Write(Game.save)) { lastRevision = Game.revision; saveTimer = 0; hasSave = true; return true; }
             else { saveTimer = 0; Game.Notify("存档失败，请检查磁盘空间或目录权限。", "Save failed. Check disk space and folder permissions."); return false; }
         }
-        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { if (talentResetConfirmation != null || townProjectConfirmation != null) confirmControl = null; if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearBufferedCompanionCommand(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
+        private void OnApplicationPause(bool paused) { applicationPaused = paused; if (paused) { ClearFishingRetryInput(); if (talentResetConfirmation != null || townProjectConfirmation != null) confirmControl = null; if (Game != null) { Game.ClearBufferedCombatInputs(); Game.ClearBufferedCompanionCommand(); Game.ClearCombatFocus(); ResetControllerAim(); } Save(); } }
         private void OnApplicationFocus(bool focused)
-        { if (!focused && (talentResetConfirmation != null || townProjectConfirmation != null)) { ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); confirmControl = null; } if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
+        { if (!focused) ClearFishingRetryInput(); if (!focused && (talentResetConfirmation != null || townProjectConfirmation != null)) { ClearTalentResetConfirmation(); ClearTownProjectConfirmation(); confirmControl = null; } if (!focused && Game != null && Game.mode == "world") { Game.mode = "pause"; ResetControllerAim(); Save(); } }
         private void OnApplicationQuit() { Save(); }
         private void OnDestroy()
         {

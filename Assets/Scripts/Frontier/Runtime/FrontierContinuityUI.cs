@@ -72,6 +72,7 @@ namespace Starfall
             if (ProvisionStatusVisible) rects.Add(ProvisionStatusBounds());
             if (SwordChainVisible) rects.Add(SwordChainBounds());
             if (CombatLootVisible) rects.Add(CombatLootBounds());
+            if (FishingRetryVisible) rects.Add(FishingRetryBounds());
             if (CompanionFeedbackVisible) rects.Add(CompanionFeedbackBounds());
             if (BossPhaseCueVisible) rects.Add(BossPhaseCueBounds());
             rects.AddRange(worldOverlayRegions); return rects;
@@ -98,6 +99,7 @@ namespace Starfall
             else { hudPointerRegions.Add(regions[2]); hudPointerRegions.Add(regions[3]); hudPointerRegions.Add(CombatJournalButton); }
             if (CombatHud && CombatFocusVisible) hudPointerRegions.Add(CombatFocusBounds());
             if (CombatHud && CombatFocusCycleVisible) hudPointerRegions.Add(CombatFocusCycleBounds());
+            if ((CombatHud || !FishingRetryVisible) && FishingRetryPointerProtected) hudPointerRegions.Add(FishingRetryBounds());
             AddSparringPointerRegions(hudPointerRegions);
             AddRangePointerRegions(hudPointerRegions);
             return hudPointerRegions;
@@ -143,7 +145,7 @@ namespace Starfall
         private void DrawHud()
         {
             drawingHud = true;
-            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawSignalRepriseHud(); DrawReturnLetterHud(); DrawCompanionFeedbackHud(); DrawGuardStatusHud(); DrawProvisionStatusHud(); DrawSwordChainHud(); DrawCombatLootHud(); }
+            try { if (CombatHud) DrawCombatHud(); else DrawExplorationHud(); DrawSignalRepriseHud(); DrawReturnLetterHud(); DrawCompanionFeedbackHud(); DrawGuardStatusHud(); DrawProvisionStatusHud(); DrawSwordChainHud(); DrawCombatLootHud(); DrawFishingRetryHud(); }
             finally { drawingHud = false; }
         }
         private void DrawHudThreatWitness()

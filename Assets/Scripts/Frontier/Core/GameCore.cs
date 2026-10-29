@@ -23,7 +23,7 @@ namespace Starfall
         public string mode
         {
             get { return currentMode; }
-            set { currentMode = value; if (value != "fish") { ResetRiverFishing(); ResetFishingPullFeedback(); } if (value != "world") { ClearBufferedCombatInputs(); ClearBufferedCompanionCommand(); ClearCombatFocus(); } }
+            set { currentMode = value; if (value != "fish") { ResetRiverFishing(); ResetFishingPullFeedback(); } if (value != "world") { ClearFishingRetry(); ClearBufferedCombatInputs(); ClearBufferedCompanionCommand(); ClearCombatFocus(); } }
         }
         public string toast = "";
         public Conversation conversation;
@@ -112,6 +112,7 @@ namespace Starfall
             ResetContinuity(); ResetWatchTransient(); ResetArchiveTransient(); ResetSparringTransient(); ResetRangeTransient(); ResetCommissionTransient(); ResetShelterTransient();
             ResetRiverFishing();
             ResetFishingPullFeedback();
+            ClearFishingRetry();
             ClearFieldcraftTransient(); ResetRootEcho();
         }
         public void NewGame(int profession)
@@ -246,6 +247,7 @@ namespace Starfall
             toastTime -= dt;
             if (mode == "fish") { TickFishingPullFeedback(dt); if (!TickRiverFishing(dt)) { fishTime += dt; fishCursor = .5f + .5f * (float)Math.Sin(fishTime * (2.5f + fishHits * .35f)); } return; }
             if (mode != "world") return;
+            TickFishingRetry(dt);
             ValidateCombatFocus();
             if (hitStop > 0) { hitStop = Math.Max(0, hitStop - dt); return; }
             float skillReadyDelay = ActionReadyDelay(skillCooldown), dodgeReadyDelay = Math.Max(0, dashCooldown), attackReadyDelay = ActionReadyDelay(attackCooldown);
@@ -290,6 +292,7 @@ namespace Starfall
             // simulation, with the original full preparation still to come.
             if (interactionInputRequested && CanPrioritizeInteraction) ClearInteractionCombatRequests();
             else TickBufferedCompanionCommand(dt, companionReadyDelay);
+            if (!FishingRetryValid(fishingRetry)) ClearFishingRetry();
         }
         public void Attack(Point direction)
         {
@@ -824,7 +827,7 @@ namespace Starfall
                 ForgeQuote quote = GetForgeQuote(w);
                 if (quote.available && Spend(quote.wood, quote.crystals, 0, 0, quote.parts)) { Flag("weapon_" + w); Equip(w); sound = "reward"; Notify("制作成功！背包 I 可以切换武器。", "Crafted! Switch weapons in your inventory, I."); }
             }
-            if (action == "fish") { ResetFishingPullFeedback(); fishTime = fishCursor = 0; fishHits = fishMisses = 0; mode = "fish"; }
+            if (action == "fish") BeginLakeFishing();
             if (action == "deliver" && save.stage < 3 && Has("core_" + (save.stage + 1)))
             { save.stage++; save.coins += 40; save.inventory[6]++; save.inventory[0] += 3; save.inventory[1] += 2; revision++; sound = "reward"; OnGuildDelivery(save.stage); }
             if (action.StartsWith("ally"))
@@ -879,8 +882,8 @@ namespace Starfall
                 fishMisses++; sound = "hurt";
                 RecordFishingPull(fishCursor < .5f - .18f ? FishingPullOutcome.Left : FishingPullOutcome.Right, .5f - .18f, .5f + .18f, false);
             }
-            if (fishHits >= 3) { save.inventory[3]++; save.coins += 4; BountyEvent(2, 1); Close(); revision++; Notify("钓到银鳍鱼 ×1！", "Caught a Silverfin!"); }
-            else if (fishMisses >= 3) { Close(); Notify("鱼游走了。没有损失，再试一次吧。", "The fish slipped away. Nothing lost; try again."); }
+            if (fishHits >= 3) { save.inventory[3]++; save.coins += 4; BountyEvent(2, 1); Close(); revision++; Notify("钓到银鳍鱼 ×1！", "Caught a Silverfin!"); RecordFishingRetry(false, true, -1, LakeFishingHost); }
+            else if (fishMisses >= 3) { Close(); Notify("鱼游走了。没有损失，再试一次吧。", "The fish slipped away. Nothing lost; try again."); RecordFishingRetry(false, false, -1, LakeFishingHost); }
         }
         private void FinalConversation()
         {
