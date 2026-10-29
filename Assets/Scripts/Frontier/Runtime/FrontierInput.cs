@@ -11,6 +11,16 @@ namespace Starfall
         private string confirmControl, drawnScope, dialogParent, settingsParent = "world", pressedControl;
         private float navigationRepeat, pressedTime;
         private bool focusVisible, controllerUsed, drawingModal;
+        private bool fishingInputConsumed;
+        private void ReelFishingFromInput()
+        {
+            if (Game == null || Game.mode != "fish" || fishingInputConsumed
+                || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
+            // Keyboard, pad and OnGUI aliases share one reel intent per Update.
+            // A fresh Update permits the next pull without adding a cooldown.
+            fishingInputConsumed = true;
+            Game.FishHit();
+        }
         private string ControlId(float x, float y, float w, float h) { return x.ToString(CultureInfo.InvariantCulture) + ":" + y.ToString(CultureInfo.InvariantCulture) + ":" + w.ToString(CultureInfo.InvariantCulture) + ":" + h.ToString(CultureInfo.InvariantCulture); }
         private string InputScope()
         { return Game.mode + (Game.mode == "journal" ? QuestJournalInputScope : "") + (Game.mode == "map" ? QuestMapInputScope + MaterialMapInputScope : "") + (Game.mode == "dialog" && Game.conversation != null ? "/" + Game.conversation.GetHashCode() + "/" + dialoguePage : "") + (Game.mode == "materials" ? "/" + materialItem + "/" + materialPage + "/" + Game.WorldGeneration : "") + (Game.mode == "racecourse" ? "/" + Game.RaceCourseVersion + "/" + Game.RaceCourseCancellationPending : "") + (replacePrompt ? "/replace" : "") + (saveConfirmation != null ? "/confirm" : "") + (Game.mode == "plans" && battlePlanConfirmation >= 0 ? "/plan-confirm" : "") + (talentResetConfirmation != null ? "/talent-reset/" + talentResetConfirmation.GetHashCode() : "") + (townProjectConfirmation != null ? "/town-project/" + townProjectConfirmation.GetHashCode() : ""); }
@@ -103,7 +113,7 @@ namespace Starfall
             if (direction.Length > .1f) { focusVisible = true; navigation.Move(direction); Game.sound = "ui"; }
             if (Input.GetKeyDown(KeyCode.Tab)) { focusVisible = true; navigation.Cycle(Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift) ? -1 : 1); }
             if (Input.GetKeyDown(KeyCode.Return) || Input.GetKeyDown(KeyCode.Space) && Game.mode != "fish" || PadDown(0))
-            { focusVisible = true; if (Game.mode == "dialog" && !DialogueChoicesVisible()) AdvanceDialogue(); else if (Game.mode == "fish" && PadDown(0)) Game.FishHit(); else if (navigation.CanActivate(navigation.focused)) confirmControl = navigation.focused; }
+            { focusVisible = true; if (Game.mode == "dialog" && !DialogueChoicesVisible()) AdvanceDialogue(); else if (Game.mode == "fish" && PadDown(0)) ReelFishingFromInput(); else if (navigation.CanActivate(navigation.focused)) confirmControl = navigation.focused; }
         }
         private void Back()
         {

@@ -43,7 +43,7 @@ namespace Starfall
             Text(321, 500, 849, 55, hint, 16, paper, TextAnchor.MiddleCenter);
             Text(321, 560, 849, 30, Game.L("三次成功获得银鳍鱼；三次失误结束。无需鱼饵。", "Three good pulls earn Silverfin; three misses end the cast. No bait needed."),
                 14, muted, TextAnchor.MiddleCenter);
-            if (Button(473, 611, 543, 52, Game.L("收线  ", "Reel  ") + ControlKey("E / SPACE", "A"), true, reeling)) Game.FishHit();
+            if (Button(473, 611, 543, 52, Game.L("收线  ", "Reel  ") + ControlKey("E / SPACE", "A"), true, reeling)) ReelFishingFromInput();
         }
     }
 }

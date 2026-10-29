@@ -343,7 +343,7 @@ namespace Starfall
         {
             if (Game.RiverFishingActive) { DrawRiverFishing(); return; }
             Window(Game.L("湖畔垂钓", "Fishing by the lake"), Game.L("浮标进入青绿色区时收线 · E / 空格 / 点击收线", "Reel while the marker is in the teal band · E / Space / Reel")); Card(279, 179, 938, 510); Icon("fish", 667, 202, 134); Text(307, 361, 875, 41, Game.L("成功 ", "Good pulls ") + Game.fishHits + "/3   ·   " + Game.L("失误 ", "Misses ") + Game.fishMisses + "/3", 24, paper, TextAnchor.MiddleCenter);
-            Box(335, 436, 826, 37, ink); Box(335 + 826 * .32f, 436, 826 * .36f, 37, mint); Box(335 + Game.fishCursor * 826 - 3, 425, 6, 60, gold); Text(321, 520, 849, 51, Game.L("三次成功获得银鳍鱼；世界暂停，钓鱼不消耗鱼饵。", "Three good pulls earn Silverfin. World paused; no bait consumed."), 16, muted, TextAnchor.MiddleCenter); if (Button(473, 601, 543, 56, Game.L("收线  E", "Reel  E"), true)) Game.FishHit();
+            Box(335, 436, 826, 37, ink); Box(335 + 826 * .32f, 436, 826 * .36f, 37, mint); Box(335 + Game.fishCursor * 826 - 3, 425, 6, 60, gold); Text(321, 520, 849, 51, Game.L("三次成功获得银鳍鱼；世界暂停，钓鱼不消耗鱼饵。", "Three good pulls earn Silverfin. World paused; no bait consumed."), 16, muted, TextAnchor.MiddleCenter); if (Button(473, 601, 543, 56, Game.L("收线  E", "Reel  E"), true)) ReelFishingFromInput();
         }
         private void DrawPause()
         {

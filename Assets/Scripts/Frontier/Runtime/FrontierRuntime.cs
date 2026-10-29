@@ -72,6 +72,7 @@ namespace Starfall
         private void Update()
         {
             if (bootError != null || Game == null || applicationPaused || VisualReviewActive && VisualReviewPaused) return;
+            fishingInputConsumed = false;
             ValidateQuestMapPreview(); ValidateMaterialMapPreview(); ValidateQuestJournalView(); ValidateTalentResetConfirmation(); ValidateTownProjectConfirmation();
             clock += Time.unscaledDeltaTime; Resize();
             Point movement = new Point(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical") * -1);
@@ -138,7 +139,7 @@ namespace Starfall
                 }
                 if (PadDown(6)) OpenMenu("journal"); if (PadDown(7)) { OpenMenu("pause"); Save(); }
             }
-            else if (Game.mode == "fish" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))) Game.FishHit();
+            else if (Game.mode == "fish" && (Input.GetKeyDown(KeyCode.E) || Input.GetKeyDown(KeyCode.Space))) ReelFishingFromInput();
             else if (Game.mode == "dialog")
             {
                 int count = Game.conversation == null || !DialogueChoicesVisible() ? 0 : Game.conversation.choices.Length;
