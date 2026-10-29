@@ -29,9 +29,9 @@ namespace Starfall
         {
             if (Game.conversation == null) return -1;
             Choice[] choices = Game.conversation.choices;
-            // A rejected handoff must not make a different purchase the default
-            // Enter/A action. Keep all original rows and deliberate selection.
-            if (choices.Length > 0 && Game.GetTownHandoffQuote(choices[0].action) != null
+            // A rejected handoff or full fish stock must not turn Enter/A
+            // into a different transaction. Keep deliberate selection intact.
+            if (choices.Length > 0 && (Game.GetTownHandoffQuote(choices[0].action) != null || choices[0].action == "fish")
                 && !Game.DialogueChoiceEnabled(choices[0].action))
             {
                 int leave = Array.FindIndex(choices, choice => choice.action == "close" && Game.DialogueChoiceEnabled(choice.action));

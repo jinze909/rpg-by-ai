@@ -63,6 +63,12 @@ public static class RuntimeLakeFishingCapacityChecks
     }
     static void FullBasketBlocksOriginalInputsAndCommissionFreesRoom(FrontierRuntime app)
     {
+        foreach(var key in new[]{KeyCode.Return,KeyCode.JoystickButton0})
+        {
+            Prepare(app,9999);Open(app);var ready=app.Game;string before=JsonUtility.ToJson(ready.save);
+            Update(app,key);Draw(app);
+            Check(ready.mode=="world"&&JsonUtility.ToJson(ready.save)==before&&!ready.Has("ally_2"),"Fresh default confirmation of a full basket leaves safely without silently delivering fish");
+        }
         foreach(int stock in new[]{9999,-1})
         {
             Prepare(app,stock);Open(app);var g=app.Game;Button(app,"fish",false);var conversation=g.conversation;string before=JsonUtility.ToJson(g.save);int revision=g.revision;
